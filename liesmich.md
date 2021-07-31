@@ -7,7 +7,7 @@ Letzte &Auml;nderung: 31.7.2021<br>
 
 ## Willkommen auf mqtt4home   
 
-Diese Webseite beschreibt in vielen Beispielen, wie man mit Hilfe des MQTT-Protokolls Sensoren und Aktoren zu Hause vernetzen kann. Als Steuerzentrale ("Broker") dient ein Raspberry Pi (kurz RasPi).<br>
+Dieses Projekt beschreibt in vielen Beispielen, wie man mit Hilfe des MQTT-Protokolls Sensoren und Aktoren zu Hause vernetzen kann. Als Steuerzentrale ("Broker") dient ein Raspberry Pi (kurz RasPi).<br>
 Informationen zum MQTT-Protokoll gibt es auf [https://mqtt.org/](https://mqtt.org/).   
 
 ### Allgemeine Annahmen   

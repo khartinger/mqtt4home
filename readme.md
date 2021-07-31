@@ -6,7 +6,7 @@ Last modified: 2021-07-31<br>
 </td></tr></table><hr>
 
 ## Welcome to mqtt4home
-This website describes in many examples how to network sensors and actuators at home using the MQTT protocol. A Raspberry Pi (RasPi for short) serves as the control center ("broker").<br>
+This project describes in many examples how to network sensors and actuators at home using the MQTT protocol. A Raspberry Pi (RasPi for short) serves as the control center ("broker").<br>
 Information about the MQTT protocol is available at [https://mqtt.org/](https://mqtt.org/).   
 
 ### General Assumptions
