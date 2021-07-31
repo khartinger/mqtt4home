@@ -1,4 +1,4 @@
-Letzte Änderung: 31.7.2021
+Letzte &auml;nderung: 31.7.2021
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Grundinstallation des Raspberry Pi</h1>
 <a href="liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -9,7 +9,7 @@ Letzte Änderung: 31.7.2021
 ## Ziele
 
 * Installation des Betriebssystems "Raspberry Pi OS" auf dem RasPi.   
-Im Projekt werden folgende Einstellungen gewählt, die aus Sicherheitsgründen geändert werden sollten:   
+Im Projekt werden folgende Einstellungen gew&auml;hlt, die aus Sicherheitsgr&uuml;nden ge&auml;ndert werden sollten:   
 
 |           |                           |   
 | --------- | ------------------------- |   
@@ -18,33 +18,33 @@ Im Projekt werden folgende Einstellungen gewählt, die aus Sicherheitsgründen g
 | Passwort: | `pass`  (statt raspberry) |   
    
 
-## Benötigte Hilfsmittel
+## Ben&ouml;tigte Hilfsmittel
 
-* Hardware: RasPi (incl. Zubehör), Micro-SD-Kartenleser   
-* Software: [Programmiersoftware für das Betriebssystem ("imager")](https://www.raspberrypi.org/software)
+* Hardware: RasPi (incl. Zubeh&ouml;r), Micro-SD-Kartenleser   
+* Software: [Programmiersoftware f&uuml;r das Betriebssystem ("imager")](https://www.raspberrypi.org/software)
 * Software: Terminal-Programm [`putty`](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) auf dem PC/Laptop   
 
  
 ## Vorgangsweise
 ### Betriebssystem auf die SD-Karte kopieren
-1. Micro-SD-Karte (Größe 8GB oder mehr) in den Kartenleser einlegen, den Kartenleser am PC anschließen.   
+1. Micro-SD-Karte (Gr&ouml;&szlig;e 8GB oder mehr) in den Kartenleser einlegen, den Kartenleser am PC anschlie&szlig;en.   
 2. Herunterladen des Hilfsprogramms zum Beschreiben der SD-Card unter Windows.   
  Siehe [http://www.raspberrypi.org/software](http://www.raspberrypi.org/software). Download von "`imager_1.6.2.exe`".   
 3. Programmier-Programm starten und Betriebssystem-Image direkt auf die Micro-SD-Karte schreiben.   
 
 ### Erste Inbetriebnahme des RasPi
-Beim ersten Start des RasPi müssen einige Einstellungen vorgenommen werden. Diese können später auch geändert werden.   
+Beim ersten Start des RasPi m&uuml;ssen einige Einstellungen vorgenommen werden. Diese k&ouml;nnen sp&auml;ter auch ge&auml;ndert werden.   
 1. Micro-SD-Karte in das RasPi einlegen.   
-2. Bildschirm, Tastatur, Maus, Netzwerkkabel am RasPi anschließen.   
+2. Bildschirm, Tastatur, Maus, Netzwerkkabel am RasPi anschlie&szlig;en.   
 3. Betriebsspannung anlegen: RasPi startet im Konfigurationsmodus.   
 4. Betriebssystem "Raspberry Pi OS" konfigurieren:   
-Land wählen, neues Passwort `pass` eingeben. In dieser Phase noch kein WiFi-Netzwerk wählen.   
+Land w&auml;hlen, neues Passwort `pass` eingeben. In dieser Phase noch kein WiFi-Netzwerk w&auml;hlen.   
 Software-Update starten, RasPi danach neu starten.   
 
 ### Erste Einstellungen auf dem RasPi
 
 * __Schnittstellen freischalten__   
-Am Grafik-Bildschirm links oben [Menü] anklicken -  Einstellungen – Raspberry-Pi-Konfiguration – [Schnittstellen]   
+Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen – Raspberry-Pi-Konfiguration – [Schnittstellen]   
 
 |                   |                    |                      |   
 | ----------------- | ------------------ | -------------------- |
@@ -59,25 +59,25 @@ Am Grafik-Bildschirm links oben [Menü] anklicken -  Einstellungen – Raspberry
 | GPIO-Fernzugriff: &nbsp; | (&nbsp;) Aktiviert | (*) Deaktiviert      |   
 [OK] anklicken aber noch nicht neu starten: [Nein] anklicken.
 &nbsp;   
-* __Passwort und Hostname ändern, automatische Anmeldung abschalten__   
-Am Grafik-Bildschirm links oben [Menü] anklicken -  Einstellungen - Raspberry-Pi-Konfiguration - [System]   
+* __Passwort und Hostname &auml;ndern, automatische Anmeldung abschalten__   
+Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen - Raspberry-Pi-Konfiguration - [System]   
 
 |           |                        |       |   
 | --------- | ---------------------- | ----- |   
-| Passwort: | [Passwort ändern..]    |       |   
-| _...im Untermenü eingeben..._ | Neues Passwort eingeben: `pass`  |   |   
-|           | Neues Passwort bestätigen: `pass`   [OK][OK] |  |   
+| Passwort: | [Passwort &auml;ndern..]    |       |   
+| _...im Untermen&uuml; eingeben..._ | Neues Passwort eingeben: `pass`  |   |   
+|           | Neues Passwort best&auml;tigen: `pass`   [OK][OK] |  |   
 | Hostname: |  `raspi`               | &nbsp;      |   
 | Boot:     |  ( &nbsp;) Zum Desktop | (*) Zum CLI |   
 | Automatische Anmeldung:            | ( &nbsp;) Als Benutzer 'pi' anmelden | (*) Disabled |   
 [OK] anklicken und Neustart des Systems zulassen [OK].   
    
 
-Sollte nicht nach einem <b>Neustart</b> gefragt werden, so kann man den Neustart so auslösen:   
+Sollte nicht nach einem <b>Neustart</b> gefragt werden, so kann man den Neustart so ausl&ouml;sen:   
 
 |                         |                                                |   
 | ----------------------- | ---------------------------------------------- |   
-| Grafik-Bildschim:       | Am Grafik-Bildschirm links oben [Menü] anklicken -  Abmelden - [Neu starten] |   
+| Grafik-Bildschim:       | Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Abmelden - [Neu starten] |   
 | Von der Kommandozeile:  | ```sudo reboot``` |   
 
 Das RasPi startet nun im Terminal-Modus und fragt nach dem User-Namen (`pi`) und dem Passwort (`pass`).   
@@ -89,19 +89,19 @@ startx
 ```
 
 ### Fernsteuerung vorbereiten
-Für viele Aufgaben ist es einfacher, das RasPi vom PC aus zu bedienen, da man dann Befehle aus Anleitungen direkt kopieren und auf dem RasPi ausführen kann. Ein einfaches Programm dazu ist das Terminalprogramm [`putty`](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html). Nach der Installation benötigt man lediglich die IP des RasPi sowie den User-Namen und das Passwort.   
-Verbindet man das RasPi über ein LAN-Kabel mit dem PC, so kann man die IP über die Kommandozeile so anzeigen:   
+F&uuml;r viele Aufgaben ist es einfacher, das RasPi vom PC aus zu bedienen, da man dann Befehle aus Anleitungen direkt kopieren und auf dem RasPi ausf&uuml;hren kann. Ein einfaches Programm dazu ist das Terminalprogramm [`putty`](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html). Nach der Installation ben&ouml;tigt man lediglich die IP des RasPi sowie den User-Namen und das Passwort.   
+Verbindet man das RasPi &uuml;ber ein LAN-Kabel mit dem PC, so kann man die IP &uuml;ber die Kommandozeile so anzeigen:   
 ```
 ifconfig eth0   
 eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500   
       inet 192.168.0.68  netmask 255.255.248.0  broadcast 192.168.0.255   
 ```
-Das heißt, die IP-Adresse ist 192.168.0.68   
+Das hei&szlig;t, die IP-Adresse ist 192.168.0.68   
 Sollte trotz richtiger IP-Adresse die putty-Verbindung verweigert werden, dann ist eventuell SSH bei den Schnittstellen nicht aktiviert (siehe oben!).   
 
-### Standard-User-Namen pi ändern
+### Standard-User-Namen pi &auml;ndern
 Quelle: [https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/](https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/) [24.10.2017]</a>   
-__Anmerkung: Falls bereits User-Crontabs für den User pi erstellt wurden, so werden diese gelöscht. (Sichern!)__   
+__Anmerkung: Falls bereits User-Crontabs f&uuml;r den User pi erstellt wurden, so werden diese gel&ouml;scht. (Sichern!)__   
 1. Putty starten (empfohlen)    oder das RasPi in den Kommandozeilen-Modus schalten (siehe oben), neu starten und User-Namen (`pi`) und  Passwort (`pass`) eingeben.      
 2.  Hilfs-User temp anlegen:   
  ```
@@ -109,13 +109,13 @@ __Anmerkung: Falls bereits User-Crontabs für den User pi erstellt wurden, so we
   Geben Sie ein neues UNIX-Passwort ein: pass   
   Geben Sie das neue UNIX-Passwort erneut ein: pass   
  ```
- Alle anderen Eingaben leer lassen. (Es werden die Standardwerte übernommen)
+ Alle anderen Eingaben leer lassen. (Es werden die Standardwerte &uuml;bernommen)
        
-3. Dem User `temp` sudo-Rechte einräumen   
+3. Dem User `temp` sudo-Rechte einr&auml;umen   
  ```
  sudo visudo
  ```   
- Am Ende der Datei einfügen:   
+ Am Ende der Datei einf&uuml;gen:   
  ```temp ALL=(ALL) NOPASSWD: ALL```   
  Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
        
@@ -131,7 +131,7 @@ __Anmerkung: Falls bereits User-Crontabs für den User pi erstellt wurden, so we
  ```   
  Anmerkung: Falls jetzt der englische Zeichensatz eingestellt ist: Taste - bei ?, / bei -
         
-6. Den Namen der Gruppe pi ändern:   
+6. Den Namen der Gruppe pi &auml;ndern:   
  ```
  sudo groupmod -n pi_ pi
  ```
@@ -146,40 +146,40 @@ __Anmerkung: Falls bereits User-Crontabs für den User pi erstellt wurden, so we
  ```
  sudo visudo
  ```   
- Am Beginn der Zeile ein Kommentarzeichen # einfügen:   
+ Am Beginn der Zeile ein Kommentarzeichen # einf&uuml;gen:   
  ```#temp ALL=(ALL) NOPASSWD: ALL```   
  Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
        
-9. Löschen des Users `temp`   
+9. L&ouml;schen des Users `temp`   
  ```
  sudo deluser temp
  ```
        
 ---   
 
-10. Usernamen für automatisches Login ändern:   
+10. Usernamen f&uuml;r automatisches Login &auml;ndern:   
  ```
  sudo nano /etc/lightdm/lightdm.conf
  ```   
- Folgende Zeilen ändern bzw. ergänzen   
+ Folgende Zeilen &auml;ndern bzw. erg&auml;nzen   
  ```#autologin-user=pi   autologin-user=pi_```   
  Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
        
-11. Weiters ändern:   
+11. Weiters &auml;ndern:   
  ```
  sudo nano /etc/systemd/system/autologin@.service
  ```   
- Folgende Zeilen ändern bzw. ergänzen   
+ Folgende Zeilen &auml;ndern bzw. erg&auml;nzen   
  ```#ExecStart=-/sbin/agetty --autologin pi --noclear %I $TERM```   
  ```ExecStart=-/sbin/agetty --autologin pi_ --noclear %I $TERM```   
  Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
        
-12. Von der Kommandozeile aus den automatischen Start der grafischen Oberfläche einschalten   
+12. Von der Kommandozeile aus den automatischen Start der grafischen Oberfl&auml;che einschalten   
  ```
  sudo raspi-config
  ```   
  
- * Es erscheint das Kommandozeilen-Konfigurationsmenü:   
+ * Es erscheint das Kommandozeilen-Konfigurationsmen&uuml;:   
  
   | Raspberry Pi Software Configuration Tool | (raspi-config) |   
   | ---------------------------------------- | -------------- |   
@@ -192,26 +192,26 @@ __Anmerkung: Falls bereits User-Crontabs für den User pi erstellt wurden, so we
   | 8 Update                 | Update this tool to the latest version    |   
   | 9 About raspi-config     | Information about this configuration tool |   
   | <Select>                 | <Finish>                                  |   
- Punkt 1 durch Drücken von <enter> wählen.   
+ Punkt 1 durch Dr&uuml;cken von <enter> w&auml;hlen.   
  
  * Mit der Cursor-Taste <down> zu Punkt S5 gehen   
  ```S5 Boot / Auto Login Select boot into desktop or to command line```   
- und mit der <enter>-Taste wählen.   
+ und mit der <enter>-Taste w&auml;hlen.   
     
  * Mit der Cursor-Taste <down> zu Punkt B4 gehen   
  ```B4 Desktop Autologin Desktop GUI, automatically logged in as 'pi_' user```   
- und mit der <enter>-Taste wählen.   
+ und mit der <enter>-Taste w&auml;hlen.   
     
- * Mit der Tabulator-Taste <Finish> wählen und die Frage "Would you like to reboot now?" mit <Ja> beantworten.   
+ * Mit der Tabulator-Taste <Finish> w&auml;hlen und die Frage "Would you like to reboot now?" mit <Ja> beantworten.   
  Das RasPi bootet und startet wieder automatisch den Grafik-Bildschirm.   
     
- Das Einschalten des grafischen Bildschirms hätte man natürlich auch am RasPi durch Eingabe von   
+ Das Einschalten des grafischen Bildschirms h&auml;tte man nat&uuml;rlich auch am RasPi durch Eingabe von   
  ```
  startx
  ```   
- und Einschalten am Grafik-Bildschirm links oben [Menü] anklicken - Einstellungen - Raspberry-Pi-Konfiguration - [System] durchführen können...
+ und Einschalten am Grafik-Bildschirm links oben [Men&uuml;] anklicken - Einstellungen - Raspberry-Pi-Konfiguration - [System] durchf&uuml;hren k&ouml;nnen...
    
-## Weitere Einstellmöglichkeiten
+## Weitere Einstellm&ouml;glichkeiten
 ### Bildschirmschoner abschalten
 1. Neues Verzeichnis mit Steuerdatei anlegen:   
 `sudo mkdir /etc/X11/xorg.conf.d`   
@@ -239,18 +239,18 @@ Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
 `sudo reboot`
 
 ### Anzeige um 180 Grad drehen
-Verwendet man ein Transparent-Gehäuse von Amazon bzw. BetterShopping (ART02314), so muss zusätzlich noch die Anzeige um 180&deg; gedreht werden.   
+Verwendet man ein Transparent-Geh&auml;use von Amazon bzw. BetterShopping (ART02314), so muss zus&auml;tzlich noch die Anzeige um 180&deg; gedreht werden.   
 Dies geschieht einfach durch einen Eintrag in der Datei `/boot/config.txt`:   
 ```
 sudo nano /boot/config.txt
 ```   
-Folgende Zeile am Ende der Datei ergänzen   
+Folgende Zeile am Ende der Datei erg&auml;nzen   
 ```lcd_rotate=2```   
 Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
-Der Eintrag wird erst nach dem nächsten Systemstart wirksam.
+Der Eintrag wird erst nach dem n&auml;chsten Systemstart wirksam.
 
 ### Eigene Autostart-Datei `autostart.sh`
-Möchte man beim System-Start eigene Programme automatisch starten, so ist es sinnvoll, diese Befehle in einem eigenen Script "`autostart.sh`" zu sammeln. Dazu sind die nachfolgenden Schritte erforderlich.   
+M&ouml;chte man beim System-Start eigene Programme automatisch starten, so ist es sinnvoll, diese Befehle in einem eigenen Script "`autostart.sh`" zu sammeln. Dazu sind die nachfolgenden Schritte erforderlich.   
 
 1. Autostart-Datei erzeugen.   
 ```
@@ -263,15 +263,15 @@ Inhalt der Datei zB
 echo -e "\\033[01;33m"   
 printf "_____autostart.sh______26.07.2021_______khartinger_____\n"   
 printf "_______________________________________________________\n"   
-#...Farbe der Schrift wieder auf weiß aendern...   
+#...Farbe der Schrift wieder auf wei&szlig; aendern...   
 echo -e "\\033[00m"   
 exit 0   
 ```
 Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
 __*Anmerkungen:*__   
-  * Die Datei ändert lediglich die Schriftfarbe auf gelb und gibt die nach `printf` stehenden Meldungen aus.   
-  * Eigene Programmaufrufe müssen zwischen den beiden `printf`-Zeilen stehen.   
-  * Tipp: Soll beim Start einer Datei nicht auf das Ende des Programmes gewartet werden, so muss am Ende der Aufruf-Zeile ein "kaufmännisches-und"-Zeichen (Ampersand) &amp; stehen!   
+  * Die Datei &auml;ndert lediglich die Schriftfarbe auf gelb und gibt die nach `printf` stehenden Meldungen aus.   
+  * Eigene Programmaufrufe m&uuml;ssen zwischen den beiden `printf`-Zeilen stehen.   
+  * Tipp: Soll beim Start einer Datei nicht auf das Ende des Programmes gewartet werden, so muss am Ende der Aufruf-Zeile ein "kaufm&auml;nnisches-und"-Zeichen (Ampersand) &amp; stehen!   
 
       
 2. Eigene Autostart-Datei beim Systemstart aufrufen.   
@@ -279,14 +279,14 @@ System-Initialisierungsdatei bearbeiten:
 ```
 sudo nano /etc/rc.local
 ```   
-Vor `exit 0` folgendes einfügen:   
+Vor `exit 0` folgendes einf&uuml;gen:   
 ```
 #-----Calling a script with my own commands-----   
 /usr/local/bin/autostart.sh   
 ```
 Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
       
-3. Skript für alle User ausführbar machen   
+3. Skript f&uuml;r alle User ausf&uuml;hrbar machen   
 ```
 sudo chmod 777 /usr/local/bin/autostart.sh
 ```
