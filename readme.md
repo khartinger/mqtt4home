@@ -1,4 +1,3 @@
-######   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT for domestic/home use :)</h1>
 Last modified: 2021-07-31<br>
