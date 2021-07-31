@@ -1,4 +1,4 @@
-Letzte &auml;nderung: 31.7.2021
+Letzte &Auml;nderung: 31.7.2021
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Grundinstallation des Raspberry Pi</h1>
 <a href="liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
