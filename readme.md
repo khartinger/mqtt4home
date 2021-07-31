@@ -1,9 +1,10 @@
-######
-<table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
+######   
+<table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT for domestic/home use :)</h1>
 Last modified: 2021-07-31<br>
 <a href="liesmich.md">==> German version</a>&nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
+
 
 ## Welcome to mqtt4home
 This project describes in many examples how to network sensors and actuators at home using the MQTT protocol. A Raspberry Pi (RasPi for short) serves as the control center ("broker").<br>

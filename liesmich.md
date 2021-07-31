@@ -1,5 +1,5 @@
-######
-<table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
+######   
+<table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
 Letzte &Auml;nderung: 31.7.2021<br>
 <a href="readme.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
