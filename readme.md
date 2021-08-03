@@ -34,4 +34,4 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 ---   
 
 4. [D1mini: MQTT Relay with PubSubClient (2021-07-31)](m4h04_D1mqttRelayD1_e.md)
-5. [D1mini: The SimpleMqtt class (2021-07-31)](m4h05_D1SimpleMQTT_e.md)
+5. [D1mini: The SimpleMqtt class (2021-07-31)](m4h05_D1SimpleMqtt_e.md)
