@@ -1,4 +1,4 @@
-Last modified: 2021-07-31   
+Last modified: 2021-08-08   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi as MQTT broker</h1>
 <a href="readme.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
@@ -115,3 +115,17 @@ Normally the MQTT server is set up after installation to start automatically on 
 `sudo /etc/init.d/mosquitto start &`   
 in the autostart file.
 (The ampersand & is intentional and means that the execution of the autostart file should continue).
+
+* Deleting a specific message stored on the broker (retain).   
+  Sending a message with the corresponding topic and the switches `-n -r -d` (instead of the payload `-m`)   
+  _Example_: deleting the message `Test1`.   
+  `mosquitto_pub -h 10.1.1.1 -t Test1 -n -r -d`   
+
+&nbsp;   
+---   
+
+## Helpful links for MQTT
+* Delete __all__ messages stored on the broker (retain):   
+[https://community.openhab.org/t/clearing-mqtt-retained-messages/58221](https://community.openhab.org/t/clearing-mqtt-retained-messages/58221)   
+_Note_: All messages are stored in the file `/var/lib/mosquitto/mosquitto.db`.
+

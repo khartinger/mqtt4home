@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 31.7.2021   
+Letzte &Auml;nderung: 8.8.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi als MQTT-Broker</h1>
 <a href="liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -115,3 +115,16 @@ Im Normalfall wird der MQTT-Server nach der Installation so eingerichtet, dass e
 `sudo /etc/init.d/mosquitto start &`   
 in die Autostart-Datei einf&uuml;gt.
 (Das Et-Zeichen & ist Absicht und bedeutet, dass die Ausf&uuml;hrung der Autostart-Datei weitergehen soll.)
+
+* L&ouml;schen einer bestimmten auf dem Broker gespeicherten Nachricht (retain)   
+  Senden einer Nachricht mit dem entsprechenden Topic und den Schaltern `-n -r -d` (statt der Payload `-m`)   
+  _Beispiel_: L&ouml;schen der Nachricht `Test1`   
+  `mosquitto_pub -h 10.1.1.1 -t Test1 -n -r -d`   
+&nbsp;   
+---   
+
+## Hilfreiche Links zu MQTT
+* L&ouml;schen __aller__ auf dem Broker gespeicherten Nachrichten (retain):   
+[https://community.openhab.org/t/clearing-mqtt-retained-messages/58221](https://community.openhab.org/t/clearing-mqtt-retained-messages/58221)   
+_Anmerkung_: Alle Nachrichten sind in der Datei `/var/lib/mosquitto/mosquitto.db` gespeichert.
+
