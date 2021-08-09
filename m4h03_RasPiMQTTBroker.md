@@ -126,5 +126,13 @@ in die Autostart-Datei einf&uuml;gt.
 ## Hilfreiche Links zu MQTT
 * L&ouml;schen __aller__ auf dem Broker gespeicherten Nachrichten (retain):   
 [https://community.openhab.org/t/clearing-mqtt-retained-messages/58221](https://community.openhab.org/t/clearing-mqtt-retained-messages/58221)   
+```
+sudo service mosquitto stop   
+sudo rm /var/lib/mosquitto/mosquitto.db   
+sudo service mosquitto start   
+```
 _Anmerkung_: Alle Nachrichten sind in der Datei `/var/lib/mosquitto/mosquitto.db` gespeichert.
+
+* Dokumentation zu libmosquitto   
+[https://mosquitto.org/api/files/mosquitto-h.html](https://mosquitto.org/api/files/mosquitto-h.html)
 

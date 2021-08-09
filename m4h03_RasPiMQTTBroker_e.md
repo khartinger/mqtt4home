@@ -127,5 +127,14 @@ in the autostart file.
 ## Helpful links for MQTT
 * Delete __all__ messages stored on the broker (retain):   
 [https://community.openhab.org/t/clearing-mqtt-retained-messages/58221](https://community.openhab.org/t/clearing-mqtt-retained-messages/58221)   
+```
+sudo service mosquitto stop   
+sudo rm /var/lib/mosquitto/mosquitto.db   
+sudo service mosquitto start   
+```
 _Note_: All messages are stored in the file `/var/lib/mosquitto/mosquitto.db`.
+
+* Documentation for libmosquitto   
+[https://mosquitto.org/api/files/mosquitto-h.html](https://mosquitto.org/api/files/mosquitto-h.html)
+
 
