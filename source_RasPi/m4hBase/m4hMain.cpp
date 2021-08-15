@@ -53,7 +53,7 @@ void terminate_program2(int endByXXX)
  //------string with reason for terminating---------------------
  switch(endByXXX)
  {
-  case 1: s1="Program terminated by <Strg>+C";
+  case 1: s1="Program terminated by <ctrl>c";
    break;
   case 2: s1="Program terminated by MQTT";
    break;
