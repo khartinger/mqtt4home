@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 15.8.2021   
+Letzte &Auml;nderung: 16.8.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi: MQTT-Programme in C++</h1>
 <a href="liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -10,10 +10,16 @@ Letzte &Auml;nderung: 15.8.2021
 * Die Teile der C++ Vorlage `m4hBase` zu kennen.   
 * Die Progammvorlage  `m4hBase` kompilieren, starten und testen k&ouml;nnen.
 
-## &Üuml;bersicht
+## Erforderliche Hilfsmittel
+* Hardware: RasPi
+* Software: Internetzugang zu GitHub
+* Software: Terminal-Programm [putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) auf dem PC/Laptop
+* Software: Eventuell [WinSCP](https://winscp.net/eng/docs/lang:de) zur Daten&uuml;bertragung vom PC/Laptop zum RasPi   
+
+## &Uuml;bersicht
 Um Systeme &uuml;bersichtlich zu gestalten, sollten sie modular aufgebaut sein. Modular bedeutet dabei, dass eine bestimmte Funktion von genau einem Modul realisiert wird und Module bei Bedarf dazugegeben oder weggelassen werden k&ouml;nnen.   
-Bei Multi-Tasking Systemen wie Linux ist Modularit&auml;t einfach durch Kommandozeilen-Programme bzw. -Skripte zu erreichen.   
-Kommandozeilen-Programme k&ouml;nnen in verschiedenen Programmiersprachen geschrieben werden, wobei bei eingen Beispielen C++ verwendet wird. Der Vorteil von C++ besteht darin, dass die Programme nach dem Kompilieren wie Systemaufrufe verwendet werden k&ouml;nnen.   
+Bei Multi-Tasking Systemen wie Linux ist Modularit&auml;t einfach durch Kommandozeilen-Programme bzw. -Skripte zu erreichen. Aus diesem Grund werden hier einige Programme erstellt, die jeweils genau eine Aufgabe erf&uuml;llen. Weiters ist es m&ouml;glich, die Einzelprogramme zu gr&ouml;ßeren Gesamtprogrammen zusammenzuf&uuml;gen, um wieder genau eine "Gesamt-Funktionalit&auml;t" zu realisieren.   
+Kommandozeilen-Programme k&ouml;nnen in verschiedenen Programmiersprachen geschrieben werden, wobei f&uuml;r einige Programme C++ verwendet wird. Der Vorteil von C++ besteht darin, dass die Programme nach dem Kompilieren wie Systemaufrufe verwendet werden k&ouml;nnen.   
 Da das Erstellen von MQTT-Anwendungen in C++ nicht ganz einfach ist, wird hier eine Vorlage `m4hBase`verwendet, die bestimmte Basisfunktionalit&auml;ten bereits abdeckt. Die Vorlage besteht aus folgenden Dateien:   
 * __`m4hMain.cpp`__   
 Diese Datei enth&auml;lt das Hauptprogramm und Funktionen f&uuml;r das Arbeiten mit MQTT, die &lt;strg&gt;c Behandlung, das Programmende usw.

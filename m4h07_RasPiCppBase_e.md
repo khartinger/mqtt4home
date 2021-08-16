@@ -8,11 +8,17 @@ Last modified: 2021-08-15
 ## Targets
 * To appreciate the advantages of building systems in a modular fashion.   
 * To know the parts of the C++ template `m4hBase`.   
-* To be able to compile, run and test the `m4hBase` program template.
+* To be able to compile, run and test the `m4hBase` program template.   
+
+## Required tools
+* Hardware: RasPi
+* Software: Internet access to GitHub.
+* Software: Terminal program [putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) on the PC/laptop
+* Software: Possibly [WinSCP](https://winscp.net/eng/docs/lang:de) for data transfer from the PC/laptop to the RasPi   
 
 ## Overview
-In order to design systems clearly, they should be modular. Modular means that a certain function is realized by exactly one module and modules can be added or omitted if necessary.   
-With multi-tasking systems such as Linux modularity is easy to achieve by command line programs or scripts.   
+In order to make systems more transparent, they should have a modular structure. Modular means that a particular function is implemented by exactly one module and modules can be added or omitted as needed.   
+In multi-tasking systems like Linux, modularity is easily achieved by command line programs or scripts. For this reason, some programs are created here, each of which performs exactly one task. Furthermore it is possible to combine the single programs to bigger programs to realize exactly one "total functionality".   
 Command line programs can be written in various programming languages, with C++ being used in some examples. The advantage of C++ is that the programs can be used like system calls after compiling.   
 Since the creation of MQTT applications in C++ is not quite easy, a template `m4hBase` is used here, which already covers certain basic functionalities. The template consists of the following files:   
 * __`m4hMain.cpp`__   
