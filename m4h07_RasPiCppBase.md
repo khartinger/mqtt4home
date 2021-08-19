@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 16.8.2021   
+Letzte &Auml;nderung: 19.8.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi: MQTT-Programme in C++</h1>
 <a href="liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -6,10 +6,8 @@ Letzte &Auml;nderung: 16.8.2021
 </td></tr></table><hr>
   
 ## Ziele
-* Die Vorteile eines modularen Aufbaus von Systemen zu sch&auml;tzen.   
-* Die Teile der C++ Vorlage `m4hBase` zu kennen.   
-* Die Progammvorlage  `m4hBase` kompilieren, starten und testen k&ouml;nnen.
-
+* Mit Hilfe der Vorlage `m4hBase` soll ein einfaches C++ Programm erstellt und getestet werden, das alle eintreffenden MQTT-Nachrichten anzeigt.   
+* Der Zweck der einzelnen Teile der C++ Vorlage `m4hBase` soll erl&auml;utert werden.   
 ## Erforderliche Hilfsmittel
 * Hardware: RasPi
 * Software: Internetzugang zu GitHub
@@ -18,24 +16,9 @@ Letzte &Auml;nderung: 16.8.2021
 
 ## &Uuml;bersicht
 Um Systeme &uuml;bersichtlich zu gestalten, sollten sie modular aufgebaut sein. Modular bedeutet dabei, dass eine bestimmte Funktion von genau einem Modul realisiert wird und Module bei Bedarf dazugegeben oder weggelassen werden k&ouml;nnen.   
-Bei Multi-Tasking Systemen wie Linux ist Modularit&auml;t einfach durch Kommandozeilen-Programme bzw. -Skripte zu erreichen. Aus diesem Grund werden hier einige Programme erstellt, die jeweils genau eine Aufgabe erf&uuml;llen. Weiters ist es m&ouml;glich, die Einzelprogramme zu gr&ouml;ßeren Gesamtprogrammen zusammenzuf&uuml;gen, um wieder genau eine "Gesamt-Funktionalit&auml;t" zu realisieren.   
-Kommandozeilen-Programme k&ouml;nnen in verschiedenen Programmiersprachen geschrieben werden, wobei f&uuml;r einige Programme C++ verwendet wird. Der Vorteil von C++ besteht darin, dass die Programme nach dem Kompilieren wie Systemaufrufe verwendet werden k&ouml;nnen.   
-Da das Erstellen von MQTT-Anwendungen in C++ nicht ganz einfach ist, wird hier eine Vorlage `m4hBase`verwendet, die bestimmte Basisfunktionalit&auml;ten bereits abdeckt. Die Vorlage besteht aus folgenden Dateien:   
-* __`m4hMain.cpp`__   
-Diese Datei enth&auml;lt das Hauptprogramm und Funktionen f&uuml;r das Arbeiten mit MQTT, die &lt;strg&gt;c Behandlung, das Programmende usw.
-* __`m4hBase.h`__ und __`m4hBase.cpp`__   
-   In diesen beiden Dateien sind folgende Klassen enthalten:   
-   * `Message` und `Message2` zur MQTT-Nachrichten-Speicherung,   
-   * `Conf` zum Laden der Konfigurationsdatei sowie zum Bearbeiten der Eintr&auml;ge,   
-   * `M4hBase` zur Bereitstellung von Basis-Funktionalit&auml;ten   
-     (Version, MQTT-Meldung beim Programmstart und/oder Ende, ...).   
-* __`m4hExtension.hpp`__   
-Die Datei enth&auml;lt die f&uuml;nf Funktionen, mit deren Hilfe die Benutzerfunktion realisiert wird.   
-* __`m4h.conf`__   
-Konfigurationsdatei.
+In dieser Anleitung werden mit Hilfe der Vorlage `m4hBase` C++ Programme erstellt, die genau eine Aufgabe erfüllen und wie Betriebssystemaufrufe verwendet werden k&ouml;nnen.   
    
-&nbsp;   
-## Basisfunktionen der Vorlage `m4hBase`
+## Was kann die Vorlage `m4hBase` leisten?
 1. Lesen von Einstellungen aus der Konfigurationsdatei m4h.conf.   
 2. M&ouml;glichkeit, eine andere Konfigurationsdatei anzugeben   
    (beim Starten des Programms auf der Kommandozeile).   
@@ -46,8 +29,29 @@ Konfigurationsdatei.
 5. Verwendung der globalen Objekte g_base, g_prt, g_mosq
 6. M&ouml;glichkeit, das Programm durch eine MQTT-Nachricht zu beenden, die in der Konfigurationsdatei definiert ist (Schl&uuml;ssel "progend" in der Konfigurationsdatei).
 7. Beenden des Programms mit &lt;strg&gt;c.
+   
+## Aufbau der C++ Vorlage `m4hBase`
+ Die Vorlage besteht aus drei fixen Dateien (bleiben immer gleich) und (mindestens) zwei Dateien, die bearbeitet werden m&uuml;ssen:   
+### Fixe Dateien
+* __`m4hMain.cpp`__ (Hauptprogramm)   
+Diese Datei enth&auml;lt das Hauptprogramm mit den Aufrufen aller Funktionen, die in der Erweiterungsdatei definiert werden m&uuml;ssen. Weitere Aufgaben sind das Starten von MQTT, die &lt;strg&gt;c Behandlung, das Beenden des Programmes usw.
+* __`m4hBase.h`__ und __`m4hBase.cpp`__ (Basisklassen)   
+   In diesen beiden Dateien sind folgende Klassen definiert:   
+   * `Message` und `Message2` zur MQTT-Nachrichten-Speicherung,   
+   * `Conf` zum Laden der Konfigurationsdatei sowie zum Bearbeiten der Eintr&auml;ge,   
+   * `M4hBase` zur Bereitstellung von Basis-Funktionalit&auml;ten   
+     (Version, MQTT-Meldung beim Programmstart und/oder Ende, ...).   
 
-## Realisierung der Benutzer-Funktionen in der Datei `m4hExtension.hpp`
+   Au&szlig;erdem enthalten die Dateien ein globales Objekt `g_base`, mit dem auf die Methoden der Klasse `M4hBase` zugegriffen werden kann.
+### Dateien, die bearbeitet werden m&uuml;ssen
+* __`m4hExtension.hpp`_ (Erweiterung)_   
+Die Datei enth&auml;lt die f&uuml;nf Funktionen, mit deren Hilfe die Benutzerfunktion realisiert wird.   
+* __`m4h.conf`__ (Konfigurationsdatei)   
+Mit der Konfigurationsdatei kann das Verhalten der Programme gesteuert werden. Der Aufbau der Datei besteht aus Sektionen (in eckigen Klammern[]) und Schl&uuml;ssel:Wert-Paaren.   
+   
+Bei vielen Programmen ist es au&szlig;erdem sinnvoll, weitere Funktionalit&auml;ten in einer "Arbeitsklasse" zu realisieren.
+&nbsp;   
+## Bearbeitung der Erweiterungsdatei `m4hExtension.hpp`
 In der Datei `m4hExtension.hpp` m&uuml;ssen folgende f&uuml;nf Funktionen definiert werden:   
 * `void f1PrintHelptext() { }`   
 * `void f2Init(std::string pfConf) { }`   
@@ -55,7 +59,7 @@ In der Datei `m4hExtension.hpp` m&uuml;ssen folgende f&uuml;nf Funktionen defini
 * `void f4OnExit(struct mosquitto *mosq, int reason) { }`   
 * `void f5Periodic(struct mosquitto *mosq) { }`   
 
-F&uuml;r die Basis-Anwendung "Anzeige der eintreffenden MQTT-Nachrichten" kann die Datei folgendermaßen aussehen:   
+F&uuml;r die Basis-Anwendung "Anzeige der eintreffenden MQTT-Nachrichten" kann die Datei zB folgenderma&szlig;en aussehen:   
 ```   
 //_____m4hExtension.hpp__________________________khartinger_____
 // ...
@@ -112,8 +116,10 @@ void f5Periodic(struct mosquitto *mosq)
  terminate_program(iEnd);
 }
 ```   
+_Listing 1:  Beispiel f&uuml;r m4hExtension.hpp_   
    
-&nbsp;   
+
+---   
 ## Erstellung des Kommandozeilenprogramms `m4hBase`
 ### Vorbereitung
 1. Erstellen eines Verzeichnisses f&uuml;r den Programmcode auf dem RasPi:   
@@ -127,7 +133,7 @@ Der Quellcode der Dateien befindet sich unter [https://github.com/khartinger/mqt
 4. Kopieren der Dateien ins Projektverzeichnis `m4hBase`   
 (Vom PC zur RasPi zB mit `WinSCP`)   
 
-### Erstellen der einzelnen Dateien mit `nano`
+### Oder: Erstellen der einzelnen Dateien mit `nano`
 Alternativ kann man die Dateien auch mit dem Texteditor `nano` erzeugen und den Quellcode Datei f&uuml;r Datei hineinkopieren:   
 * Putty starten und mit dem RasPi verbinden
 * Ins Projektverzeichnis wechseln   
@@ -141,14 +147,14 @@ Alternativ kann man die Dateien auch mit dem Texteditor `nano` erzeugen und den 
 Die Vorgangsweise ab dem 3. Punkt f&uuml;r die Dateien `m4hBase.cpp`, `m4hBase.h`, `m4hExtension.hpp` und `m4hMain.cpp` wiederholen.   
 
 ### Quellcode kompilieren
-Das Kompilieren erfolgt mit folgendem Befehl:   
+5. Das Kompilieren erfolgt mit folgendem Befehl:   
 ```g++ m4hMain.cpp m4hBase.cpp -o m4hBase -lmosquitto -lpthread```   
 Im Verzeichnis `~/m4hBase` wurde die Datei `m4hBase` erzeugt.   
 
-Anmerkung: Damit das Kompilieren erfolgreich ist, muss die Mosquitto-Bibliothek installiert sein:   
+_Anmerkung 1_: Damit das Kompilieren erfolgreich ist, muss die Mosquitto-Bibliothek installiert sein:   
 ```sudo apt-get install libmosquitto-dev```   
  (siehe auch [https://github.com/khartinger/mqtt4home/blob/main/m4h03_RasPiMQTTBroker.md](https://github.com/khartinger/mqtt4home/blob/main/m4h03_RasPiMQTTBroker.md) )   
-   
+
 &nbsp;   
 ## Test des Kommandozeilenprogramms `m4hBase`
 Zum Testen des Programms ben&ouml;tigt man ein Putty-Fenster und ein PC-Eingabeaufforderungs-Fenster:
