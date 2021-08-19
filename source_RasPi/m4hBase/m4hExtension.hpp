@@ -10,7 +10,7 @@
 // *  m4hMain.cpp must have a line "#include "m4hExtension.hpp"
 // Hardware: (1) Raspberry Pi
 // Updates:
-// 2021-08-15 First release
+// 2021-08-19 First release
 // Released into the public domain.
 
 #include "mosquitto.h"            // mosquitto_* functions

@@ -26,7 +26,7 @@
 //
 // Hardware: (1) Raspberry Pi
 // Updates: 
-// 2021-08-15 First release
+// 2021-08-19 First release
 // Released into the public domain.
 
 #include "mosquitto.h"            // mosquitto_* functions 
@@ -36,22 +36,22 @@
 //-------global values------------------------------------------
 bool  g_prt=true;                      //true=printf,false=quiet
 pid_t g_pid_main=-1;                   //main process id to kill
-int   g_endByXXX=-1;                   //help value
+int   g_endBy___=-1;                   //help value
 struct mosquitto *g_mosq = NULL;       //mosquitto "object"
 
 //_______function delaration____________________________________
-void terminate_program2(int endByXXX);
-void terminate_program(int endByXXX);
+void terminate_program2(int endBy___);
+void terminate_program(int endBy___);
 void my_signal_handler(int signum);
 
 //_______terminate programm (part 2)____________________________
 // This function prints the reason for the program end, stops
 // all threads, clears the memory and terminates the program.
-void terminate_program2(int endByXXX)
+void terminate_program2(int endBy___)
 {
  std::string s1;
  //------string with reason for terminating---------------------
- switch(endByXXX)
+ switch(endBy___)
  {
   case 1: s1="Program terminated by <ctrl>c";
    break;
@@ -63,7 +63,7 @@ void terminate_program2(int endByXXX)
    break;
   case 5: s1="Program terminated by sms";
    break;
-  default: s1=std::to_string(endByXXX);
+  default: s1=std::to_string(endBy___);
    s1="Program terminated by unknown reason #"+s1;
    break;
  }
@@ -77,7 +77,7 @@ void terminate_program2(int endByXXX)
  mosquitto_destroy(g_mosq);
  mosquitto_lib_cleanup();
  kill(g_pid_main, SIGTERM);
- exit(endByXXX);
+ exit(endBy___);
 }
 
 //_______terminate programm (part 1)____________________________
@@ -85,12 +85,12 @@ void terminate_program2(int endByXXX)
 // * Either the end message is sent (if this was set in the
 //    config file). 
 // * or it goes directly to the 2nd part of the program end.
-void terminate_program(int endByXXX)
+void terminate_program(int endBy___)
 {
  if(g_prt) fprintf(stdout, "\nExit program... ");
- g_endByXXX=endByXXX;
+ g_endBy___=endBy___;
  //------Possibility for cleanup before end of program----------
- f4OnExit(g_mosq, endByXXX);
+ f4OnExit(g_mosq, endBy___);
  //------send end MQTT message?---------------------------------
  if(g_base.msgMqttEnd.topic.length()>0)
  {//-----yes, send an end message-------------------------------
@@ -109,7 +109,7 @@ void terminate_program(int endByXXX)
    if(ret!=0) 
    {
     if(g_prt) fprintf(stdout, "MQTT end message NOT sent. Error=%i",ret);
-    terminate_program2(endByXXX);
+    terminate_program2(endBy___);
    }
    else 
    {//...message sent successfully..............................
@@ -117,17 +117,17 @@ void terminate_program(int endByXXX)
    }
   } catch(std::string& error) { //.....error handling...........
    fprintf(stderr,"Error while publishing end message: %s\n",error);
-   terminate_program2(endByXXX);
+   terminate_program2(endBy___);
   }
  }
  else // don´t send end message.................................
  {//-----continue to the 2nd part of the program end------------
-  terminate_program2(endByXXX);
+  terminate_program2(endBy___);
  }
  if(g_prt) fprintf(stdout, "\n");      // next line
 }
 
-//_______handler for signal SIGxxx (e.g. <ctrl>c)_______________
+//_______handler for signal SIG*** (e.g. <ctrl>c)_______________
 void my_signal_handler(int signum)
 {
  if(signum==SIGINT) { terminate_program(1); }
@@ -214,7 +214,7 @@ void m4h_msg_callback(struct mosquitto *g_mosq, void *userdata,
  // check: sent MQTT message "End of program" was received again
  if(sTopic==g_base.msgMqttEnd.topic)
  {
-  if(g_endByXXX>0)
+  if(g_endBy___>0)
   {
    //.....cut away date and time (if available)..................
    int lenP=g_base.msgMqttEnd.payload.length();
@@ -222,7 +222,7 @@ void m4h_msg_callback(struct mosquitto *g_mosq, void *userdata,
    {
     std::string s1=sPayload.substr(0,lenP);
     if(s1==g_base.msgMqttEnd.payload) 
-     terminate_program2(g_endByXXX); // continue process end of prog
+     terminate_program2(g_endBy___); // continue process end of prog
    }
   }
  }
