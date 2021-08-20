@@ -27,6 +27,7 @@
 // Hardware: (1) Raspberry Pi
 // Updates: 
 // 2021-08-19 First release
+// 2021-08-20 m4h_msg_callback(): add if(message->payload!=NULL)...
 // Released into the public domain.
 
 #include "mosquitto.h"            // mosquitto_* functions 
@@ -177,7 +178,8 @@ void m4h_msg_callback(struct mosquitto *g_mosq, void *userdata,
  //======PART 2: external callback function=====================
  // original topic name, payload may be empty...
  std::string sTopic=message->topic;
- std::string sPayload=(char*)message->payload;
+ std::string sPayload="";
+ if(message->payload!=NULL) sPayload=(char*)message->payload;
  std::thread mythread2(f3OnMessage, g_mosq, sTopic, sPayload);
  mythread2.detach();
  //======PART 3: act on "default" payloads======================
