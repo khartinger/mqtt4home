@@ -12,6 +12,7 @@
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2021-08-19 First release
+// 2021-08-20 findKey(), findValue(): add check section []
 // Released into the public domain.
 #include "m4hBase.h"
 
@@ -428,11 +429,18 @@ std::string Conf::findKey(std::string section, std::string value_)
  std::ifstream fcnf(fname.c_str());
  //------file ready?--------------------------------------------
  if(!fcnf.good()) return "";
- //------read lines until section found or until last line------
- delExtBlank(section);
+ //------check section [], key length>0-------------------------
+ //delExtBlank(section);
  if(section.length()<1) return "";     // no section
+ if(section.at(section.length()-1)!=']') {
+  if(section.at(0)!='[') section="["+section+"]";
+  else return "";
+ } else {
+  if(section.at(0)!='[') return "";
+ }
  delExtBlank(value_);
  if(value_.length()<1) return "";      // no value_
+ //------read lines until section found or until last line------
  while(fcnf.good())
  {
   std::getline(fcnf, line1);           // get line
@@ -474,19 +482,26 @@ std::string Conf::findKey(std::string section, std::string value_)
 // return: value or "" (on error or not found)
 std::string Conf::findValue(std::string section, std::string key_)
 {
-unsigned int iPos1, iPos2;            // help variables
+ unsigned int iPos1, iPos2;            // help variables
  bool   inSection=false;               // in section or not
- std::string s1;                            // help string
+ std::string s1;                       // help string
  std::string line1;
  if(fname.length()<1) return "";
  std::ifstream fcnf(fname.c_str());
  //------file ready?--------------------------------------------
  if(!fcnf.good()) return "";
- //------read lines until end of section or until last line-----
- delExtBlank(section);
+ //------check section [], key length>0-------------------------
+ //delExtBlank(section);
  if(section.length()<1) return "";     // no section
+ if(section.at(section.length()-1)!=']') {
+  if(section.at(0)!='[') section="["+section+"]";
+  else return "";
+ } else {
+  if(section.at(0)!='[') return "";
+ }
  delExtBlank(key_);
  if(key_.length()<1) return "";        // no key
+ //------read lines until end of section or until last line----- 
  while(fcnf.good())
  {
   std::getline(fcnf, line1);           // get line
@@ -515,9 +530,9 @@ unsigned int iPos1, iPos2;            // help variables
        }
       }
      }
-    }
+    } // end inSection
     if(line1==section) inSection=true;
-   } // end comment line
+   } // end not comment line
   } // end empty line
  }
  fcnf.close();
