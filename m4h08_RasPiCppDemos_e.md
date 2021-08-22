@@ -21,6 +21,7 @@ On GitHub in the directory [mqtt4home/source_RasPi](https://github.com/khartinge
 * Sending the current broker time when a certain message has been received (`m4hBrokertime`).   
 * logging all MQTT messages to files (`m4hLogM`)   
 * logging of all MQTT messages to files and additional saving of the last message to a separate file (for faster processing) (`m4hLog2`)   
+* `m4hSubPub`: After receiving a message, a specified time is waited and then a reply message is sent.   
 * Send and receive SMS with MQTT messages (`m4hSms`)   
 * Template for creating own applications (`m4hXxx`)   
    
