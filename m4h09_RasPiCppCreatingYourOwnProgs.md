@@ -44,7 +44,8 @@ k&ouml;nnen.
 4. RasPi: Umbenennen der Datei C_Xxx.hpp in Demo1.hpp   
 `mv C_Xxx.hpp C_Demo1.hpp`   
 
-5. PC: Herunterladen des Verzeichnisses `~/m4hDemo1` vom RasPi auf den PC mit Hilfe von WinSCP.   
+5. PC: Herunterladen des Verzeichnisses `~/m4hDemo1` vom RasPi auf den PC mit Hilfe von WinSCP und   
+   &Ouml;ffnen des Projekt-Ordners `m4hDemo1` __auf dem PC__ mit Visual Studio Code (Menü DAtei - Ordner öffnen...)
 
 6. Umbenennen der Dummy-Bezeichnung Xxx   
 Beim Umbenennen der Dummy-Bezeichnung `Xxx` in `Demo1` MUSS in den Dateien `C_Cxx.hpp`, `m4hExtension.hpp` und `m4h.conf` die Gro&szlig;-/Kleinschreibung beachtet werden, dh. das Umbenennen muss in drei Schritten erfolgen:

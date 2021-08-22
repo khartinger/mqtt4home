@@ -44,7 +44,8 @@ can.
 4. RasPi: rename the file C_Xxx.hpp to Demo1.hpp   
 `mv C_Xxx.hpp C_Demo1.hpp`   
 
-5. PC: Download the directory `~/m4hDemo1` from RasPi to PC using WinSCP.   
+5. PC: Download the directory `~/m4hDemo1` from RasPi to PC using WinSCP  and   
+   open the project folder `m4hDemo1` __on the PC__ with Visual Studio Code (menu File - Open Folder...).   
 
 6. renaming the dummy name Xxx   
 Renaming the dummy name `Xxx` to `Demo1` (in the files `C_Cxx.hpp`, `m4hExtension.hpp` and `m4h.conf`) MUST be done case sensitive, i.e. the renaming must be done in three steps:
