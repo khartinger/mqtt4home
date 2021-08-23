@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 31.7.2021
+Letzte &Auml;nderung: 23.8.2021
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
 <a href="readme.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
@@ -35,3 +35,6 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 
 4. [D1mini: MQTT Relay mit PubSubClient (2021-07-31)](m4h04_D1mqttRelayD1.md)
 5. [D1mini: Die Klasse SimpleMqtt (2021-07-31)](m4h05_D1SimpleMqtt.md)
+6. [RasPi: Vorlage für MQTT-Programme in C++ (2021-08-21)](m4h07_RasPiCppBase.md)
+7. [RasPi: Hilfreiche Einzel-Programme in C++ (2021-08-21)](m4h08_RasPiCppDemos.md)
+8. [RasPi: Erstellen eigener Programme in C++ (2021-08-21)](m4h09_RasPiCppCreatingYourOwnProgs.md)
