@@ -1,4 +1,4 @@
-Last modified: 2021-08-22   
+Last modified: 2021-08-23   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi: Helpful single programs in C++</h1>
 <a href="readme.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
@@ -17,15 +17,14 @@ Last modified: 2021-08-22
 * Software: Possibly [WinSCP](https://winscp.net/eng/docs/lang:de) for data transfer from the PC/laptop to the RasPi   
 
 ## Overview
-On GitHub in the directory [mqtt4home/source_RasPi](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi) some C++ examples are available for the following tasks:   
-* Sending the current broker time when a certain message has been received (`m4hBrokertime`).   
-* logging all MQTT messages to files (`m4hLogM`)   
-* logging of all MQTT messages to files and additional saving of the last message to a separate file (for faster processing) (`m4hLog2`)   
-* `m4hSubPub`: After receiving a message, a specified time is waited and then a reply message is sent.   
-* Send and receive SMS with MQTT messages (`m4hSms`)   
-* Template for creating own applications (`m4hXxx`)   
+There are some C++ examples available on GitHub in the directory [mqtt4home/source_RasPi](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi) for the following tasks:   
+* [`m4hBrokertime`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hBrokertime): Sending the current broker time when a given message has been received.   
+* `m4hLogM`: logging all MQTT messages to files   
+* `m4hLog2`: logging of all MQTT messages in files and additional saving of the last message in a separate file (for faster processing)    
+* [`m4hSubPub`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hSubPub): After receiving a message it waits for a specified time and then sends a reply message.   
+* `m4hSms`: Send and receive SMS with MQTT messages   
+* [`m4hXxx`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hXxx): Template to create own applications   
    
-
 ## Example: Creating a utility program
 The procedure to create a program will be shown with the example `m4hBrokertime`. The work can be done directly on the RasPi or via `putty`.   
 
