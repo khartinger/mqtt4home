@@ -1,13 +1,13 @@
 # RasPi: Suchen des Anschlussnamens eines SIM-Moduls
 Programm: m4hFindSimModule.cpp, Version 2021-08-27   
-[--> English Version](./README.md "English Version")   
+[--> English Version](./readme.md "English Version")   
 
-Dieses einfache Programm versucht, der Reihe nach verschiedene serielle Schnittstellen zu öffenen, an diese das Kommando `ATE0` zu senden und auf eine Antwort `OK` zu warten.   
-Das Ergebnis der Sendevorgänge wird auf der Konsole angezeigt.   
+Dieses einfache Programm versucht, der Reihe nach verschiedene serielle Schnittstellen zu &ouml;ffnen, an diese das Kommando `ATE0` zu senden und auf eine Antwort `OK` zu warten.   
+Das Ergebnis der Sendevorg&auml;nge wird auf der Konsole angezeigt.   
 Die Schnittstellen, die ausprobiert werden, stehen im Hauptprogramm in der Zeile   
 `std::string devices[]={"/dev/ttyS0", "/dev/ttyACM0", "/dev/ttyUSB0", "/dev/ttyUSB1"};`   
 
-Eine mögliche Programmausgabe ist:   
+Eine m&ouml;gliche Programmausgabe ist:   
 ```   
 pi_@raspi:~/m4hFindSimModule $ ./m4hFindSimModule
 Searching for modem...
