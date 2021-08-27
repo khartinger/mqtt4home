@@ -21,7 +21,7 @@
 extern bool g_prt;                     //true=printf,false=quiet
 
 // *************************************************************
-//    class Log: add incomming messages to files
+//    class Brokertime: messages that request brokertime
 // *************************************************************
 class Brokertime
 {
