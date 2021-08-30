@@ -1,5 +1,5 @@
 Last modified: 2021-08-27
-<table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
+<table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT for domestic/home use :)</h1>
 <a href="liesmich.md">==> German version</a>&nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
@@ -27,15 +27,15 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 ---   
 
 ## Contents
-1. [Install Raspberry Pi (2021-07-31)](m4h01_RasPiInstall_e.md)
-2. [Raspberry Pi as access point (2021-07-31)](m4h02_RasPiAccessPoint_e.md)
-3. [Raspberry Pi as MQTT broker (2021-07-31)](m4h03_RasPiMQTTBroker_e.md)
+1. [Install Raspberry Pi (2021-07-31)](md/m4h01_RasPiInstall_e.md)
+2. [Raspberry Pi as access point (2021-07-31)](md/m4h02_RasPiAccessPoint_e.md)
+3. [Raspberry Pi as MQTT broker (2021-07-31)](md/m4h03_RasPiMQTTBroker_e.md)
 
 ---   
 
-4. [D1mini: MQTT Relay with PubSubClient (2021-07-31)](m4h04_D1mqttRelayD1_e.md)
-5. [D1mini: The SimpleMqtt class (2021-07-31)](m4h05_D1SimpleMqtt_e.md)
-6. [RasPi: Template for MQTT programs in C++ (2021-08-21)](m4h07_RasPiCppBase_e.md)
-7. [RasPi: Helpful single programs in C++ (2021-08-21)](m4h08_RasPiCppDemos_e.md)
-8. [RasPi: Create your own programs in C++ (2021-08-21)](m4h09_RasPiCppCreatingYourOwnProgs_e.md)
-9. [RasPi: Sending and receiving SMS via MQTT in C++ (2021-08-27)](m4h10_RasPiCppSms_e.md)
+4. [D1mini: MQTT Relay with PubSubClient (2021-07-31)](hd/m4h04_D1mqttRelayD1_e.md)
+5. [D1mini: The SimpleMqtt class (2021-07-31)](md/m4h05_D1SimpleMqtt_e.md)
+6. [RasPi: Template for MQTT programs in C++ (2021-08-21)](md/m4h07_RasPiCppBase_e.md)
+7. [RasPi: Helpful single programs in C++ (2021-08-21)](md/m4h08_RasPiCppDemos_e.md)
+8. [RasPi: Create your own programs in C++ (2021-08-21)](md/m4h09_RasPiCppCreatingYourOwnProgs_e.md)
+9. [RasPi: Sending and receiving SMS via MQTT in C++ (2021-08-27)](md/m4h10_RasPiCppSms_e.md)
