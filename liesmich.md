@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 27.8.2021
+Letzte &Auml;nderung: 30.8.2021
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
 <a href="readme.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
@@ -6,7 +6,11 @@ Letzte &Auml;nderung: 27.8.2021
 
 ## Willkommen auf mqtt4home   
 
-Dieses Projekt beschreibt in vielen Beispielen, wie man mit Hilfe des MQTT-Protokolls Sensoren und Aktoren zu Hause vernetzen kann. Als Steuerzentrale ("Broker") dient ein Raspberry Pi (kurz RasPi).<br>
+_Wie kann ich Sensoren und Aktoren zu Hause verbinden?_   
+Wer sich diese Frage stellt, ist hier genau richtig. Dieses Projekt beschreibt mit vielen Beispielen,   
+* wie man ein Raspberry Pi (kurz RasPi) als Steuerzentrale ("Broker") aufsetzt und   
+* wie man mit Hilfe des MQTT-Protokolls Sensoren und Aktoren zu Hause vernetzen kann.   
+   
 Informationen zum MQTT-Protokoll gibt es auf [https://mqtt.org/](https://mqtt.org/).   
 
 ### Allgemeine Annahmen   
@@ -35,6 +39,9 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 
 4. [D1mini: MQTT Relay mit PubSubClient (2021-07-31)](md/m4h04_D1mqttRelayD1.md)
 5. [D1mini: Die Klasse SimpleMqtt (2021-07-31)](md/m4h05_D1SimpleMqtt.md)
+
+---   
+
 6. [RasPi: Vorlage für MQTT-Programme in C++ (2021-08-21)](md/m4h07_RasPiCppBase.md)
 7. [RasPi: Hilfreiche Einzel-Programme in C++ (2021-08-21)](md/m4h08_RasPiCppDemos.md)
 8. [RasPi: Erstellen eigener Programme in C++ (2021-08-21)](md/m4h09_RasPiCppCreatingYourOwnProgs.md)
