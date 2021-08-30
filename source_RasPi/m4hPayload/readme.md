@@ -7,7 +7,7 @@ The program `m4hPayload` serves as a basis for a C++ program, that
 * on finding a certain key in the payload of a message   
 * can send a MQTT response message.   
 
-_Example_: If the value of the key "`battery`" falls below __of any topic__ (!) falls below a certain value, a warning message is sent.   
+_Example_: If the value of the key "`battery`" falls below a certain value __of any topic__ (!), a warning message is sent.   
 
 ### Basic structure of the program
 The program `m4hPayload` is structured in such a way that   
