@@ -7,6 +7,7 @@
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2021-08-29 First release
+// 2021-08-30 Add ...InLast
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
@@ -16,6 +17,7 @@
 
 #define PAYLOAD_SECTION           "payload"
 #define PAYLOAD_IN_KEY            "in"
+#define PAYLOAD_SKIP_KEY          "skip"
 #define PAYLOAD_KEY_KEY           "key"
 #define PAYLOAD_IF_KEY            "if"
 #define PAYLOAD_ELSE_KEY          "else"
@@ -36,12 +38,14 @@ class Payload1
  //------properties---------------------------------------------
  Message2 m2;
  std::string key;
+ std::vector <std::string> vSkip;      // skip messages
  int ifCond;                           // 1< 2<= 3= 4!= 5>= 6>
  std::string sCond[7]={"?","<","<=","=","!=",">=",">"};
  std::string ifVal;
  std::string ifText;
  std::string elseText;
- Payload1() {m2=Message2(); key=""; ifCond=0; ifVal=""; ifText=""; elseText="";};
+ Payload1() {m2=Message2(); key=""; vSkip.clear(); 
+  ifCond=0; ifVal=""; ifText=""; elseText=""; };
 };
 
 // *************************************************************
@@ -57,6 +61,8 @@ class Payload
  //------application specific properties------------------------
  std::string keys;                     // keys for [payload]
  std::vector <Payload1> vPay1;         // payload messages
+ std::string topicOutLast;             // to avoid endless...
+ std::string payloadOutLast;           // ...message sending
  public:
  //------constructor & co---------------------------------------
  Payload();                                // constructor
@@ -87,12 +93,17 @@ void Payload::setDefaults()
  pfConfig = _CONF_PFILE_;              // path&name config file
  section  = PAYLOAD_SECTION;           // prog specifig info
  vPay1.clear();                        // all payloads
+ topicOutLast=""; 
+ payloadOutLast="";
  keys=std::string(PAYLOAD_IN_KEY);     // all keys in section
+ keys+="|"+std::string(PAYLOAD_SKIP_KEY);
  keys+="|"+std::string(PAYLOAD_KEY_KEY);
  keys+="|"+std::string(PAYLOAD_IF_KEY);
  keys+="|"+std::string(PAYLOAD_ELSE_KEY);
  keys+="|"+std::string(PAYLOAD_OUT_KEY);
  keys+="|"+std::string(PAYLOAD_RETAIN_OUT_KEY);
+ keys+="|"+std::string(PAYLOAD_EXC_TOPIC_IN);
+ keys+="|"+std::string(PAYLOAD_EXC_VALUE);
 }
 
 // *************************************************************
@@ -114,7 +125,6 @@ bool Payload::readConfig(std::string pfConf)
  std::map<std::string, std::string> m1;
  std::map<std::string, std::string>::iterator it1;
  //------check config file--------------------------------------
-
  if(pfConf.length()<1) return false;   // wrong file name
  pfConfig=pfConf;                      // remember file name
  Conf conf=Conf(pfConf);               // config object
@@ -122,7 +132,7 @@ bool Payload::readConfig(std::string pfConf)
  //------read sections. 1 section = 1 vector with map<key,value>
  int iSec=conf.getSections(section, v1);
  vPay1.clear();                        // new payloads
- if(g_prt) std::cout<<"-----requests for specific payload:-----"<<std::endl;
+ //if(g_prt) std::cout<<"-----requests for specific payload:--------"<<std::endl;
  //------for all map values in vector---------------------------
  for(int i=0; i<iSec; i++)
  {
@@ -133,13 +143,19 @@ bool Payload::readConfig(std::string pfConf)
   //-----analyse map parts--------------------------------------
   for(it1=m1.begin(); it1!=m1.end(); it1++)
   {
-   //....in message.............................................
+   //....topic of incomming message to process..................
    if(it1->first==PAYLOAD_IN_KEY)
    {
     std::string sT="", sP="";
     if(!conf.split2String(it1->second, sT, sP, ' ')) sT=it1->second;
     p1.m2.topicIn=sT;
     p1.m2.payloadOut=sP;
+   }
+   //....topics of incomming messages to skip...................
+   if(it1->first==PAYLOAD_SKIP_KEY)
+   {
+    p1.vSkip.clear();
+    conf.splitString(it1->second,p1.vSkip,',');
    }
    //....key in payload to search...............................
    if(it1->first==PAYLOAD_KEY_KEY) {
@@ -195,19 +211,30 @@ bool Payload::readConfig(std::string pfConf)
 //_______Show all properties____________________________________
 void Payload::show()
 {
- std::cout<<"-----["<<section<<"]------------------------------"<<std::endl;
+ std::cout<<"-----["<<section<<"]------------------------"<<std::endl;
  Conf conf=Conf(pfConfig);
  std::cout<<"config file         | "<<pfConfig;
  if(!conf.isReady()) std::cout << " (file not found)";
  std::cout<<std::endl;
  std::cout<<"all keys            | "<<getKeys()<<std::endl;
  int len2=vPay1.size();
- std::cout<<".....Payloads to check..........................."<<std::endl;
+ std::cout<<".....Payloads to check................"<<std::endl;
  if(len2<1) std::cout<<"(no payloads)"<<std::endl;
  for(int i=0; i<len2; i++) {
   Payload1 p1=vPay1.at(i);
-  std::cout<<"topic-"<<PAYLOAD_IN_KEY<<": "<<p1.m2.topicIn<<" | ";
-  std::cout<<PAYLOAD_KEY_KEY<<": "<<p1.key;
+  std::cout<<"topic-"<<PAYLOAD_IN_KEY<<": ";
+  if(p1.m2.topicIn.length()>0)   std::cout<<p1.m2.topicIn<<" | ";
+  else std::cout<<"(all) | ";
+  std::cout<<PAYLOAD_SKIP_KEY<<": ";
+  if(p1.vSkip.size()>0) {
+   for(int j=0; j<p1.vSkip.size(); j++) {
+    if(j>0) std::cout<<",";
+    std::cout<<p1.vSkip.at(j);
+   }
+  }
+  else std::cout<<"(none)";
+  std::cout<<std::endl;
+  std::cout<<"     "<<PAYLOAD_KEY_KEY<<": "<<p1.key;
   if(p1.ifCond>0)
   {
    std::cout<<" | "<<PAYLOAD_IF_KEY<<" ";
@@ -228,6 +255,7 @@ bool Payload::onMessage(struct mosquitto *mosq, std::string topic, std::string p
  if(payload.length()<5) return false;
  if(payload.at(0)!='{') return false;
  if(payload.at(payload.length()-1)!='}') return false;
+ if(topic==topicOutLast && payload==payloadOutLast) return false;
  //-----------check all payload entries-------------------------
  int iLen=vPay1.size();
  for(int i=0; i<iLen; i++) 
@@ -256,8 +284,10 @@ bool Payload::onMessage(struct mosquitto *mosq, std::string topic, std::string p
     //--------process payload-----------------------------------
     if(editPayload(p1, it1->second))
     {//-------send answer message-------------------------------
-     int iRet=mosquitto_publish(mosq, NULL,p1.m2.topicOut.c_str(),
-     p1.m2.payloadOut.length(), p1.m2.payloadOut.c_str(), 0, p1.m2.retainOut);
+     topicOutLast=p1.m2.topicOut;
+     payloadOutLast=p1.m2.payloadOut;
+     int iRet=mosquitto_publish(mosq, NULL,topicOutLast.c_str(),
+      payloadOutLast.length(), payloadOutLast.c_str(), 0, p1.m2.retainOut);
      if(iRet==0) bRet=true;
      else {
       if(g_prt) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",p1.m2.topicOut.c_str(),iRet);
@@ -276,11 +306,13 @@ bool Payload::editPayload(Payload1 &p1, std::string sValue)
  bool bRet=false;
  Conf conf=Conf();
  std::string sPay="";
- //std::cout<<"editPayload(): key="<<p1.key<<", topic="<<p1.m2.topicIn<<", ifVal="<<p1.ifVal<<", sValue="<<sValue;
- //std::cout<<", ifText="<<p1.ifText<<", elseText="<<p1.elseText<<std::endl;
- //===========battery===========================================
+ //===========process payload key "battery"=====================
  if(p1.key=="battery")
  {
+  //----------skip given topics---------------------------------
+  for(int ii=0; ii<p1.vSkip.size(); ii++) {
+   if(p1.m2.topicIn==p1.vSkip.at(ii)) return false;
+  }
   if(p1.ifCond>0 && p1.ifCond<7)
   {//-=-=-=-=-if condition given =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
    bool ok=false;
@@ -330,28 +362,13 @@ bool Payload::editPayload(Payload1 &p1, std::string sValue)
   }
  } // end "battery"
 
- //===========double incomming payload==========================
- if(p1.key=="double")
- {
-  bool ok=false;
-  double d1=0;
-  try { //----string to double----------------------------------
-   double temp=std::stod(sValue); d1=temp;
-   ok=true;
-  } catch(std::invalid_argument) {};
-  if(ok) {
-   //----------build string with double value-------------------
-   std::stringstream stream;
-   stream << std::fixed << std::setprecision(2) << (2*d1);
-   sPay+=" "+stream.str();
-   bRet=true;
-  }
-  else bRet=false;
- } // end double incoming payload
-
- //===========contact===========================================
+ //===========process payload key "contact"=====================
  if(p1.key=="contact")
- {//----------process condition---------------------------------
+ {//----------skip given topics---------------------------------
+  for(int ii=0; ii<p1.vSkip.size(); ii++) {
+   if(p1.m2.topicIn==p1.vSkip.at(ii)) return false;
+  }
+  //----------process condition---------------------------------
   switch(p1.ifCond) {
    case 3: // =
    case 4: // !=
@@ -369,7 +386,30 @@ bool Payload::editPayload(Payload1 &p1, std::string sValue)
    default: bRet=false; break;
   }
  } // end contact
- 
+
+ //===========JUST FOR DEMO: double incomming payload===========
+ if(p1.key=="double")
+ {//----------skip given topics---------------------------------
+  for(int ii=0; ii<p1.vSkip.size(); ii++) {
+   if(p1.m2.topicIn==p1.vSkip.at(ii)) return false;
+  }
+  //----------process condition---------------------------------
+  bool ok=false;
+  double d1=0;
+  try { //----string to double----------------------------------
+   double temp=std::stod(sValue); d1=temp;
+   ok=true;
+  } catch(std::invalid_argument) {};
+  if(ok) {
+   //----------build string with double value-------------------
+   std::stringstream stream;
+   stream << std::fixed << std::setprecision(2) << (2*d1);
+   sPay+=" "+stream.str();
+   bRet=true;
+  }
+  else bRet=false;
+ } // end double incoming payload
+
  //=========== add your code here... ===========================
  // ...
 
@@ -383,6 +423,7 @@ bool Payload::editPayload(Payload1 &p1, std::string sValue)
   p1.m2.payloadOut+=sPay;
   conf.replaceAll(p1.m2.payloadOut,PAYLOAD_EXC_TOPIC_IN,p1.m2.topicIn);
   conf.replaceAll(p1.m2.payloadOut,PAYLOAD_EXC_VALUE,sValue);
+  if(p1.m2.topicOut.length()<1) bRet=false;      // no topic
   if(p1.m2.payloadOut.length()<1) bRet=false;    // no payload
  }
  return bRet;
