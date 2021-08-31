@@ -450,7 +450,7 @@ bool Sms::publish(struct mosquitto *mosq_,
 std::string Sms::getsHotEuro(std::string text)
 {
  int pos1=text.find("Guthaben betr");
- if(pos1==std::string::npos) return "";
+ if(pos1==String::npos) return "";
  std::string s1=text.substr(pos1+15);
  pos1=text.find("gt");
  int pos2=text.find("Euro.");
