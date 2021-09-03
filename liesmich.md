@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 30.8.2021
+Letzte &Auml;nderung: 3.9.2021
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
 <a href="readme.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
@@ -6,20 +6,35 @@ Letzte &Auml;nderung: 30.8.2021
 
 ## Willkommen auf mqtt4home   
 
-_Wie kann ich Sensoren und Aktoren zu Hause verbinden?_   
-Wer sich diese Frage stellt, ist hier genau richtig. Dieses Projekt beschreibt mit vielen Beispielen,   
-* wie man ein Raspberry Pi (kurz RasPi) als Steuerzentrale ("Broker") aufsetzt und   
-* wie man mit Hilfe des MQTT-Protokolls Sensoren und Aktoren zu Hause vernetzen kann.   
-   
+__*Wie kann ich Sensoren und Aktoren zu Hause miteinander verbinden?*__   
+Wer sich diese Frage stellt, ist hier genau richtig. In f&uuml;nf verschiedenen Bereichen 
+ werden in vielen Beispielen Fragen zum Thema "Homeautomation" beantwortet:   
+1. Bereich "__Zentrale__": Wie setze ich ein Raspberry Pi (kurz RasPi) auf, damit es als Steuerzentrale bzw. MQTT-Broker arbeitet?   
+2. Bereich "__D1mini__": Wie kann ich D1mini- oder ESP32mini-Mikrocontroller als Steuerelemente im System verwenden?   
+3. Bereich "__Hilfsprogramme__": Wie erstelle ich Stand-Alone-Hilfsprogramme, die bestimmte Aufgaben durchf&uuml;hren?   
+4. Bereich "__Zigbee__": Wie kann ich ZigBee-Komponenten in mein System einbauen?   
+5. Bereich "__Visualisierung__": Wie kann ich Komponenten &uuml;ber eine grafische Oberfl&auml;che bedienen?   
+
+Um das Thema einzuschr&auml;nken, wird in dieser Programmsammlung als Verbindungsmedium ein WLAN mit TCP-IP und MQTT-Protokoll festgelegt.   
 Informationen zum MQTT-Protokoll gibt es auf [https://mqtt.org/](https://mqtt.org/).   
 
-### Allgemeine Annahmen   
+## Voraussetzungen
+
+F&uuml;r das Bearbeiten des sehr weitl&auml;ufigen Themas "Homeautomation" sind einige Grundkenntnisse von Vorteil:   
+* Etwas Basiswissen zum Raspberry Pi und zum Betriebssystem Linux (f&uuml;r die Bereiche __Zentrale__ und __ZigBee__)   
+* Grundkenntnisse in C/C++ (f&uuml;r die Bereiche __D1mini__ und __Hilfsprogramme__)   
+* Grundkenntnisse in JavaScript bzw. Node.js (f&uuml;r den Bereich __Visualisierung__)   
+
+Die Beispiele sind h&auml;ufig Schritt-f&uuml;r-Schritt-Anleitungen, die gut nachvollziehbar sein sollten.   
+Welche Hard- und Software f&uuml;r die Bespiele ben&ouml;tigt wird, steht bei den jeweiligen Erkl&auml;rungen dabei.   
+   
+## Allgemeine Annahmen   
 
 * Sensoren und Aktoren sind mit der Zentrale (RasPi) &uuml;ber Funk (WiFi oder ZigBee) verbunden.
 * Das WiFi-Netzwerk wird vom RasPi zur Verf&uuml;gung gestellt.
 * Wird eine Steuerung &uuml;ber das Internet gew&uuml;nscht, so muss der Internet-Zugang extra zur Verf&uuml;gung gestellt werden. (Router oder Alcatel Linkhub HH71VM mit HOT SIM-Karte etc.)
 
-### Erforderliche Hardware   
+## Erforderliche Hardware   
 
 * Raspberry Pi mit Zubeh&ouml;r (Netzteil, Monitor, Tastatur etc.),   
 zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/at/de/raspberry-pi-4-b-4gb-inkl-7-touch-display-gehaeuse-rpi4-bdl-4gb-7td-p291393.html?PROVID=2807&gclid=Cj0KCQjw9O6HBhCrARIsADx5qCSgJ1AiDo2X72WmgAzl4nAxSPFg4yIhT37OJYww45nqSir0qp0gd-waAjhcEALw_wcB) oder 
@@ -31,18 +46,23 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 ---   
 
 ## Inhalt
+### Bereich "Zentrale"
 1. [Raspberry Pi installieren (2021-07-31)](md/m4h01_RasPiInstall.md)
 2. [Raspberry Pi als Access-Point (2021-07-31)](md/m4h02_RasPiAccessPoint.md)
 3. [Raspberry Pi als MQTT-Broker (2021-07-31)](md/m4h03_RasPiMQTTBroker.md)
 
 ---   
-
+### Bereich "D1mini"
 4. [D1mini: MQTT Relay mit PubSubClient (2021-07-31)](md/m4h04_D1mqttRelayD1.md)
 5. [D1mini: Die Klasse SimpleMqtt (2021-07-31)](md/m4h05_D1SimpleMqtt.md)
 
 ---   
-
-6. [RasPi: Vorlage für MQTT-Programme in C++ (2021-08-21)](md/m4h07_RasPiCppBase.md)
+### Bereich "Hilfsprogramme"
+6. [RasPi: Vorlage f&uuml;r MQTT-Programme in C++ (2021-08-21)](md/m4h07_RasPiCppBase.md)
 7. [RasPi: Hilfreiche Einzel-Programme in C++ (2021-08-21)](md/m4h08_RasPiCppDemos.md)
 8. [RasPi: Erstellen eigener Programme in C++ (2021-08-21)](md/m4h09_RasPiCppCreatingYourOwnProgs.md)
 9. [RasPi: Senden und Empfangen von SMS &uuml;ber MQTT in C++ (2021-08-27)](md/m4h10_RasPiCppSms.md)
+
+### Bereich "ZigBee"
+
+### Bereich "Visualisierung
