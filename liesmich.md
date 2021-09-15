@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 3.9.2021
+Letzte &Auml;nderung: 15.9.2021
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
 <a href="readme.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
@@ -23,7 +23,8 @@ Informationen zum MQTT-Protokoll gibt es auf [https://mqtt.org/](https://mqtt.or
 F&uuml;r das Bearbeiten des sehr weitl&auml;ufigen Themas "Homeautomation" sind einige Grundkenntnisse von Vorteil:   
 * Etwas Basiswissen zum Raspberry Pi und zum Betriebssystem Linux (f&uuml;r die Bereiche __Zentrale__ und __ZigBee__)   
 * Grundkenntnisse in C/C++ (f&uuml;r die Bereiche __D1mini__ und __Hilfsprogramme__)   
-* Grundkenntnisse in JavaScript bzw. Node.js (f&uuml;r den Bereich __Visualisierung__)   
+* Grundkenntnisse in HTML, CSS, JavaScript bzw. Node.js (f&uuml;r den Bereich __Visualisierung__)   
+* Grundkenntnisse in Elektronik und L&ouml;ten (f&uuml;r den Bereich __D1mini__)   
 
 Die Beispiele sind h&auml;ufig Schritt-f&uuml;r-Schritt-Anleitungen, die gut nachvollziehbar sein sollten.   
 Welche Hard- und Software f&uuml;r die Bespiele ben&ouml;tigt wird, steht bei den jeweiligen Erkl&auml;rungen dabei.   
@@ -65,4 +66,5 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 
 ### Bereich "ZigBee"
 
-### Bereich "Visualisierung
+### Bereich "Visualisierung"
+* [Erstes Vue-Programm (ohne Visual Studio Code) (2021-09-15)](md/m4h20_Vue_Hello.md)
