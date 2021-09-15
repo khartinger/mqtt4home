@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HelloVue</title>
+  <script src="vue.js"></script>            <!--1-->
+</head>
+<body>
+  <div id="app">                            <!--2-->
+    {{ message }}                           <!--3-->
+  </div>
+
+  <script>
+    var app = new Vue({                     //<!--4-->
+      el: '#app',
+      data: {
+        message: 'Hello World from Vue!'    //<!--5-->
+      }
+    })
+  </script>
+</body>
+</html>
