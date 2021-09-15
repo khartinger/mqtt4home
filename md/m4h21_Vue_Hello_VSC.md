@@ -6,7 +6,7 @@ Letzte &Auml;nderung: 15.9.2021
 </td></tr></table><hr>
   
 ## Ziele
-* Visual Studio Code (kurz "VSC") für Vue vorbereiten.   
+* Visual Studio Code (kurz "VSC") f&uuml;r Vue vorbereiten.   
 * Im Browser ein mit Vue erstelltes "Hello World from Vue!" anzeigen.   
    
 
@@ -27,7 +27,7 @@ Letzte &Auml;nderung: 15.9.2021
 ---   
 4. Visual Studio Code (VSC) starten   
 5. Testen, ob node und npm richtig installiert wurden:   
-   `VSC: Menü Terminal – New Terminal... (oder <Strg>+<Shift>+ö)`   
+   `VSC: Men&uuml; Terminal – New Terminal... (oder <Strg>+<Shift>+&ouml;)`   
    __`node –-version`__   
    `v14.15.4`   
    __`npm –-version`__   
@@ -36,18 +36,18 @@ Letzte &Auml;nderung: 15.9.2021
    __`npm install -g @vue/cli`__   
    `+ @vue/cli@4.5.11`   
    `updated 3 packages in 31.526s`   
-7. VSC: Ventur Erweiterung für Syntax Highlighting installieren (falls noch nicht erfolgt)   
-   Extensions-Auswahl öffnen (&lt;Strg&gt;+&lt;Shift&gt;+X)   
+7. VSC: Ventur Erweiterung f&uuml;r Syntax Highlighting installieren (falls noch nicht erfolgt)   
+   Extensions-Auswahl &ouml;ffnen (&lt;Strg&gt;+&lt;Shift&gt;+X)   
    ```   
    <Strg> + <Shift> + X
    Ventur suchen [Install]
    ```   
 ## HTML-Seite erstellen
 1. Visual Studio Code (VSC) starten (falls noch nicht erfolgt).
-2. VSC: Ein Terminal-Fenster öffnen (`Menü Terminal - New Terminal`).
+2. VSC: Ein Terminal-Fenster &ouml;ffnen (`Men&uuml; Terminal - New Terminal`).
 3. VSC-Terminal: In den Ordner wechseln, unter dem das Vue-Projekt erzeugt werden soll:   
    `cd /g/github/mqtt4home/source_Vue`   
-5. VSC-Terminal: Eine Vue.js Applikation erzeugen, die die Verwendung von TypeScript erlaubt (mit den Cursortasten "Manually select features" auswählen):   
+4. VSC-Terminal: Eine Vue.js Applikation erzeugen (mit der Cursor-Down-Taste "Manually select features" ausw&auml;hlen):   
    __`vue create vue_mini_vsc`__   
    ```   
    Vue CLI v4.5.11
@@ -58,9 +58,9 @@ Letzte &Auml;nderung: 15.9.2021
    > Manually select features
    <Enter>
    ```   
-   Im nächsten Schritt mit den Cursortasten und der Leertaste folgende Punkte auswählen:   
+   Im n&auml;chsten Schritt mit den Cursortasten und der Leertaste folgende Punkte ausw&auml;hlen:   
    ```   
-   ? Check the features needed for your project: (mit Cursor- und Leertaste auswählen)
+   ? Check the features needed for your project: (mit Cursor- und Leertaste ausw&auml;hlen)
     (*) Choose Vue version
     (*) Babel
     (*) TypeScript
@@ -73,7 +73,7 @@ Letzte &Auml;nderung: 15.9.2021
     ( ) E2E Testing
    <Enter>
    ```   
-   Vue-Version 3.x auswählen:   
+   Vue-Version 3.x ausw&auml;hlen:   
    ```   
    Check the features needed for your project: Choose Vue version, TS, Router, Linter 
    ? Choose a version of Vue.js that you want to start the project with 
@@ -82,7 +82,7 @@ Letzte &Auml;nderung: 15.9.2021
    <Enter>
    ```   
 
-   Die weiteren Fragen zB folgendermaßen beantworten (dazwischen immer mit <Enter> bestätigen):   
+   Die weiteren Fragen zB folgenderma&szlig;en beantworten (dazwischen immer mit &lt;Enter&gt; best&auml;tigen):   
    ```   
    Vue CLI v4.5.13
    ? Please pick a preset: Manually select features
@@ -98,7 +98,7 @@ Letzte &Auml;nderung: 15.9.2021
    <Enter>
    ```   
    (babel: transpile JavaScript to HTML, eslint: hilft beim Finden von Code-Fehlern).   
-   Das Erstellen der Applikation kann schon ein Weilchen dauern, immerhin werden 196 MB Festplattenspeicher beschrieben ;)   
+   Das Erstellen der Applikation kann schon ein Weilchen dauern, immerhin werden ca. 200 MB Festplattenspeicher beschrieben ;)   
    ```   
    ...
    Successfully created project vue_mini_vsc.
@@ -107,75 +107,51 @@ Letzte &Auml;nderung: 15.9.2021
     $ npm run serve
    ```   
 
-
-   5. VSC: Wechsel ins Projektverzeichnis und Starten des internen Test-Servers:   
+5. VSC: Wechsel ins Projektverzeichnis und Starten des internen Test-Servers:   
    ```   
    cd vue_mini_vsc
    npm run serve
    ```   
 
-5. VSC: Projektordner öffnen   
-   `Menü: File – Open Folder... und Verzeichnis vue_mini_vsc wählen`   
+6. VSC: Projektordner &ouml;ffnen   
+   `Men&uuml;: File – Open Folder... und Verzeichnis vue_mini_vsc w&auml;hlen`   
 
-6. Applikation anschauen: Browser starten und folgendes eingeben:   
-   `localhost:8080`
+7. Applikation anschauen: Browser starten und folgendes eingeben:   
+   `localhost:8080`   
    Es erscheint folgende Info-Seite:   
+   ![Vue Startbild](./images/210915_vue_startpage.png "Vue Startbild")   
+   _Bild 1: Vue Startseite_
 
-
-
-
----   
----   
-
-## Was ist Vue?
-`Vue.js` ist ein beliebtes Framework f&uuml;r Java Script zum Erstellen von Web-Anwendungen. Es hilft bei der Anzeige von Daten kann durch zahlreiche Plugins (zB zur HTTP-Behandlung) erweitert werden.   
-Informationen (in Deutsch) gibt es zB auf folgenden Seiten:   
-* [https://de.wikipedia.org/wiki/Vue.js](https://de.wikipedia.org/wiki/Vue.js)   
-* [https://t3n.de/news/vuejs-1097879/](https://t3n.de/news/vuejs-1097879/)   
-   
-## Webseite mit Vue erstellen
-1. Ein Anwendungsverzeichnis anlegen (zB mit dem Explorer):   
-   `/source_Vue/vue_mini`   
-
-2. Das Vue-Framework downloaden zB von [`https://vuejs.org/v2/guide/installation.html`](https://vuejs.org/v2/guide/installation.html)   
-"Development Version" (Datei `vue.js`)   
-
-3.  Das Framework bzw. die Datei `vue.js` ins Arbeitsverzeichnis (zB `/source_Vue/vue_mini`) kopieren.   
-
-4. HTML-Seite im Texteditor erstellen:   
+8. Das Startbild auskommentieren und den Text "Hello World from Vue!" ausgeben:   
+   * VSC: Explorer anzeigen (STRG+UMSCHALTTASTE+E)   
+   * VSC: Datei src - views - Home.vue anklicken und &auml;ndern:   
    ```   
-   <!DOCTYPE html>
-   <html>
-   <head>
-     <title>HelloVue</title>
-     <script src="vue.js"></script>            <!--1-->
-   </head>
-   <body>
-     <div id="app">                            <!--2-->
-       {{ message }}                           <!--3-->
+   <template>
+   Hello World from Vue!
+   <!--
+   <div class="home">
+       <img alt="Vue logo" src="../assets/logo.png">
+       <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+   </div>
+   -->
+   </template>
+   ```   
+   * VSC: Nach dem Speichern der Datei &auml;ndert sich sofort die Anzeige im Browser!
+
+9. Die Navigations-Links (Home | About) auskommentieren:
+   * VSC: Datei src - views - App.vue anklicken und &auml;ndern:   
+   ```   
+   <template>
+     <div id="nav">
+   <!--
+       <router-link to="/">Home</router-link> |
+       <router-link to="/about">About</router-link>
+   -->
      </div>
-
-     <script>
-       var app = new Vue({                     //<!--4-->
-         el: '#app',
-         data: {
-           message: 'Hello World from Vue!'    //<!--5-->
-         }
-       })
-     </script>
-   </body>
-   </html>
+     <router-view/>
+   </template>
    ```   
-   Speichern zB unter dem Namen `halloVue.htm`   
-   Die wichtigsten Zeilen sind:   
-   * `<!--1-->` Einbinden der Vue-Funktionen (Vue-Framework)   
-   * `<!--2-->` Mit Hilfe dieses &lt;div&gt;-Tags und der Id "app" wird hier der vom Vue-Script erzeugte "Text" eingebaut.   
-   * `<!--3-->` Ausgabe des Wertes der Variablen `message`.   
-   * `<!--4-->` Erzeugen der Vue-Instanz, wobei bei `el:` die Id steht.   
-   * `<!--5-->` Erzeugen der Variablen `message` und Zuweisung des Textes.   
+   * VSC: Nach dem Speichern der Datei &auml;ndert sich sofort die Anzeige im Browser!   
 
-5. Die Datei `halloVue.htm` im Browser (zB Chrome) &ouml;ffnen.   
-   Mit der Taste &lt; F12&gt; kann der Debug-Mode angezeigt werden.   
-   ![Erstes Vue-Programm](./images/210915_HelloVue1.png "Erstes Vue-Programm")   
-   _Bild 1: Erstes Vue-Programm_   
-   Im Bild 1 sieht man links die Ausgabe der HTML-Seite und rechts erkennt man im HTML-Code, dass der Inhalt des `<div>`-Tags durch den Wert der Variablen `message` ersetzt wurde.   
+Soll die Anzeige linksb&uuml;ndig erfolgen, muss in `App.vue` der style entsprechend ge&auml;ndert werden:   
+`  text-align: left; /* center; */`   
