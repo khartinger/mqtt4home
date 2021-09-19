@@ -1,4 +1,4 @@
-Last modified: 2021-08-08   
+Last modified: 2021-09-16   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi as MQTT broker</h1>
 <a href="../readme.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
@@ -89,6 +89,21 @@ In the Subscribe window (Putty or RasPi console) the corresponding message appea
 pi_@raspi:~ $ mosquitto_sub -t "#" -v
 Test1 Hello from the PC!
 ```
+
+## Set up Mosquitto for Websockets
+See also: [http://blog.ithasu.org/2016/05/enabling-and-using-websockets-on-mosquitto/](http://blog.ithasu.org/2016/05/enabling-and-using-websockets-on-mosquitto/)
+For this, another port (e.g. 1884) must be defined to listen for websocket requests. The settings can be done in a new file to be created:   
+`sudo nano /etc/mosquitto/conf.d/socket.conf`.   
+Contents of the file:   
+```   
+listener 1883
+protocol mqtt
+listener 1884
+protocol websockets
+```   
+Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x   
+Restart Mosquitto   
+`sudo service mosquitto restart`   
 
 ## Helpful information about Mosquitto
 
