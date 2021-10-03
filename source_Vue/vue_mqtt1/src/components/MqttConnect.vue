@@ -1,19 +1,22 @@
 <!-- MqttConnect.vue -->
 <template>
   <div class="mqtt_title">Connect to broker</div>
-  <p>
+  <p>                                            <!--1-->
     Host: <input v-model="hostip">
     Port: <input type="number" v-model.number="hostport">
   </p>
+                                                 <!--2-->
   <button @click="connect()" :disabled="isConnected || isConnecting">Connect</button> &nbsp;
   <button @click="end()"     :disabled="!isConnected">Disconnect</button> &nbsp;
   <p>
-  MqttState: {{ getMqttState }}
-  <span v-if=isConnected> &nbsp; (Broker at {{ getConnectUrl }})</span>
-  <span v-if=isConnecting>
-    &nbsp;
-    <button @click="cancel()">Cancel</button>
-  </span>
+    MqttState: {{ getMqttState }}                <!--3-->
+    <span v-if=isConnected>
+       &nbsp; (Broker at {{ getConnectUrl }})    <!--4-->
+    </span>
+    <span v-if=isConnecting>
+      &nbsp;
+      <button @click="cancel()">Cancel</button>  <!--5-->
+    </span>
   </p>
 </template>
 
