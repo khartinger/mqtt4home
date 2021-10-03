@@ -12,8 +12,8 @@
 import { defineComponent } from 'vue'
 import MqttConnect from './components/MqttConnect.vue'
 import MqttPublish from './components/MqttPublish.vue'
-import MqttLastX from './components/MqttLastX.vue'
 import MqttSubscribe from './components/MqttSubscribe.vue'
+import MqttLastX from './components/MqttLastX.vue'
 
 export default defineComponent({
   name: 'App',
