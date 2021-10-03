@@ -56,7 +56,7 @@ export class MqttClient {
     reconnectPeriod: 4000,
     clientId: '',
     username: '',
-    password: '',
+    password: ''
   })
 
   public mqttSubscription: MqttSubscription = reactive<MqttSubscription>({
@@ -98,12 +98,11 @@ export class MqttClient {
         client.on('end', (value: any) => {
           this.mqttState.connected = false
           this.mqttSubscription.success = false
-          console.error('end: value=', value)
+          console.error('MqttClient.ts-end: value=', value)
           this.mqttState.iConnMqttState = 9
         })
         client.on('message', (topic: string, payload: any, props1: any) => {
-
-          console.log('MqttClient.ts connect()', 'props1=', props1)
+          // console.log('MqttClient.ts connect()', 'props1=', props1)
           let retain1 = false
           try {
             retain1 = props1.retain
@@ -112,7 +111,6 @@ export class MqttClient {
           try {
             qos1 = props1.qos
           } catch (error) { console.error(error) }
-          console.log('MqttClient.ts connect()', 'retain1=' + retain1)
           this.controller.forEach(controller => controller.onMessage({
             topic: topic,
             payload: payload.toString(),
