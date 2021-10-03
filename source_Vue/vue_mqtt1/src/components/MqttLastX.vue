@@ -22,7 +22,6 @@ import { useMessageStore } from '@/store/MessageStore'
 import { mqttLastXController } from '@/controller/MqttLastXController'
 const { messages } = useMessageStore()
 const test = mqttLastXController.isSubscribe()
-
 </script>
 
 <style scoped>
