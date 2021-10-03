@@ -10,7 +10,7 @@ Letzte &Auml;nderung: 3.10.2021
 ![MQTT-Sende-/Empfangsprogramm](./images/211003_vue_mqtt1_start.png "MQTT-Sende-/Empfangsprogramm")   
 _Bild 1: Startseite des MQTT-Sende- und Empfangsprogramms_   
 
-__Das Programm soll aus 5 Teilen bestehen:__   
+__Das Programm soll aus fünf Teilen bestehen:__   
 1. Ein MQTT Client, der die MQTT Funktionen zur Verfügung stellt.   
 2. Eine GUI-Komponente, mit der man sich mit einem Broker verbinden kann.   
    Dabei kann der Host, auf dem der Broker läuft (zB IP 10.1.1.1) und der Port für die WebSocket-Verbindung (zB 1884) in Eingabefeldern eingegeben werden.   
@@ -18,6 +18,8 @@ __Das Programm soll aus 5 Teilen bestehen:__
    Es ist die Eingabe von Topic, Payload, ob die Nachricht gespeichert werden soll ("retain") und vom QoS-Level (Quality of Service) möglich.   
 4. Eine GUI-Komponente, mit der man ein Topic abonnieren ("subscribe") kann.   
 5. Eine GUI-Komponente, die für das abonnierte Topic die letzten 5 Nachrichten anzeigt.   
+
+_Für Ungeduldige_: [Link zum fertigen Programm](https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue_mqtt1)
 
 ## Voraussetzungen
 * Etwas Wissen &uuml;ber HTML, CSS und JavaScript/Typescript :)   
@@ -27,7 +29,6 @@ __Das Programm soll aus 5 Teilen bestehen:__
 ## Erforderliche Hilfsmittel
 * Hardware: PC oder Laptop mit Internetzugang, Browser
 * Software: Visual Studio Code, node.js, npm
-
 
 ## Vorbereitung des Vue-Projektes in VSC (Kurzfassung)   
 1. Visual Studio Code (VSC) starten.   
@@ -52,6 +53,36 @@ __Das Programm soll aus 5 Teilen bestehen:__
 5. In den Projektordner wechseln: VSC Menü Datei - Ordner öffnen..
 6. MQTT Bibliothek installieren: `npm install mqtt --save`   
 
+## 1. Erstellung des MQTT Clients
+Der MQTT Client besteht aus zwei Dateien, die sich im Verzeichnis `services` befinden.   
+Die Datei `MqttClient.ts` enthält die vier Interfaces `Message`, `MqttState`, `MqttConnection`, `MqttSubscription` sowie die Klasse `MqttClient`.   
+Die Interfaces werden in der Klasse `MqttClient` dazu verwendet, Informationen zum Verbindungs- und Abonnierungszustand zu speichern. Weiters werden Methoden für folgende Zwecke zur Verfügung gestellt:   
+   * `connectUrl ........` Zusammenbau der Verbindungs-URL   
+   * `connect ...........` Verbinden mit dem Broker   
+   * `disconnect ........` Lösen der Verbindung zum Broker   
+   * `subscribe .........` Abonnieren eines Topics   
+   * `unsubscribe .......` Lösen des Abonnieren eines Topics   
+   * `publish ...........` Veröffentlichen einer Nachricht   
+   * `sConnMqttState ....` Verbindungszustand als Text ("connected" etc.)   
+   * `registerController ` Anmeldung eines Controllers, damit er Nachrichten weitergeleitet bekommt (und in der Methode `onMessage` auswerten kann).   
 
-## Erstellung des Projektes in VSC
+Codierung der Datei [`MqttClient.ts` siehe `https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt1/src/services/MqttClient.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt1/src/services/MqttClient.ts)
+
+
+Die Datei `MqttClientInstance.ts` exportiert das Verbindungsobjekt `mqttClientInstance`.   
+Weiters müssen in dieser Datei alle MQTT-Controller registriert werden:   
+```   
+// ______mqttClientInstance.ts__________________________________
+import { MqttClient } from './MqttClient'
+import { mqttLastXController } from '@/controller/MqttLastXController'
+
+export const mqttClientInstance = new MqttClient()
+mqttClientInstance.registerController(mqttLastXController)
+```   
+
+## 2. Verbindungs-GUI
+
+
+## Anpassungen in `App.vue`
+
 
