@@ -52,8 +52,9 @@ export default defineComponent({
         mqttClientInstance.mqttConnection.host = this.hostip
         mqttClientInstance.mqttConnection.port = this.hostport
         mqttClientInstance.mqttState.iConnMqttState = 2
+        console.log('MqttConnect.vue: Connecting to ' + this.getConnectUrl + '...')
         await mqttClientInstance.connect()
-        console.log('Connected to ' + this.getConnectUrl)
+        console.log('MqttConnect.vue: Connected to ' + this.getConnectUrl)
       }
     },
     end: async function (): Promise<void> {
