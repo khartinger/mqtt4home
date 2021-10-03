@@ -68,3 +68,4 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 
 ### Area "Visualization"
 * [First Vue program (without Visual Studio code) (2021-09-15)](md/m4h20_Vue_Hello_e.md)
+* [Vue+VSC: Sending and receiving MQTT messages (2021-10-03)](md/m4h23_Vue_Mqtt1_e.md)
