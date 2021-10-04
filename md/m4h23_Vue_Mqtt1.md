@@ -55,21 +55,22 @@ _F&uuml;r Ungeduldige_: [Link zum fertigen Programm](https://github.com/kharting
 
 ## 1. Erstellung des MQTT Clients
 Der MQTT Client besteht aus zwei Dateien, die sich im Verzeichnis `services` befinden.   
-Die Datei `MqttClient.ts` enth&auml;lt die vier Interfaces `Message`, `MqttState`, `MqttConnection`, `MqttSubscription` sowie die Klasse `MqttClient`.   
+1. Die Datei `MqttClient.ts` enth&auml;lt die vier Interfaces `Message`, `MqttState`, `MqttConnection`, `MqttSubscription` sowie die Klasse `MqttClient`.   
 Die Interfaces werden in der Klasse `MqttClient` dazu verwendet, Informationen zum Verbindungs- und Abonnierungszustand zu speichern. Weiters werden Methoden f&uuml;r folgende Zwecke zur Verf&uuml;gung gestellt:   
-   * `connectUrl ........` Zusammenbau der Verbindungs-URL   
+   * `connectUrl ........` Zusammenbau der Verbindungs-URL aus Host, Port und MQTT-Endpunkt   
    * `connect ...........` Verbinden mit dem Broker   
    * `disconnect ........` L&ouml;sen der Verbindung zum Broker   
    * `subscribe .........` Abonnieren eines Topics   
    * `unsubscribe .......` L&ouml;sen des Abonnieren eines Topics   
    * `publish ...........` Ver&ouml;ffentlichen einer Nachricht   
    * `sConnMqttState ....` Verbindungszustand als Text ("connected" etc.)   
+   * `hostSubscribe .....` Verbinden mit dem angegebenen Broker und abonnieren des angegebenen Topics   
    * `registerController ` Anmeldung eines Controllers, damit er Nachrichten weitergeleitet bekommt (und in der Methode `onMessage` auswerten kann).   
 
-Codierung der Datei [`MqttClient.ts` siehe `https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt1/src/services/MqttClient.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt1/src/services/MqttClient.ts)
+   Codierung der Datei [`MqttClient.ts` siehe `https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt1/src/services/MqttClient.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt1/src/services/MqttClient.ts)
 
 
-Die Datei `MqttClientInstance.ts` exportiert das Verbindungsobjekt `mqttClientInstance`.   
+2. Die Datei `MqttClientInstance.ts` exportiert das Verbindungsobjekt `mqttClientInstance`.   
 Weiters m&uuml;ssen in dieser Datei alle MQTT-Controller registriert werden:   
 ```   
 // ______mqttClientInstance.ts__________________________________
@@ -80,7 +81,8 @@ export const mqttClientInstance = new MqttClient()
 mqttClientInstance.registerController(mqttLastXController)
 ```   
 
-## 2. Verbindungs-GUI
+## 2. Verbindungs-GUI `MqttConnect.vue`
+...
 
-
-## Anpassungen in `App.vue`
+## Anpassungen in `App.vue` und `main.ts`
+...
