@@ -12,6 +12,7 @@ export interface Message {
 }
 
 export interface MqttState {
+  connectOnStart: boolean;
   connected: boolean;
   iConnMqttState: number;
   message: Message;
@@ -33,7 +34,7 @@ export interface MqttConnection {
 export interface MqttSubscription {
   topic: string;
   qos: QoS;
-  success: boolean;
+  subscribed: boolean;
 }
 
 export class MqttClient {
@@ -42,9 +43,10 @@ export class MqttClient {
   public controller: Array<DeviceController> = [];
 
   public mqttState: MqttState = reactive<MqttState>({
+    connectOnStart: false,
     connected: false,
     iConnMqttState: -1,
-    message: { topic: '', payload: '', retain: false, qos: 0 },
+    message: { topic: '', payload: '', retain: false, qos: 0 }
   })
 
   public mqttConnection: MqttConnection = reactive<MqttConnection>({
@@ -62,8 +64,16 @@ export class MqttClient {
   public mqttSubscription: MqttSubscription = reactive<MqttSubscription>({
     topic: '#',
     qos: 0,
-    success: false
+    subscribed: false
   })
+
+  constructor () {
+    if (this.mqttState.connectOnStart) {
+      this.connect()
+      this.subscribe()
+      console.log('Constructor: connecting to ' + this.connectUrl())
+    }
+  }
 
   public connectUrl (): string {
     return `ws://${this.mqttConnection.host}:${this.mqttConnection.port}${this.mqttConnection.endpoint}`
@@ -87,7 +97,7 @@ export class MqttClient {
         })
         client.on('offline', (value: any) => {
           this.mqttState.connected = false
-          this.mqttSubscription.success = false
+          this.mqttSubscription.subscribed = false
           console.error('MQTT Offline', value)
           this.mqttState.iConnMqttState = 3
         })
@@ -97,7 +107,7 @@ export class MqttClient {
         })
         client.on('end', (value: any) => {
           this.mqttState.connected = false
-          this.mqttSubscription.success = false
+          this.mqttSubscription.subscribed = false
           console.error('MqttClient.ts-end: value=', value)
           this.mqttState.iConnMqttState = 9
         })
@@ -143,10 +153,15 @@ export class MqttClient {
 
   public subscribe (): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!this.client) return reject(new Error('Not Connected'))
+      if (!this.client) return reject(new Error('subscribe: Not Connected'))
+      if (this.mqttSubscription.subscribed) {
+        this.unsubscribe()
+        if (this.mqttSubscription.subscribed) return reject(new Error('subscribe: Could not unsubscribe'))
+      }
+      console.log('MqttClient.ts-subscribe: ' + this.mqttSubscription.topic)
       this.client.subscribe(this.mqttSubscription.topic, { qos: this.mqttSubscription.qos }, (err) => {
         if (err) return reject(new Error('Could not subscribe topic ' + this.mqttSubscription.topic))
-        this.mqttSubscription.success = true
+        this.mqttSubscription.subscribed = true
         resolve()
       })
     })
@@ -157,7 +172,7 @@ export class MqttClient {
       if (!this.client) return reject(new Error('Not Connected'))
       this.client.unsubscribe(this.mqttSubscription.topic, {}, (err) => {
         if (err) return reject(new Error('Could not unsubscribe topic ' + this.mqttSubscription.topic))
-        this.mqttSubscription.success = false
+        this.mqttSubscription.subscribed = false
         resolve()
       })
     })
@@ -186,6 +201,20 @@ export class MqttClient {
       default: break
     }
     return 'undefined'
+  }
+
+  public hostSubscribe (host: string, topicSubscribe: string): boolean {
+    this.mqttConnection.host = host
+    this.mqttSubscription.topic = topicSubscribe
+    try {
+      this.connect()
+      this.subscribe()
+    }
+    catch (err) {
+      console.error('hostSubscribe: Error ' + err)
+      return false
+    }
+    return true
   }
 
   public registerController (controller: DeviceController): void {
