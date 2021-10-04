@@ -27,8 +27,8 @@ import { mqttClientInstance } from '@/services/MqttClientInstance'
 export default defineComponent({
   data () {
     return {
-      hostip: '192.168.0.8',
-      hostport: 1884
+      hostip: mqttClientInstance.mqttConnection.host,
+      hostport: mqttClientInstance.mqttConnection.port
     }
   },
   computed: {
