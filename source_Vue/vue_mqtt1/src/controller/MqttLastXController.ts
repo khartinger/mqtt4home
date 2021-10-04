@@ -23,7 +23,7 @@ export class MqttLastXController extends DeviceController {
   }
 
   public isSubscribe (): ComputedRef<boolean> {
-    return computed(() => mqttClientInstance.mqttState.connected && mqttClientInstance.mqttSubscription.success)
+    return computed(() => mqttClientInstance.mqttState.connected && mqttClientInstance.mqttSubscription.subscribed)
   }
 }
 
