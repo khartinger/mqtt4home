@@ -9,6 +9,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { mqttClientInstance } from '@/services/MqttClientInstance'
+import { clearMessage } from '@/store/MessageStore'
 
 export default defineComponent({
   data () {
@@ -37,12 +38,15 @@ export default defineComponent({
   },
   methods: {
     subscribe: async function (): Promise<void> {
-      mqttClientInstance.mqttSubscription.topic = this.topicsub
-      console.log('MqttSubscribe.vue-subscribe: topic=' + mqttClientInstance.mqttSubscription.topic)
-      await mqttClientInstance.subscribe()
+      // mqttClientInstance.mqttSubscription.topic = this.topicsub
+      console.log('MqttSubscribe.vue-subscribe: topic=' + this.topicsub)
+      await mqttClientInstance.subscribe(this.topicsub, 0)
     },
     unsubscribe: async function (): Promise<void> {
       mqttClientInstance.unsubscribe()
+      clearMessage()
+      // const messageStore = useMessageStore()
+      // messageStore.clearMessage()
     }
   }
 })
