@@ -2,8 +2,11 @@
 import { DeviceController } from '@/controller/DeviceController'
 import mqtt from 'mqtt'
 import type { QoS } from 'mqtt'
-import { reactive } from 'vue'
+import { reactive, readonly } from 'vue'
 
+// -------------------------------------------------------------
+// interfaces
+// -------------------------------------------------------------
 export interface Message {
   topic: string,
   payload: string,
@@ -22,7 +25,6 @@ export interface MqttConnection {
   host: string;
   port: number;
   endpoint: string;
-  // ---Currently not in use:---
   clean: boolean;
   connectTimeout: number;
   reconnectPeriod: number;
@@ -37,19 +39,24 @@ export interface MqttSubscription {
   subscribed: boolean;
 }
 
+// -------------------------------------------------------------
+// class MqttClient
+// -------------------------------------------------------------
 export class MqttClient {
   public client: mqtt.Client | null = null;
 
   public controller: Array<DeviceController> = [];
 
-  public mqttState: MqttState = reactive<MqttState>({
+  private privateMqttState: MqttState = reactive<MqttState>({
     connectOnStart: false,
     connected: false,
     iConnMqttState: -1,
     message: { topic: '', payload: '', retain: false, qos: 0 }
   })
 
-  public mqttConnection: MqttConnection = reactive<MqttConnection>({
+  public mqttState = readonly(this.privateMqttState)
+
+  private privateMqttConnection: MqttConnection = reactive<MqttConnection>({
     host: '10.1.1.1',
     port: 1884,
     endpoint: '',
@@ -61,16 +68,22 @@ export class MqttClient {
     password: ''
   })
 
-  public mqttSubscription: MqttSubscription = reactive<MqttSubscription>({
+  public mqttConnection = readonly(this.privateMqttConnection)
+
+  private privateMqttSubscription: MqttSubscription = reactive<MqttSubscription>({
     topic: '#',
     qos: 0,
     subscribed: false
   })
 
+  public mqttSubscription = readonly(this.privateMqttSubscription)
+
+  // ---------methods-------------------------------------------
+
   constructor () {
     if (this.mqttState.connectOnStart) {
-      this.connect()
-      this.subscribe()
+      this.connect_()
+      this.subscribe_()
       console.log('Constructor: connecting to ' + this.connectUrl())
     }
   }
@@ -79,40 +92,56 @@ export class MqttClient {
     return `ws://${this.mqttConnection.host}:${this.mqttConnection.port}${this.mqttConnection.endpoint}`
   }
 
-  public connect (): Promise<void> {
+  public connect (host: string, port: number, endpoint: string): Promise<void> {
+    this.privateMqttConnection.host = host
+    this.privateMqttConnection.port = port
+    this.privateMqttConnection.endpoint = endpoint
+    return this.connect_()
+  }
+
+  private connect_ (): Promise<void> {
     return new Promise((resolve, reject) => {
+      if (this.client) this.disconnect()
+      this.privateMqttState.iConnMqttState = 2
+      const options_ = {
+        clean: this.mqttConnection.clean,
+        connectTimeout: this.mqttConnection.connectTimeout,
+        reconnectPeriod: this.mqttConnection.reconnectPeriod,
+        clientId: this.mqttConnection.clientId,
+        username: this.mqttConnection.username,
+        password: this.mqttConnection.password
+      }
       console.log('MqttCient.ts-connect: url=' + this.connectUrl())
-      const client = mqtt.connect(this.connectUrl())
+      const client = mqtt.connect(this.connectUrl(), options_)
       this.client = client
       this.client.on('connect', () => {
-        this.mqttState.connected = true
-        this.mqttState.iConnMqttState = 1
+        this.privateMqttState.connected = true
+        this.privateMqttState.iConnMqttState = 1
         client.on('error', (err) => {
           console.error('MQTT Error', err)
-          this.mqttState.iConnMqttState = 7
+          this.privateMqttState.iConnMqttState = 7
         })
         client.on('connecting', () => {
           console.error('MQTT Connecting')
-          this.mqttState.iConnMqttState = 2
+          this.privateMqttState.iConnMqttState = 2
         })
         client.on('offline', (value: any) => {
-          this.mqttState.connected = false
-          this.mqttSubscription.subscribed = false
+          this.privateMqttState.connected = false
+          this.privateMqttSubscription.subscribed = false
           console.error('MQTT Offline', value)
-          this.mqttState.iConnMqttState = 3
+          this.privateMqttState.iConnMqttState = 3
         })
         client.on('disconnect', (value: any) => {
           console.error('MQTT Disconnect', value)
-          this.mqttState.iConnMqttState = 0
+          this.privateMqttState.iConnMqttState = 0
         })
         client.on('end', (value: any) => {
-          this.mqttState.connected = false
-          this.mqttSubscription.subscribed = false
+          this.privateMqttState.connected = false
+          this.privateMqttSubscription.subscribed = false
           console.error('MqttClient.ts-end: value=', value)
-          this.mqttState.iConnMqttState = 9
+          this.privateMqttState.iConnMqttState = 9
         })
         client.on('message', (topic: string, payload: any, props1: any) => {
-          // console.log('MqttClient.ts connect()', 'props1=', props1)
           let retain1 = false
           try {
             retain1 = props1.retain
@@ -128,13 +157,11 @@ export class MqttClient {
             qos: qos1
           }))
         })
-        // Only if subscribing is also required when connecting
-        // client.subscribe(this.mqttSubscription.topic)
         resolve()
       })
       client.on('error', () => {
         console.error('Error on connecting...')
-        this.mqttState.iConnMqttState = 8
+        this.privateMqttState.iConnMqttState = 8
         reject(Error('Error'))
       })
     })
@@ -143,7 +170,7 @@ export class MqttClient {
   public disconnect (): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.client) return reject(new Error('Not Connected'))
-      this.mqttState.iConnMqttState = 9
+      this.privateMqttState.iConnMqttState = 9
       this.client.end(true, {}, (err) => {
         if (err) return reject(new Error('Could not disconnect'))
         resolve()
@@ -151,7 +178,13 @@ export class MqttClient {
     })
   }
 
-  public subscribe (): Promise<void> {
+  public subscribe (topic: string, qos: QoS): Promise<void> {
+    this.privateMqttSubscription.topic = topic
+    this.privateMqttSubscription.qos = qos
+    return this.subscribe_()
+  }
+
+  private subscribe_ (): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.client) return reject(new Error('subscribe: Not Connected'))
       if (this.mqttSubscription.subscribed) {
@@ -161,7 +194,7 @@ export class MqttClient {
       console.log('MqttClient.ts-subscribe: ' + this.mqttSubscription.topic)
       this.client.subscribe(this.mqttSubscription.topic, { qos: this.mqttSubscription.qos }, (err) => {
         if (err) return reject(new Error('Could not subscribe topic ' + this.mqttSubscription.topic))
-        this.mqttSubscription.subscribed = true
+        this.privateMqttSubscription.subscribed = true
         resolve()
       })
     })
@@ -172,7 +205,7 @@ export class MqttClient {
       if (!this.client) return reject(new Error('Not Connected'))
       this.client.unsubscribe(this.mqttSubscription.topic, {}, (err) => {
         if (err) return reject(new Error('Could not unsubscribe topic ' + this.mqttSubscription.topic))
-        this.mqttSubscription.subscribed = false
+        this.privateMqttSubscription.subscribed = false
         resolve()
       })
     })
@@ -204,13 +237,12 @@ export class MqttClient {
   }
 
   public hostSubscribe (host: string, topicSubscribe: string): boolean {
-    this.mqttConnection.host = host
-    this.mqttSubscription.topic = topicSubscribe
+    this.privateMqttConnection.host = host
+    this.privateMqttSubscription.topic = topicSubscribe
     try {
-      this.connect()
-      this.subscribe()
-    }
-    catch (err) {
+      this.connect_()
+      this.subscribe_()
+    } catch (err) {
       console.error('hostSubscribe: Error ' + err)
       return false
     }
