@@ -18,9 +18,8 @@
 </template>
 
 <script setup lang="ts">
-import { useMessageStore } from '@/store/MessageStore'
+import { messages } from '@/store/MessageStore'
 import { mqttLastXController } from '@/controller/MqttLastXController'
-const { messages } = useMessageStore()
 const test = mqttLastXController.isSubscribe()
 </script>
 

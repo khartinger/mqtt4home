@@ -2,7 +2,7 @@
 // import { reactive } from 'vue'
 import { Message } from '@/services/MqttClient'
 import { mqttClientInstance } from '@/services/MqttClientInstance'
-import { useMessageStore } from '@/store/MessageStore'
+import { messages, addMessage } from '@/store/MessageStore'
 import { computed, ComputedRef } from 'vue'
 import { DeviceController } from './DeviceController'
 
@@ -12,7 +12,6 @@ export class MqttLastXController extends DeviceController {
 
   constructor () {
     super()
-    const { messages, addMessage } = useMessageStore()
     this.messages = messages
     this.addMessage = addMessage
   }
