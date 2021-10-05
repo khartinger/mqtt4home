@@ -58,7 +58,7 @@ Der MQTT Client besteht aus zwei Dateien, die sich im Verzeichnis `services` bef
 1. Die Datei `MqttClient.ts` enth&auml;lt die vier Interfaces `Message`, `MqttState`, `MqttConnection`, `MqttSubscription` sowie die Klasse `MqttClient`.   
 Die Interfaces werden in der Klasse `MqttClient` dazu verwendet, Informationen zum Verbindungs- und Abonnierungszustand zu speichern. Weiters werden Methoden f&uuml;r folgende Zwecke zur Verf&uuml;gung gestellt:   
    * `connectUrl ........` Zusammenbau der Verbindungs-URL aus Host, Port und MQTT-Endpunkt   
-   * `connect ...........` Verbinden mit dem Broker   
+   * `connect ...........` Aufbau der Verbindung zum Broker   
    * `disconnect ........` L&ouml;sen der Verbindung zum Broker   
    * `subscribe .........` Abonnieren eines Topics   
    * `unsubscribe .......` L&ouml;sen des Abonnieren eines Topics   
@@ -70,8 +70,8 @@ Die Interfaces werden in der Klasse `MqttClient` dazu verwendet, Informationen z
    Codierung der Datei [`MqttClient.ts` siehe `https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt1/src/services/MqttClient.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt1/src/services/MqttClient.ts)
 
 
-2. Die Datei `MqttClientInstance.ts` exportiert das Verbindungsobjekt `mqttClientInstance`.   
-Weiters m&uuml;ssen in dieser Datei alle MQTT-Controller registriert werden:   
+2. Die Datei `MqttClientInstance.ts` erzeugt und exportiert das Verbindungsobjekt `mqttClientInstance`.   
+In dieser Datei können alle MQTT-Controller registriert werden, die MQTT-Nachrichten weitergeleitet haben wollen:   
 ```   
 // ______mqttClientInstance.ts__________________________________
 import { MqttClient } from './MqttClient'
@@ -80,9 +80,12 @@ import { mqttLastXController } from '@/controller/MqttLastXController'
 export const mqttClientInstance = new MqttClient()
 mqttClientInstance.registerController(mqttLastXController)
 ```   
+Im obigen Beispiel wird nur der Controller `mqttLastXController` registriert.
 
 ## 2. Verbindungs-GUI `MqttConnect.vue`
-...
+Die Datei `MqttConnect.vue` enthält eine grafische Oberfläche zur Eingabe der Verbindungsdaten für Host und Port sowie die Tasten [Connect] und [Disconnect] zum Verbinden und Trennen der Verbindung zum Host.   
+
+
 
 ## Anpassungen in `App.vue` und `main.ts`
 ...
