@@ -83,9 +83,92 @@ mqttClientInstance.registerController(mqttLastXController)
 Im obigen Beispiel wird nur der Controller `mqttLastXController` registriert.
 
 ## 2. Verbindungs-GUI `MqttConnect.vue`
-Die Datei `MqttConnect.vue` enthält eine grafische Oberfläche zur Eingabe der Verbindungsdaten für Host und Port sowie die Tasten [Connect] und [Disconnect] zum Verbinden und Trennen der Verbindung zum Host.   
+Die Datei `MqttConnect.vue` enthält eine grafische Oberfläche zur Eingabe der Verbindungsdaten für Host und Port sowie die Tasten [Connect] und [Disconnect] zum Verbinden und Trennen der Verbindung zum Host. Mit Hilfe der Eigenschaft `connected` und dem Status der Verbindung werden die Tasten ein- bzw. ausgeblendet und der Verbindungsstatus angezeigt.    
+```   
+<!-- MqttConnect.vue -->
+<template>
+  <div class="mqtt_title">Connect to broker</div>
+  <p>                                            <!--1-->
+    Host: <input v-model="hostip">
+    Port: <input type="number" v-model.number="hostport">
+  </p>
+                                                 <!--2-->
+  <button @click="connect()" :disabled="isConnected || isConnecting">Connect</button> &nbsp;
+  <button @click="end()"     :disabled="!isConnected">Disconnect</button> &nbsp;
+  <p>
+    MqttState: {{ getMqttState }}                <!--3-->
+    <span v-if=isConnected>
+       &nbsp; (Broker at {{ getConnectUrl }})    <!--4-->
+    </span>
+    <span v-if=isConnecting>
+      &nbsp;
+      <button @click="cancel()">Cancel</button>  <!--5-->
+    </span>
+  </p>
+</template>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+import { mqttClientInstance } from '@/services/MqttClientInstance'
 
+export default defineComponent({
+  data () {
+    return {
+      hostip: mqttClientInstance.mqttConnection.host,
+      hostport: mqttClientInstance.mqttConnection.port
+    }
+  },
+  computed: {
+    isConnected: function (): boolean {
+      return mqttClientInstance.mqttState.connected
+    },
+    isConnecting: function (): boolean {
+      if (mqttClientInstance.mqttState.iConnMqttState === 2) return true
+      return false
+    },
+    getMqttState: function (): string {
+      return mqttClientInstance.sConnMqttState()
+    },
+    getConnectUrl: function (): string {
+      return mqttClientInstance.connectUrl()
+    }
+  },
+  mounted: async function (): Promise<void> {
+    // this.connect()
+  },
+  methods: {
+    connect: async function (): Promise<void> {
+      if (!this.isConnected) {
+        console.log('MqttConnect.vue: Connecting to ' + this.hostip + ':' + this.hostport + '...')
+        await mqttClientInstance.connect(this.hostip, this.hostport, '')
+        console.log('MqttConnect.vue: Connected to ' + this.getConnectUrl)
+      }
+    },
+    end: async function (): Promise<void> {
+      mqttClientInstance.disconnect()
+    },
+    cancel: async function (): Promise<void> {
+      mqttClientInstance.disconnect()
+    }
+  }
+})
+</script>
+
+<style>
+</style>
+```   
+Man erkennt die Aufteilung des Codes in den Grafik-Teil `<template>` und den Programm-Teil `<script>`.   
+__Grafik-Teil:__
+* `<--1-->` Eingabefelder für Host und Port.   
+   Mit `v-model` wird der Inhalt der Textfelder mit den Variablen `hostip` bzw. `hostport` verknüpft. Die Vorgabewerte stammen aus `mqttClientInstance.mqttConnection`   
+* `<--2-->` Eingabetaster [Connect] und [Disconnect], die je nach Programmzustand deaktiviert werden.   
+* `<--3-->` Anzeige des Verbindungszustandes (als Text).   
+* `<--4-->` Besteht eine Verbindung mit dem Broker, so wird zusätzlich die URL angezeigt.   
+* `<--5-->` Während des Verbindungszustandes wird ein Taster [Cancel] angezeigt, mit dem der Verbindungsaufbau abgebrochen werden kann (zB bei falscher IP-Adresse).   
+Der Stil für die Überschrift (`class="mqtt_title"` mit roter Schrift auf gelbem Grund) ist in der Datei `App.vue` definiert, damit er für alle Vue-Komponenten zur Verfügung steht.   
+
+__Skript-Teil:__
+Im Skript-Teil werden die Daten des Verbindungszustandes (aus der `mqttClientInstance`) für den Grafik-Teil sowie die Funktionen `connect()`, `end()` und `cancel()` zur Verfügung gestellt.
 
 ## Anpassungen in `App.vue` und `main.ts`
 ...
