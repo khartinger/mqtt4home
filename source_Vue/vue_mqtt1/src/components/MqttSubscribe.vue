@@ -28,9 +28,6 @@ export default defineComponent({
       return mqttClientInstance.mqttSubscription.subscribed
     }
   },
-  mounted: async function (): Promise<void> {
-    // this.connect()
-  },
   watch: {
     subscribedTopic: function (newValue: string): void {
       this.topicsub = newValue
@@ -38,15 +35,12 @@ export default defineComponent({
   },
   methods: {
     subscribe: async function (): Promise<void> {
-      // mqttClientInstance.mqttSubscription.topic = this.topicsub
       console.log('MqttSubscribe.vue-subscribe: topic=' + this.topicsub)
       await mqttClientInstance.subscribe(this.topicsub, 0)
     },
     unsubscribe: async function (): Promise<void> {
       mqttClientInstance.unsubscribe()
       clearMessage()
-      // const messageStore = useMessageStore()
-      // messageStore.clearMessage()
     }
   }
 })
