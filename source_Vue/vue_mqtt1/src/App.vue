@@ -1,3 +1,4 @@
+<!-- App.vue -->
 <template>
 <MqttConnect></MqttConnect>
 <hr>
