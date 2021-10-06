@@ -1,7 +1,7 @@
 <!-- MqttLastX.vue -->
 <template>
   <div class="mqtt_title">Last messages received</div>
-  <div v-if="test">
+  <div v-if="isSubscribed">
     <table>
       <tr><th>Topic</th><th>Payload</th><th>Retain</th><th>QoS</th></tr>
       <tr v-for="(message, key) in messages" :key="key">
@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { messages } from '@/store/MessageStore'
 import { mqttLastXController } from '@/controller/MqttLastXController'
-const test = mqttLastXController.isSubscribe()
+const isSubscribed = mqttLastXController.isSubscribe()
 </script>
 
 <style scoped>
