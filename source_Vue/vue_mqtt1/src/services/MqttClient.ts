@@ -1,7 +1,6 @@
 // ______MqttClient.ts__________________________________________
 import { DeviceController } from '@/controller/DeviceController'
-import mqtt from 'mqtt'
-import type { QoS } from 'mqtt'
+import mqtt, { QoS } from 'mqtt'
 import { reactive, readonly } from 'vue'
 
 // -------------------------------------------------------------
@@ -11,7 +10,7 @@ export interface Message {
   topic: string,
   payload: string,
   retain: boolean,
-  qos: number
+  qos: QoS
 }
 
 export interface MqttState {
@@ -146,7 +145,7 @@ export class MqttClient {
           try {
             retain1 = props1.retain
           } catch (error) { console.error(error) }
-          let qos1 = 0
+          let qos1 = 0 as QoS
           try {
             qos1 = props1.qos
           } catch (error) { console.error(error) }
@@ -211,10 +210,10 @@ export class MqttClient {
     })
   }
 
-  public publish (topic: string, payload: string, retain: boolean): Promise<void> {
+  public publish (topic: string, payload: string, retain: boolean, qos: QoS): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.client) return reject(new Error('Not Connected'))
-      this.client.publish(topic, payload, { qos: 1, retain: retain }, (err) => {
+      this.client.publish(topic, payload, { qos: qos, retain: retain }, (err) => {
         if (err) return reject(new Error('Could not publish topic ' + topic))
         resolve()
       })
