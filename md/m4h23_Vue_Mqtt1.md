@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 3.10.2021   
+Letzte &Auml;nderung: 6.10.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Vue: Senden und Empfangen von MQTT-Nachrichten</h1>
 <a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -23,7 +23,7 @@ _F&uuml;r Ungeduldige_: [Link zum fertigen Programm](https://github.com/kharting
 
 ## Voraussetzungen
 * Etwas Wissen &uuml;ber HTML, CSS und JavaScript/Typescript :)   
-* Visual Studio Code, das f&uuml;r Vue-Anwendungen bereits vorbereitet ist.   
+* Visual Studio Code ("VSC"), das f&uuml;r Vue-Anwendungen bereits vorbereitet ist.   
    (Dh. es wurde bereits (mindestens) eine Vue-Anwendung in Visual Code erstellt.)   
 
 ## Erforderliche Hilfsmittel
@@ -32,9 +32,10 @@ _F&uuml;r Ungeduldige_: [Link zum fertigen Programm](https://github.com/kharting
 
 ## Vorbereitung des Vue-Projektes in VSC (Kurzfassung)   
 1. Visual Studio Code (VSC) starten.   
-2. VSC: Terminal-Fenster &ouml;ffnen: `Men&uuml; Terminal - New Terminal`.   
-3. VSC-Terminal: In den Ordner wechseln, unter dem das Vue-Projekt erzeugt werden soll: `cd /g/github/mqtt4home/source_Vue`   
-4. VSC-Terminal: Vue.js Applikation erzeugen: `vue create mqtt1`  
+2. VSC: Terminal-Fenster &ouml;ffnen: Men&uuml; Terminal - New Terminal.   
+3. VSC-Terminal: In den Ordner wechseln, unter dem das Vue-Projekt erzeugt werden soll:   
+   `cd /g/github/mqtt4home/source_Vue`   
+4. VSC-Terminal: Vue.js Applikation erzeugen: `vue create vue_mqtt1`  
    Mit Cursortasten, Leertaste und &lt;Enter&gt; Folgendes ausw&auml;hlen:   
    `> Manually select features`   
    `(*) Choose Vue version`   
@@ -71,7 +72,7 @@ Die Interfaces werden in der Klasse `MqttClient` dazu verwendet, Informationen z
 
 
 2. Die Datei `MqttClientInstance.ts` erzeugt und exportiert das Verbindungsobjekt `mqttClientInstance`.   
-In dieser Datei können alle MQTT-Controller registriert werden, die MQTT-Nachrichten weitergeleitet haben wollen:   
+In dieser Datei k&ouml;nnen alle MQTT-Controller registriert werden, die MQTT-Nachrichten weitergeleitet haben wollen:   
 ```   
 // ______mqttClientInstance.ts__________________________________
 import { MqttClient } from './MqttClient'
@@ -80,10 +81,10 @@ import { mqttLastXController } from '@/controller/MqttLastXController'
 export const mqttClientInstance = new MqttClient()
 mqttClientInstance.registerController(mqttLastXController)
 ```   
-Im obigen Beispiel wird nur der Controller `mqttLastXController` registriert.
+Im obigen Beispiel wird nur der Controller `mqttLastXController` registriert.   
 
 ## 2. Verbindungs-GUI `MqttConnect.vue`
-Die Datei `MqttConnect.vue` enthält eine grafische Oberfläche zur Eingabe der Verbindungsdaten für Host und Port sowie die Tasten [Connect] und [Disconnect] zum Verbinden und Trennen der Verbindung zum Host. Mit Hilfe der Eigenschaft `connected` und dem Status der Verbindung werden die Tasten ein- bzw. ausgeblendet und der Verbindungsstatus angezeigt.    
+Die Datei `MqttConnect.vue` enth&auml;lt eine grafische Oberfl&auml;che zur Eingabe der Verbindungsdaten f&uuml;r Host und Port sowie die Tasten [Connect] und [Disconnect] zum Verbinden und Trennen der Verbindung zum Host. Mit Hilfe der Eigenschaft `connected` und dem Status der Verbindung werden die Tasten ein- bzw. ausgeblendet und der Verbindungsstatus angezeigt.    
 ```   
 <!-- MqttConnect.vue -->
 <template>
@@ -158,17 +159,113 @@ export default defineComponent({
 </style>
 ```   
 Man erkennt die Aufteilung des Codes in den Grafik-Teil `<template>` und den Programm-Teil `<script>`.   
-__Grafik-Teil:__
-* `<--1-->` Eingabefelder für Host und Port.   
-   Mit `v-model` wird der Inhalt der Textfelder mit den Variablen `hostip` bzw. `hostport` verknüpft. Die Vorgabewerte stammen aus `mqttClientInstance.mqttConnection`   
+__Grafik-Teil:__   
+* `<--1-->` Eingabefelder f&uuml;r Host und Port.   
+   Mit `v-model` wird der Inhalt der Textfelder mit den Variablen `hostip` bzw. `hostport` verkn&uuml;pft. Die Vorgabewerte stammen aus `mqttClientInstance.mqttConnection`   
 * `<--2-->` Eingabetaster [Connect] und [Disconnect], die je nach Programmzustand deaktiviert werden.   
 * `<--3-->` Anzeige des Verbindungszustandes (als Text).   
-* `<--4-->` Besteht eine Verbindung mit dem Broker, so wird zusätzlich die URL angezeigt.   
-* `<--5-->` Während des Verbindungszustandes wird ein Taster [Cancel] angezeigt, mit dem der Verbindungsaufbau abgebrochen werden kann (zB bei falscher IP-Adresse).   
-Der Stil für die Überschrift (`class="mqtt_title"` mit roter Schrift auf gelbem Grund) ist in der Datei `App.vue` definiert, damit er für alle Vue-Komponenten zur Verfügung steht.   
+* `<--4-->` Besteht eine Verbindung mit dem Broker, so wird zus&auml;tzlich die URL angezeigt.   
+* `<--5-->` W&auml;hrend des Verbindungszustandes wird ein Taster [Cancel] angezeigt, mit dem der Verbindungsaufbau abgebrochen werden kann (zB bei einer falschen IP-Adresse).   
 
-__Skript-Teil:__
-Im Skript-Teil werden die Daten des Verbindungszustandes (aus der `mqttClientInstance`) für den Grafik-Teil sowie die Funktionen `connect()`, `end()` und `cancel()` zur Verfügung gestellt.
+Der Stil f&uuml;r die &Uuml;berschrift (`class="mqtt_title"` mit roter Schrift auf gelbem Grund) ist in der Datei `App.vue` definiert, damit er f&uuml;r alle Vue-Komponenten zur Verf&uuml;gung steht.   
 
-## Anpassungen in `App.vue` und `main.ts`
-...
+__Skript-Teil:__   
+Im Skript-Teil werden die Daten des Verbindungszustandes (aus `mqttClientInstance`) f&uuml;r den Grafik-Teil sowie die Funktionen `connect()`, `end()` und `cancel()` zur Verf&uuml;gung gestellt.   
+
+## 3. GUI zum Senden einer Nachricht (`MqttPublish.vue`)
+Im __Grafik-Teil__ (`<template>`) befinden sich   
+* zwei Eingabefelder (f&uuml;r Topic und Payload),   
+* eine Check-Box (f&uuml;r retain ja/nein), sowie   
+* eine Auswahlliste (f&uuml;r QoS) und   
+* der Button zum Ausf&uuml;hren der Publish-Funktion.   
+
+Die Verkn&uuml;pfung der Eingabefelder mit den Variablen im Skript-Teil erfolgt wieder mit `v-model`, die Definition des Stils f&uuml;r die &Uuml;berschrift (`class="mqtt_title"`) steht wieder in der Datei `App.vue`.   
+
+Im __Skript-Teil__ wird 
+* im data-Block die Variable msg definiert, deren Komponenten zum Datenaustausch mit den GUI-Elementen dienen.   
+* Die Funktion `isConnected` prüft, ob eine Verbindung zum Broker besteht. Entsprechend wird der Button [Publish] deaktiviert oder nicht.   
+* Die Methode `publish` ruft die gleichnamige Methode des MQTT-Clients auf um die Nachricht zu senden.   
+
+## 4. GUI zum Abonnieren von Nachrichten (`MqttSubscribe`)
+Die GUI zum Abonnieren von Nachrichten enth&auml;lt ein Eingabefeld f&uuml;r das Topic, das abonniert werden soll. Die Tasten [Subscribe] und [Unsubscribe] werden abh&auml;ngig davon aktiviert, ob eine Verbindung zum Broker besteht und ob gerade auf ein Topic geh&ouml;rt wird.   
+Eine Besonderheit stellt die Variable `subscribedTopic` dar: Sie dient gemeinsam mit der Variablen `topicsub` dazu, den Inhalt des Textfeldes mit dem Wert im MQTT-Client synchron zu halten:   
+* Beim Start der Anwendung wird der Vorgabewert aus dem MQTT-Client geholt (`computed: { subscribedTopic: ...}`).   
+* &Auml;ndert sich der Wert, wird auch das Textfeld aktualisiert (`watch: { subscribedTopic: ...`).   
+* Das Updaten des Wertes im MQTT-Client erfolgt automatisch beim Ausf&uuml;hren der Funktion `await mqttClientInstance.subscribe(this.topicsub, 0)`.   
+
+Beim Beenden des Abos (`unsubscribe`) wird auch der Nachrichten-Speicher gel&ouml;scht (Aufruf von `clearMessage()`).   
+
+## 5. Anzeige von Nachrichten
+Die Anzeige der letzten X Nachrichten wird auf drei Dateien aufgeteilt:   
+* `components/MqttLastX.vue: ` Anzeige der Nachrichten (Topic, Payload, Retain, QoS) in Form einer Tabelle. Gibt es keine Nachrichten anzuzeigen, wird nur die &Uuml;berschrift der Tabelle ausgegeben. Ist kein Topic abonniert, wird der Text "`Not connected or nothing subscribed :(`" angezeigt.   
+   Weiters enth&auml;lt die Datei einige Stile f&uuml;r die Anzeige der Tabelle.   
+* `controller/MqttLastXController.ts: ` Die Datei enth&auml;lt die von `DeviceController` abgeleitete Klasse `MqttLastXController`, die die Methode `onMessage` enth&auml;lt. In dieser Methode wird die eintreffende Nachricht in den Nachrichtenspeicher eingef&uuml;gt (`this.addMessage(message)`).   
+* `store/MessageStrore.ts: ` Diese Datei enth&auml;lt die Anzahl der maximalen Eintr&auml;ge in den Speicher (`maxSize`), den Speicher f&uuml;r die Nachrichten (`messageStore`), eine Methode zum Exportieren der Nachrichten (`messages`), eine Methode zum Hinzuf&uuml;gen einer Nachricht (`addMessage`) sowie eine Methode zum L&ouml;schen des Speichers (`clearMessage`)
+
+
+## Anpassungen in `main.ts` und `App.vue`
+Die Datei `main.ts` erzeugt die Anwendung (`createApp`) und startet sie (`mount`). Der Standard-Inhalt der Datei sollte durch folgende Zeilen ersetzt werden:   
+```   
+// ______main.ts________________________________________________
+import { createApp, h } from 'vue'
+import App from './App.vue'
+
+const app = createApp({
+  render: () => h(App)
+})
+
+app.mount('#app')
+```   
+
+In der Datei `App.vue` werden die einzelnen Komponenten importiert und angezeigt. Zwischen der Anzeige der Komponenten wird ein Querstrich (Tag `<hr>`) eingef&uuml;gt.   
+Au&szlig;erdem werden die Stile `#app` und `.mqtt_title` definiert.   
+```   
+<!-- App.vue -->
+<template>
+<MqttConnect></MqttConnect>
+<hr>
+<MqttPublish></MqttPublish>
+<hr>
+<MqttSubscribe></MqttSubscribe>
+<br><br>
+<MqttLastX></MqttLastX>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+import MqttConnect from './components/MqttConnect.vue'
+import MqttPublish from './components/MqttPublish.vue'
+import MqttSubscribe from './components/MqttSubscribe.vue'
+import MqttLastX from './components/MqttLastX.vue'
+
+export default defineComponent({
+  name: 'App',
+  components: {
+    MqttConnect,
+    MqttPublish,
+    MqttSubscribe,
+    MqttLastX
+  }
+})
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: left;
+  color: #2c3e50;
+  margin-top: 0px;
+}
+.mqtt_title {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  text-align: left;
+  color: #FF0000;
+  background-color: #FFFFBB;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+</style>
+```   
