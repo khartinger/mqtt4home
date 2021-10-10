@@ -39,9 +39,9 @@ described.
 
 ### Installing the required packages
 ```
- sudo apt-get update<br>
- sudo apt-get upgrade<br>
- sudo apt-get install dnsmasq hostapd<br>
+ sudo apt-get update
+ sudo apt-get upgrade
+ sudo apt-get install dnsmasq hostapd
 ```
 
 ### Static IP for interface wlan0
@@ -51,27 +51,27 @@ Because the interface `wlan0` needs a static address, you must not be connected 
 `sudo nano /etc/network/interfaces`.   
 At the end of the file insert the following:   
 ```
-#source-directory /etc/network/interfaces.d<br>
-<br>
-auto eth0<br>
-#iface eth0 inet dhcp<br>
-iface eth0 inet static<br>
-address   192.168.1.2<br>
-netmask   255.255.248.0<br>
-network   192.168.0.0<br>
-broadcast 192.168.0.255<br>
-gateway   192.168.0.1<br>
-<br>
-auto wlan0<br>
-allow-hotplug wlan0<br>
-iface wlan0 inet static<br>
-address   10.1.1.1<br>
-netmask   255.255.248.0<br>
-network   10.1.1.0<br>
-broadcast 10.1.1.255<br>
-#wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf<br>
+#source-directory /etc/network/interfaces.d
+
+auto eth0
+#iface eth0 inet dhcp
+iface eth0 inet static
+address   192.168.1.2
+netmask   255.255.248.0
+network   192.168.0.0
+broadcast 192.168.0.255
+gateway   192.168.0.1
+
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet static
+address   10.1.1.1
+netmask   255.255.248.0
+network   10.1.1.0
+broadcast 10.1.1.255
+#wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
 ```
-The # sign (double cross, number sign or hash) will invalidate the wpa-conf line (comment).<br>
+The # sign (double cross, number sign or hash) will invalidate the wpa-conf line (comment).
 Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x
 
 * In the configuration file for the service `dhcpcd` comment out any entry for `eth0` and `wlan0`:   
@@ -79,11 +79,11 @@ Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x
 Set character #:   
 ```
 #denyinterfaces wlan0
-#-----statische IP--------------------<br>
-#interface eth0<br>
-#static ip_address=192.168.0.111/21<br>
-#static routers=192.168.0.1<br>
-#static domain_name_servers=192.168.0.1<br>
+#-----statische IP--------------------
+#interface eth0
+#static ip_address=192.168.0.111/21
+#static routers=192.168.0.1
+#static domain_name_servers=192.168.0.1
 ```
 Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x   
 
@@ -92,36 +92,36 @@ Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x
 `sudo nano /etc/hostapd/hostapd.conf`   
 Write the following into it:   
 ```
-# name of the WiFi interface we want to use<br>
-interface=wlan0<br>
-# Use the nl80211 driver with the brcmfmac driver<br>
-driver=nl80211<br>
-# This is the name of the network (change to your values!)<br>
-<b>ssid=Raspi11</b><br>
-# Use the 2.4GHz band<br>
-hw_mode=g<br>
-# Use channel 6<br>
-channel=6<br>
-# Enable 802.11n<br>
-ieee80211n=1<br>
-# Enable WMM<br>
-wmm_enabled=1<br>
-# Enable 40MHz channels with 20ns guard interval<br>
-ht_capab=[HT40][SHORT-GI-20][DSSS_CCK-40]<br>
-# Accept all MAC addresses<br>
-macaddr_acl=0<br>
-# Use WPA authentication<br>
-auth_algs=1<br>
-# Require clients to know the network name<br>
-ignore_broadcast_ssid=0<br>
-# Use WPA2<br>
-wpa=2<br>
-# Use a pre-shared key<br>
-wpa_key_mgmt=WPA-PSK<br>
-# Network password (passphrase)<br>
-<b>wpa_passphrase=12345678</b><br>
-# Use AES, instead of TKIP<br>
-rsn_pairwise=CCMP<br>
+# name of the WiFi interface we want to use
+interface=wlan0
+# Use the nl80211 driver with the brcmfmac driver
+driver=nl80211
+# This is the name of the network (change to your values!)
+ssid=Raspi11
+# Use the 2.4GHz band
+hw_mode=g
+# Use channel 6
+channel=6
+# Enable 802.11n
+ieee80211n=1
+# Enable WMM
+wmm_enabled=1
+# Enable 40MHz channels with 20ns guard interval
+ht_capab=[HT40][SHORT-GI-20][DSSS_CCK-40]
+# Accept all MAC addresses
+macaddr_acl=0
+# Use WPA authentication
+auth_algs=1
+# Require clients to know the network name
+ignore_broadcast_ssid=0
+# Use WPA2
+wpa=2
+# Use a pre-shared key
+wpa_key_mgmt=WPA-PSK
+# Network password (passphrase)
+wpa_passphrase=12345678
+# Use AES, instead of TKIP
+rsn_pairwise=CCMP
 ```
 Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x   
 
@@ -138,7 +138,7 @@ The network "Raspi11" is visible, but you can't log in yet, because you don't ge
 Cancel with &lt;Ctrl&gt; c
 
 3. Make configuration file for hostapd available at startup:   
-`sudo nano /etc/default/hostapd`.   
+`sudo nano /etc/default/hostapd`   
 Insert under the line `#DAEMON_CONF=""`:   
 `DAEMON_CONF="/etc/hostapd/hostapd.conf"`   
 Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x   
@@ -181,8 +181,8 @@ Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x
 
 2. Set up network address translation (NAT) between wlan0 and eth0:   
 ```
-sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE<br>
-sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT<br>
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
 ```
 
@@ -190,7 +190,7 @@ sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
 `sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"`   
 
 4. Call the NAT rules at every system start:   
-`sudo nano /etc/rc.local`.   
+`sudo nano /etc/rc.local`   
 Insert the following lines BEFORE the exit 0 line:   
 `iptables-restore < /etc/iptables.ipv4.nat`   
 
@@ -199,7 +199,7 @@ Insert the following lines BEFORE the exit 0 line:
  `sudo reboot`   
 
 2. Test the internet access in the terminal (or terminal program):   
- `ping 8.8.8 -c 4`   
+ `ping 8.8.8.8 -c 4`   
  Attention when restarting `putty`: The IP address of the RasPi is now `192.168.1.2` (!)   
 
 3. On a laptop/PC that is not connected to the internet via LAN, select the WLAN network `Raspi11` and enter the key `12345678`.
