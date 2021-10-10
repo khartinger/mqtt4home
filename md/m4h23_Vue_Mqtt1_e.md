@@ -41,7 +41,7 @@ _For the impatient_: [link to finished program](https://github.com/khartinger/mq
    `(*) Select Vue version`   
    `(*) Babel`   
    `(*) TypeScript`   
-   `(*) Router`   
+   `( ) Router`   
    `(*) Linter / Formatter`   
    `> 3.x`   
    `? Use component syntax in class style? No`   

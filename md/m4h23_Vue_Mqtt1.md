@@ -41,7 +41,7 @@ _F&uuml;r Ungeduldige_: [Link zum fertigen Programm](https://github.com/kharting
    `(*) Choose Vue version`   
    `(*) Babel`   
    `(*) TypeScript`   
-   `(*) Router`   
+   `( ) Router`   
    `(*) Linter / Formatter`   
    `> 3.x`   
    `? Use class-style component syntax? No`   
