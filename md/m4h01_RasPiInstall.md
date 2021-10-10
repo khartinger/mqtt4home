@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 31.7.2021   
+Letzte &Auml;nderung: 10.10.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Grundinstallation des Raspberry Pi</h1>
 <a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -11,7 +11,7 @@ Letzte &Auml;nderung: 31.7.2021
 * Installation des Betriebssystems "Raspberry Pi OS" auf dem RasPi.   
 Im Projekt werden folgende Einstellungen gew&auml;hlt, die aus Sicherheitsgr&uuml;nden ge&auml;ndert werden sollten:   
 
-|           |                           |   
+| Kriterium | Wert                      |   
 | --------- | ------------------------- |   
 | Hostname: | `raspi` (statt raspberry) |   
 | Username: | `pi_`   (statt pi)        |   
@@ -30,7 +30,7 @@ Im Projekt werden folgende Einstellungen gew&auml;hlt, die aus Sicherheitsgr&uum
 1. Micro-SD-Karte (Gr&ouml;&szlig;e 8GB oder mehr) in den Kartenleser einlegen, den Kartenleser am PC anschlie&szlig;en.   
 2. Herunterladen des Hilfsprogramms zum Beschreiben der SD-Card unter Windows.   
  Siehe [http://www.raspberrypi.org/software](http://www.raspberrypi.org/software). Download von "`imager_1.6.2.exe`".   
-3. Programmier-Programm starten und Betriebssystem-Image direkt auf die Micro-SD-Karte schreiben.   
+3. Programmier-Programm starten und Betriebssystem-Image [zB Raspberry Pi OS (32bit) vom 2021-05-07] direkt auf die Micro-SD-Karte schreiben.   
 
 ### Erste Inbetriebnahme des RasPi
 Beim ersten Start des RasPi m&uuml;ssen einige Einstellungen vorgenommen werden. Diese k&ouml;nnen sp&auml;ter auch ge&auml;ndert werden.   
@@ -73,7 +73,7 @@ Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen - Raspber
 [OK] anklicken und Neustart des Systems zulassen [OK].   
    
 
-Sollte nicht nach einem <b>Neustart</b> gefragt werden, so kann man den Neustart so ausl&ouml;sen:   
+Sollte nicht nach einem __Neustart__ gefragt werden, so kann man den Neustart so ausl&ouml;sen:   
 
 |                         |                                                |   
 | ----------------------- | ---------------------------------------------- |   
@@ -100,7 +100,7 @@ Das hei&szlig;t, die IP-Adresse ist 192.168.0.68
 Sollte trotz richtiger IP-Adresse die putty-Verbindung verweigert werden, dann ist eventuell SSH bei den Schnittstellen nicht aktiviert (siehe oben!).   
 
 ### Standard-User-Namen pi &auml;ndern
-Quelle: [https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/](https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/) [24.10.2017]</a>   
+Quelle: [https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/](https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/) [24.10.2017]   
 __Anmerkung: Falls bereits User-Crontabs f&uuml;r den User pi erstellt wurden, so werden diese gel&ouml;scht. (Sichern!)__   
 1. Putty starten (empfohlen)    oder das RasPi in den Kommandozeilen-Modus schalten (siehe oben), neu starten und User-Namen (`pi`) und  Passwort (`pass`) eingeben.      
 2.  Hilfs-User temp anlegen:   
@@ -162,7 +162,8 @@ __Anmerkung: Falls bereits User-Crontabs f&uuml;r den User pi erstellt wurden, s
  sudo nano /etc/lightdm/lightdm.conf
  ```   
  Folgende Zeilen &auml;ndern bzw. erg&auml;nzen   
- ```#autologin-user=pi   autologin-user=pi_```   
+   `#autologin-user=pi`   
+   `autologin-user=pi_`   
  Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
        
 11. Weiters &auml;ndern:   
@@ -192,17 +193,17 @@ __Anmerkung: Falls bereits User-Crontabs f&uuml;r den User pi erstellt wurden, s
   | 8 Update                 | Update this tool to the latest version    |   
   | 9 About raspi-config     | Information about this configuration tool |   
   | <Select>                 | <Finish>                                  |   
- Punkt 1 durch Dr&uuml;cken von <enter> w&auml;hlen.   
+ Punkt 1 durch Dr&uuml;cken von &lt;enter&gt; w&auml;hlen.   
  
  * Mit der Cursor-Taste <down> zu Punkt S5 gehen   
  ```S5 Boot / Auto Login Select boot into desktop or to command line```   
- und mit der <enter>-Taste w&auml;hlen.   
+ und mit der &lt;enter&gt;-Taste w&auml;hlen.   
     
  * Mit der Cursor-Taste <down> zu Punkt B4 gehen   
  ```B4 Desktop Autologin Desktop GUI, automatically logged in as 'pi_' user```   
- und mit der <enter>-Taste w&auml;hlen.   
+ und mit der &lt;enter&gt;-Taste w&auml;hlen.   
     
- * Mit der Tabulator-Taste <Finish> w&auml;hlen und die Frage "Would you like to reboot now?" mit <Ja> beantworten.   
+ * Mit der Tabulator-Taste &lt;Finish&gt; w&auml;hlen und die Frage "Would you like to reboot now?" mit &lt;Ja&gt; beantworten.   
  Das RasPi bootet und startet wieder automatisch den Grafik-Bildschirm.   
     
  Das Einschalten des grafischen Bildschirms h&auml;tte man nat&uuml;rlich auch am RasPi durch Eingabe von   
@@ -218,21 +219,25 @@ __Anmerkung: Falls bereits User-Crontabs f&uuml;r den User pi erstellt wurden, s
 Steuerdatei erstellen:   
 `sudo nano /etc/X11/xorg.conf.d/01-disable-monitor-off.conf`  
 Inhalt der Datei:   
-`Section "ServerFlags"`   
-`Option  "BlankTime" "0"`    
-`Option  "StandbyTime" "0"`   
-`Option  "SuspendTime" "0"`   
-`Option  "OffTime" "0"`   
-`EndSection`   
+```   
+Section "ServerFlags"
+Option  "BlankTime" "0"
+Option  "StandbyTime" "0"
+Option  "SuspendTime" "0"
+Option  "OffTime" "0"
+EndSection
+```   
 Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
       
 2. Weitere Datei anlegen:   
 `nano ~/.xinitrc`   
 Inhalt der Datei:   
-`xset s off`   
-`xset -dpms`   
-`xset s noblank`   
-`exec /etc/alternatives/x-session-manager`   
+```   
+xset s off
+xset -dpms
+xset s noblank
+exec /etc/alternatives/x-session-manager
+```   
 Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
       
 3. Das RasPi neu starten:   
@@ -258,14 +263,14 @@ sudo nano /usr/local/bin/autostart.sh
 ```   
 Inhalt der Datei zB   
 ```
-#!/bin/bash   
-#...Farbe der Schrift auf gelb aendern...   
-echo -e "\\033[01;33m"   
-printf "_____autostart.sh______26.07.2021_______khartinger_____\n"   
-printf "_______________________________________________________\n"   
+#!/bin/bash
+#...Farbe der Schrift auf gelb aendern...
+echo -e "\\033[01;33m"
+printf "_____autostart.sh______26.07.2021_______khartinger_____\n"
+printf "_______________________________________________________\n"
 #...Farbe der Schrift wieder auf wei&szlig; aendern...   
-echo -e "\\033[00m"   
-exit 0   
+echo -e "\\033[00m"
+exit 0
 ```
 Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
 __*Anmerkungen:*__   
@@ -281,8 +286,8 @@ sudo nano /etc/rc.local
 ```   
 Vor `exit 0` folgendes einf&uuml;gen:   
 ```
-#-----Calling a script with my own commands-----   
-/usr/local/bin/autostart.sh   
+#-----Calling a script with my own commands-----
+/usr/local/bin/autostart.sh
 ```
 Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
       

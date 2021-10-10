@@ -1,4 +1,4 @@
-Last modified: 2021-07-31   
+Last modified: 2021-10-10   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Basic installation of the Raspberry Pi</h1>
 <a href="../readme.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
@@ -69,10 +69,11 @@ On the graphics screen top left click [Menu] - Settings - Raspberry Pi Configura
 | Hostname:                | `raspi`                       | &nbsp;       |   
 | Boot:                    | ( &nbsp;) To Desktop          | (*) To CLI   |   
 | Automatic login:         | ( &nbsp;) Log in as user 'pi' | (*) Disabled |   
+
 Click [OK] and allow the system to restart [OK].   
    
 
-If you are not asked for a <b>reboot</b>, you can trigger the reboot like this:   
+If you are not asked for a __reboot__, you can trigger the reboot like this:   
 
 |                    |                                                |   
 | ------------------ | ---------------------------------------------- |   
@@ -92,14 +93,14 @@ For many tasks it is easier to operate the RasPi from the PC, because then you c
 If you connect the RasPi with a LAN cable to the PC, you can display the IP via the command line like this:   
 ```
 ifconfig eth0   
-eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST> mtu 1500   
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST&gt; mtu 1500   
       inet 192.168.0.68 netmask 255.255.248.0 broadcast 192.168.0.255   
 ```
 That means the IP address is 192.168.0.68   
 If the putty connection is denied despite the correct IP address, then SSH may not be enabled on the interfaces (see above!).   
 
 ### Change default user name pi
-Source: [https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/](https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/) [10/24/2017]</a>   
+Source: [https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/](https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/) [10/24/2017]   
 __Note: If user crontabs have already been created for user pi, they will be deleted. (Save!)__   
 1. Start Putty (recommended) or switch the RasPi to command line mode (see above), reboot and enter user name (`pi`) and password (`pass`).      
 2. Create auxiliary user temp:   
@@ -189,18 +190,18 @@ __Note: If user crontabs have already been created for user pi, they will be del
   | 6 Advanced Options       | Configure advanced settings               |   
   | 8 Update                 | Update this tool to the latest version    |   
   | 9 About raspi-config     | Information about this configuration tool |   
-  | <Select>                 | <Finish>                                  |   
- Select point 1 by pressing <enter> .   
+  | &lt;Select&gt;           | &lt;Finish&gt;                         |   
+ Select point 1 by pressing &lt;enter&gt; .   
  
- * Go to point S5 with the cursor key <down> .   
+ * Go to point S5 with the cursor key &lt;down&gt; .   
  ```S5 Boot / Auto Login Select boot into desktop or to command line```   
- and select with the <enter> key.   
+ and select with the &lt;enter&gt; key.   
     
- * Go to item B4 with the cursor key <down>.   
+ * Go to item B4 with the cursor key &lt;down&gt;.   
  ```B4 Desktop Autologin Desktop GUI, automatically logged in as 'pi_' user```   
- and select with the <enter>-key.   
+ and select with the &lt;enter&gt;-key.   
     
- * Select <Finish> with the tab key and answer the question "Would you like to reboot now?" with <Yes>.   
+ * Select &lt;Finish&gt; with the tab key and answer the question "Would you like to reboot now?" with &lt;Yes&gt;.   
  The RasPi boots and restarts the graphic screen automatically.   
     
  Switching on the graphic screen could of course also have been done on the RasPi by entering   
@@ -216,21 +217,25 @@ __Note: If user crontabs have already been created for user pi, they will be del
 Create control file:   
 `sudo nano /etc/X11/xorg.conf.d/01-disable-monitor-off.conf`  
 Contents of the file:   
-`Section "ServerFlags"`   
-`Option "BlankTime" "0"`    
-`Option "StandbyTime" "0"`   
-`Option "SuspendTime" "0"`   
-`Option "OffTime" "0"`   
-`EndSection`   
+```   
+Section "ServerFlags"
+Option "BlankTime" "0"
+Option "StandbyTime" "0"
+Option "SuspendTime" "0"
+Option "OffTime" "0"
+EndSection
+```   
 Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x
       
 2. Create another file:   
 `nano ~/.xinitrc`   
 Contents of the file:   
-`xset s off`   
-`xset -dpms`   
-`xset s noblank`   
-`exec /etc/alternatives/x-session-manager`   
+```   
+xset s off
+xset -dpms
+xset s noblank
+exec /etc/alternatives/x-session-manager
+```   
 Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x
       
 3. Reboot the RasPi   
@@ -239,7 +244,7 @@ Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x
 ### Rotate display 180 degrees
 If you use a transparent case from Amazon or BetterShopping (ART02314), you also have to rotate the display by 180&deg;.   
 This is done simply by an entry in the file `/boot/config.txt`:   
-```
+```   
 sudo nano /boot/config.txt
 ```   
 Add the following line to the end of the file   
@@ -256,14 +261,14 @@ sudo nano /usr/local/bin/autostart.sh
 ```   
 Content of the file e.g.   
 ```
-#!/bin/bash   
-#...change the color of the font to yellow...   
-echo -e "\\033[01;33m"   
-printf "_____autostart.sh______26.07.2021_______khartinger_____\n"   
-printf "_______________________________________________________\n"   
-#...change the color of the font back to white...   
-echo -e "\n[00m   
-exit 0   
+#!/bin/bash
+#...change the color of the font to yellow...
+echo -e "\\033[01;33m"
+printf "_____autostart.sh______26.07.2021_______khartinger_____\n"
+printf "_______________________________________________________\n"
+#...change the color of the font back to white...
+echo -e "\n[00m
+exit 0
 ```
 Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x   
 __*Notes:*__   
@@ -279,8 +284,8 @@ sudo nano /etc/rc.local
 ```   
 Before `exit 0` insert the following:   
 ```
-#-----Calling a script with my own commands-----   
-/usr/local/bin/autostart.sh   
+#-----Calling a script with my own commands-----
+/usr/local/bin/autostart.sh
 ```
 Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x   
       
