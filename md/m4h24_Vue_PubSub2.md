@@ -6,7 +6,7 @@ Letzte &Auml;nderung: 7.10.2021
 </td></tr></table><hr>
   
 ## Ziel
-* Erstellen einer Vue-Anwendung, die auf dem Raspberry Pi läuft und mit der MQTT-Nachrichten gesendet und automatisch abonniert bzw. angezeigt werden k&ouml;nnen:   
+* Erstellen einer Vue-Anwendung, die auf dem Raspberry Pi l&auml;uft und mit der MQTT-Nachrichten gesendet und automatisch abonniert bzw. angezeigt werden k&ouml;nnen:   
 ![MQTT-Sende-/Empfangsprogramm](./images/211010_vue_pubsub2.png "MQTT-Sende-/Empfangsprogramm")   
 _Bild 1: MQTT-Sende- und Empfangsprogramm_   
 Der Aufruf der Anwendung soll durch Eingabe der URL `10.1.1.1/vue_pubsub2` erfolgen.   
@@ -17,7 +17,7 @@ __Das Programm soll aus drei Teilen bestehen:__
    Es ist die Eingabe von Topic, Payload, ob die Nachricht gespeichert werden soll ("retain") und vom QoS-Level (Quality of Service) m&ouml;glich.   
 3. Eine GUI-Komponente, die f&uuml;r das vorgegebene Topic die letzten 5 Nachrichten anzeigt.   
 
-Um das Vue-Projekt übersichtlich (und leicht erweiterbar) zu gestalten, werden die Dateien auf verschiedene Unterverzeichnisse verteilt.
+Um das Vue-Projekt &uuml;bersichtlich (und leicht erweiterbar) zu gestalten, werden die Dateien auf verschiedene Unterverzeichnisse verteilt.
 
 _F&uuml;r Ungeduldige_: [Link zum fertigen Programm](https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue_pubsub2)
 
@@ -66,12 +66,12 @@ Der MQTT Client besteht aus drei Dateien, die sich auf die (neu zu erstellenden)
 
 ### 1. Erstellung der MqttClient-Klasse
 * Anlegen des Verzeichnisses `services`:   
-   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `src` klicken - "Neuer Ordner" wählen und `services` eingeben.   
+   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `src` klicken - "Neuer Ordner" w&auml;hlen und `services` eingeben.   
 * Die Datei `MqttClient.ts` anlegen:   
-   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `services` klicken - "Neue Datei" wählen und `MqttClient.ts` eingeben.   
-   Der Inhalt für diese Datei findet sich auf auf [`https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_pubsub2/src/services/MqttClient.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_pubsub2/src/services/MqttClient.ts)   
+   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `services` klicken - "Neue Datei" w&auml;hlen und `MqttClient.ts` eingeben.   
+   Der Inhalt f&uuml;r diese Datei findet sich auf auf [`https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_pubsub2/src/services/MqttClient.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_pubsub2/src/services/MqttClient.ts)   
 
-#### Kurze Erklärung
+#### Kurze Erkl&auml;rung
    Die Datei enth&auml;lt die vier Interfaces `Message`, `MqttState`, `MqttConnection`, `MqttSubscription` sowie die Klasse `MqttClient`.   
    Die Interfaces werden in der Klasse `MqttClient` dazu verwendet, Informationen zum Verbindungs- und Abonnierungszustand zu speichern. Weiters werden Methoden f&uuml;r folgende Zwecke zur Verf&uuml;gung gestellt:   
    * `connectUrl ...........` Zusammenbau der Verbindungs-URL aus Host, Port und MQTT-Endpunkt   
@@ -82,17 +82,17 @@ Der MQTT Client besteht aus drei Dateien, die sich auf die (neu zu erstellenden)
    * `publish ..............` Ver&ouml;ffentlichen einer Nachricht   
    * `sConnMqttState .......` Verbindungszustand als Text ("connected" etc.)   
    * `hostSubscribe ........` Verbinden mit dem angegebenen Broker und abonnieren des angegebenen Topics   
-   * `registerController ...` Möglichkeit zur Anmeldung eines Controllers, damit er Nachrichten weitergeleitet bekommt (und in der Methode `onMessage` auswerten kann).   
+   * `registerController ...` M&ouml;glichkeit zur Anmeldung eines Controllers, damit er Nachrichten weitergeleitet bekommt (und in der Methode `onMessage` auswerten kann).   
 
 #### Spezielle Einstellungen
-Über die Eigenschaft `connectOnStart` des MQTT-Status `mqttState` kann eingestellt werden, ob sich die Anwendung beim Start mit dem vorgegebenen Broker verbinden und das Topic abonnieren soll. Dabei werden folgende Vorgabewerte verwendet:   
-* `mqttConnection.host .....` Vorgabe für den Host, auf dem der Broker läuft (10.1.1.1).   
-* `mqttConnection.port .....` Vorgabe für den Port der WebSocket-Verbindung (1884).   
-* `mqttSubscription.topic ..` Vorgabe für das Topic, das abonniert werden soll (`'#'` = alle Topics).   
+&Uuml;ber die Eigenschaft `connectOnStart` des MQTT-Status `mqttState` kann eingestellt werden, ob sich die Anwendung beim Start mit dem vorgegebenen Broker verbinden und das Topic abonnieren soll. Dabei werden folgende Vorgabewerte verwendet:   
+* `mqttConnection.host .....` Vorgabe f&uuml;r den Host, auf dem der Broker l&auml;uft (10.1.1.1).   
+* `mqttConnection.port .....` Vorgabe f&uuml;r den Port der WebSocket-Verbindung (1884).   
+* `mqttSubscription.topic ..` Vorgabe f&uuml;r das Topic, das abonniert werden soll (`'#'` = alle Topics).   
 
 ### 2. Erstellung des Verbindungsobjekts MqttClientInstance
 * Die Datei `MqttClientInstance.ts` anlegen:   
-   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `services` klicken - "Neue Datei" wählen und `MqttClientInstance.ts` eingeben.   
+   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `services` klicken - "Neue Datei" w&auml;hlen und `MqttClientInstance.ts` eingeben.   
    Folgendes eingeben:   
 ```   
 // ______mqttClientInstance.ts__________________________________
@@ -107,9 +107,9 @@ In dieser Datei k&ouml;nnen alle MQTT-Controller registriert werden, die MQTT-Na
 
 ### 3. Erstellen der Controller-Vorlage
 * Anlegen des Verzeichnisses `controller`:   
-   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `src` klicken - "Neuer Ordner" wählen und `controller` eingeben.   
+   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `src` klicken - "Neuer Ordner" w&auml;hlen und `controller` eingeben.   
 * Die Datei `DeviceController.ts` anlegen:   
-   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `services` klicken - "Neue Datei" wählen und `DeviceController.ts` eingeben.   
+   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `services` klicken - "Neue Datei" w&auml;hlen und `DeviceController.ts` eingeben.   
    Inhalt der Datei:
 ```   
 // _____DeviceController.ts______________________________________
@@ -129,12 +129,12 @@ export abstract class DeviceController {
   public abstract onMessage(message: Message): void;
 }
 ```  
-Die Basisklasse `DeviceController` sorgt dafür, dass jeder Controller, der sich beim Verbindungsobjekt `mqttClientInstance` registriert, das Client-Objekt erhält und die (abstrakte) Methode `onMessage()` konkretisieren muss.   
+Die Basisklasse `DeviceController` sorgt daf&uuml;r, dass jeder Controller, der sich beim Verbindungsobjekt `mqttClientInstance` registriert, das Client-Objekt erh&auml;lt und die (abstrakte) Methode `onMessage()` konkretisieren muss.   
 
 ## Teil 2: GUI zum Senden einer Nachricht
 * Die Datei `MqttPublish.vue` anlegen:   
-   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `components` klicken - "Neue Datei" wählen und `MqttPublish.vue` eingeben.   
-Der Inhalt für diese Datei befindet sich auf [`https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_pubsub2/src/components/MqttPublish.vue`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_pubsub2/src/components/MqttPublish.vue)
+   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `components` klicken - "Neue Datei" w&auml;hlen und `MqttPublish.vue` eingeben.   
+Der Inhalt f&uuml;r diese Datei befindet sich auf [`https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_pubsub2/src/components/MqttPublish.vue`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_pubsub2/src/components/MqttPublish.vue)
 
 
 ## Teil 3: GUI zum Empfangen einer Nachricht
@@ -146,7 +146,7 @@ Der Empfang einer Nachricht wird auf drei Dateien aufgeteilt, die sich in den Ve
 ### 1. Erstellung der Message-Anzeige (MqttLastX.vue)
 In der Datei `MqttLastX.vue` werden alle Nachrichten des Arrays `messages` in einer Tabelle angezeigt, sofern eine Nachricht durch den Controller `mqttLastXController` abonniert wurde. 
 * Die Datei `MqttLastX.vue` anlegen:   
-   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `components` klicken - "Neue Datei" wählen und `MqttLastX.vue` eingeben.   
+   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `components` klicken - "Neue Datei" w&auml;hlen und `MqttLastX.vue` eingeben.   
    Inhalt der Datei:
 ```   
 <!-- MqttLastX.vue -->
@@ -199,13 +199,13 @@ const subTopic = mqttLastXController.subTopic()
   }
 </style>
 ```   
-Das Aussehen der Anzeige ist abhängig von den Werten, die von der Klasse `mqttLastXController` zur Verfügung gestellt werden (`isSubscribed`, `urlSubscribed`, `subTopic`, `messages`).
+Das Aussehen der Anzeige ist abh&auml;ngig von den Werten, die von der Klasse `mqttLastXController` zur Verf&uuml;gung gestellt werden (`isSubscribed`, `urlSubscribed`, `subTopic`, `messages`).
 
 ### 2. Erstellung des Message-Controllers (MqttLastXController.ts)
-Die Datei `MqttLastXController.ts` enthält die Klasse `MqttLastXController`, die die Basisklasse `DeviceController` erweitert sowie ein Objekt `mqttLastXController`, um die Klasse zu nutzen.   
+Die Datei `MqttLastXController.ts` enth&auml;lt die Klasse `MqttLastXController`, die die Basisklasse `DeviceController` erweitert sowie ein Objekt `mqttLastXController`, um die Klasse zu nutzen.   
 
 * Die Datei `MqttLastXController.ts` anlegen:   
-   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `controller` klicken - "Neue Datei" wählen und `MqttLastXController.ts` eingeben.   
+   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `controller` klicken - "Neue Datei" w&auml;hlen und `MqttLastXController.ts` eingeben.   
    Inhalt der Datei:
 ```   
 // ______MqttLastXController.ts_________________________________
@@ -245,19 +245,19 @@ export class MqttLastXController extends DeviceController {
 
 export const mqttLastXController = new MqttLastXController()
 ```   
-Mit Hilfe der import-Anweisungen werden die benötigten Objekte und Methoden aus den jeweiligen Dateien gekennzeichnet. Diese müssen dort mit "`export`" gekennzeichnet sein.   
+Mit Hilfe der import-Anweisungen werden die ben&ouml;tigten Objekte und Methoden aus den jeweiligen Dateien gekennzeichnet. Diese m&uuml;ssen dort mit "`export`" gekennzeichnet sein.   
 * Im Konstruktor werden der Konstruktor der Basisklasse aufgerufen und der Nachrichtenspeicher (`messages`) sowie die Methode `addMessage` privaten Eigenschaften zugewiesen.   
-* Die Methode `onMessage` fügt die empfangene Nachricht (`message`) dem Speicher-Array hinzu.   
-* Die Methode `isSubscribe` stellt einen boolean-Wert zur Verfügung, der angibt, ob die Verbindung zum Broker besteht und ein Topic abonniert wurde.   
+* Die Methode `onMessage` f&uuml;gt die empfangene Nachricht (`message`) dem Speicher-Array hinzu.   
+* Die Methode `isSubscribe` stellt einen boolean-Wert zur Verf&uuml;gung, der angibt, ob die Verbindung zum Broker besteht und ein Topic abonniert wurde.   
 * Die Methode `urlSubscribe` liefert die URL des Brokers.   
 * Die Methode `subTopic` liefert das Topic, das abonniert wurde.   
-Die letzten drei Methoden werden für die Anzeige in der Datei `MqttLastX.vue` benötigt.
+Die letzten drei Methoden werden f&uuml;r die Anzeige in der Datei `MqttLastX.vue` ben&ouml;tigt.
 
-### 3. Speicher für die MQTT-Nachrichten
+### 3. Speicher f&uuml;r die MQTT-Nachrichten
 Die Datei `store/MessageStore.ts` enth&auml;lt die maximale Anzahl von Eintr&auml;gen im Speicher (`maxSize`), den Speicher f&uuml;r die Nachrichten (`messageStore`), eine Methode zum Exportieren der Nachrichten (`messages`), eine Methode zum Hinzuf&uuml;gen einer Nachricht (`addMessage`) sowie eine Methode zum L&ouml;schen des Speichers (`clearMessage`)
 * Die Datei `MqttLastX.vue` anlegen:   
-   * Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `src` klicken - "Neuer Ordner" wählen und `store` eingeben.   
-   * Mit der rechten Maustaste auf `store` klicken - "Neue Datei" wählen und `MessageStore.ts` eingeben.   
+   * Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `src` klicken - "Neuer Ordner" w&auml;hlen und `store` eingeben.   
+   * Mit der rechten Maustaste auf `store` klicken - "Neue Datei" w&auml;hlen und `MessageStore.ts` eingeben.   
    Inhalt der Datei:
 ```   
 // ______MessageStore.ts________________________________________
@@ -282,9 +282,9 @@ export const clearMessage = () => {
   messageStore.splice(0, messageStore.length)
 }
 ```   
-Die empfangenen Nachrichten werden in einem Feld `messageStore` gespeichert. Damit im Laufe der Zeit das Feld nicht "unendlich groß" wird, wird die Anzahl der Elemente auf zB 5 ("`maxSize`") begrenzt.   
+Die empfangenen Nachrichten werden in einem Feld `messageStore` gespeichert. Damit im Laufe der Zeit das Feld nicht "unendlich gro&szlig;" wird, wird die Anzahl der Elemente auf zB 5 ("`maxSize`") begrenzt.   
 * Das Objekt `messages` liefert die Elemente des Feldes in umgekehrter Reihenfolge (neuestes zuerst).   
-* Die Methode `addMessage` speichert die Nachricht im Feld und entfernt danach das erste (= älteste) Element.   
+* Die Methode `addMessage` speichert die Nachricht im Feld und entfernt danach das erste (= &auml;lteste) Element.   
 * Die Methode `clearMessage` entfernt alle Elemente aus dem Feld.   
 
 ## Anpassungen in `main.ts` und `App.vue`
@@ -336,8 +336,8 @@ export default defineComponent({
 }
 </style>
 ```   
-Anmerkung: Die #app-Style-Eigenschaften `text-align`, `color` und `margin-top` wurden geändert.
-Die automatisch erstellten Dateien `components/HelloWord.vue` und `assets/logo.png` können aus dem VSC-Projekt gelöscht werden.
+Anmerkung: Die #app-Style-Eigenschaften `text-align`, `color` und `margin-top` wurden ge&auml;ndert.
+Die automatisch erstellten Dateien `components/HelloWord.vue` und `assets/logo.png` k&ouml;nnen aus dem VSC-Projekt gel&ouml;scht werden.
 
 ## Test des Projektes
 ### 1. Test am PC/Laptop
@@ -366,14 +366,14 @@ module.exports = {
   }
 }
 ```   
-Mit `publicPath: './',` wird die relative Pfadangabe eingestellt und durch den `chainWebpack`-Eintrag werden Warnhinweise bezüglich der Dateigröße vermieden (indem man die maximale Dateigrößen höher setzt ;) )
+Mit `publicPath: './',` wird die relative Pfadangabe eingestellt und durch den `chainWebpack`-Eintrag werden Warnhinweise bez&uuml;glich der Dateigr&ouml;&szlig;e vermieden (indem man die maximale Dateigr&ouml;&szlig;en h&ouml;her setzt ;) )
 
 * Danach muss in VSC eine "production"-Version erstellt werden.  
    Eingabe im Terminal:   
    `npm run build`   
    Die kompilierten Dateien befinden sich im Verzeichnis `dist`   
 * Auf dem RaspPi muss das Verzeichnis `/var/www/html/vue_pubsub2` angelegt werden, zB mit `putty` (Befehl `mkdir /var/www/html/vue_pubsub2`) oder in `WinSCP`   
-* Übertragen der Dateien mit `WinSCP`   
+* &Uuml;bertragen der Dateien mit `WinSCP`   
   Vom PC-Verzeichnis `github/mqtt4home/source_Vue/vue_pubsub2/dist`   
   ins RasPi-Verzeichnis `/var/www/html/vue_pubsub2`   
 * Starten der Anwendung im Brower durch Eingabe der URL, zB   
