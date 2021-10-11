@@ -168,11 +168,11 @@ Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x
 * Test the configuration by entering   
 `sudo /usr/sbin/hostapd /etc/hostapd/hostapd.conf`   
 results in   
-`Configuration file: /etc/hostapd/hostapd.conf`   
-`wlan0: Could not connect to kernel driver`   
-`Using interface wlan0 with hwaddr dc:a6:32:e0:2b:f6 and ssid "Raspi11"`   
-`wlan0: interface state UNINITIALIZED->ENABLED`   
-`wlan0: AP-ENABLED`   
+_`Configuration file: /etc/hostapd/hostapd.conf`_   
+_`wlan0: Could not connect to kernel driver`_   
+_`Using interface wlan0 with hwaddr dc:a6:32:e0:2b:f6 and ssid "Raspi11"`_   
+_`wlan0: interface state UNINITIALIZED->ENABLED`_   
+_`wlan0: AP-ENABLED`_   
 The network "Raspi11" is visible, but you can't log in yet, because you don't get an IP.   
 Cancel with &lt;Ctrl&gt; c
 
