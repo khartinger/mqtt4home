@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 16.9.2021   
+Letzte &Auml;nderung: 11.10.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi als MQTT-Broker</h1>
 <a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -40,23 +40,23 @@ Zum Testen der Installation ben&ouml;tigt man drei Dinge:
 Dazu geht man folgenderma&szlig;en vor:   
 * Zuerst muss der MQTT-Broker gestartet werden:   
   `sudo /etc/init.d/mosquitto start`   
-  `[ ok ] Starting mosquitto (via systemctl): mosquitto.service.`
+  _`[ ok ] Starting mosquitto (via systemctl): mosquitto.service.`_   
 
 * Als N&auml;chstes wird ein Datenempf&auml;nger (Subscriber) eingerichtet, der auf Nachrichten des Typs "Test1" h&ouml;rt:   
- `mosquitto_sub -d -t Test1`   
- `Client mosqsub/3152-raspberryp sending CONNECT`   
- `Client mosqsub/3152-raspberryp received CONNACK`   
- `Client mosqsub/3152-raspberryp sending SUBSCRIBE (Mid: 1, Topic: Test1, QoS: 0)`   
- `Client mosqsub/3152-raspberryp received SUBACK`   
- `Subscribed (mid: 1): 0`   
+ `mosquitto_sub -d -t test1`   
+ _`Client mosqsub/3152-raspberryp sending CONNECT`_   
+ _`Client mosqsub/3152-raspberryp received CONNACK`_   
+ _`Client mosqsub/3152-raspberryp sending SUBSCRIBE (Mid: 1, Topic: Test1, QoS: 0)`_   
+ _`Client mosqsub/3152-raspberryp received SUBACK`_   
+ _`Subscribed (mid: 1): 0`_   
 
 * Senden einer Nachricht.   
   Zu diesem Zweck muss ein zweites Konsolenfenster (zB durch Dr&uuml;cken von &lt;Alt&gt;&lt;F2&gt;) oder eine zweite Datenverbindung mittels putty ge&ouml;ffnet werden. In dieses Fenster gibt man folgenden Befehl ein:   
-  `mosquitto_pub -d -r -t Test1 -m 'Hallo vom Publisher!'`   
-  `Client mosqpub/3194-raspberryp sending CONNECT`   
-  `Client mosqpub/3194-raspberryp received CONNACK`   
-  `Client mosqpub/3194-raspberryp sending PUBLISH (d0, q0, r0, m1, 'Test1', ... (20 bytes))`   
-  `Client mosqpub/3194-raspberryp sending DISCONNECT`   
+   `mosquitto_pub -d -r -t Test1 -m 'Hallo vom Publisher!'`   
+   _`Client mosqpub/3194-raspberryp sending CONNECT`_   
+   _`Client mosqpub/3194-raspberryp received CONNACK`_   
+   _`Client mosqpub/3194-raspberryp sending PUBLISH (d0, q0, r0, m1, 'Test1', ... (20 bytes))`_   
+   _`Client mosqpub/3194-raspberryp sending DISCONNECT`_   
 
 Sobald man die Nachricht abschickt, erscheint sie im Subscriber-Fenster :)   
 Die Option `-d` bedeutet "Enable debug messages", dh. alle Meldungen werden ausgegeben. Dies bewirkt auch, dass jede Minute die PINGREQ-Nachricht angezeigt wird. M&ouml;chte man nur die Nachrichten sehen, so muss man -d weglassen ;)   
@@ -71,20 +71,20 @@ Das Installationsprogramm f&uuml;r Windows (und andere Betriebssysteme) kann von
 
 ### RasPi: Anzeige einer vom Laptop/PC gesendeten Nachricht
 1. In einer Konsole oder in einem putty-Fenster einen Subscriber am RasPi starten, der auf alle Nachrichten horcht:   
-```mosquitto_sub -t "#" -v```
+`mosquitto_sub -t "#" -v`
 
 2. Am PC ein Kommando-Fenster ("Eingabeaufforderung") &ouml;ffnen:   
-```cmd.exe```
-im Startmen&uuml; eingeben.   
-Ins richtige Laufwerk und Mosquitto-Verzeichnis wechseln:   
-```c:```   
-```cd /programme/mosquitto```
+   `cmd.exe`   
+   im Startmen&uuml; eingeben.   
+   Ins richtige Laufwerk und Mosquitto-Verzeichnis wechseln:   
+   `c:`   
+   `cd /programme/mosquitto`
 
 3. Nachricht vom PC-Eingabeaufforderungs-Fenster senden   
-```mosquitto_pub -h 192.168.1.2 -t Test1 -m "Hallo vom PC!"```   
-Mit dem Schalter `-h` wird die IP-Adresse des Raspi angegeben.   
+   `mosquitto_pub -h 192.168.1.2 -t Test1 -m "Hallo vom PC!"`   
+   Mit dem Schalter `-h` wird die IP-Adresse des Raspi angegeben.   
 
-Im Subscribe-Fenster (Putty- oder RasPi-Konsole) erscheint (eventuell nach kurzer Zeit) die entsprechende Nachricht:<br>
+Im Subscribe-Fenster (Putty- oder RasPi-Konsole) erscheint (eventuell nach kurzer Zeit) die entsprechende Nachricht:   
 ```
 pi_@raspi:~ $ mosquitto_sub -t "#" -v
 Test1 Hallo vom PC!
@@ -108,20 +108,20 @@ Mosquitto neu starten
 ## Hilfreiches zu Mosquitto
 
 * Broker stoppen   
-  `sudo /etc/init.d/mosquitto stop`   
-  `[ ok ] Stopping mosquitto (via systemctl): mosquitto.service.`   
+   `sudo /etc/init.d/mosquitto stop`   
+   _`[ ok ] Stopping mosquitto (via systemctl): mosquitto.service.`_   
 
 * Broker starten   
-  `sudo /etc/init.d/mosquitto start`   
-  `[ ok ] Starting mosquitto (via systemctl): mosquitto.service.`   
+   `sudo /etc/init.d/mosquitto start`   
+   _`[ ok ] Starting mosquitto (via systemctl): mosquitto.service.`_   
 
 * Alle Topics und deren Wert ("Payload") anzeigen   
-  `mosquitto_sub -t "#" -v`   
-  `Test1 D1mini message #1971`   
-  `button 1`   
-  `counter 21`   
-  `-t "#"` bedeutet alle Topics und deren Untertopics anzeigen,   
-  `-v` bedeutet, auch das Topic anzeigen.   
+   `mosquitto_sub -t "#" -v`   
+   _`Test1 D1mini message #1971`_   
+   _`button 1`_   
+   _`counter 21_`   
+   `-t "#"` bedeutet alle Topics und deren Untertopics anzeigen,   
+   `-v` bedeutet, auch das Topic anzeigen.   
 
 * Pr&uuml;fen, ob Mosquitto l&auml;uft   
   `systemctl status mosquitto.service`   
@@ -133,8 +133,8 @@ in die Autostart-Datei einf&uuml;gt.
 
 * L&ouml;schen einer bestimmten auf dem Broker gespeicherten Nachricht (retain)   
   Senden einer Nachricht mit dem entsprechenden Topic und den Schaltern `-n -r -d` (statt der Payload `-m`)   
-  _Beispiel_: L&ouml;schen der Nachricht `Test1`   
-  `mosquitto_pub -h 10.1.1.1 -t Test1 -n -r -d`   
+  _Beispiel_: L&ouml;schen der Nachricht `test1`   
+  `mosquitto_pub -h 10.1.1.1 -t test1 -n -r -d`   
 &nbsp;   
 ---   
 
