@@ -9,7 +9,7 @@ Last modified: 2021-10-10
 * Create a Vue application that runs on the Raspberry Pi and can be used to send and automatically subscribe or display MQTT messages:   
 ![MQTT send/receive program](./images/211010_vue_pubsub2.png "MQTT send/receive program")   
 _Figure 1: MQTT send/receive program_.   
-The application shall be invoked by entering the URL `10.1.1/vue_pubsub2`.   
+The application shall be invoked by entering the URL `10.1.1/vue_pubsub2`   
 
 __The program shall consist of three parts:__   
 1. an MQTT client, which provides the MQTT functions.   
@@ -38,8 +38,8 @@ _For the impatient_: [Link to the finished program](https://github.com/khartinge
 1. start Visual Studio Code (VSC).   
 2. VSC: Open Terminal window: Men&uuml; Terminal - New Terminal.   
 3. VSC terminal: Change to the folder under which the Vue project is to be created:   
-   `cd /g/github/mqtt4home/source_Vue`.   
-4. VSC-Terminal: Create Vue.js application: `vue create vue_pubsub2`.  
+   `cd /g/github/mqtt4home/source_Vue`   
+4. VSC-Terminal: Create Vue.js application: `vue create vue_pubsub2`  
    Use cursor keys, space bar and &lt;Enter&gt; to select the following:   
    `> Manually select features`   
    `(*) Choose Vue version`   
@@ -56,7 +56,7 @@ _For the impatient_: [Link to the finished program](https://github.com/khartinge
    `? Where do you prefer placing config for Babel, ESLint, etc.? In dedicated config file`   
    `? Save this as a preset for future projects? (y/N) N`   
 5. change to the project folder: VSC Men&uuml; File - Open folder....
-6. install MQTT library: Men&uuml; Terminal - New Terminal: `npm install mqtt --save`.   
+6. install MQTT library: Men&uuml; Terminal - New Terminal: `npm install mqtt --save`   
 
 ## Part 1: Creating the MQTT Client
 The MQTT client consists of three files, which are distributed to the directories `services` and `controller` (to be created):   
@@ -66,9 +66,9 @@ The MQTT client consists of three files, which are distributed to the directorie
 
 ### 1. creation of the MqttClient class
 * Creation of the `services` directory:   
-   View menu - Explorer. Right click on `src` - select "New folder" and type `services`.   
+   View menu - Explorer. Right click on `src` - select "New folder" and type `services`   
 * Create the `MqttClient.ts` file:   
-   Men&uuml; Display - Explorer. Right click on `services` - select "New file" and enter `MqttClient.ts`.   
+   Men&uuml; Display - Explorer. Right click on `services` - select "New file" and enter `MqttClient.ts`   
    The content for this file can be found on [`https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_pubsub2/src/services/MqttClient.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_pubsub2/src/services/MqttClient.ts).   
 
 #### Short explanation
@@ -92,12 +92,12 @@ The `connectOnStart` property of the MQTT state `mqttState` can be used to set w
 
 ### 2. creation of the connection object MqttClientInstance
 * Create the 'MqttClientInstance.ts' file:   
-   Men&uuml; View - Explorer. Right click on `services` - select "New file" and enter `MqttClientInstance.ts`.   
+   Men&uuml; View - Explorer. Right click on `services` - select "New file" and enter `MqttClientInstance.ts`   
    Enter the following:   
 ```   
 // ______mqttClientInstance.ts__________________________________
-import { MqttClient } from './MqttClient'.
-import { mqttLastXController } from '.@/controller/MqttLastXController'.
+import { MqttClient } from './MqttClient'
+import { mqttLastXController } from '.@/controller/MqttLastXController'
 
 export const mqttClientInstance = new MqttClient()
 mqttClientInstance.registerController(mqttLastXController)
@@ -107,9 +107,9 @@ In this file all MQTT controllers can be registered that want to have MQTT messa
 
 ### 3. creating the controller template
 * Create the `controller` directory:   
-   Men&uuml; View - Explorer. Right click on `src` - select "New folder" and type `controller`.   
+   Men&uuml; View - Explorer. Right click on `src` - select "New folder" and type `controller`   
 * Create the file `DeviceController.ts`:   
-   Men&uuml; Display - Explorer. Right click on `services` - select "New file" and enter `DeviceController.ts`.   
+   Men&uuml; Display - Explorer. Right click on `services` - select "New file" and enter `DeviceController.ts`   
    Content of the file:
 ```   
 // _____DeviceController.ts______________________________________
@@ -133,7 +133,7 @@ The base class `DeviceController` ensures that each controller that registers wi
 
 ## Part 2: GUI for sending a message
 * Create the file `MqttPublish.vue`:   
-   Men&uuml; View - Explorer. Right click on `components` - select "New file" and type `MqttPublish.vue`.   
+   Men&uuml; View - Explorer. Right click on `components` - select "New file" and type `MqttPublish.vue`   
 The content for this file is located at [`https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_pubsub2/src/components/MqttPublish.vue`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_pubsub2/src/components/MqttPublish.vue)
 
 
@@ -146,7 +146,7 @@ Receiving a message is split between three files located in the `components`, `c
 ### 1. creation of the message store (MqttLastX.vue)
 In the file `MqttLastX.vue` all messages of the array `messages` are displayed in a table, if a message has been subscribed by the controller `mqttLastXController`. 
 * Create the file `MqttLastX.vue`:   
-   Men&uuml; Display - Explorer. Right click on `components` - select "New file" and enter `MqttLastX.vue`.   
+   Men&uuml; Display - Explorer. Right click on `components` - select "New file" and enter `MqttLastX.vue`   
    Content of the file:
 ```   
 <!-- MqttLastX.vue -->
@@ -205,7 +205,7 @@ The appearance of the display depends on the values provided by the `mqttLastXCo
 The `MqttLastXController.ts` file contains the `MqttLastXController` class that extends the base `DeviceController` class and an `mqttLastXController` object to use the class.   
 
 * Create the file `MqttLastXController.ts`:   
-   Men&uuml; Display - Explorer. Right click on `controller` - select "New file" and enter `MqttLastXController.ts`.   
+   Men&uuml; Display - Explorer. Right click on `controller` - select "New file" and enter `MqttLastXController.ts`   
    Content of the file:
 ```   
 // ______MqttLastXController.ts_________________________________
@@ -256,8 +256,8 @@ The last three methods are needed for the display in the `MqttLastX.vue` file.
 ### 3. store for the MQTT messages
 The file `store/MessageStore.ts` contains the maximum number of entries in the store (`maxSize`), the store for the messages (`messageStore`), a method to export the messages (`messages`), a method to add a message (`addMessage`) and a method to clear the store (`clearMessage`).
 * Create the file `MqttLastX.vue`:   
-   * Men&uuml; Display - Explorer. Right click on `src` - select "New folder" and enter `store`.   
-   * Right click on `store` - select "New file" and enter `MessageStore.ts`.   
+   * Men&uuml; Display - Explorer. Right click on `src` - select "New folder" and enter `store`   
+   * Right click on `store` - select "New file" and enter `MessageStore.ts`   
    Contents of the file:
 ```   
 // ______MessageStore.ts________________________________________
@@ -348,7 +348,7 @@ The automatically created files `components/HelloWord.vue` and `assets/logo.png`
 
 ### 2. installation on the RasPi
 * To use the directory `./vue_pubsub2` on the server, a file `vue.config.js` must be created in the root directory in VSC:   
-   Men&uuml; Display - Explorer. Right click on the "New File" icon in the `VUE_PUBSUB2` line and enter `vue.config.js`.   
+   Men&uuml; Display - Explorer. Right click on the "New File" icon in the `VUE_PUBSUB2` line and enter `vue.config.js`   
    Content of the file:   
 ```   
 // ______vue.config.js__________________________________________
