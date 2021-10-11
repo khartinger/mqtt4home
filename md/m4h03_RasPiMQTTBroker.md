@@ -42,7 +42,7 @@ Dazu geht man folgenderma&szlig;en vor:
   `sudo /etc/init.d/mosquitto start`   
   _`[ ok ] Starting mosquitto (via systemctl): mosquitto.service.`_   
 
-* Als N&auml;chstes wird ein Datenempf&auml;nger (Subscriber) eingerichtet, der auf Nachrichten des Typs "Test1" h&ouml;rt:   
+* Als N&auml;chstes wird ein Datenempf&auml;nger (Subscriber) eingerichtet, der auf Nachrichten des Typs "test1" h&ouml;rt:   
  `mosquitto_sub -d -t test1`   
  _`Client mosqsub/3152-raspberryp sending CONNECT`_   
  _`Client mosqsub/3152-raspberryp received CONNACK`_   
@@ -50,9 +50,12 @@ Dazu geht man folgenderma&szlig;en vor:
  _`Client mosqsub/3152-raspberryp received SUBACK`_   
  _`Subscribed (mid: 1): 0`_   
 
+Befindet man sich nicht auf dem Rechner, auf dem der Broker läuft, muss man zusätzlich die IP-Adresse des Servers angeben, zB.   
+   `mosquitto_sub -h 10.1.1.1 -d -t test1`   
+
 * Senden einer Nachricht.   
   Zu diesem Zweck muss ein zweites Konsolenfenster (zB durch Dr&uuml;cken von &lt;Alt&gt;&lt;F2&gt;) oder eine zweite Datenverbindung mittels putty ge&ouml;ffnet werden. In dieses Fenster gibt man folgenden Befehl ein:   
-   `mosquitto_pub -d -r -t Test1 -m 'Hallo vom Publisher!'`   
+   `mosquitto_pub -d -r -t test1 -m 'Hello from Publisher!'`   
    _`Client mosqpub/3194-raspberryp sending CONNECT`_   
    _`Client mosqpub/3194-raspberryp received CONNACK`_   
    _`Client mosqpub/3194-raspberryp sending PUBLISH (d0, q0, r0, m1, 'Test1', ... (20 bytes))`_   
