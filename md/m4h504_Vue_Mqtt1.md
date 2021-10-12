@@ -2,7 +2,7 @@ Letzte &Auml;nderung: 6.10.2021
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Vue: Senden und Empfangen von MQTT-Nachrichten</h1>
 <a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
-<a href="m4h23_Vue_Mqtt1_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
+<a href="m4h504_Vue_Mqtt1_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
   
 ## Ziel
