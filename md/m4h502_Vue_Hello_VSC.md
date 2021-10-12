@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 15.9.2021   
+Letzte &Auml;nderung: 12.10.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Vue: Erste Anwendung mit Visual Studio Code</h1>
 <a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -7,8 +7,8 @@ Letzte &Auml;nderung: 15.9.2021
   
 ## Ziele
 * Visual Studio Code (kurz "VSC") f&uuml;r Vue vorbereiten.   
-* Im Browser ein mit Vue erstelltes "Hello World from Vue!" anzeigen.   
-   
+* Im Browser die von Visual Studio Code automatisch erzeugte Startseite ("Welcome to Your Vue.js + TypeScript App") anzeigen.   
+* Die Standard-App so &auml;ndern, dass eine eigene Komponente "Hello.vue" den Text "Hello World from Vue!" als &Uuml;berschrift anzeigt.   
 
 ## Voraussetzungen
 * Etwas Wissen &uuml;ber HTML, CSS und JavaScript :)
@@ -42,12 +42,12 @@ Letzte &Auml;nderung: 15.9.2021
    <Strg> + <Shift> + X
    Ventur suchen [Install]
    ```   
-## HTML-Seite erstellen
+## Erste Anwendung erstellen
 1. Visual Studio Code (VSC) starten (falls noch nicht erfolgt).
 2. VSC: Ein Terminal-Fenster &ouml;ffnen (`Men&uuml; Terminal - New Terminal`).
 3. VSC-Terminal: In den Ordner wechseln, unter dem das Vue-Projekt erzeugt werden soll:   
    `cd /g/github/mqtt4home/source_Vue`   
-4. VSC-Terminal: Eine Vue.js Applikation erzeugen (mit der Cursor-Down-Taste "Manually select features" ausw&auml;hlen):   
+4. VSC-Terminal: Eine Vue.js Applikation erzeugen (mit der Cursor-Down-Taste "Manually select features" ausw&auml;hlen und &lt;enter&gt; dr&uuml;cken):   
    __`vue create vue_mini_vsc`__   
    ```   
    Vue CLI v4.5.11
@@ -65,7 +65,7 @@ Letzte &Auml;nderung: 15.9.2021
     (*) Babel
     (*) TypeScript
     ( ) Progressive Web App (PWA) Support        
-    (*) Router
+    ( ) Router
     ( ) Vuex
     ( ) CSS Pre-processors
    >(*) Linter / Formatter
@@ -90,7 +90,6 @@ Letzte &Auml;nderung: 15.9.2021
    ? Choose a version of Vue.js that you want to start the project with 3.x 
    ? Use class-style component syntax? No
    ? Use Babel alongside TypeScript (required for modern mode, auto-detected polyfills, transpiling JSX)? No
-   ? Use history mode for router? (Requires proper server setup for index fallback in production) No
    ? Pick a linter / formatter config: ESLint + Standard config
    ? Pick additional lint features: Lint on save
    ? Where do you prefer placing config for Babel, ESLint, etc.? In dedicated config files
@@ -107,14 +106,15 @@ Letzte &Auml;nderung: 15.9.2021
     $ npm run serve
    ```   
 
-5. VSC: Wechsel ins Projektverzeichnis und Starten des internen Test-Servers:   
+5. VSC: Projektordner &ouml;ffnen   
+   `Men&uuml;: File – Open Folder... und Verzeichnis vue_mini_vsc w&auml;hlen`   
+
+6. VSC: Wechsel ins Projektverzeichnis und Starten des internen Test-Servers:   
+   Eingabe im Terminal-Fenster (Men&uuml;: Terminal - New Terminal)   
    ```   
    cd vue_mini_vsc
    npm run serve
    ```   
-
-6. VSC: Projektordner &ouml;ffnen   
-   `Men&uuml;: File – Open Folder... und Verzeichnis vue_mini_vsc w&auml;hlen`   
 
 7. Applikation anschauen: Browser starten und folgendes eingeben:   
    `localhost:8080`   
@@ -122,36 +122,76 @@ Letzte &Auml;nderung: 15.9.2021
    ![Vue Startbild](./images/210915_vue_startpage.png "Vue Startbild")   
    _Bild 1: Vue Startseite_
 
-8. Das Startbild auskommentieren und den Text "Hello World from Vue!" ausgeben:   
-   * VSC: Explorer anzeigen (STRG+UMSCHALTTASTE+E)   
-   * VSC: Datei src - views - Home.vue anklicken und &auml;ndern:   
-   ```   
-   <template>
-   Hello World from Vue!
-   <!--
-   <div class="home">
-       <img alt="Vue logo" src="../assets/logo.png">
-       <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-   </div>
-   -->
-   </template>
-   ```   
-   * VSC: Nach dem Speichern der Datei &auml;ndert sich sofort die Anzeige im Browser!
+## Eigene Komponente erstellen
+* Die Datei `Hello.vue` anlegen:   
+   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `components` klicken - "Neue Datei" w&auml;hlen und `Hello.vue` eingeben.   
+   Inhalt der Datei `Hello.vue`:   
 
-9. Die Navigations-Links (Home | About) auskommentieren:
-   * VSC: Datei src - views - App.vue anklicken und &auml;ndern:   
-   ```   
-   <template>
-     <div id="nav">
-   <!--
-       <router-link to="/">Home</router-link> |
-       <router-link to="/about">About</router-link>
-   -->
-     </div>
-     <router-view/>
-   </template>
-   ```   
-   * VSC: Nach dem Speichern der Datei &auml;ndert sich sofort die Anzeige im Browser!   
+```   
+<!--Hello.vue-->
+<template>
+<h1>Hello World from Vue!</h1>
+</template>
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  }
+})
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+</style>
+
+```   
+   (Wichtig ist auch die Leerzeile nach &lt;/style&gt; ;) )   
+
+* Aufruf der Komponente in App.vue   
+Men&uuml; Anzeigen - Explorer. Mit der linken Maustaste Doppelklick auf `App.vue`   
+Den Inhalt der Datei folgenderma&szlig;en &auml;ndern:   
+```   
+<template>
+  <Hello></Hello>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+import Hello from './components/Hello.vue'
+
+export default defineComponent({
+  name: 'App',
+  components: {
+    Hello
+  }
+})
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+
+```   
+
+* Neustart des Servers
+   Eingabe im Terminal-Fenster (Men&uuml;: Terminal - New Terminal)   
+   `npm run serve`   
+   Im Brower-Fenster erscheint mittenzentriert der Text "Hello World from Vue!"   
 
 Soll die Anzeige linksb&uuml;ndig erfolgen, muss in `App.vue` der style entsprechend ge&auml;ndert werden:   
 `  text-align: left; /* center; */`   
+
+* Entfernen nicht mehr ben&ouml;tigter Komponenten   
+  Folgende Dinge k&ouml;nnen aus dem Projekt gel&ouml;scht werden, da sie nicht mehr ben&ouml;tigt werden:   
+  * Datei `HelloWorld.vue`   
+  * Verzeichnis `assets` (mit dem Logo-Bild)   
