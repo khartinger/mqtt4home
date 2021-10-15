@@ -1,4 +1,4 @@
-Last modified: 2021-10-10   
+Last modified: 2021-10-15   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Vue + RasPi: Sending and automatically receiving MQTT messages</h1>
 <a href="../readme.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
@@ -59,7 +59,17 @@ _For the impatient_: [Link to the finished program](https://github.com/khartinge
 6. install MQTT library: Men&uuml; Terminal - New Terminal: `npm install mqtt --save`   
 
 ## Part 1: Creating the MQTT Client
-The MQTT client consists of three files, which are distributed to the directories `services` and `controller` (to be created):   
+MQTT access for various applications is organized as follows:    
+1. all things needed for a connection to the broker are combined in a class `MqttClient`.   
+2. for a unified MQTT access an abstract base class `DeviceController` is defined, which specifies three methods:   
+    * `public registerClient(mqttClient: MqttClient)` ... Method to register a controller with the MqttClientInstance object.   
+    * `protected async publish(topic: string, payload: string)` ... Method to send a message.   
+    * `public abstract onMessage(message: Message)` ... Method to process incoming messages.   
+
+3. the connection between the `MqttClient` class and the app or the various controllers is the `MqttClientInstance.ts` file:   
+Here the mqttClient object is created and here all controllers have to register.
+
+Thus the MQTT client consists of three files, which are distributed over the (newly created) directories `services` and `controller`:   
 1. `./src/services/MqttClient.ts`   
 2. `./src/services/MqttClientInstance.ts`   
 3. `./src/controller/DeviceController.ts`   

@@ -59,7 +59,17 @@ _F&uuml;r Ungeduldige_: [Link zum fertigen Programm](https://github.com/kharting
 6. MQTT Bibliothek installieren: Men&uuml; Terminal - New Terminal: `npm install mqtt --save`   
 
 ## Teil 1: Erstellung des MQTT Clients
-Der MQTT Client besteht aus drei Dateien, die sich auf die (neu zu erstellenden) Verzeichnisse `services` und `controller ` verteilen:   
+Der MQTT-Zugriff für verschiedene Anwendungen wird folgendermaßen organisiert:    
+1. Alle für eine Verbindung zum Broker benötigten Dinge sind in einer Klasse `MqttClient` zusammengefasst.   
+2. Für einen einheitlichen MQTT-Zugriff wird eine abstrakte Basisklasse `DeviceController` definiert, die drei Methoden vorgibt:   
+    * `public registerClient(mqttClient: MqttClient)` ... Methode zum Registrieren eines Controllers beim MqttClientInstance-Objekt.   
+    * `protected async publish(topic: string, payload: string)` ... Methode zum Versenden einer Nachricht.   
+    * `public abstract onMessage(message: Message)` ... Methode zum Verarbeiten eintreffender Nachrichten.   
+
+3. Die Verbindung zwischen der `MqttClient`-Klasse und der App bzw. den verschiedenen Controllern stellt die Datei `MqttClientInstance.ts` dar:   
+Hier wird das mqttClient-Objekt erzeugt und hier müssen sich alle Controller registrieren.
+
+Somit besteht der MQTT Client aus drei Dateien, die sich auf die (neu zu erstellenden) Verzeichnisse `services` und `controller ` verteilen:   
 1. `./src/services/MqttClient.ts`   
 2. `./src/services/MqttClientInstance.ts`   
 3. `./src/controller/DeviceController.ts`   
