@@ -13,7 +13,7 @@ _Bild 1: GUI der Anwendung "mqttMini.vue"_
    
 ## Voraussetzungen
 * Etwas Wissen &uuml;ber HTML, CSS und JavaScript bzw. TypeScript :)   
-* Visual Studio Code ist für Vue-Anwendungen bereits vorbereitet, dh. es wurde bereits (mindestens) eine Vue-Anwendung in Visual Code erstellt.   
+* Visual Studio Code ist f&uuml;r Vue-Anwendungen bereits vorbereitet, dh. es wurde bereits (mindestens) eine Vue-Anwendung in Visual Code erstellt.   
 * Ein laufender Broker auf einem Server mit der IP 10.1.1.1   
 ## Erforderliche Hilfsmittel
 * Hardware: PC oder Laptop mit Internetzugang, Browser
@@ -24,7 +24,7 @@ Die MQTT-Anwendung `mqtt_mini` ...
 1. wird mit Visual Studio Code erstellt,   
 2. hat alle GUI- und Steuerfunktionen in nur einer Datei mit dem Namen   
 `/src/components/mqttMini.vue`   
-3. verbindet sich beim App-Start über WebSocket mit dem MQTT-Broker 10.1.1.1 (1883 und 1884),   
+3. verbindet sich beim App-Start &uuml;ber WebSocket mit dem MQTT-Broker 10.1.1.1 (1883 und 1884),   
 4. abonniert beim App-Start alle Topics,   
 5. zeigt eine empfangene Nachricht an (Topic und Payload) und    
 6. sendet auf Knopfdruck die Nachricht `-t test/vue -m "Hello from mqtt_mini"`   
@@ -37,7 +37,7 @@ Die MQTT-Anwendung `mqtt_mini` ...
 3. VSC-Terminal: In den Ordner wechseln, unter dem das Vue-Projekt erzeugt werden soll: `cd /g/github/mqtt4home/source_Vue`   
 
 4. VSC-Terminal: Vue.js Applikation erzeugen: `vue create mqtt_mini`  
-   Mit Cursortasten, Leertaste und &lt;Enter&gt; Folgendes auswählen:   
+   Mit Cursortasten, Leertaste und &lt;Enter&gt; Folgendes ausw&auml;hlen:   
    `> Manually select features`   
    &lt;enter&gt;   
    `(*) Choose Vue version`   
@@ -61,7 +61,7 @@ Die MQTT-Anwendung `mqtt_mini` ...
    _`? Save this as a preset for future projects? (y/N) `_ &nbsp; __`No`__   
    &lt;enter&gt;   
 
-5. In den Projektordner wechseln: `VSC Menü Datei - Ordner öffnen`
+5. In den Projektordner wechseln: `VSC Men&uuml; Datei - Ordner &ouml;ffnen`
    `G:\github\mqtt4home\source_Vue\vue_mini` [Ordner ausw&auml;hlen]   
 
 6. MQTT Bibliothek installieren:   
@@ -196,7 +196,7 @@ export const mqttClientInstance = new MqttClient()
 </style>
 
 ```   
-## Erklärungen zum Quelltext `mqttMini.vue`
+## Erkl&auml;rungen zum Quelltext `mqttMini.vue`
 ### [1] GUI von mqttMini
 Die GUI besteht aus zwei Webseiten, je nachdem, ob eine Verbindung zum Broker (IP 10.1.1.1) hergestellt werden kann oder nicht.   
 * Ohne Verbindung zum Broker wird lediglich der Text "NOT Connected to ws://10.1.1.1:1884" ausgegeben.   
@@ -205,14 +205,14 @@ Die Funktion `isConnected` gibt an, ob eine Verbindung besteht.
 
 
 ### [2] Import
-Hier werden vordefinierte vue-Funktionalitäten (defineComponent, reactive) oder andere Komponenten (mqtt) zum eigenen Projekt hinzugefügt.   
+Hier werden vordefinierte vue-Funktionalit&auml;ten (defineComponent, reactive) oder andere Komponenten (mqtt) zum eigenen Projekt hinzugef&uuml;gt.   
 
 ### [3] Skript-Teil der Komponente mqttMini
-Im Skript-Teil von `mqttMini` erfolgt die Verknüpfung von MQTT-Funktionalität und der GUI der App.   
+Im Skript-Teil von `mqttMini` erfolgt die Verkn&uuml;pfung von MQTT-Funktionalit&auml;t und der GUI der App.   
 ### [4] computed
-Die vier "computed"-Funktionen holen Werte aus dem MqttClient-Objekt und stellen sie der GUI zur Verfügung:
+Die vier "computed"-Funktionen holen Werte aus dem MqttClient-Objekt und stellen sie der GUI zur Verf&uuml;gung:
 * `isConnected: ` true = es besteht eine Verbindung zum Broker.   
-* `getWsbroker: ` WebSocket-Adresse des Hosts, auf dem der Broker läuft (`ws://10.1.1.1:1884`).   
+* `getWsbroker: ` WebSocket-Adresse des Hosts, auf dem der Broker l&auml;uft (`ws://10.1.1.1:1884`).   
 * `getTopic:    ` Topic der letzten empfangenen Nachricht.   
 * `getPayload:  ` Payload der letzten empfangenen Nachricht.   
 
@@ -221,34 +221,34 @@ Beim Mounten (Starten) der App soll eine Verbindung zum Broker hergestellt werde
 
 ### [6] methods
 * Die Methode `connect` ruft die connect-Methode des MqttClient-Objekts und wird beim Mounten aufgerufen.   
-* Die Methode `publish` veröffentlicht die fix vorgegebene Nachricht, wenn in der GUI der Button [Publish] gedrückt wird.   
+* Die Methode `publish` ver&ouml;ffentlicht die fix vorgegebene Nachricht, wenn in der GUI der Button [Publish] gedr&uuml;ckt wird.   
 
 ### [7] Die Klasse MqttClient
-Die Klasse `MqttClient` fasst alle Dinge zusammen, die für die Verwendung von MQTT benötigt werden.   
+Die Klasse `MqttClient` fasst alle Dinge zusammen, die f&uuml;r die Verwendung von MQTT ben&ouml;tigt werden.   
 
 ### [8] Eigenschaften
 `client` stellt das MQTT-Verbindungsobjekt dar und wird beim Verbinden mit dem Broker erzeugt.
-Die weiteren Eigenschaften werden in eine "Gesamteigenschaft" `state` hineingepackt, die als "`reactive`" definiert wird. Dies ist sehr wichtig, da bei Änderung einer Variablen eines elementaren Typs die Änderung __*NICHT*__ an computed-Funktionen weitergegeben wird.   
+Die weiteren Eigenschaften werden in eine "Gesamteigenschaft" `state` hineingepackt, die als "`reactive`" definiert wird. Dies ist sehr wichtig, da bei &Auml;nderung einer Variablen eines elementaren Typs die &Auml;nderung __*NICHT*__ an computed-Funktionen weitergegeben wird.   
 
 ### [9] connect
 Die connect-Methode erzeugt durch das Verbinden mit dem Broker das `client`-Objekt, abonniert alle Nachrichten (`client.subscribe('#')`) und setzt bei Erfolg die Eigenschaft `this.state.connected` auf true.   
 
 ### [10] publish
-Die publish-Methode prüft, ob eine Verbindung zum Broker besteht und veröffentlicht - bei Erfolg - die vorgegebene Nachricht.   
+Die publish-Methode pr&uuml;ft, ob eine Verbindung zum Broker besteht und ver&ouml;ffentlicht - bei Erfolg - die vorgegebene Nachricht.   
 
 ### [11] Erzeugen einer Instanz
 Die Instanz `mqttClientInstance` dient zum Zugriff auf das Objekt der Klasse `MqttClient`, das mit `new` erzeugt wurde.   
 
-## Änderungen an den von VSC erstellten Dateien
+## &Auml;nderungen an den von VSC erstellten Dateien
 * Linter-Warnung "Unexpected any" bei "(value: any)" abstellen    
-  In der Datei `.eslintrc.js` unter "`rules: {`" ergänzen:   
+  In der Datei `.eslintrc.js` unter "`rules: {`" erg&auml;nzen:   
   ```   
   '@typescript-eslint/no-explicit-any': 'off',
   '@typescript-eslint/explicit-module-boundary-types': 'off'
   ```   
 
-* Anzeige der GUI `mqttMini` ermöglichen:   
-  In der Datei `App.vue` den Template-Abschnitt ändern auf   
+* Anzeige der GUI `mqttMini` erm&ouml;glichen:   
+  In der Datei `App.vue` den Template-Abschnitt &auml;ndern auf   
 
   ```   
   <template>
@@ -256,7 +256,7 @@ Die Instanz `mqttClientInstance` dient zum Zugriff auf das Objekt der Klasse `Mq
   </template>
   ```   
 
-   bzw. den Script-Abschnitt ändern auf   
+   bzw. den Script-Abschnitt &auml;ndern auf   
 
   ```   
   <script lang="ts">
@@ -272,8 +272,8 @@ Die Instanz `mqttClientInstance` dient zum Zugriff auf das Objekt der Klasse `Mq
   </script>
   ```   
 
-* Ausgabe linksbündig, mit schwarzer Schrift und ohne oberen Rand    
-  In der Datei `App.vue` im Abschnitt "`#app {`" folgende Zeilen ändern:   
+* Ausgabe linksb&uuml;ndig, mit schwarzer Schrift und ohne oberen Rand    
+  In der Datei `App.vue` im Abschnitt "`#app {`" folgende Zeilen &auml;ndern:   
    ```   
   text-align: left;     /* center    */
   color: black;         /* #2c3e50;  */
