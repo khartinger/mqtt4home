@@ -118,7 +118,7 @@ In this file all MQTT controllers can be registered that want to have MQTT messa
 * Create the `controller` directory:   
    Men&uuml; View - Explorer. Right click on `src` - select "New folder" and type `controller`   
 * Create the file `DeviceController.ts`:   
-   Men&uuml; Display - Explorer. Right click on `services` - select "New file" and enter `DeviceController.ts`   
+   Men&uuml; Display - Explorer. Right click on `controller` - select "New file" and enter `DeviceController.ts`   
    Content of the file:
 ```   
 // _____DeviceController.ts______________________________________

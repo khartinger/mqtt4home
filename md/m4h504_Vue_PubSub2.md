@@ -118,7 +118,7 @@ In dieser Datei k&ouml;nnen alle MQTT-Controller registriert werden, die MQTT-Na
 * Anlegen des Verzeichnisses `controller`:   
    Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `src` klicken - "Neuer Ordner" w&auml;hlen und `controller` eingeben.   
 * Die Datei `DeviceController.ts` anlegen:   
-   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `services` klicken - "Neue Datei" w&auml;hlen und `DeviceController.ts` eingeben.   
+   Men&uuml; Anzeigen - Explorer. Mit der rechten Maustaste auf `controller` klicken - "Neue Datei" w&auml;hlen und `DeviceController.ts` eingeben.   
    Inhalt der Datei:
 ```   
 // _____DeviceController.ts______________________________________
