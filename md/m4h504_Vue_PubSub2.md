@@ -50,7 +50,6 @@ _F&uuml;r Ungeduldige_: [Link zum fertigen Programm](https://github.com/kharting
    `> 3.x`   
    `? Use class-style component syntax? No`   
    `? Use Babel alongside TypeScript (required for modern mode, auto-detected polyfills, transpiling JSX)? No`   
-   `? Use history mode for router? (Requires proper server setup for index fallback in production) No`   
    `? Pick a linter / formatter config: ESLint + Standard config`   
    `? Pick additional lint features: Lint on save`   
    `? Where do you prefer placing config for Babel, ESLint, etc.? In dedicated config file`   
