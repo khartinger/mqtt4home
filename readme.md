@@ -54,7 +54,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [Raspberry Pi: Sending MQTT messages regularly (2021-10-12)](md/m4h104_RasPi_crontab_e.md)
 ---   
 ### Area "D1mini"
-* [D1mini: MQTT Relay with PubSubClient (2021-07-31)](hd/m4h201_D1mqttRelayD1_e.md)
+* [D1mini: MQTT Relay with PubSubClient (2021-07-31)](md/m4h201_D1mqttRelayD1_e.md)
 * [D1mini: The SimpleMqtt class (2021-07-31)](md/m4h202_D1SimpleMqtt_e.md)
 
 ---   
