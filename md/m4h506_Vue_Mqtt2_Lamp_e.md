@@ -29,7 +29,7 @@ The right branch with (browser -->) `index.html` --> `main.ts` --> `App.vue` is 
    * The file `main.ts` creates the app element which is displayed in `index.html`.   
    * `App.vue` represents `<CiMain>` and contains css elements that can be used throughout the project.   
 ---   
-The left part of the display represents the actual program:   
+The left part of Fig. 2 represents the actual program:   
 * The `MqttClient.ts` file contains the `MqttClient` class, which contains all the methods for communicating with the MQTT broker.   
 * The file `MqttClientInstance.ts` creates the object `mqttClientInstance`, where every controller that wants to receive MQTT messages has to register.   
 Symbolically, this is represented by the switches in _Fig. 2_: No registration means no sending of MQTT messages.   
