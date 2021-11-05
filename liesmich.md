@@ -54,8 +54,8 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 * [Raspberry Pi: Regelm&auml;&szlig;iges Senden von MQTT-Nachrichten (2021-10-12)](md/m4h104_RasPi_crontab.md)
 ---   
 ### Bereich "D1mini"
-* [D1mini: MQTT Relay mit PubSubClient (2021-07-31)](md/m4h04_D1mqttRelayD1.md)
-* [D1mini: Die Klasse SimpleMqtt (2021-07-31)](md/m4h05_D1SimpleMqtt.md)
+* [D1mini: MQTT Relay mit PubSubClient (2021-07-31)](md/m4h201_D1mqttRelayD1.md)
+* [D1mini: Die Klasse SimpleMqtt (2021-07-31)](md/m4h202_D1SimpleMqtt.md)
 
 ---   
 ### Bereich "Hilfsprogramme"
