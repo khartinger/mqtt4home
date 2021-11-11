@@ -6,7 +6,7 @@ Letzte &Auml;nderung: 11.11.2021
 </td></tr></table><hr>
 
 ## Mission / Ziel
-Dieses Programm für einen D1 mini oder ESP32 D1mini dient zum Schalten eines Relais via MQTT, wobei als Basis die Klasse `SimpleMqtt` verwendet wird.   
+Dieses Programm f&uuml;r einen D1 mini oder ESP32 D1mini dient zum Schalten eines Relais via MQTT, wobei als Basis die Klasse `SimpleMqtt` verwendet wird.   
 ### Annahmen
 | Annahme f&uuml;r ...             | Wert            |   
 | --------------------------- | --------------- |   
@@ -17,14 +17,15 @@ Dieses Programm für einen D1 mini oder ESP32 D1mini dient zum Schalten eines Re
 | ... Relais-Pin              | D1 bzw. GPIO 22 |   
    
 ### Funktion
-Nach dem Start wird die blaue LED eingeschaltet und der D1 mini versucht sich mit dem eingestellten Broker zu verbinden. Gelingt dies, schaltet er die blaue LED ab und es wird eine Startnachricht gesendet (zB `info/start/mqtt {"topicbase":"test/smqtt","IP":"10.1.1.160"}`). Zum Schalten des Relais dienen folgende Nachrichten:   
+Nach dem Start wird die blaue LED eingeschaltet und der D1 mini versucht sich mit dem eingestellten Broker zu verbinden. Gelingt dies, schaltet er die blaue LED ab und es wird eine Startnachricht gesendet (zB `info/start/mqtt {"topicbase":"ci/lamp/1","IP":"10.1.1.160"}`). Zum Schalten des Relais dienen folgende Nachrichten:   
 | Topic                  | Payload | Ergebnis                  |   
-|------------------------|---------|---------------------------|   
+|------------------------|:-------:|---------------------------|   
 | `ci/lamp/1/set/lamp`   |    1    | Lampe/Relais ein          |   
 | `ci/lamp/1/set/lamp`   |    0    | Lampe/Relais aus          |   
 | `ci/lamp/1/set/lamp`   |   -1    | Lampe/Relais umgeschaltet |   
-### Mögliche Erweiterungen des Programms:
-* Statusanzeige der WLAN- und MQTT-Verbindung über (zB verschiedenfarbige) LEDs
+
+### M&ouml;gliche Erweiterungen des Programms:
+* Statusanzeige der WLAN- und MQTT-Verbindung &uuml;ber (zB verschiedenfarbige) LEDs
 * Kontrolle, ob das Relais wirklich geschaltet hat, zB durch das Messen des Verbraucherstromes
 
 ## Erforderliche Hilfsmittel
@@ -34,8 +35,8 @@ Nach dem Start wird die blaue LED eingeschaltet und der D1 mini versucht sich mi
 * Software: Arduino-Entwicklungsumgebung oder Visual Studio Code mit zumindest installierten Erweiterungen PlatformIO IDE und C/C++
 
 ## Erstellen des Programms
-Ausgehend vom [smqtt_template1](https://github.com/khartinger/mqtt4home/blob/main/source_D1mini/D1_m4h01_smqtt_template1/D1_m4h01_smqtt_template1.ino) müssen folgende &Auml;nderungen bzw. Ergänzungen vorgenommen werden:   
-1. &Auml;nderung der Definitionen für das Basis-Topic und die GET- und SET-Topics:   
+Ausgehend vom [smqtt_template1](https://github.com/khartinger/mqtt4home/blob/main/source_D1mini/D1_m4h01_smqtt_template1/D1_m4h01_smqtt_template1.ino) m&uuml;ssen folgende &Auml;nderungen bzw. Erg&auml;nzungen vorgenommen werden:   
+1. &Auml;nderung der Definitionen f&uuml;r das Basis-Topic und die GET- und SET-Topics:   
 ```   
 #define  VERSION_M4H02  "2021-11-11 D1_m4h02_smqtt_relayD1"
 #define  TOPIC_BASE     "ci/lamp/1"
@@ -43,7 +44,7 @@ Ausgehend vom [smqtt_template1](https://github.com/khartinger/mqtt4home/blob/mai
 #define  TOPIC_SET      "topicbase,eeprom,lamp"
 ```   
    
-2. Definitionen für die blaue LED und das Relais:   
+2. Definitionen f&uuml;r die blaue LED und das Relais:   
 ```   
 //_____sensors, actors, global variables________________________
 #if defined(ESP32) || defined(ESP32D1)
@@ -63,7 +64,7 @@ int      ledVal_=BLUELED_ON;                // pin value
 int      relayVal_=RELAY_OFF;               // relay off
 ```   
    
-3. Ergänzung in der Funktion `String simpleGet(String sPayload)` vor der Zeile    
+3. Erg&auml;nzung in der Funktion `String simpleGet(String sPayload)` vor der Zeile    
 `return String("");                         // wrong set command`   
    Beantwortung der GET-Anfrage "lamp":   
 ```   
@@ -74,7 +75,7 @@ int      relayVal_=RELAY_OFF;               // relay off
  }
 ```   
    
-4. Ergänzung in der Funktion `String simpleSet(String sTopic, String sPayload)` vor der Zeile    
+4. Erg&auml;nzung in der Funktion `String simpleSet(String sTopic, String sPayload)` vor der Zeile    
 `return String("");                         // wrong set command`   
    Bearbeitung der SET-Anfrage "lamp":   
 ```   
@@ -94,7 +95,7 @@ int      relayVal_=RELAY_OFF;               // relay off
  }
 ```   
 
-5. Ergänzung in der setup-Funktion im Abschnitt "init pins":   
+5. Erg&auml;nzung in der setup-Funktion im Abschnitt "init pins":   
 ```   
  //-----init pins-----------------------------------------------
  pinMode(BLUELED_PIN, OUTPUT);              // set pin to output
@@ -103,7 +104,7 @@ int      relayVal_=RELAY_OFF;               // relay off
  digitalWrite(RELAY_PIN,relayVal_);         // turn relay off
 ```   
 
-6. Änderung der loop-Funktion so, dass die blaue LED eingeschaltet wird, sobald die Verbindung zum Broker verloren geht:   
+6. &Auml;nderung der loop-Funktion so, dass die blaue LED eingeschaltet wird, sobald die Verbindung zum Broker verloren geht:   
 ```   
 //_____LOOP_____________________________________________________
 void loop() {
@@ -115,12 +116,12 @@ void loop() {
 }
 ```   
 
-Das vollständige Listing befinet sich auf []().
+Das vollst&auml;ndige Listing befinet sich auf [https://github.com/khartinger/mqtt4home/blob/main/source_D1mini/D1_m4h02_smqtt_relayD1/src/D1_m4h02_smqtt_relayD1.ino](https://github.com/khartinger/mqtt4home/blob/main/source_D1mini/D1_m4h02_smqtt_relayD1/src/D1_m4h02_smqtt_relayD1.ino).
 
 ## Test des Programms
 ### Vorbereitung
 1. Laptop/PC: Erstellen des Projekts `D1_m4h02_smqtt_relayD1`   
-[---> Quellcode siehe]()
+[---> Quellcode siehe https://github.com/khartinger/mqtt4home/tree/main/source_D1mini/D1_m4h02_smqtt_relayD1](https://github.com/khartinger/mqtt4home/tree/main/source_D1mini/D1_m4h02_smqtt_relayD1)
 
 2. Laptop/PC: Build und Upload des Programms auf den D1 mini.   
 
