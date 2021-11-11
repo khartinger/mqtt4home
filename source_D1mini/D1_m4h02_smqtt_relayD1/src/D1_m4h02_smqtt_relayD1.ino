@@ -1,63 +1,54 @@
-//_____D1_m4h01_smqtt_relayD1.ino________________khartinger_____
-
-
-// Demo program to show the use of class SimpleMqtt.
+//_____D1_m4h02_smqtt_relayD1.ino________________khartinger_____
+// This program for a D1 mini or ESP32 D1mini is used to switch 
+// a relay via MQTT, using the class `SimpleMqtt` as a base.
 // Function of this program:
 // [1] Connect to given WiFi and MQTT broker
-// [2] Use "topic base" stored in eeprom or topic led/1
-// [3] Answer the following requests with a topic like
-//     led/1/ret/...:
-//     -t led/1/get -m topicbase
-//     -t led/1/get -m eeprom
-//     -t led/1/get -m blueled
-// [4] Change topic base (e.g. to led/2)
-//     -t led/1/set/topicbase -m led/2
-// [5] Set D1mini blue led off, on or toggle
-//     -t led/1/set/blueled -m 0
-//     (plus message -t led/3/set/blueled -m toggle)
-// [6] Erase topic base stored in EEPROM by
-//     -t led/1/set/eeprom -m erase (or -m 0)
-//     On next start topic base is set to default value led/1
-// [7] Automatic (build in) answers for messages 
-//     -t led/1/get -m help
-//     -t led/1/get -m version
-//     -t led/1/get -m ip
+// [2] Send a start message
+// [3] Use "topic base" stored in eeprom or topic TOPIC_BASE
+// [4] Answer all get requests in TOPIC_GET
+// [5] Do all set requests in TOPIC_SET and answer them, e.g.
+//     toggle lamp: -t ci/lamp/1/set/lamp -m -1
 // Class SimpleMqtt extends class PubSubClient for easy use.
 // All commands of the PubSubClient class can still be used.
 // Note: When PubSubClient lib is installed,
 //       delete PubSubClient files in directory src/simplemqtt
 // Hardware: 
 // (1) WeMos D1 mini (OR ESP32 D1 mini)
+// (2) Relay shield (@D1)
 //
 // Important: Example needs a MQTT-broker!
-// Created by Karl Hartinger, October 16, 2020.
+// Created by Karl Hartinger, November 11, 2021.
 // Changes:
-// 2020-10-16 New
-// 2021-04-18 update class SimpleMqtt
+// 2021-11-11 New
 // Released into the public domain.
+
 #define D1MINI          1              // ESP8266 D1mini +pro
 //#define ESP32D1         2              // ESP32 D1mini
 #include "src/simplemqtt/D1_class_SimpleMqtt.h"
 
-#define  DEBUG75        true //false
-#define  VERSION75      "2020-10-16 D1_oop75_smqtt_eeprom_blueled1"
-#define  TOPIC_BASE     "led/1"
-#define  TOPIC_GET      "?,help,version,ip,topicbase,eeprom,blueled"
-#define  TOPIC_SET      "topicbase,eeprom,blueled"
+#define  VERSION_M4H02  "2021-11-11 D1_m4h02_smqtt_relayD1"
+#define  TOPIC_BASE     "ci/lamp/1"
+#define  TOPIC_GET      "?,help,version,ip,topicbase,eeprom,lamp"
+#define  TOPIC_SET      "topicbase,eeprom,lamp"
 #define  TOPIC_SUB      ""
-#define  TOPIC_PUB      "led/3/set/blueled"
+#define  TOPIC_PUB      ""
 
 //_____sensors, actors, global variables________________________
 #if defined(ESP32) || defined(ESP32D1)
- #define BLUELED_PIN    2                   // led pin 
+ #define RELAY_PIN      22                  // D1=22
+ #define BLUELED_PIN    2                   // led pin D4=IO2
  #define BLUELED_ON     1                   // ESP32 1
  #define BLUELED_OFF    0                   // ESP32 0
 #else
+ #define RELAY_PIN      D1                  // D1=22
  #define BLUELED_PIN    D4                  // led pin D4=IO2
  #define BLUELED_ON     0                   // D1mini 0
  #define BLUELED_OFF    1                   // D1mini 1
 #endif
-int      ledVal_=BLUELED_OFF;               // pin value
+ #define RELAY_ON       1                   //
+ #define RELAY_OFF      0                   //
+int      ledVal_=BLUELED_ON;                // pin value
+int      relayVal_=RELAY_OFF;               // relay off
 
 //_____MQTT communication_______________________________________
 //SimpleMqtt client("..ssid..", "..password..","mqttservername");
@@ -75,7 +66,7 @@ void callback(char* topic, byte* payload, unsigned int length)
 // return: ret answer payload for get request
 String simpleGet(String sPayload)
 {
- if(sPayload=="version") return String(VERSION75);
+ if(sPayload=="version") return String(VERSION_M4H02);
  //-------------------------------------------------------------
  if(sPayload=="topicbase") return client.getsTopicBase();
  //-------------------------------------------------------------
@@ -87,8 +78,8 @@ String simpleGet(String sPayload)
   return s1;
  }
  //-------------------------------------------------------------
- if(sPayload=="blueled") {
-  if(ledVal_==BLUELED_ON) return String("on"); 
+ if(sPayload=="lamp") {
+  if(relayVal_==RELAY_ON) return String("on"); 
   else return String("off"); 
  }
  //-------------------------------------------------------------
@@ -110,18 +101,20 @@ String simpleSet(String sTopic, String sPayload)
   if(sPayload=="0" || sPayload=="erase") {  // payload OK?
   if(client.eepromEraseTopicBase()) return "erased";
   }
-  return "not erased";                 // return answer
+  return "not erased";                      // return answer
  }
  //-------------------------------------------------------------
- if(sTopic=="blueled") {                    // switch blue led?
-  if(sPayload=="on" || sPayload=="1") ledVal_=BLUELED_ON;
+ if(sTopic=="lamp") {                       // switch blue led?
+  if(sPayload=="on" || sPayload=="1") relayVal_=RELAY_ON;
   else {                                    // other command
-   if(sPayload=="off" || sPayload=="0") ledVal_=BLUELED_OFF;
-   else ledVal_=1-ledVal_;                  // toggle led
+   if(sPayload=="off" || sPayload=="0") relayVal_=RELAY_OFF;
+   else {
+    if(sPayload=="toggle" || sPayload=="-1")
+      relayVal_=1-relayVal_;                // toggle led
+   }
   }
-  digitalWrite(BLUELED_PIN,ledVal_);        // turn led on/off
-  client.sendPubIndex(0, "toggle");         // additional message
-  if(ledVal_==BLUELED_ON) return String("on"); // return answer
+  digitalWrite(RELAY_PIN,relayVal_);         // turn led on/off
+  if(relayVal_==RELAY_ON) return String("on"); // return answer
   return String("off");                     // return answer
  }
  //-------------------------------------------------------------
@@ -138,14 +131,13 @@ void simpleSub(String sTopic, String sPayload)
 //_____SETUP____________________________________________________
 void setup() {
   //-----Serial, just for debug----------------------------------
- //if(DEBUG75)
  {Serial.begin(115200); Serial.println("\nsetup(): --Start--");}
  //-----init pins-----------------------------------------------
  pinMode(BLUELED_PIN, OUTPUT);              // set pin to output
- digitalWrite(BLUELED_PIN,ledVal_);         // turn led on/off
+ digitalWrite(BLUELED_PIN,ledVal_);         // turn led on
+ pinMode(RELAY_PIN, OUTPUT);                // set pin to output
+ digitalWrite(RELAY_PIN,relayVal_);         // turn relay off
  //-----prepare mqtt start--------------------------------------
- // Use setTopicBaseDefault() (or constructor) instead of 
- // setTopicBase(), to use topic base from eeprom on restart ;)
  client.setTopicBaseDefault(TOPIC_BASE);    // default base
  client.begin();                            // setup objects
  client.setCallback(callback);              // mqtt receiver
@@ -160,5 +152,8 @@ void setup() {
 //_____LOOP_____________________________________________________
 void loop() {
  client.doLoop();                           // mqtt loop
+ if(client.isMQTTConnected()) ledVal_ = BLUELED_OFF;
+ else ledVal_ = BLUELED_ON;
+ digitalWrite(BLUELED_PIN,ledVal_);         // turn led on/off
  delay(100);
 }

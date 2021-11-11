@@ -1,29 +1,31 @@
-Letzte &Auml;nderung: 8.11.2021   
+Letzte &Auml;nderung: 11.11.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
-<h1>Schalten eines Relais via MQTT - Version 2</h1>
+<h1>D1 mini: Schalten eines Relais via MQTT - Version 2</h1>
 <a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h203_D1smqttRelayD1_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
 
 ## Mission / Ziel
-Dieses Programm für einen D1 mini oder ESP32 D1mini dient zum Schalten eines Relais via MQTT.   
-
-
+Dieses Programm für einen D1 mini oder ESP32 D1mini dient zum Schalten eines Relais via MQTT, wobei als Basis die Klasse `SimpleMqtt` verwendet wird.   
+### Annahmen
+| Annahme f&uuml;r ...             | Wert            |   
+| --------------------------- | --------------- |   
+| ... WLAN name               | `Raspi11`       |   
+| ... WLAN password &nbsp;    | `12345678`      |   
+| ... IP address              | `10.1.1.1`      |   
+| ... Basis-Topic             | `ci/lamp/1`     |   
+| ... Relais-Pin              | D1 bzw. GPIO 22 |   
+   
+### Funktion
+Nach dem Start wird die blaue LED eingeschaltet und der D1 mini versucht sich mit dem eingestellten Broker zu verbinden. Gelingt dies, schaltet er die blaue LED ab und es wird eine Startnachricht gesendet (zB `info/start/mqtt {"topicbase":"test/smqtt","IP":"10.1.1.160"}`). Zum Schalten des Relais dienen folgende Nachrichten:   
+| Topic                  | Payload | Ergebnis                  |   
+|------------------------|---------|---------------------------|   
+| `ci/lamp/1/set/lamp`   |    1    | Lampe/Relais ein          |   
+| `ci/lamp/1/set/lamp`   |    0    | Lampe/Relais aus          |   
+| `ci/lamp/1/set/lamp`   |   -1    | Lampe/Relais umgeschaltet |   
 ### Mögliche Erweiterungen des Programms:
-* Statusanzeige der WLAN- und MQTT-Verbindung über LEDs
-* Kontrolle des Schaltens des Relais durch Messen des Verbraucherstromes
-
-
-
----   
----   
----   
-
-&nbsp;
-
-* Kennenlernen der Klasse [`pubsubclient`](https://github.com/knolleary/pubsubclient) zur Verarbeitung von MQTT-Nachrichten mit dem D1 mini oder ESP32 mini.
-* Erstellen eines Programmes f&uuml;r den D1 mini oder ESP32 mini zum Steuern eines Relais(-Shields) &uuml;ber MQTT.
-* Testen des MQTT-Relais mit dem PC.
+* Statusanzeige der WLAN- und MQTT-Verbindung über (zB verschiedenfarbige) LEDs
+* Kontrolle, ob das Relais wirklich geschaltet hat, zB durch das Messen des Verbraucherstromes
 
 ## Erforderliche Hilfsmittel
 * Hardware: D1 mini oder ESP32 mini
@@ -31,127 +33,145 @@ Dieses Programm für einen D1 mini oder ESP32 D1mini dient zum Schalten eines Re
 * Hardware: Laptop/PC mit WLAN-Empfang und installierter Mosquitto-Software
 * Software: Arduino-Entwicklungsumgebung oder Visual Studio Code mit zumindest installierten Erweiterungen PlatformIO IDE und C/C++
 
-&nbsp;   
-## MQTT-Nachrichten und die Klasse "pubsubclient"
-Die Bearbeitung von MQTT-Nachrichten gliedert sich in vier Schritte:   
-1. Festlegen der Netzwerk-Parameter
-2. Verbinden mit dem MQTT-Broker
-3. Empfangen von Nachrichten ("subscribe")
-4. Senden von Nachrichten ("publish")
-
-### ad 1. Festlegen der Netzwerk-Parameter
-* Bereits beim [Einrichten des RasPi als Access-Point](m4h02_RasPiAccessPoint.md) werden folgende Parameter festgelegt:   
-
-|                 |                 |   
-| --------------- | --------------- |   
-| WLAN-Name:      | `Raspi11`       |   
-| WLAN-Passwort:  | `12345678`      |   
-| IP-Adresse:     | `10.1.1.1`      |   
-Zus&auml;tzlich muss noch ein Client-Name festgelegt werden, zB `D1mini_Relay1`.   
-
-* Im Programmcode sieht das zB folgenderma&szlig;en aus:   
-
-```
-const char* ssid = "Raspi11";
-const char* password = "12345678";
-const char* mqtt_server = "10.1.1.1";
-String clientId=String("D1mini_Relay1");
-
-WiFiClient espClient;
-PubSubClient client(espClient);
-```
-
-### ad 2. Verbinden mit dem Netzwerk und dem MQTT-Broker
-* Zum Verbinden mit dem Netzwerk ist zumindest folgender (blockierender) Code erforderlich:   
-```
- WiFi.begin(ssid, password);
- while (WiFi.status() != WL_CONNECTED) { delay(200); }
-```
-* Wurde die Verbindung mit dem Netzwerk erfolgreich hergestellt, m&uuml;ssen (in der Funktion `setup()`) die Server-IP, der Port und der Name der Callback-Routine festgelegt werden:   
-```
- client.setServer(mqtt_server, 1883);
- client.setCallback(callback);
-```
-* Die Verbindung zum Broker sowie das Abonnieren ("subscribe") von Nachrichten erfolgt durch folgende Befehle: 
-```
- if(client.connect(clientId.c_str())) { //...connected...
-  client.subscribe("#");
+## Erstellen des Programms
+Ausgehend vom [smqtt_template1](https://github.com/khartinger/mqtt4home/blob/main/source_D1mini/D1_m4h01_smqtt_template1/D1_m4h01_smqtt_template1.ino) müssen folgende &Auml;nderungen bzw. Ergänzungen vorgenommen werden:   
+1. &Auml;nderung der Definitionen für das Basis-Topic und die GET- und SET-Topics:   
+```   
+#define  VERSION_M4H02  "2021-11-11 D1_m4h02_smqtt_relayD1"
+#define  TOPIC_BASE     "ci/lamp/1"
+#define  TOPIC_GET      "?,help,version,ip,topicbase,eeprom,lamp"
+#define  TOPIC_SET      "topicbase,eeprom,lamp"
+```   
+   
+2. Definitionen für die blaue LED und das Relais:   
+```   
+//_____sensors, actors, global variables________________________
+#if defined(ESP32) || defined(ESP32D1)
+ #define RELAY_PIN      22                  // D1=22
+ #define BLUELED_PIN    2                   // led pin D4=IO2
+ #define BLUELED_ON     1                   // ESP32 1
+ #define BLUELED_OFF    0                   // ESP32 0
+#else
+ #define RELAY_PIN      D1                  // D1=22
+ #define BLUELED_PIN    D4                  // led pin D4=IO2
+ #define BLUELED_ON     0                   // D1mini 0
+ #define BLUELED_OFF    1                   // D1mini 1
+#endif
+ #define RELAY_ON       1                   //
+ #define RELAY_OFF      0                   //
+int      ledVal_=BLUELED_ON;                // pin value
+int      relayVal_=RELAY_OFF;               // relay off
+```   
+   
+3. Ergänzung in der Funktion `String simpleGet(String sPayload)` vor der Zeile    
+`return String("");                         // wrong set command`   
+   Beantwortung der GET-Anfrage "lamp":   
+```   
+ //-------------------------------------------------------------
+ if(sPayload=="lamp") {
+  if(relayVal_==RELAY_ON) return String("on"); 
+  else return String("off"); 
  }
-```
-Anmerkung: Mit `"#"` werden alle MQTT-Nachrichten abonniert.   
-
-* Die &Uuml;berpr&uuml;fung, ob der D1 mini (noch) mit dem Broker verbunden ist, erfolgt durch folgenden Befehl:
-```
-if (client.connected()) {
-//...
-}
-```
-
-### ad 3. Empfangen von Nachrichten
-F&uuml;r das Empfangen von Nachrichten sind zwei Punkte erforderlich:   
-1. In der Funktion `loop()` MUSS regelm&auml;&szlig;ig die Methode `client.loop()` aufgerufen werden:
-```
- if (client.connected()) {
-  client.loop();                            // must be called!
+```   
+   
+4. Ergänzung in der Funktion `String simpleSet(String sTopic, String sPayload)` vor der Zeile    
+`return String("");                         // wrong set command`   
+   Bearbeitung der SET-Anfrage "lamp":   
+```   
+ //-------------------------------------------------------------
+ if(sTopic=="lamp") {                       // switch blue led?
+  if(sPayload=="on" || sPayload=="1") relayVal_=RELAY_ON;
+  else {                                    // other command
+   if(sPayload=="off" || sPayload=="0") relayVal_=RELAY_OFF;
+   else {
+    if(sPayload=="toggle" || sPayload=="-1")
+      relayVal_=1-relayVal_;                // toggle led
+   }
+  }
+  digitalWrite(RELAY_PIN,relayVal_);         // turn led on/off
+  if(relayVal_==RELAY_ON) return String("on"); // return answer
+  return String("off");                     // return answer
  }
-```
-2. Die eigentliche Bearbeitung aller abonnierten Nachrichten erfolgt in der Funktion `callback`:
-```
-void callback(char* topic, byte* payload, unsigned int length) {
-//...
+```   
+
+5. Ergänzung in der setup-Funktion im Abschnitt "init pins":   
+```   
+ //-----init pins-----------------------------------------------
+ pinMode(BLUELED_PIN, OUTPUT);              // set pin to output
+ digitalWrite(BLUELED_PIN,ledVal_);         // turn led on
+ pinMode(RELAY_PIN, OUTPUT);                // set pin to output
+ digitalWrite(RELAY_PIN,relayVal_);         // turn relay off
+```   
+
+6. Änderung der loop-Funktion so, dass die blaue LED eingeschaltet wird, sobald die Verbindung zum Broker verloren geht:   
+```   
+//_____LOOP_____________________________________________________
+void loop() {
+ client.doLoop();                           // mqtt loop
+ if(client.isMQTTConnected()) ledVal_ = BLUELED_OFF;
+ else ledVal_ = BLUELED_ON;
+ digitalWrite(BLUELED_PIN,ledVal_);         // turn led on/off
+ delay(100);
 }
-```
-Da die Payload beliebige Zeichen (auch das 0-Zeichen!) enthalten kann, ist zus&auml;tzlich noch die L&auml;nge der Payload angegeben.
+```   
 
-### ad 4. Senden von Nachrichten
-Das Senden von Nachrichten erfolgt mit einer der Methoden "`publish()`", die als Parameter zumindest das Sende-Topic und die Payload ("Nachricht") enthalten muss. Weiters kann man angeben, ob sich der Broker die Nachricht merken soll (3. Parameter = retain = auf `true` setzen).   
-&nbsp;
+Das vollständige Listing befinet sich auf []().
 
-## Erstellen des Programms "MQTT-Relay"
-### Funktionen des Programmes im Detail
-1. Versuch der Herstellung der Verbindung zum gegebenen WiFi und MQTT-Broker.
-2. Einschalten der blauen LED, wenn die Verbindung besteht.
-3. Abonnieren des Topics `relay/1/set` mit den m&ouml;glichen Inhalten ("payload") 0, 1 oder -1.
-4. Wird das Topic `relay/1/set` empfangen,
-   * wird das Relais entsprechend der Payload geschaltet: 0=aus, 1=ein, -1=um.
-   * wird eine Nachricht mit dem Topic `relay/1/ret` und der Payload entsprechend dem neuen Status des Relais geschickt (0=aus, 1=ein, -1=um).
-5. Falls die Verbindung zum Broker unterbrochen wird, versucht der D1 mini, sie nach einer  Wartezeit von 4 Sekunden (`MQTT_RECONNECT_MS`) wieder herzustellen.
+## Test des Programms
+### Vorbereitung
+1. Laptop/PC: Erstellen des Projekts `D1_m4h02_smqtt_relayD1`   
+[---> Quellcode siehe]()
 
-### Codierung
+2. Laptop/PC: Build und Upload des Programms auf den D1 mini.   
 
-Die vollst&auml;ndige Codierung befindet sich auf GitHub unter   
-[https://github.com/khartinger/D1mini/tree/master/D1_Ex60_mqtt_relayD1](https://github.com/khartinger/D1mini/tree/master/D1_Ex60_mqtt_relayD1)   
+3. RasPi mit dem Mosquitto-Broker starten (falls dies noch nicht erfolgt ist).   
 
-&nbsp;
+4. Laptop/PC: Mit dem WLAN-Netz `Raspi11` verbinden (Passwort `12345678`).   
 
-## Test des MQTT-Relais
-1. D1 mini: Hochladen des Programms [`D1_Ex60_mqtt_relayD1`](https://github.com/khartinger/D1mini/tree/master/D1_Ex60_mqtt_relayD1).   
-
-2. RasPi mit dem Mosquitto-Broker starten (falls dies noch nicht erfolgt ist).   
-
-3. Laptop/PC: Mit dem WLAN-Netz `Raspi11` verbinden (Passwort `12345678`).   
-
-4. Laptop/PC: Ein Kommando-Fenster ("Eingabeaufforderung") &ouml;ffnen:   
-```cmd.exe```
+5. Laptop/PC: Ein Kommando-Fenster ("Eingabeaufforderung") &ouml;ffnen:   
+`cmd.exe`
 im Startmen&uuml; eingeben.   
 Ins richtige Laufwerk und Mosquitto-Verzeichnis wechseln:   
-```c:```   
-```cd /programme/mosquitto```
+`c:`   
+`cd /programme/mosquitto`
 
-5. Laptop/PC: Die Anzeige aller Nachrichten zulassen:   
-```mosquitto_sub -h 10.1.1.1 -t "#" -v```   
+6. Laptop/PC: Die Anzeige aller Nachrichten zulassen:   
+`mosquitto_sub -h 10.1.1.1 -t "#" -v`   
 Mit dem Schalter `-h` wird die IP-Adresse des Raspi angegeben.   
 
-6. Laptop/PC: Ein zweites Eingabeaufforderungs-Fenster &ouml;ffnen:   
-```cmd.exe```
+7. Laptop/PC: Ein zweites Eingabeaufforderungs-Fenster &ouml;ffnen:   
+`cmd.exe`
 im Startmen&uuml; eingeben.   
 Ins richtige Laufwerk und Mosquitto-Verzeichnis wechseln:   
-```c:```   
-```cd /programme/mosquitto```
+`c:`   
+`cd /programme/mosquitto`
 
-7. Senden des Relais-Umschalte-Kommandos vom zweiten Eingabeaufforderungs-Fenster aus:    
-```mosquitto_pub -h 10.1.1.1 -t relay/1/set -m -1```   
-Im ersten Eingabeaufforderungs-Fenster erscheinen folgende zwei Zeilen:   
-```relay/1/set -1```   
-```relay/1/ret 1```   
-Au&szlig;erdem m&uuml;sste das Relais umgeschaltet haben (Relais-LED leuchtet).   
+### Durchf&uuml;hrung des Programm-Tests
+1. D1 mini: Reset-Knopf dr&uuml;cken   
+   Warten, bis die blaue LED erlischt. Danach   
+   Anzeige im ersten Eingabeaufforderungs-Fenster:   
+   `info/start/mqtt {"topicbase":"ci/lamp/1","IP":"10.1.1.169"}`   
+
+2. Relais einschalten   
+   _Eingabe im Fenster 2_:   
+   `mosquitto_pub -h 10.1.1.1 -t ci/lamp/1/set/lamp -m 1`   
+   _Anzeige im Fenster 1_:   
+   `ci/lamp/1/set/lamp 1`   
+   `ci/lamp/1/ret/lamp on`   
+   Das Relais sollte jetzt eingeschaltet sein ;)   
+
+3. Relais ausschalten   
+   _Eingabe im Fenster 2_:   
+   `mosquitto_pub -h 10.1.1.1 -t ci/lamp/1/set/lamp -m 0`   
+   _Anzeige im Fenster 1_:   
+   `ci/lamp/1/set/lamp 0`   
+   `ci/lamp/1/ret/lamp off`   
+   Das Relais sollte jetzt ausgeschaltet sein ;)   
+
+4. Relais umschalten   
+   _Eingabe im Fenster 2_:   
+   `mosquitto_pub -h 10.1.1.1 -t ci/lamp/1/set/lamp -m -1`   
+   _Anzeige im Fenster 1_:   
+   `ci/lamp/1/set/lamp -1`   
+   `ci/lamp/1/ret/lamp on`   
+   Das Relais sollte jetzt eingeschaltet sein ;)   
