@@ -50,18 +50,19 @@ Das folgende Listing `D1_m4h01_smqtt_template1.ino` ist die Basis f&uuml;r eigen
 // Template to create a MQTT application using SimpleMqtt
 // Function of this program:
 // [1] Connect to given WiFi and MQTT broker
-// [2] Use "topic base" stored in eeprom or topic "test/smqtt"
-// [3] Automatic (build in) answers for messages 
+// [2] Automatically send an MQTT message message at startup
+// [3] Use "topic base" stored in eeprom or topic "test/smqtt"
+// [4] Automatic (build in) answers for messages 
 //     -t test/smqtt/get -m help
 //     -t test/smqtt/get -m version
 //     -t test/smqtt/get -m ip
-// [4] Answer the following requests with a topic like
+// [5] Answer the following requests with a topic like
 //     test/smqtt/ret/...:
 //     -t test/smqtt/get -m topicbase
 //     -t test/smqtt/get -m eeprom
-// [5] Change topic base (e.g. to test/newtopic)
+// [6] Change topic base (e.g. to test/newtopic)
 //     -t test/smqtt/set/topicbase -m test/newtopic
-// [6] Erase topic base stored in EEPROM by
+// [7] Erase topic base stored in EEPROM by
 //     -t test/smqtt/set/eeprom -m erase (or -m 0)
 //     On next start topic base is set to default value test/smqtt
 // Class SimpleMqtt extends class PubSubClient for easy use.
@@ -154,16 +155,13 @@ void simpleSub(String sTopic, String sPayload)
 //_____SETUP____________________________________________________
 void setup() {
   //-----Serial, just for debug----------------------------------
- //if(DEBUG75)
  {Serial.begin(115200); Serial.println("\nsetup(): --Start--");}
  //-----init pins-----------------------------------------------
  //-----prepare mqtt start--------------------------------------
- // Use setTopicBaseDefault() (or constructor) instead of 
- // setTopicBase(), to use topic base from eeprom on restart ;)
  client.setTopicBaseDefault(TOPIC_BASE);    // default base
  client.begin();                            // setup objects
  client.setCallback(callback);              // mqtt receiver
- client.setTopics(TOPIC_GET,TOPIC_SET,TOPIC_SUB,TOPIC_PUB);
+ client.setTopics(TOPIC_GET, TOPIC_SET, TOPIC_SUB, TOPIC_PUB);
  //-----connect to WiFi and MQTT broker-------------------------
  Serial.println("Waiting for connection to WiFi and MQTT broker...");
  while(!client.connectWiFiMQTT()) yield();

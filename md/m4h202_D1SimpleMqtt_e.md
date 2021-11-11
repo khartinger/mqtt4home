@@ -46,6 +46,10 @@ D1 mini programs require the following project structure:
 
 The following listing `D1_m4h01_smqtt_template1.ino` is the basis for your own programs:   
 ```   
+
+
+
+
 //_____D1_m4h01_smqtt_template1.ino______________khartinger_____
 // Template to create a MQTT application using SimpleMqtt
 // Function of this program:
