@@ -43,8 +43,12 @@ D1 mini Programme setzen folgende Projektstruktur voraus:
   | xxx | xxx.ino   <br>eventuell readme.md |   
   | xxx/src/simplemqtt | `D1_class_SimpleMqtt.cpp`, `D1_class_SimpleMqtt.h`,<br>   `PubSubClient.cpp`, `PubSubClient.h`   |   
   
+_Beispiel für Arduino-IDE_:   
+[https://github.com/khartinger/mqtt4home/tree/main/source_D1mini/D1_m4h01_smqtt_template1](https://github.com/khartinger/mqtt4home/tree/main/source_D1mini/D1_m4h01_smqtt_template1)   
+_Beispiel für Visual Studion Code_:   
+[https://github.com/khartinger/mqtt4home/tree/main/source_D1mini/D1_m4h01_smqtt_template1_vsc](https://github.com/khartinger/mqtt4home/tree/main/source_D1mini/D1_m4h01_smqtt_template1_vsc)   
 
-Das folgende Listing `D1_m4h01_smqtt_template1.ino` ist die Basis f&uuml;r eigene Programme:   
+Dabei kann das folgende Listing `D1_m4h01_smqtt_template1.ino` als Basis f&uuml;r eigene Programme dienen:   
 ```   
 //_____D1_m4h01_smqtt_template1.ino______________khartinger_____
 // Template to create a MQTT application using SimpleMqtt
