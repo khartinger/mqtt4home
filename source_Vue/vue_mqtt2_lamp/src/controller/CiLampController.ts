@@ -18,8 +18,8 @@ export class CiLampController extends CiBaseController {
         iLampState: -1,
         battery: '-',
         text5: 'ci/lamp/1/ret',
-        subTopic: 'ci/lamp/1/ret',
-        pubTopic: 'ci/lamp/1/set ci/lamp/9/set',
+        subTopic: 'ci/lamp/1/ret/lamp',
+        pubTopic: 'ci/lamp/1/set/lamp ci/lamp/9/set/lamp',
         pubPayload: '-1'
       },
       {
@@ -28,8 +28,8 @@ export class CiLampController extends CiBaseController {
         iLampState: -1,
         battery: '-',
         text5: 'ci/lamp/2/ret',
-        subTopic: 'ci/lamp/2/ret ci/lamp/9/ret',
-        pubTopic: 'ci/lamp/2/set ci/lamp/9/set',
+        subTopic: 'ci/lamp/2/ret/lamp ci/lamp/9/ret/lamp',
+        pubTopic: 'ci/lamp/2/set/lamp ci/lamp/9/set/lamp',
         pubPayload: '-1'
       }
     ]

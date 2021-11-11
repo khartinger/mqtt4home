@@ -19,8 +19,8 @@ export class CiButtonController extends CiBaseController {
         battery: '-',
         text5: 'ci/lamp/+/ret',
         subTopic: 'ci/lamp/1/ret ci/lamp/2/ret',
-        pubTopic: 'ci/lamp/1/ret ci/lamp/2/ret',
-        // pubTopic: 'ci/lamp/1/set ci/lamp/2/set',
+        // pubTopic: 'ci/lamp/1/ret ci/lamp/2/ret',
+        pubTopic: 'ci/lamp/1/set/lamp ci/lamp/2/set/lamp',
         pubPayload: '0'
       }
     ]
