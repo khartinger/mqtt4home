@@ -56,7 +56,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 ### Area "D1mini"
 * [D1mini: MQTT Relay with PubSubClient (2021-07-31)](md/m4h201_D1mqttRelayD1_e.md)
 * [D1mini: The SimpleMqtt class (2021-07-31)](md/m4h202_D1SimpleMqtt_e.md)
-
+* [D1mini: Switching a relay via MQTT - version 2 (2021-11-08)](md/m4h203_D1smqttRelayD1_e.md)
 ---   
 ### Area "auxiliary programs"
 * [RasPi: Template for MQTT programs in C++ (2021-08-21)](md/m4h07_RasPiCppBase_e.md)
