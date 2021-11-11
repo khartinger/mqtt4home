@@ -214,7 +214,7 @@ Ins richtige Laufwerk und Mosquitto-Verzeichnis wechseln:
 `c:`   
 `cd /programme/mosquitto`
 
-### Durchf&uuml;hreung des Template-Tests
+### Durchf&uuml;hrung des Template-Tests
 1. D1 mini: Reset-Knopf dr&uuml;cken   
    Anzeige im ersten Eingabeaufforderungs-Fenster:   
    `info/start/mqtt {"topicbase":"test/smqtt","IP":"10.1.1.160"}`   
