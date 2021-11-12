@@ -1,4 +1,4 @@
-Last modified: 2021-11-10   
+Last modified: 2021-11-12   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>D1mini: Class SimpleMqtt</h1>
 <a href="../readme.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
@@ -24,17 +24,22 @@ Example: Topic `led/1/ret/blueled` e.g. with the payload `0` or `1`.
    
 In addition to these agreements, any other topics can be received and sent.   
    
-## Advantages of using the class `SimpleMqtt`
-Advantages of the class `SimpleMqtt` are:   
-* Assignment of an own name (topicbase) for each D1 mini without having to adapt the program. (The name is stored in the EEPROM).
-* Definition of the get-/set-/sub- and pub-topics in one constant each (`TOPIC_GET`, `TOPIC_SET`, `TOPIC_SUB`, `TOPIC_PUB`)
-* Automatic response to get requests with the payload   
-  | | |   
-  | --- | --- |   
-  | help or ? | display implemented get/set/sub and pub topics |   
+## Advantages of using the "SimpleMqtt" class
+Two features have proven to be particularly handy in practice:   
+1. sending a startup message when the D1 mini boots.   
+2. possibility to change the base topic via an MQTT message.   
+
+This means: If you don't know the base topic of a system (e.g. button etc.), you just have to reset it and look at the MQTT messages to see which start topic was sent ;)
+### Further advantages of the class `SimpleMqtt` are:   
+* Assigning arbitrary names (base topic) for each D1 mini without having to customize the program. (The name is stored in the EEPROM).
+* Definition of get-/set-/sub- and pub-topics in one constant each (`TOPIC_GET`, `TOPIC_SET`, `TOPIC_SUB`, `TOPIC_PUB`)
+* Automatic response to get requests:   
+  | payload | response message |   
+  | ------- | ----------------- |   
+  | help or ? | list of possible get/set/sub and pub topics |   
   | version | SimpleMqtt version or program version |   
   | ip | the IP of the system participant assigned by the RasPi |   
-| simple storage of values in EEPROM (e.g. parameters for sensors)
+* simple storage of values in EEPROM (e.g. parameters for sensors)
    
 ## Program structure
 D1 mini programs require the following project structure:   

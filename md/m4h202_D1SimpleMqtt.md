@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 10.11.2021   
+Letzte &Auml;nderung: 12.11.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>D1 mini: Die Klasse SimpleMqtt</h1>
 <a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -13,8 +13,8 @@ Damit ein D1 mini (oder ESP32 D1mini) MQTT-Nachrichten senden oder empfangen kan
 Die Klasse `SimpleMqtt` erweitert `PubSubClient` um einige Funktionalit&auml;ten, um das Erstellen von D1 mini-Systemen f&uuml;r die Heimautomation zu erleichtern.   
    
 ## Vereinbarungen zur Nutzung von `SimpleMqtt`
-Um Nachrichten einfach verarbeiten zu k&ouml;nnen, definiert die Klasse `SimpleMqtt` folgenden Topic-Aufbau:   
-* __Basis-Topic__: Jeder Systemteilnehmer hat einen eigenen "Namen" bzw. ein Topic auf das er "h&ouml;rt", das "Basis-Topic" (`topicbase`) zB `led/1` oder `led/2`.
+Um Nachrichten einfach zu verarbeiten, setzt die Klasse `SimpleMqtt` folgenden Topic-Aufbau voraus:   
+* __Basis-Topic__: Jeder Systemteilnehmer hat einen eigenen "Namen" bzw. ein Topic, auf das er "h&ouml;rt", das "Basis-Topic" (`topicbase`) zB `led/1` oder `led/2`.
 * __Anfrage-Topics__ dienen zum Abfragen von Informationen und bestehen aus dem Basis-Topic mit dem Zusatz `/get`. Welcher Wert abgefragt wird, steht in der Payload.   
 Beispiel: `mosquitto_pub -t led/1/get -m blueled`
 * __Steuer-Topics__ setzen Parameter eines Systemteilnehmers und bestehen aus dem Basis-Topic mit dem Zusatz `/set/...`. Der zu verarbeitende Wert steht in der Payload.   
@@ -25,13 +25,18 @@ Beispiel: Topic `led/1/ret/blueled` zB mit der Payload `0` oder `1`
 Zus&auml;tzlich zu diesen Vereinbarungen k&ouml;nnen aber auch beliebige weitere Topics empfangen und gesendet werden.   
    
 ## Vorteile bei der Verwendung der Klasse "SimpleMqtt"
-Vorteile der Klasse `SimpleMqtt` sind:   
-* Vergabe eines eigenen Namens (Basis-Topic) f&uuml;r jeden D1 mini ohne das Programm anpassen zu m&uuml;ssen. (Der Name wird im EEPROM gespeichert.)
+Zwei Features haben sich in der Praxis als besonders praktisch herausgestellt:   
+1. Senden einer Startmeldung beim Hochfahren des D1 minis.   
+2. Möglichkeit zum Ändern des Basis-Topics über eine MQTT-Nachricht.   
+
+Das bedeutet: Weiß man von einem System (zB Taster etc.) nicht das Basis-Topic, so muss es lediglich rücksetzen und bei den MQTT-Nachrichten schauen, welches Start-Topic gesendet wurde ;)
+### Weitere Vorteile der Klasse `SimpleMqtt` sind:   
+* Vergabe beliebiger Namen (Basis-Topic) f&uuml;r jeden D1 mini ohne das Programm anpassen zu m&uuml;ssen. (Der Name wird im EEPROM gespeichert.)
 * Definition der get-/set-/sub- und pub-Topics in jeweils einer Konstanten (`TOPIC_GET`, `TOPIC_SET`, `TOPIC_SUB`, `TOPIC_PUB`)
-* Automatische Antwort auf get-Anfragen mit der Payload   
-  |     |     |   
-  | --- | --- |   
-  | help oder ? | Anzeige der implementierten get-/set-/sub- und pub-Topics |   
+* Automatische Antwort auf get-Anfragen:   
+  | Payload | Antwort-Nachricht |   
+  | ------- | ----------------- |   
+  | help oder ? | Liste der möglichen get-/set-/sub- und pub-Topics |   
   | version     | SimpleMqtt-Version oder Programm-Version           |   
   | ip          | die vom RasPi zugewiesene IP des Systemteilnehmers |   
 * Einfache Speicherung von Werten im EEPROM (zB Parameter f&uuml;r Sensoren)
