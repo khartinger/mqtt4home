@@ -10,6 +10,7 @@ import { ciPumpController } from '@/controller/CiPumpController'
 import { ciSocketController } from '@/controller/CiSocketController'
 import { ciDoorController } from '@/controller/CiDoorController'
 import { ciBlindController } from '@/controller/CiBlindController'
+import { ciButton2Controller } from '@/controller/CiButton2Controller'
 
 export const mqttClientInstance = new MqttClient()
 mqttClientInstance.registerController(ciLampController)
@@ -22,3 +23,4 @@ mqttClientInstance.registerController(ciPumpController)
 mqttClientInstance.registerController(ciSocketController)
 mqttClientInstance.registerController(ciDoorController)
 mqttClientInstance.registerController(ciBlindController)
+mqttClientInstance.registerController(ciButton2Controller)

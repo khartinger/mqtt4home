@@ -1,31 +1,34 @@
-<!--CiButton.vue-->
+<!--CiButton2.vue-->
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border"></CiBase>
   <!--draw symbol------------------------------------------- -->
   <!--
-  <circle :cx="cx" :cy="cy" :r="cr" :fill="colorButton" />
+  <circle :cx="cx" :cy="cy" :r="cr" :fill="colorButton2" />
   <circle :cx="cx" :cy="cy" :r="cr" fill="none" stroke="black" stroke-width="2" class="cursor" />
   -->
-  <rect :x="Rx0" :y="Ry0" :rx="Rrx" :ry="Rry" :width="Rw" :height="Rh" :fill="colorButton" stroke="black" stroke-width="2" class="cursor" />
+  <rect :x="Rx0" :y="Ry0" :rx="Rrx" :ry="Rry" :width="Rw" :height="Rh" :fill="colorButton2" stroke="black" stroke-width="4" class="cursor" />
+  <line :x1="Rx0" :y1="cy" :x2="Rx0 + Rw" :y2="cy" stroke="black" stroke-width="2" />
   <!--draw extra symbol (shape)----------------------------- -->
   <path v-if="isShape" :d="drawShape" fill="none" stroke="black" stroke-width="1"/>
-  <!--write center text------------------------------------- -->
-  <text v-if="line3.length>0" :x="geo.xt()" :y="dy + geo.yt(3)" class="ciFont1">{{line3}}</text>
+  <!--write on/off text------------------------------------- -->
+  <text v-if="line2.length>0" :x="geo.xt()" :y="dy + dyt + geo.yt(2)" class="ciFont1">{{line2}}</text>
+  <text v-if="line4.length>0" :x="geo.xt()" :y="dy - dyt + geo.yt(4)" class="ciFont1">{{line4}}</text>
   <!--write text-------------------------------------------- -->
   <text v-if="iLines>0" :x="geo.xt()" :y="geo.yt(1)" class="ciFont1">{{title}}</text>
   <text v-if="iLines>1" :x="geo.xt()" :y="geo.yt(5)" class="ciFont1">{{line5}}</text>
   <!--define click area------------------------------------- -->
-  <rect @click="onClk()" class="ciClick" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
+  <rect @click="onClkOn()" class="ciClick" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo/2" />
+  <rect @click="onClkOff()" class="ciClick" :x="geo.x0()" :y="y" :width="geo.dxo" :height="geo.dyo/2" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
-import { Button, ciButtonController } from '../controller/CiButtonController'
+import { Button2, ciButton2Controller } from '../controller/CiButton2Controller'
 import CiBase, { Geo } from './CiBase.vue'
 
 export default defineComponent({
-  name: 'CiButton',
+  name: 'CiButton2',
   components: {
     CiBase
   },
@@ -54,11 +57,11 @@ export default defineComponent({
     }
   },
   computed: {
-    button: function (): Button | undefined {
-      return ciButtonController.buttons.find(button => button.id === this.sid)
+    button2: function (): Button2 | undefined {
+      return ciButton2Controller.button2s.find(button2 => button2.id === this.sid)
     },
-    iButtonState: function (): number {
-      return this.button?.iButtonState ?? -1
+    iButton2State: function (): number {
+      return this.button2?.iButton2State ?? -1
     },
     geo: function (): Geo {
       const geo1 = new Geo()
@@ -70,8 +73,8 @@ export default defineComponent({
       return parseInt(this.lines)
     },
     isShape: function (): boolean {
-      if (this.button?.shape) {
-        if (this.button.shape.length > 0) return true
+      if (this.button2?.shape) {
+        if (this.button2.shape.length > 0) return true
       }
       return false
     },
@@ -92,8 +95,8 @@ export default defineComponent({
     Rx0: function (): number { return (this.cx - this.cr) },
     Ry0: function (): number { return (this.cy - this.cr) },
     Rrx: function (): number {
-      if (!this.button?.shape) return this.cr / 10
-      const sym = this.button.shape.toLowerCase()
+      if (!this.button2?.shape) return this.cr / 10
+      const sym = this.button2.shape.toLowerCase()
       if ((sym.indexOf('circle') >= 0) || (sym.indexOf('round') >= 0)) return this.cr
       return (this.cr / 10)
     },
@@ -111,33 +114,42 @@ export default defineComponent({
       if (this.iLines === 1) return this.geo.dyl / 2
       return 0
     },
-    // -------button representation-------------------------------
-    colorButton: function (): string {
-      if (this.iButtonState === -2) return this.geo.colorOff
-      if (this.iButtonState === -1) return this.geo.colorOn
-      if (this.iButtonState < 0) return this.geo.colorUnknown
-      return this.button?.color ?? this.geo.colorError
+    dyt: function (): number {
+      if (this.iLines === 0) return -this.geo.dyl / 4
+      if (this.iLines === 2) return this.geo.dyl / 3
+      return 0
+    },
+    // -------button2 representation-------------------------------
+    colorButton2: function (): string {
+      if (this.iButton2State === -2) return this.geo.colorOff
+      if (this.iButton2State === -1) return this.geo.colorOn
+      if (this.iButton2State < 0) return this.geo.colorUnknown
+      return this.button2?.color ?? this.geo.colorError
     },
     // -------text in line 1 and 5------------------------------
     title: function (): string {
-      if (this.button?.name) return this.geo.center(this.button.name)
+      if (this.button2?.name) return this.geo.center(this.button2.name)
       return this.geo.center(this.sid)
     },
     line5: function (): string {
-      if (this.button?.text5) return this.geo.center(this.button.text5)
-      if (this.button?.battery) return this.geo.center(this.button.battery)
+      if (this.button2?.text5) return this.geo.center(this.button2.text5)
+      if (this.button2?.battery) return this.geo.center(this.button2.battery)
       return this.geo.center(this.sid)
     },
     // -------symbol text in line 3-----------------------------
-    line3: function (): string {
-      if (this.button?.text3) return this.geo.center(this.button.text3)
+    line2: function (): string {
+      if (this.button2?.textOn) return this.geo.center(this.button2.textOn)
+      return ''
+    },
+    line4: function (): string {
+      if (this.button2?.textOff) return this.geo.center(this.button2.textOff)
       return ''
     },
     drawShape: function (): string {
-      if (!this.button?.shape) return ''
-      if (this.button.shape.length < 1) return ''
+      if (!this.button2?.shape) return ''
+      if (this.button2.shape.length < 1) return ''
       let s1 = ''
-      const sym = this.button.shape.toLowerCase()
+      const sym = this.button2.shape.toLowerCase()
       const cR = 0.8 * this.cr //           radius of perimeter
       const ca = cR * Math.sqrt(3) //       Side length of triangle
       s1 = 'M' + this.cx + ',' + this.cy
@@ -157,16 +169,29 @@ export default defineComponent({
     }
   },
   methods: {
-    onClk: function (): void {
-      console.log(this.sid, 'Button-Click')
-      const topic = 'ci/error/button'
+    onClkOn: function (): void {
+      console.log(this.sid, 'Button2-ClickOn')
+      const topic = 'ci/error/button2'
       let payload = '-1'
-      if (!this.button) ciButtonController.publishCi(topic, payload)
-      if (this.button?.pubTopic) {
-        const aPubTopic = this.button.pubTopic.split(' ')
+      if (!this.button2) ciButton2Controller.publishCi(topic, payload)
+      if (this.button2?.pubTopic) {
+        const aPubTopic = this.button2.pubTopic.split(' ')
         aPubTopic.forEach(topic => {
-          if (this.button?.pubPayload) payload = this.button.pubPayload
-          ciButtonController.publishCi(topic, payload)
+          if (this.button2?.pubPayload) payload = this.button2.pubPayload
+          ciButton2Controller.publishCi(topic, payload)
+        })
+      }
+    },
+    onClkOff: function (): void {
+      console.log(this.sid, 'Button2-ClickOff')
+      const topic = 'ci/error/button2'
+      let payload = '-1'
+      if (!this.button2) ciButton2Controller.publishCi(topic, payload)
+      if (this.button2?.pubTopicOff) {
+        const aPubTopic = this.button2.pubTopicOff.split(' ')
+        aPubTopic.forEach(topic => {
+          if (this.button2?.pubPayloadOff) payload = this.button2.pubPayloadOff
+          ciButton2Controller.publishCi(topic, payload)
         })
       }
     }

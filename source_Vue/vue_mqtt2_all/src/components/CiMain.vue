@@ -7,8 +7,8 @@
   <!--
   <line x1 = 230 y1 = -10 x2 = 230 y2 = 120 stroke = "black" />
   -->
-  <CiButton  :x="2.5*dx" :y="0.5*dy" sid="button1" lines="2" :border="0"></CiButton>
-  <CiButton  :x="3.5*dx" :y="0.5*dy" sid="button2" lines="1" :border="2"></CiButton>
+  <CiButton  :x="2.5*dx" :y="0.5*dy" sid="button_1" lines="2" :border="0"></CiButton>
+  <CiButton  :x="3.5*dx" :y="0.5*dy" sid="button_2" lines="1" :border="2"></CiButton>
   <CiWeather :x="4.5*dx" :y="0.5*dy" sid="weather1"></CiWeather>
   <CiWeather :x="5.5*dx" :y="0.5*dy" sid="weather2"></CiWeather>
   <CiMotion  :x="6.5*dx" :y="0.5*dy" sid="motion1"></CiMotion>
@@ -17,11 +17,14 @@
   <CiText5   :x="9.5*dx" :y="0.5*dy" sid="text5" :border="2"></CiText5>
   <CiText5L  :x="10.5*dx" :y="0.5*dy" sid="text5L" :border="2"></CiText5L>
 
-  <CiButton  :x="0.5*dx" :y="1.5*dy" sid="button2" lines="0" :border="0" symbol="_up_"></CiButton>
-  <CiButton  :x="1.5*dx" :y="1.5*dy" sid="button2" lines="2" :border="1" symbol="_down_"></CiButton>
-  <CiButton  :x="2.5*dx" :y="1.5*dy" sid="button2" lines="1" :border="0" symbol="_left_"></CiButton>
-  <CiButton  :x="3.5*dx" :y="1.5*dy" sid="button2" lines="1" :border="0" symbol="_right_"></CiButton>
+  <CiButton  :x="0.5*dx" :y="1.5*dy" sid="button_up" lines="2" :border="1"></CiButton>
+  <CiButton  :x="1.5*dx" :y="1.5*dy" sid="button_down" lines="0" :border="0"></CiButton>
+  <CiButton  :x="2.5*dx" :y="1.5*dy" sid="button_left" lines="1" :border="0"></CiButton>
+  <CiButton  :x="3.5*dx" :y="1.5*dy" sid="button_right" lines="1" :border="0"></CiButton>
 
+  <CiButton2  :x="4.5*dx" :y="1.5*dy" sid="button2_1" lines="0" :border="0"></CiButton2>
+  <CiButton2  :x="5.5*dx" :y="1.5*dy" sid="button2_1" lines="1" :border="0"></CiButton2>
+  <CiButton2  :x="6.5*dx" :y="1.5*dy" sid="button2_2" lines="2" :border="0"></CiButton2>
   <CiDoor   :x="0.5*dx" :y="3.0*dy" sid="doorH1" door-dir="H1" :border="0"></CiDoor>
   <CiDoor   :x="2.0*dx" :y="3.0*dy" sid="doorh1" door-dir="h1" :border="0"></CiDoor>
   <CiDoor   :x="3.5*dx" :y="3.0*dy" sid="doorH2" door-dir="H2" :border="0"></CiDoor>
@@ -61,6 +64,7 @@ import CiPump from './CiPump.vue'
 import CiSocket from './CiSocket.vue'
 import CiDoor from './CiDoor.vue'
 import CiBlind from './CiBlind.vue'
+import CiButton2 from './CiButton2.vue'
 import { Geo } from './CiBase.vue'
 
 // ------MQTT broker parameter----------------------------------
@@ -80,7 +84,8 @@ export default defineComponent({
     CiPump,
     CiSocket,
     CiDoor,
-    CiBlind
+    CiBlind,
+    CiButton2
   },
   mounted: async function (): Promise<void> {
     mqttClientInstance.connect(host, port, '')

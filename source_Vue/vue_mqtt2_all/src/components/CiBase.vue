@@ -47,6 +47,7 @@ export default defineComponent({
 })
 
 // -----------font data-----------------------------------------
+// examples: fh_=11, tmax_=14 or 16/13, ...
 const fh_ = 16 //            font height [pixel]
 const tmax_ = 14 //          max number character per line
 // -----------y direction---------------------------------------
@@ -70,7 +71,7 @@ export class Geo {
   public colorOk = '#CCFFCC' //         light green
   public colorNotOk = '#FFCCCC' //      light red
   public colorError = '#FF0000' //      red
-  public colorOn = '#CCCC00' //         yellow
+  public colorOn = '#FFFF66' //         yellow
   public colorOff = '#AAAAAA' //        light grey
   public colorUnknown = '#9999FF' //    light blue
   public colorBackground = '#DDFFDD' // light green
@@ -143,7 +144,7 @@ export class Geo {
   public center (text: string): string {
     const len = text.length
     if (len >= this.tmax) return text.substr(0, this.tmax)
-    const numBlank = Math.round((this.tmax - len - 1) / 2)
+    const numBlank = Math.round((this.tmax - len) / 2)
     const s1 = text.padStart(numBlank + len, ' ')
     return s1
   }
