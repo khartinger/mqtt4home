@@ -29,7 +29,7 @@ _Bild 3: About-Seite (About)_
 * Software: Visual Studio Code ("VSC"), das f&uuml;r Vue-Anwendungen bereits vorbereitet ist.   
    (Dh. es wurde bereits (mindestens) eine Vue-Anwendung in Visual Code erstellt.)   
 
-Fertiges Projekt: []()
+Fertiges Projekt: [https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue_mqtt3_3webpages](https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue_mqtt3_3webpages)
 
 # Erstellen des Projektes
 ## 1. Übersicht über die beteiligten Dateien
@@ -78,11 +78,18 @@ module.exports = {
 }
 ```   
 
-2. Datei für die Seite `Page2` erstellen   
+2. Linter-Warnung "Unexpected any" bei "(value: any)" abstellen    
+  In der Datei `.eslintrc.js` unter "`rules: {`" erg&auml;nzen:   
+  ```   
+  '@typescript-eslint/no-explicit-any': 'off',
+  '@typescript-eslint/explicit-module-boundary-types': 'off'
+  ```   
+
+3. Datei für die Seite `Page2` erstellen   
 Mit der linken Maustaste auf `views/About.vou`klicken, Datei mit &lt;strg&gt; c und &lt;strg&gt; v kopieren und die Kopie auf `Page2.vue` umbenennen (zB mit dem Hilfsmenü mit der rechten Maustaste).   
 In der Datei `Page2.vue` die Zeile `<h1>This is Page2</h1>` anpassen.   
 
-3. Anpassen der "Routen" in der automatisch erstellten Datei `router/index.ts`:   
+4. Anpassen der "Routen" in der automatisch erstellten Datei `router/index.ts`:   
 ```   
 // ___________router/index.ts___________________________________
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
@@ -133,7 +140,7 @@ export default router
 
 ```   
 
-4. Datei `App.vue` anpassen   
+5. Datei `App.vue` anpassen   
    1. Die Zeile `<router-link to="/page2">Page2</router-link> |` ergänzen.   
    2. Die Styles mit Punkt ergänzen.   
 _Inhalt der Datei_:   
@@ -184,18 +191,19 @@ _Inhalt der Datei_:
 </style>
 ```   
 
-5. Testen dieses Zwischenstandes   
+6. Testen dieses Zwischenstandes   
 Starten des Servers durch folgende Eingabe im Terminal:   
 `npm run serve`   
 Eingabe im Browser:   
 `localhost:8080`   
 
-6. Nicht benötigte Dateien und Verzeichnisse löschen   
+7. Nicht benötigte Dateien und Verzeichnisse löschen   
   * Datei `components/HelloWorld.vue` löschen   
   * Verzeichnis `assets` löschen   
 
 ## 4. MQTT Client ergänzen
 Verzeichnis src/services erstellen, Dateien MqttClient.ts und MqttClientInstance.ts ergänzen.   
+Erklärungen siehe "Teil 1: Erstellung des MQTT Clients" in [m4h504_Vue_PubSub2.md](m4h504_Vue_PubSub2.md)
 
 ## 5. Home-Seite erstellen
 Datei `views/Home.vue` anpassen:   
