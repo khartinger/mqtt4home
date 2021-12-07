@@ -1,7 +1,7 @@
-Letzte &Auml;nderung: 8.11.2021
+Letzte &Auml;nderung: 7.12.2021
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
-<a href="readme.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
+<a href="README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
 
 ## Willkommen auf mqtt4home   

@@ -1,7 +1,7 @@
-Last modified: 2021-10-15
+Last modified: 2021-12-07
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT for domestic/home use :)</h1>
-<a href="liesmich.md">==> German version</a>&nbsp; &nbsp; &nbsp; 
+<a href="LIESMICH.md">==> German version</a>&nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
 
 ## Welcome to mqtt4home
