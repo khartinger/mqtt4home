@@ -1,6 +1,6 @@
 Last modified: 2021-12-07   
 <table><tr><td><img src="./images/mqtt4home_96.png"></td><td>&nbsp;</td><td>
-<h2>Creating a Vue project with multiple web pages</h2>
+<h1>Creating a Vue project with multiple web pages</h1>
 <a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
 <a href="./LIESMICH.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
