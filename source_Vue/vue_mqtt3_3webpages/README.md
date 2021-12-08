@@ -6,11 +6,12 @@ Last modified: 2021-12-08
 </td></tr></table><hr>
 
 This project "Vue: multiple web pages" uses parts of the examples ["vue_mqtt_lamp1"](../vue_mqtt2_lamp) and ["vue_mqtt1"](../vue_mqtt1) to create an app with multiple pages:   
-1. main page ("Home")   
+
+1. Main page ("Home")   
   Representation of a lamp and a button that can be used to switch the lamp.   
-2. history page ("Page2")   
+2. History page ("Page2")   
   Display of the last five received MQTT commands.   
-3. about page ("About")   
+3. About page ("About")   
   Info about the application.   
 
 ![Main page multi-webpages project](./images/vue_mqtt3_3webpages_home.png "Main page two-webpages project")   
@@ -22,26 +23,39 @@ _Fig. 2: History page (Page2)_
 ![About page](./images/vue_mqtt3_3webpages_about.png "History page")   
 _Fig. 3: About page (About)_   
 
+If you select the option   
+`(*) Router`   
+when creating the project in Visual Studio Code (VSC), VSC automatically creates a program framework for a multi-website app, which can then be customized according to your own wishes.   
+In addition to the three web pages, this project contains an MQTT connection and graphical elements, so that in total a lot of files come together.   
+The following diagram gives an overview of the files involved:   
+
+![Overview Files](./images/vue_mqtt3_3webpages_files.png "Overview Files")   
+_Fig. 4: Overview of the involved files_   
+
+With the help of the diagram you can see some important relationships:   
+* The names of the different web pages ("Home", "Page2" and "About") are defined in `router/index.ts` and `main.ts`.   
+* The graphic elements `Lamp`, `Button2` and `MattLastX` each consist of a "controller" and "graphic" part (extension `.ts` and `.vue` respectively) and are derived from base components.   
+* The connection to the MQTT broker is established via the files `MqttClient.ts` and `MqttClientInstance.ts`. All controllers must be registered in the file `MqttClientInstance.ts`. Forgetting this, the controller will not receive MQTT messages ("switch open").   
+
 ## Required tools
 * Hardware: PC or laptop with internet access, browser
 * Hardware: Raspberry Pi (or PC) running an MQTT broker (e.g. Mosquitto)
 * Software: Visual Studio Code ("VSC"), which is already prepared for Vue applications.   
-   (I.e. (at least) one Vue application has already been created in Visual Code).   
+   (I.e. at least one Vue application has already been created in Visual Code).   
+* Software: terminal program [putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) on PC/laptop
+* Software: [WinSCP](https://winscp.net/eng/docs/lang:de) for data transfer from PC/laptop to RasPi   
 
-Finished project: [https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue_mqtt3_3webpages](https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue_mqtt3_3webpages)
-
+---   
+   
 # Creating the project
-## 1. overview of the involved files
-![Overview files](./images/vue_mqtt3_3webpages_files.png "Overview files")   
-_Fig. 4: Overview of the involved files_   
-
-## 2. preparation of the Vue project in VSC (short version)   
-1. start Visual Studio Code (VSC).   
-2. VSC: Open terminal window: Men&uuml; Terminal - New Terminal.   
+## 1. Preparation of the Vue project in VSC (short version)   
+1. Start Visual Studio Code (VSC).   
+2. VSC: Open terminal window: Menu Terminal - New Terminal.   
 3. VSC terminal: Change to the folder under which the Vue project is to be created:   
-   `cd /g/github/mqtt4home/source_Vue`.   
-4. VSC-Terminal: Create Vue.js application: `vue create vue_mqtt3_2webpages`.  
-   Use cursor keys, space bar and &lt;Enter&gt; to select the following:   
+   `cd /g/github/mqtt4home/source_Vue`   
+4. VSC-Terminal: Create Vue.js application:   
+  `vue create vue_mqtt3_2webpages`  
+  Use cursor keys, space bar and &lt;Enter&gt; to select the following:   
    `> Manually select features` &nbsp; &lt;Enter&gt;   
    `(*) Choose Vue version`   
    `(*) Babel`   
@@ -57,38 +71,46 @@ _Fig. 4: Overview of the involved files_
    _`? Pick additional lint features: `_ &nbsp; __`Lint on save`__ &lt;Enter&gt;   
    _`? Where do you prefer placing config for Babel, ESLint, etc.?`_ &nbsp; __`In dedicated config file`__ &lt;Enter&gt;   
    _`? Save this as a preset for future projects? (y/N)`_ &nbsp; __`N`__ &lt;Enter&gt;   
-5. switch to the project folder: _VSC Men&uuml; File - Folder &ouml;ffnen_..
+5. Switch to the project folder: _VSC Men&uuml; File - Folder &ouml;ffnen_..
    `/github/mqtt4home/source_Vue/vue_mqtt3_2webpages` [select folder].   
-6. install MQTT library:   
+6. Install MQTT library:   
    VSC: Open Terminal window: Men&uuml; Terminal - New Terminal.   
    `npm install mqtt --save`   
 &nbsp;   
-## 3 Customizing the automatically created files
-### 3.1 Adding to the Vue configuration   
-Create the file `vue.config.js`: click on the plus next to `VUE_MQTT3_2WEBPAGES`, enter name.   
+## 2 Customizing the automatically created files
+### 2.1 Adding to the Vue configuration   
+Create the file `vue.config.js`: Click on the plus next to `VUE_MQTT3_2WEBPAGES`, enter name.   
 _Content of file_:   
 ```   
+// ______vue.config.js__________________________________________
 module.exports = {
   lintOnSave: false,
   publicPath: './',
+  // publicPath: process.env.NODE_ENV === 'production' ? './vue_pubsub2/' : './',
   configureWebpack: {
     devtool: 'source-map'
+  },
+  chainWebpack: config => {
+    config.performance
+      .maxEntrypointSize(400000)
+      .maxAssetSize(400000)
   }
 }
 ```   
+With `publicPath: './',` the relative path specification is set and by the `chainWebpack` entry warnings concerning the file size are avoided (by setting the maximum file size higher ;) ).
 
-### 3.2 Disable linter warning "Unexpected any" for "(value: any)".    
+### 2.2 Disable linter warning "Unexpected any" for "(value: any)".    
   In the file `.eslintrc.js` under "`rules: {`" add:   
   ```   
   '@typescript-eslint/no-explicit-any': 'off',
   '@typescript-eslint/explicit-module-boundary-types': 'off'
   ```   
 
-### 3.3 Create file for page `Page2   
+### 2.3 Create file for page `Page2`   
 Left-click on `views/About.vou`, copy the file with &lt;strg&gt; c and &lt;strg&gt; v and rename the copy to `Page2.vue` (e.g. with the help menu with the right mouse button).   
 In the file `Page2.vue` adjust the line `<h1>This is Page2</h1>`.   
 
-### 3.4 Adjust the "routes" in the automatically created `router/index.ts` file:   
+### 2.4 Adjust the "routes" in the automatically created `router/index.ts` file:   
 ```   
 // ___________router/index.ts___________________________________
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'.
@@ -139,15 +161,16 @@ export default router
 
 ```   
 
-### 3.5 Customize `App.vue` file   
+### 2.5 Customize `App.vue` file   
 The `App.vue` file is responsible for the following items:   
   * Displaying a link line with links to the individual pages.   
     Therefore: add the line `<router-link to="/page2">Page2</router-link> |`.   
   * Establishing the connection to the broker.   
-    This should not be done in the "Home" page, otherwise the connection will be re-established every time the page is loaded.   
-    The state of the connection is displayed in the link line.   
+    This should not be done in the `Home` page, otherwise the connection will be re-established every time the start page is loaded.   
+    The broker IP, the MQTT port and the subscribe topic are defined as constants directly in `App.vue`. (Lines 28 to 30)   
+  * Display of the connection state in the link line.   
   * Definition of uniform styles for all pages.   
-    Therefore: add dot to the styles.   
+    Therefore: Add all styles that start with a dot.   
 
 _Content of the file_:   
 ```   
@@ -265,19 +288,18 @@ export default defineComponent({
 </style>
 ```   
 
-### 3.6 Deleting unneeded files and directories   
-  * Delete file `components/HelloWorld.vue   
-  * Delete directory `assets   
+### 2.6 Deleting unneeded files and directories   
+  * Delete file `components/HelloWorld.vue`   
+  * Delete directory `assets`   
 
-## 4. add MQTT client
+## 3. Add MQTT client
 Create directory `src/services`, add files `MqttClient.ts` and `MqttClientInstance.ts`.   
-For explanations see "Part 1: Creating the MQTT Client" in [m4h504_Vue_PubSub2_e.md](m4h504_Vue_PubSub2_e.md)
+For explanations see ["Part 1: Creating the MQTT Client" in m4h504_Vue_PubSub2_e.md](m4h504_Vue_PubSub2_e.md)
 
-## 
-## 6. create home page
-The home page ("Home") contains the two control/display elements (CI elements) "Lamp" and "Button2", which are created using the following files:   
-* [`components/CiBase.vue ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/components/CiBase.vue) Definition of geometry data (class Geo) as well as display of the border of the CI elements.   
-* [`controller/CiBaseController.ts ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/controller/CiBaseController.ts) Definition of the base properties for all CI elements (interface IBase) as well as an abstract base controller (CiBaseController) with the definition of the methods `registerClient`, `publish` and `onMessage` required for all controllers.   
+## 4. Create page "Home"
+The start page "Home" contains the two control/display elements (CI elements) "Lamp" and "Button2", which are created using the following files:   
+* [`components/CiBase.vue ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/components/CiBase.vue) Definition of geometry data (class `Geo`) as well as display of the border of the CI elements.   
+* [`controller/CiBaseController.ts ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/controller/CiBaseController.ts) Definition of the base properties for all CI elements (interface `IBase`) as well as an abstract base controller (`CiBaseController`) with the definition of the methods `registerClient`, `publish` and `onMessage` required for all controllers.   
 * [`components/CiLamp.vue ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/components/CiLamp.vue) Representation of the lamp symbol and realization of the function `onClk`, which is executed when the symbol is clicked.   
 * [`controller/CiLampController.ts ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/controller/CiLampController.ts) Definition of the lamp properties, realization of the methods `onMessage` and `publish` (`publishCi`) and creation of an object `ciLampController`.   
 * [`components/CiButton2.vue ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/components/CiButton2.vue) Representation of the switch symbol and realization of the functions `onClkON` and `onClkOff`, which are executed when clicking on the "ON" and "OFF" areas of the symbol.   
@@ -309,10 +331,11 @@ export default defineComponent({
 })
 </script>
 ```   
-The lamp needs as parameters the center x and y and the ID. With `:border="0"` the drawing of a border is prevented. Since the number of lines (`lines=`) is not specified, the default `lines="1"` is used and the name of the lamp is displayed.   
-The switch needs the center x and y and the ID as parameters. With `:border="0"` the drawing of a border and with `lines="0"` the display of further information is prevented.   
 
-## 7. create page "Page2
+The lamp needs as parameters the coordinates of the center x and y and the ID. With `:border="0"` the drawing of a border is prevented. Since the number of lines (`lines=`) is not specified, the default value `lines="1"` is used and the name of the lamp is displayed (Lamp_1).   
+The switch needs the coordinates of the center x and y and the ID as parameters. With `:border="0"` the drawing of a border and with `lines="0"` the display of further information is prevented.   
+
+## 5. Create page "Page2"
 The page "Page2" uses the component `MqttLastX` to display the last five received MQTT messages:   
 * [`components/MqttLastX.vue ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/components/MqttLastX.vue) Displaying the table of the last messages.   
 * [`controller/MqttLastXController.ts ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/controller/MqttLastXController.ts) Definition of the MqttLastXController class, which uses the `onMessage` method to write the received message to the MessageStore memory.   
@@ -340,9 +363,9 @@ export default defineComponent({
 })
 </script>
 ```   
-
-## 8. Create "About" page
-The "About" page outputs text and shows how to create a link to another page within an SVG graphic.   
+With `publicPath: './',` the relative path specification is set and by the `chainWebpack` entry warnings concerning the file size are avoided (by setting the maximum file size higher ;) ).
+## 6. Create "About" page
+The "About" page outputs text and demonstates how to create a link to another page within an SVG graphic.   
 ```   
 <template>
   <div class="about">
@@ -376,3 +399,30 @@ export default defineComponent({
  .fontAbout { font: bold 24px sans-serif; fill: red; cursor: pointer; }
 </style>
 ```   
+
+## 7. Transfer the project to the server (Raspberry Pi).
+This project should be transferred after entering   
+`10.1.1/vue_multi`   
+in the browser.   
+
+Therefore the project has to be prepared especially for the server.   
+1. In the file `vue.config.js` the line   
+`publicPath: './',`   
+to set the relative path (see above).   
+2. In VSC a "production"-version must be created. To do this, enter the following in the terminal window:   
+`npm run build`.   
+The compiled files are located in the directory `dist`.   
+3. On the RaspPi the directory `/var/www/html/vue_multi` must be created, e.g. with `putty` (command `mkdir /var/www/html/vue_multi`) or in `WinSCP`.   
+If the directories `var/www` and `var/www/html` do not exist yet, they must also be created beforehand with the commands   
+`sudo mkdir /var/www`   
+`sudo mkdir /var/www/html`   
+`sudo chown pi_ /var/www/html`   
+`sudo chmod 777 /var/www/html`   
+`sudo chmod u+s /var/www/html`   
+should be created and shared with all users.   
+4. Transferring the files with `WinSCP`   
+  From the PC directory `github/mqtt4home/source_Vue/vue_mqtt3_3webpages/dist`   
+  to the RasPi directory `/var/www/html/vue_multi`   
+5 Start the application in the brower by entering the URL, e.g.   
+   `http://10.1.1.1/vue_multi/`   
+If the connection is rejected, e.g. on RasPi the Apache server could not run.   
