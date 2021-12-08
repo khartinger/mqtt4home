@@ -1,12 +1,11 @@
-Last modified: 2021-12-07   
+Last modified: 2021-12-08   
 <table><tr><td><img src="./images/mqtt4home_96.png"></td><td>&nbsp;</td><td>
-<h1>Creating a Vue project with multiple web pages</h1>
+<h1>How to make a Vue app with multiple web pages?</h1>
 <a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
 <a href="./LIESMICH.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
 
-## Target
-This Vue project shows the creation of a web application with three pages:   
+This project "Vue: multiple web pages" uses parts of the examples ["vue_mqtt_lamp1"](../vue_mqtt2_lamp) and ["vue_mqtt1"](../vue_mqtt1) to create an app with multiple pages:   
 1. main page ("Home")   
   Representation of a lamp and a button that can be used to switch the lamp.   
 2. history page ("Page2")   
@@ -15,13 +14,13 @@ This Vue project shows the creation of a web application with three pages:
   Info about the application.   
 
 ![Main page multi-webpages project](./images/vue_mqtt3_3webpages_home.png "Main page two-webpages project")   
-_image 1: Main page of the multi-webpages project (Home)_   
+_Fig. 1: Main page of the multi-webpages project (Home)_   
 
 ![History page](./images/vue_mqtt3_3webpages_page2.png "History page")   
-_image 2: History page (Page2)_   
+_Fig. 2: History page (Page2)_   
 
 ![About page](./images/vue_mqtt3_3webpages_about.png "History page")   
-_image 3: About page (About)_   
+_Fig. 3: About page (About)_   
 
 ## Required tools
 * Hardware: PC or laptop with internet access, browser

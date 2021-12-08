@@ -1,15 +1,15 @@
-Letzte &Auml;nderung: 7.12.2021   
+Letzte &Auml;nderung: 8.12.2021   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
-<h1>Erstellen eines Vue Projekts mit mehreren Web-Seiten</h1>
+<h1>Wie erstellt man eine Vue-App mit mehreren Webseiten?</h1>
 <a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="./README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
   
-## Ziel
-Dieses Vue-Projekt zeigt das Erstellen eines Web-Anwendung mit drei Seiten:   
+Dieses Projekt "Vue: multiple web pages" verwendet Teile der Beispiele ["vue_mqtt_lamp1"](../vue_mqtt2_lamp) und ["vue_mqtt1"](../vue_mqtt1), um daraus eine App mit mehreren Seiten zu erstellen:   
+
 1. Hauptseite ("Home")   
-  Darstellung einer Lampe und eines Tasters, mit der die Lampe geschaltet werden kann.   
-2. "History-Seite" ("Page2")   
+  Darstellung einer Lampe und eines Tasters, mit dem die Lampe geschaltet werden kann.   
+2. History-Seite ("Page2")   
   Darstellung der letzten f&uuml;nf empfangenen MQTT-Befehle.   
 3. About-Seite (About")   
   Info &uuml;ber die Applikation.   
