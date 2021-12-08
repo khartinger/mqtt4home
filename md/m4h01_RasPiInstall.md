@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 10.10.2021   
+Letzte &Auml;nderung: 8.12.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Grundinstallation des Raspberry Pi</h1>
 <a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -156,7 +156,6 @@ __Anmerkung: Falls bereits User-Crontabs f&uuml;r den User pi erstellt wurden, s
  ```
        
 ---   
-
 10. Usernamen f&uuml;r automatisches Login &auml;ndern:   
  ```
  sudo nano /etc/lightdm/lightdm.conf
@@ -192,7 +191,7 @@ __Anmerkung: Falls bereits User-Crontabs f&uuml;r den User pi erstellt wurden, s
   | 6 Advanced Options       | Configure advanced settings               |   
   | 8 Update                 | Update this tool to the latest version    |   
   | 9 About raspi-config     | Information about this configuration tool |   
-  | <Select>                 | <Finish>                                  |   
+  | &lt;Select&gt;           | &lt;Finish&gt;                         |   
  Punkt 1 durch Dr&uuml;cken von &lt;enter&gt; w&auml;hlen.   
  
  * Mit der Cursor-Taste <down> zu Punkt S5 gehen   
@@ -212,6 +211,10 @@ __Anmerkung: Falls bereits User-Crontabs f&uuml;r den User pi erstellt wurden, s
  ```   
  und Einschalten am Grafik-Bildschirm links oben [Men&uuml;] anklicken - Einstellungen - Raspberry-Pi-Konfiguration - [System] durchf&uuml;hren k&ouml;nnen...
    
+## Apache-Server installieren
+Der Apache HTTP Server dient dazu, dass das RasPi Browser-Anfragen entgegennehmen kann. Die Installation erfolgt   
+`sudo apt-get install apache2`   
+
 ## Weitere Einstellm&ouml;glichkeiten
 ### Bildschirmschoner abschalten
 1. Neues Verzeichnis mit Steuerdatei anlegen:   

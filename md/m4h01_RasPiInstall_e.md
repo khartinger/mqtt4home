@@ -1,4 +1,4 @@
-Last modified: 2021-10-10   
+Last modified: 2021-12-08   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Basic installation of the Raspberry Pi</h1>
 <a href="../readme.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
@@ -161,7 +161,8 @@ __Note: If user crontabs have already been created for user pi, they will be del
  sudo nano /etc/lightdm/lightdm.conf
  ```   
  Change or add the following lines   
- ```#autologin-user=pi autologin-user=pi_```   
+   `#autologin-user=pi`   
+   `autologin-user=pi_`   
  Save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x
        
 11. Further change:   
@@ -210,6 +211,10 @@ __Note: If user crontabs have already been created for user pi, they will be del
  ```   
  and switching on the graphic screen by clicking [Menu] in the upper left corner - Settings - Raspberry Pi Configuration - [System]...
    
+## Install Apache server
+The Apache HTTP Server is used to enable the RasPi to accept browser requests. The installation is done by   
+`sudo apt-get install apache2`   
+
 ## Other setting options
 ### Switch off screen saver
 1. Create new directory with control file   
