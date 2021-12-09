@@ -7,6 +7,7 @@ Last modified: 2021-12-09 <a name="up"></a>
 
 This project "Vue: MQTT Lamp1" describes how to create a Vue lamp symbol that can send and receive MQTT messages and that can be easily integrated into your own web pages.   
 First the [required tools](#required-tools) and then the [functional test](#functional-test), the [parameterization of the lamp symbol](#parameterization-of-the-lamp-symbol) and the [creation of the project](#creating-the-project) are described.    
+The following image shows different representations of the lamp symbol (name + frame, name + text5 + simple frame, symbol without texts and frame):   
 ![Lamp symbols](./images/vue_mqtt_lamp1a.png "Lamp symbols")   
 _Fig. 1: Different variants of the lamp symbol_.   
 
