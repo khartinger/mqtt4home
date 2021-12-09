@@ -18,7 +18,7 @@ _Fig. 1: Different variants of the lamp symbol_.
 
 # Functional test
 ## Requirements for the test   
-1. the Raspberry Pi (RasPi) has been installed according to the [manual (section "Central")](../../LIESMICH.md), i.e. on the RasPi with IP '10.1.1.1' the broker program (Mosquitto) is running   
+1. the Raspberry Pi (RasPi) has been installed according to the [manual (section "Central")](../../README.md), i.e. on the RasPi with IP '10.1.1.1' the broker program (Mosquitto) is running   
 2. the Vue application is loaded in Visual Studio Code (VSC) and the internal server is running (input in terminal: `npm run serve`).   
 3. there is a network/WLAN connection between the computer running VSC and the RasPi.   
 4. a command/terminal window is open on the PC or Raspberry Pi showing received MQTT messages (enter `mosquitto_sub -h 10.1.1.1 -t "#" -v`).   
