@@ -3,7 +3,7 @@ Letzte &Auml;nderung: 9.12.2021 <a name="up"></a>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
 <a href="README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
-[==> Direkt zur Inhaltsübersicht](#inhalt)
+[Direkt zur Inhaltsübersicht](#inhalt)
 
 # Willkommen auf mqtt4home   
 

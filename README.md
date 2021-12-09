@@ -3,7 +3,7 @@ Last modified: 2021-12-09 <a name="up"></a>
 <h1>MQTT for domestic/home use :)</h1>
 <a href="LIESMICH.md">==> German version</a>&nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
-[==> Directly to the content overview](#Content)
+[Directly to the content overview](#content)
 
 # Welcome to mqtt4home
 
