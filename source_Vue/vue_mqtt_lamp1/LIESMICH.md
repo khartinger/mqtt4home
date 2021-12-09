@@ -6,7 +6,7 @@ Letzte &Auml;nderung: 9.12.2021 <a name="up"></a>
 </td></tr></table><hr>
 
 Dieses Projekt "Vue: MQTT Lamp1" beschreibt, wie man ein Vue Lampen-Symbol erstellt, das MQTT-Nachrichten senden und empfangen kann und das einfach in eigene Web-Seiten eingebunden werden kann.   
-Es werden zuerst die [erforderlichen Hilfsmittel](#erforderliche-hilfsmittel) und danach der [Funktionstest](#funktionstest), die [Parametrierung des Lampensymbols](#parametrierung-des-lampensymbols) und das [Erstellen des Projektes](#erstellen-des-projektes) beschrieben.   
+Es werden zuerst die [erforderlichen Hilfsmittel](#erforderliche-hilfsmittel) und danach der [Funktionstest](#funktionstest), die [Verwendung des Lampensymbols](#verwendung-des-lampensymbols) und das [Erstellen des Projektes](#erstellen-des-projektes) beschrieben.   
 Das folgende Bild zeigt verschiedene Darstellungen des Lampensymbols (Name + Rahmen, Name + Text5 + einfacher Rahmen, Symbol ohne Texte und Rahmen):   
 ![Lampensymbole](./images/vue_mqtt_lamp1a.png "Lampensymbole")   
 _Bild 1: Verschiedene Varianten des Lampensymbols_   
@@ -30,7 +30,7 @@ Anmerkung: Hat das RasPi eine andere IP als 10.1.1.1, so muss die IP in der Date
 * Klickt man auf das Lampensymbol, wird eine MQTT-Nachricht `ci/lamp/1/set/lamp` mit der Payload `1` gesendet. Diese wird im Command-/Terminal-Fenster angezeigt.   
 * ..ToDo..
 
-# Parametrierung des Lampensymbols
+# Verwendung des Lampensymbols
 Die Parametrierung eines Lampensymbols erfolgt in drei Schritten:   
 ## Schritt 1: Definition des Lampensymbols
 Jede Lampe muss im Lampencontroller (Datei `controller/CiLampController`) im Array `lamps` eingetragen werden:   
