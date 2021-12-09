@@ -1,4 +1,4 @@
-Last modified: 2021-12-09 <a name="up1"></a>   
+Last modified: 2021-12-09 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>How to create a Vue MQTT lamp symbol?</h1>
 <a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
