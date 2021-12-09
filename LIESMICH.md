@@ -1,10 +1,11 @@
-Letzte &Auml;nderung: 8.12.2021
+Letzte &Auml;nderung: 9.12.2021 <a name="up"></a>   
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
 <a href="README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
+[==> Direkt zur Inhaltsübersicht](#inhalt)
 
-## Willkommen auf mqtt4home   
+# Willkommen auf mqtt4home   
 
 __*Wie kann ich Sensoren und Aktoren zu Hause miteinander verbinden?*__   
 Wer sich diese Frage stellt, ist hier genau richtig. In f&uuml;nf verschiedenen Bereichen 
@@ -18,7 +19,7 @@ Wer sich diese Frage stellt, ist hier genau richtig. In f&uuml;nf verschiedenen 
 Um das Thema einzuschr&auml;nken, wird in dieser Programmsammlung als Verbindungsmedium ein WLAN mit TCP-IP und MQTT-Protokoll festgelegt.   
 Informationen zum MQTT-Protokoll gibt es auf [https://mqtt.org/](https://mqtt.org/).   
 
-## Voraussetzungen
+# Voraussetzungen
 
 F&uuml;r das Bearbeiten des sehr weitl&auml;ufigen Themas "Homeautomation" sind einige Grundkenntnisse von Vorteil:   
 * Etwas Basiswissen zum Raspberry Pi und zum Betriebssystem Linux (f&uuml;r die Bereiche __Zentrale__ und __ZigBee__)   
@@ -29,13 +30,13 @@ F&uuml;r das Bearbeiten des sehr weitl&auml;ufigen Themas "Homeautomation" sind 
 Die Beispiele sind h&auml;ufig Schritt-f&uuml;r-Schritt-Anleitungen, die gut nachvollziehbar sein sollten.   
 Welche Hard- und Software f&uuml;r die Bespiele ben&ouml;tigt wird, steht bei den jeweiligen Erkl&auml;rungen dabei.   
    
-## Allgemeine Annahmen   
+# Allgemeine Annahmen   
 
 * Sensoren und Aktoren sind mit der Zentrale (RasPi) &uuml;ber Funk (WiFi oder ZigBee) verbunden.
 * Das WiFi-Netzwerk wird vom RasPi zur Verf&uuml;gung gestellt.
 * Wird eine Steuerung &uuml;ber das Internet gew&uuml;nscht, so muss der Internet-Zugang extra zur Verf&uuml;gung gestellt werden. (Router oder Alcatel Linkhub HH71VM mit HOT SIM-Karte etc.)
 
-## Erforderliche Hardware   
+# Erforderliche Hardware   
 
 * Raspberry Pi mit Zubeh&ouml;r (Netzteil, Monitor, Tastatur etc.),   
 zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/at/de/raspberry-pi-4-b-4gb-inkl-7-touch-display-gehaeuse-rpi4-bdl-4gb-7td-p291393.html?PROVID=2807&gclid=Cj0KCQjw9O6HBhCrARIsADx5qCSgJ1AiDo2X72WmgAzl4nAxSPFg4yIhT37OJYww45nqSir0qp0gd-waAjhcEALw_wcB) oder 
@@ -46,27 +47,27 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 
 ---   
 
-## Inhalt
-### Bereich "Zentrale"
+# Inhalt
+## Bereich "Zentrale"
 * [Raspberry Pi installieren (2021-07-31)](md/m4h01_RasPiInstall.md)
 * [Raspberry Pi als Access-Point (2021-07-31)](md/m4h02_RasPiAccessPoint.md)
 * [Raspberry Pi als MQTT-Broker (2021-07-31)](md/m4h03_RasPiMQTTBroker.md)
 * [Raspberry Pi: Regelm&auml;&szlig;iges Senden von MQTT-Nachrichten (2021-10-12)](md/m4h104_RasPi_crontab.md)
 ---   
-### Bereich "D1mini"
+## Bereich "D1mini"
 * [D1mini: MQTT Relais mit PubSubClient (2021-07-31)](md/m4h201_D1mqttRelayD1.md)
 * [D1mini: Die Klasse SimpleMqtt (2021-07-31)](md/m4h202_D1SimpleMqtt.md)
 * [D1mini: Schalten eines Relais via MQTT - Version 2 (2021-11-08)](md/m4h203_D1smqttRelayD1.md)
 ---   
-### Bereich "Hilfsprogramme"
+## Bereich "Hilfsprogramme"
 * [RasPi: Vorlage f&uuml;r MQTT-Programme in C++ (2021-08-21)](md/m4h07_RasPiCppBase.md)
 * [RasPi: Hilfreiche Einzel-Programme in C++ (2021-08-21)](md/m4h08_RasPiCppDemos.md)
 * [RasPi: Erstellen eigener Programme in C++ (2021-08-21)](md/m4h09_RasPiCppCreatingYourOwnProgs.md)
 * [RasPi: Senden und Empfangen von SMS &uuml;ber MQTT in C++ (2021-08-27)](md/m4h10_RasPiCppSms.md)
 
-### Bereich "ZigBee"
+## Bereich "ZigBee"
 
-### Bereich "Visualisierung"
+## Bereich "Visualisierung"
 * [Erstes Vue-Programm (ohne Visual Studio Code) (2021-09-15)](md/m4h501_Vue_Hello.md)
 * [Vue+VSC: Erste Anwendung mit Visual Studio Code (2021-10-12)](md/m4h502_Vue_Hello_VSC.md)
 * [Vue: Erste MQTT Anwendung](md/m4h503_Mqtt_mini.md)
