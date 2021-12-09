@@ -23,6 +23,33 @@ _Bild 2: History-Seite (Page2)_
 ![About-Seite](./images/vue_mqtt3_3webpages_about.png "History-Seite")   
 _Bild 3: About-Seite (About)_   
 
+## Erforderliche Hilfsmittel
+* Hardware: PC oder Laptop mit Internetzugang, Browser
+* Hardware: Raspberry Pi (oder PC), auf dem ein MQTT-Broker l&auml;uft (zB Mosquitto)
+* Software: Visual Studio Code ("VSC"), das f&uuml;r Vue-Anwendungen bereits vorbereitet ist.   
+   (Dh. es wurde bereits mindestens eine Vue-Anwendung in Visual Code erstellt.)   
+* Software: Terminal-Programm [putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) auf dem PC/Laptop
+* Software: [WinSCP](https://winscp.net/eng/docs/lang:de) zur Daten&uuml;bertragung vom PC/Laptop zum RasPi   
+
+## Funktionstest
+### Voraussetzungen f&uuml;r den Test   
+1. Auf einem Raspberry Pi (RasPi) mit der IP `10.1.1.1` l&auml;uft ein Broker-Programm (Mosquitto)   
+2. Die Vue-Anwendung ist in Visual Studio Code (VSC) geladen und der interne Server l&auml;uft (Terminal: `npm run serve`).   
+3. Es besteht eine Netzwerk-/WLAN-Verbindung zwischen dem Rechner, auf dem VSC l&auml;uft, und dem RasPi.   
+
+Anmerkung: Hat das RasPi eine andere IP als 10.1.1.1, so muss die IP in der Datei `App.vue` angepasst werden (`const hostip = '...'`).   
+### Test   
+* Gibt man im Browser die Adresse `localhost:8080` ein, so erscheint _Bild 1_ im Brower. Fehlt der Text "Connected to ...", so besteht keine Verbindung zum Broker (Broker l&auml;uft nicht oder WLAN-Verbindung fehlt).
+* Klickt man auf den ON-Bereich des Buttons, wird eine MQTT-Nachricht `ci/lamp/1/set/lamp` mit der Payload `1` gesendet und das Lampensybol erscheint gelb.   
+* Klickt man auf den OFF-Bereich des Buttons, wird eine MQTT-Nachricht `ci/lamp/1/set/lamp` mit der Payload `0` gesendet und das Lampensybol erscheint grau.   
+* Klickt man auf den Link "Page2" in der obersten Zeile, werden die letzten MQTT-Befehle angezeigt.   
+* Klickt man auf den Link "About" in der obersten Zeile, wird _Bild 3_ angezeigt.   
+
+&nbsp;   
+
+---   
+# Erstellen des Projektes
+## 1. Allgemeines
 W&auml;hlt man beim Erstellen des Projektes in Visual Studio Code (VSC) die Option   
 `(*) Router`,   
 erstellt VSC automatisch ein Programmger&uuml;st f&uuml;r eine Multi-Webseiten-App, das dann entsprechend den eigenen W&uuml;nschen angepasst werden kann.   
@@ -37,18 +64,7 @@ Mit Hilfe des Diagrammes erkennt man einige wichtige Zusammenh&auml;nge:
 * Die Grafik-Elemente `Lamp`, `Button2` und `MattLastX` bestehen jeweils aus einem "Controller"- und "Grafik"-Teil (Erweiterung `.ts` bzw. `.vue`) und sind von Basis-Komponenten abgeleitet.   
 * Die Verbindung zum MQTT-Broker wird &uuml;ber die Dateien `MqttClient.ts` und `MqttClientInstance.ts` hergestellt, wobei alle Controller in der Datei `MqttClientInstance.ts` registriert werden m&uuml;ssen. Vergisst man dies, erh&auml;lt der Controller keine MQTT-Nachrichten ("Schalter offen").   
 
-## Erforderliche Hilfsmittel
-* Hardware: PC oder Laptop mit Internetzugang, Browser
-* Hardware: Raspberry Pi (oder PC), auf dem ein MQTT-Broker l&auml;uft (zB Mosquitto)
-* Software: Visual Studio Code ("VSC"), das f&uuml;r Vue-Anwendungen bereits vorbereitet ist.   
-   (Dh. es wurde bereits mindestens eine Vue-Anwendung in Visual Code erstellt.)   
-* Software: Terminal-Programm [putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) auf dem PC/Laptop
-* Software: [WinSCP](https://winscp.net/eng/docs/lang:de) zur Daten&uuml;bertragung vom PC/Laptop zum RasPi   
-
----   
-
-# Erstellen des Projektes
-## 1. Vorbereitung des Vue-Projektes in VSC (Kurzfassung)   
+## 2. Vorbereitung des Vue-Projektes in VSC (Kurzfassung)   
 1. Visual Studio Code (VSC) starten.   
 2. VSC: Terminal-Fenster &ouml;ffnen: Men&uuml; Terminal - New Terminal.   
 3. VSC-Terminal: In den Ordner wechseln, unter dem das Vue-Projekt erzeugt werden soll:   
@@ -77,8 +93,8 @@ Mit Hilfe des Diagrammes erkennt man einige wichtige Zusammenh&auml;nge:
    VSC: Terminal-Fenster &ouml;ffnen: Men&uuml; Terminal - New Terminal.   
    `npm install mqtt --save`   
 &nbsp;   
-## 2. Anpassen der automatisch erstellten Dateien
-### 2.1 Erg&auml;nzen der Vue-Konfiguration   
+## 3. Anpassen der automatisch erstellten Dateien
+### 3.1 Erg&auml;nzen der Vue-Konfiguration   
 Erstellen der Datei `vue.config.js`: auf das Plus neben `VUE_MQTT3_2WEBPAGES` klicken, Namen eingeben.   
 _Inhalt der Datei_:   
 ```   
@@ -99,18 +115,18 @@ module.exports = {
 ```   
 Mit `publicPath: './',` wird die relative Pfadangabe eingestellt und durch den `chainWebpack`-Eintrag werden Warnhinweise bez&uuml;glich der Dateigr&ouml;&szlig;e vermieden (indem man die maximale Dateigr&ouml;&szlig;en h&ouml;her setzt ;) )
 
-### 2.2 Linter-Warnung "Unexpected any" bei "(value: any)" abstellen    
+### 3.2 Linter-Warnung "Unexpected any" bei "(value: any)" abstellen    
   In der Datei `.eslintrc.js` unter "`rules: {`" erg&auml;nzen:   
   ```   
   '@typescript-eslint/no-explicit-any': 'off',
   '@typescript-eslint/explicit-module-boundary-types': 'off'
   ```   
 
-### 2.3 Datei f&uuml;r die Seite `Page2` erstellen   
+### 3.3 Datei f&uuml;r die Seite `Page2` erstellen   
 Mit der linken Maustaste auf `views/About.vou`klicken, Datei mit &lt;strg&gt; c und &lt;strg&gt; v kopieren und die Kopie auf `Page2.vue` umbenennen (zB mit dem Hilfsmen&uuml; mit der rechten Maustaste).   
 In der Datei `Page2.vue` die Zeile `<h1>This is Page2</h1>` anpassen.   
 
-### 2.4 Anpassen der "Routen" in der automatisch erstellten Datei `router/index.ts`:   
+### 3.4 Anpassen der "Routen" in der automatisch erstellten Datei `router/index.ts`:   
 ```   
 // ___________router/index.ts___________________________________
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
@@ -161,7 +177,7 @@ export default router
 
 ```   
 
-### 2.5 Datei `App.vue` anpassen   
+### 3.5 Datei `App.vue` anpassen   
 Die Datei `App.vue` ist f&uuml;r folgende Punkte zust&auml;ndig:   
   * Darstellung einer Linkzeile mit Links auf die einzelnen Seiten.   
     Daher: Die Zeile `<router-link to="/page2">Page2</router-link> |` erg&auml;nzen.   
@@ -288,15 +304,15 @@ export default defineComponent({
 </style>
 ```   
 
-### 2.6 Nicht ben&ouml;tigte Dateien und Verzeichnisse l&ouml;schen   
+### 3.6 Nicht ben&ouml;tigte Dateien und Verzeichnisse l&ouml;schen   
   * Datei `components/HelloWorld.vue` l&ouml;schen   
   * Verzeichnis `assets` l&ouml;schen   
 
-## 3. MQTT Client erg&auml;nzen
+## 4. MQTT Client erg&auml;nzen
 Verzeichnis `src/services` erstellen, die Dateien `MqttClient.ts` und `MqttClientInstance.ts` erg&auml;nzen.   
 Erkl&auml;rungen siehe ["Teil 1: Erstellung des MQTT Clients" in m4h504_Vue_PubSub2.md](m4h504_Vue_PubSub2.md)
 
-## 4. Seite "Home" erstellen
+## 5. Seite "Home" erstellen
 Die Startseite ("Home") enth&auml;lt die beiden Steuerungs-/Anzeige-Elemente (CI-Elemente) "Lamp" und "Button2", die mit Hilfe folgender Dateien erzeugt werden:   
 * [`components/CiBase.vue ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/components/CiBase.vue) Definition von Geometrie-Daten (Klasse `Geo`) sowie Darstellung des Randes der CI-Elemente.   
 * [`controller/CiBaseController.ts ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/controller/CiBaseController.ts) Definition der Basis-Eigenschaften f&uuml;r alle CI-Elemente (Interface `IBase`) sowie eines abstrakten Basis-Controllers (`CiBaseController`) mit der Definition der f&uuml;r alle Controller erforderlichen Methoden `registerClient`, `publish` und `onMessage`.   
@@ -335,7 +351,7 @@ export default defineComponent({
 Die Lampe ben&ouml;tigt als Parameter die Koordinaten des Mittelpunktes x und y und die ID. Mit `:border="0"` wird das Zeichnen eines Randes verhindert. Da die Anzahl der Zeilen (`lines=`) nicht angegeben ist, wird der Vorgabewert `lines="1"` verwendet und der Name der Lampe angezeigt (Lamp_1).   
 Der Schalter ben&ouml;tigt als Parameter die Koordinaten des Mittelpunktes x und y und die ID. Mit `:border="0"` wird das Zeichnen eines Randes und mit `lines="0"` wird die Anzeige weiterer Informationen verhindert.   
 
-## 5. Seite "Page2" erstellen
+## 6. Seite "Page2" erstellen
 Die Seite "Page2" nutzt die Komponente `MqttLastX` zum Anzeigen der letzten f&uuml;nf empfangenen MQTT-Nachrichten:   
 * [`components/MqttLastX.vue ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/components/MqttLastX.vue) Darstellung der Tabelle der letzten Nachrichten.   
 * [`controller/MqttLastXController.ts ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/controller/MqttLastXController.ts) Definition der Klasse MqttLastXController, die mit Hilfe der Methode `onMessage` die empfangene Nachricht in den Speicher MessageStore schreibt.   
@@ -364,7 +380,7 @@ export default defineComponent({
 </script>
 ```   
 
-## 6. Seite "About" erstellen
+## 7. Seite "About" erstellen
 Die "About"-Seite gibt Text aus und demonstriert, wie man innerhalb einer SVG-Grafik einen Link auf eine andere Seite erzeugt.   
 ```   
 <template>
@@ -400,7 +416,7 @@ export default defineComponent({
 </style>
 ```   
 
-## 7. &Uuml;bertragen des Projektes auf den Server (Raspberry Pi)
+## 8. &Uuml;bertragen des Projektes auf den Server (Raspberry Pi)
 Dieses Projekt soll nach Eingabe von   
 `10.1.1.1/vue_multi`   
 im Browser angezeigt werden.   
