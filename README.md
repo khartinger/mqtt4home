@@ -76,4 +76,4 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [Vue: Switching lamps with MQTT (2021-11-05)](md/m4h506_Vue_Mqtt2_Lamp_e.md)
 * [How to make a Vue app with multiple web pages? (2021-12-08)](source_Vue/vue_mqtt3_3webpages)   
 
-[Top of page](#up)   
+[To the top of the page](#up)   
