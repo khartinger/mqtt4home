@@ -7,7 +7,7 @@ Letzte &Auml;nderung: 9.12.2021 <a name="up"></a>
 
 Dieses Projekt "Vue: MQTT Lamp1" beschreibt, wie man ein Vue Lampen-Symbol erstellt, das MQTT-Nachrichten senden und empfangen kann und das einfach in eigene Web-Seiten eingebunden werden kann.   
 Es werden zuerst die [erforderlichen Hilfsmittel](#erforderliche-hilfsmittel) und danach der [Funktionstest](#funktionstest), die [Parametrierung des Lampensymbols](#parametrierung-des-lampensymbols) und das [Erstellen des Projektes](#erstellen-des-projektes) beschrieben.    
-![Lampensymbole](./images/vue_mqtt_Lamp1a.png "Lampensymbole")   
+![Lampensymbole](./images/vue_mqtt_lamp1a.png "Lampensymbole")   
 _Bild 1: Verschiedene Varianten des Lampensymbols_   
 
 # Erforderliche Hilfsmittel
@@ -49,18 +49,24 @@ Jede Lampe muss im Lampencontroller (Datei `controller/CiLampController`) im Arr
     ]
   );
 ```   
-Mindestens angegeben werden müssen die Eigenschaften `id`, `subtopic`, `iLampState` und `battery`.
-Die Angabe von `name`,  `text5`, `pubTopic` und `pubPayload` ist optional.
+Mindestens angegeben werden müssen die Eigenschaften `id`, `subtopic`, `iLampState` und `battery`.   
+Die Angabe von `name`,  `text5`, `pubTopic` und `pubPayload` ist optional.   
 ..ToDo: Erklärungen..
 
 ## Schritt 2: Darstellung des Lampensymbols in einer .vue-Datei
-Die Darstellung eines Lampensymbols erfolgt im `&lt;template&gt;`-Bereich einer Vue-Datei, zB   
+Die Darstellung eines Lampensymbols erfolgt im `<template>`-Bereich einer Vue-Datei, zB   
 `<CiLamp :x="160" :y="50" sid="lamp1" lines="2" border="0"></CiLamp>`   
 Der Mittelpunkt des Symbols (`x`, `y`) sowie die ID der Lampe (`sid=`) müssen angegeben werden, wobei die ID mit der id im Lampencontroller übereinstimmen muss.   
 Die Angabe von `lines` und `border` ist optional. Entfällt diese Angabe, wird ein Symbol mit Kopfzeile (= `name`) und gelbem Rand gezeichnet.   
 
 ## Schritt 3: Einbinden des Lampensymbols in einer .vue-Datei
-
+Um das Lampensymbol im `<template>`-Bereich verwenden zu können, sind zwei Befehle im `<script>`-Bereich erforderlich:   
+*  Importieren der Lampenkodierung:   
+  `import CiLamp from './CiLamp.vue'`   
+* Aufzählen bei den verwendeten Komponenten:   
+  `components: {`   
+  `  CiLamp`   
+  `},`   
 
 &nbsp;   
 
@@ -70,8 +76,8 @@ Die Angabe von `lines` und `border` ist optional. Entfällt diese Angabe, wird e
 Da dieses Projekt nicht nur das Erstellen des Lampensymbols sondern auch den Test des Einbau die Au&szlig;er den drei Web-Seiten enth&auml;lt dieses Projekt eine MQTT-Anbindung und grafische Elemente, sodass in Summe doch viele Dateien zusammenkommen.   
 Das folgende Diagramm gibt einen &Uuml;berblick &uuml;ber die beteiligten Dateien:   
 
-![Uebersicht Dateien](./images/vue_mqtt3_3webpages_files.png "Uebersicht Dateien")   
-_Bild 4: &Uuml;bersicht &uuml;ber die beteiligten Dateien_   
+![Uebersicht Dateien](./images/vue_mqtt1_lamp1_files.png "Uebersicht Dateien")   
+_Bild 2: &Uuml;bersicht &uuml;ber die beteiligten Dateien_   
 
 Mit Hilfe des Diagrammes erkennt man einige wichtige Zusammenh&auml;nge:   
 * Die Namen der verschiedenen Web-Seiten ("Home", "Page2" und "About") werden in `router/index.ts` und `main.ts` festgelegt.   
@@ -90,7 +96,7 @@ Mit Hilfe des Diagrammes erkennt man einige wichtige Zusammenh&auml;nge:
    `(*) Choose Vue version`   
    `(*) Babel`   
    `(*) TypeScript`   
-   `(*) Router`   
+   `( ) Router`   
    `(*) Linter / Formatter`   
    &lt;Enter&gt;   
    _`> 3.x`_ &nbsp; &lt;Enter&gt;      
@@ -107,9 +113,9 @@ Mit Hilfe des Diagrammes erkennt man einige wichtige Zusammenh&auml;nge:
    VSC: Terminal-Fenster &ouml;ffnen: Men&uuml; Terminal - New Terminal.   
    `npm install mqtt --save`   
 &nbsp;   
-## 3. Anpassen der automatisch erstellten Dateien
-### 3.1 Erg&auml;nzen der Vue-Konfiguration   
-Erstellen der Datei `vue.config.js`: auf das Plus neben `VUE_MQTT3_2WEBPAGES` klicken, Namen eingeben.   
+## Anpassen der automatisch erstellten Dateien
+### Erg&auml;nzen der Vue-Konfiguration   
+Erstellen der Datei `vue.config.js`: auf das Plus neben `VUE_MQTT_LAMP1` klicken, Namen eingeben.   
 _Inhalt der Datei_:   
 ```   
 // ______vue.config.js__________________________________________
@@ -129,21 +135,76 @@ module.exports = {
 ```   
 Mit `publicPath: './',` wird die relative Pfadangabe eingestellt und durch den `chainWebpack`-Eintrag werden Warnhinweise bez&uuml;glich der Dateigr&ouml;&szlig;e vermieden (indem man die maximale Dateigr&ouml;&szlig;en h&ouml;her setzt ;) )
 
-### 3.2 Linter-Warnung "Unexpected any" bei "(value: any)" abstellen    
+### Linter-Warnung "Unexpected any" bei "(value: any)" abstellen    
   In der Datei `.eslintrc.js` unter "`rules: {`" erg&auml;nzen:   
   ```   
   '@typescript-eslint/no-explicit-any': 'off',
-  '@typescript-eslint/explicit-module-boundary-types': 'off'
+  '@typescript-eslint/explicit-module-boundary-types': 'off',
   ```   
 
-# MQTT-Anbindung
+### Datei `App.vue` anpassen   
+Die Datei `App.vue` ist f&uuml;r folgende Punkte zust&auml;ndig:   
+  * Anzeige der Komponente `CiMain`.
+  * Definition von einheitlichen Styles f&uuml;r alle Seiten.   
+    Daher: Alle Styles erg&auml;nzen, die mit einem Punkt beginnen.   
+
+_Inhalt der Datei_:   
+```   
+<!-- App.vue -->
+<template>
+  <CiMain></CiMain>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+import CiMain from '@/components/CiMain.vue'
+
+export default defineComponent({
+  name: 'App',
+  components: {
+    CiMain
+  }
+})
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  text-align: left;
+  color: black;
+  margin-top: 0px;
+}
+
+  .styleM11  { font: bold 11px monospace; fill: black; white-space: pre; }
+  .cursor    { cursor: pointer; }
+  .ciBackground {fill: #ddFFdd; }
+  .ciOut     { fill: yellow; stroke: yellow; stroke-width: 1; }
+  .ciInColor { fill: #F4F4F4; }
+  .ciIn      { fill: #F4F4F4; stroke:blue; stroke-width: 1; }
+  .ciLine    { stroke: blue; stroke-width: 1; }
+  .ciRect    { fill: none; stroke: blue; stroke-width: 1; }
+  .ciFillIt  { stroke: blue; stroke-width: 1; }
+  .ciClick   { fill-opacity: 0.0; stroke-width: 1; }
+  .ciBorder  { fill-opacity: 0.0; stroke: blue; stroke-width: 1; }
+</style>
+```   
+
+### Nicht ben&ouml;tigte Dateien und Verzeichnisse l&ouml;schen   
+  * Datei `components/HelloWorld.vue` l&ouml;schen   
+  * Verzeichnis `assets` l&ouml;schen   
+
+# 4. MQTT Client erg&auml;nzen
+Verzeichnis `src/services` erstellen, die Dateien `MqttClient.ts` und `MqttClientInstance.ts` erg&auml;nzen.   
+Erkl&auml;rungen siehe ["Teil 1: Erstellung des MQTT Clients" in m4h504_Vue_PubSub2.md](../../md/m4h504_Vue_PubSub2.md)
+
 
 # Basis-Symbol
 Das Lampensymbol wird von einem Basis-Steuer-/Anzeige-Symbol ("Basis-CI-Symbol") abgeleitet, das auch für andere Symbole gültige Eigenschaften enthält. Daher wird dieses zuerst besachrieben.   
 
 
-Eigenschaften:
-*
-
 # Lampensymbol
+
+# Darstellung des Lampensymols in Main.vue
+
+
 [Zum Seitenanfang](#up)
