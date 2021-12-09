@@ -49,21 +49,21 @@ Jede Lampe muss im Lampencontroller (Datei `controller/CiLampController`) im Arr
     ]
   );
 ```   
-Mindestens angegeben werden müssen die Eigenschaften `id`, `subtopic`, `iLampState` und `battery`.   
+Mindestens angegeben werden m&uuml;ssen die Eigenschaften `id`, `subtopic`, `iLampState` und `battery`.   
 Die Angabe von `name`,  `text5`, `pubTopic` und `pubPayload` ist optional.   
-..ToDo: Erklärungen..
+..ToDo: Erkl&auml;rungen..
 
 ## Schritt 2: Darstellung des Lampensymbols in einer .vue-Datei
 Die Darstellung eines Lampensymbols erfolgt im `<template>`-Bereich einer Vue-Datei, zB   
 `<CiLamp :x="160" :y="50" sid="lamp1" lines="2" border="0"></CiLamp>`   
-Der Mittelpunkt des Symbols (`x`, `y`) sowie die ID der Lampe (`sid=`) müssen angegeben werden, wobei die ID mit der id im Lampencontroller übereinstimmen muss.   
-Die Angabe von `lines` und `border` ist optional. Entfällt diese Angabe, wird ein Symbol mit Kopfzeile (= `name`) und gelbem Rand gezeichnet.   
+Der Mittelpunkt des Symbols (`x`, `y`) sowie die ID der Lampe (`sid=`) m&uuml;ssen angegeben werden, wobei die ID mit der id im Lampencontroller &uuml;bereinstimmen muss.   
+Die Angabe von `lines` und `border` ist optional. Entf&auml;llt diese Angabe, wird ein Symbol mit Kopfzeile (= `name`) und gelbem Rand gezeichnet.   
 
 ## Schritt 3: Einbinden des Lampensymbols in einer .vue-Datei
-Um das Lampensymbol im `<template>`-Bereich verwenden zu können, sind zwei Befehle im `<script>`-Bereich erforderlich:   
+Um das Lampensymbol im `<template>`-Bereich verwenden zu k&ouml;nnen, sind zwei Befehle im `<script>`-Bereich erforderlich:   
 *  Importieren der Lampenkodierung:   
   `import CiLamp from './CiLamp.vue'`   
-* Aufzählen bei den verwendeten Komponenten:   
+* Aufz&auml;hlen bei den verwendeten Komponenten:   
   `components: {`   
   `  CiLamp`   
   `},`   
@@ -80,8 +80,7 @@ Das folgende Diagramm gibt einen &Uuml;berblick &uuml;ber die beteiligten Dateie
 _Bild 2: &Uuml;bersicht &uuml;ber die beteiligten Dateien_   
 
 Mit Hilfe des Diagrammes erkennt man einige wichtige Zusammenh&auml;nge:   
-* Die Namen der verschiedenen Web-Seiten ("Home", "Page2" und "About") werden in `router/index.ts` und `main.ts` festgelegt.   
-* Die Grafik-Elemente `Lamp`, `Button2` und `MattLastX` bestehen jeweils aus einem "Controller"- und "Grafik"-Teil (Erweiterung `.ts` bzw. `.vue`) und sind von Basis-Komponenten abgeleitet.   
+* Das Grafik-Element `Lamp` besteht aus einem "Controller"- und "Grafik"-Teil (Erweiterung `.ts` bzw. `.vue`) und sind von Basis-Komponenten abgeleitet.   
 * Die Verbindung zum MQTT-Broker wird &uuml;ber die Dateien `MqttClient.ts` und `MqttClientInstance.ts` hergestellt, wobei alle Controller in der Datei `MqttClientInstance.ts` registriert werden m&uuml;ssen. Vergisst man dies, erh&auml;lt der Controller keine MQTT-Nachrichten ("Schalter offen").   
 
 ## 2. Vorbereitung des Vue-Projektes in VSC (Kurzfassung)   
@@ -199,7 +198,7 @@ Erkl&auml;rungen siehe ["Teil 1: Erstellung des MQTT Clients" in m4h504_Vue_PubS
 
 
 # Basis-Symbol
-Das Lampensymbol wird von einem Basis-Steuer-/Anzeige-Symbol ("Basis-CI-Symbol") abgeleitet, das auch für andere Symbole gültige Eigenschaften enthält. Daher wird dieses zuerst besachrieben.   
+Das Lampensymbol wird von einem Basis-Steuer-/Anzeige-Symbol ("Basis-CI-Symbol") abgeleitet, das auch f&uuml;r andere Symbole g&uuml;ltige Eigenschaften enth&auml;lt. Daher wird dieses zuerst besachrieben.   
 
 
 # Lampensymbol

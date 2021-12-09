@@ -77,12 +77,11 @@ Since this project does not only include the creation of the lamp symbol but als
 The following diagram gives an overview of the files involved:   
 
 ![Overview Files](./images/vue_mqtt1_lamp1_files.png "Overview Files")   
-_Fig. 2: &Overview of the involved files_   
+_Fig. 2: Overview of the involved files_   
 
 With the help of the diagram you can see some important relationships:   
-* The names of the different web pages ("Home", "Page2" and "About") are defined in `router/index.ts` and `main.ts`.   
-* The graphic elements `Lamp`, `Button2` and `MattLastX` each consist of a "controller" and "graphic" part (extension `.ts` and `.vue` respectively) and are derived from base components.   
-* The connection to the MQTT broker is established &uuml;via the files `MqttClient.ts` and `MqttClientInstance.ts`, where all controllers must be registered in the file `MqttClientInstance.ts`. If this is forgotten, the controller will not receive MQTT messages ("switch open").   
+* The graphic element `Lamp` consists of a "controller" and "graphic" part (extension `.ts` and `.vue` respectively) and are derived from base components.   
+* The connection to the MQTT broker is established via the files `MqttClient.ts` and `MqttClientInstance.ts`, where all controllers must be registered in the file `MqttClientInstance.ts`. If this is forgotten, the controller will not receive MQTT messages ("switch open").   
 
 ## 2. Preparation of the Vue project in VSC (short version).   
 1. Start Visual Studio Code (VSC).   
@@ -107,7 +106,7 @@ With the help of the diagram you can see some important relationships:
    _`? Pick additional lint features: `_ &nbsp; __`Lint on save`__ &lt;Enter&gt;   
    _`? Where do you prefer placing config for Babel, ESLint, etc.?`_ &nbsp; __`In dedicated config file`__ &lt;Enter&gt;   
    _`? Save this as a preset for future projects? (y/N)`_ &nbsp; __`N`__ &lt;Enter&gt;   
-5. Switch to the project folder: _VSC Men&uuml; File - Folder &ouml;ffnen_..
+5. Switch to the project folder: _VSC Menu File - Open Folder_..
    `/github/mqtt4home/source_Vue/vue_mqtt3_2webpages` [select folder].   
 6. Install MQTT library:   
    VSC: Open Terminal window: Menu Terminal - New Terminal.   
