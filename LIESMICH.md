@@ -2,8 +2,8 @@ Letzte &Auml;nderung: 9.12.2021 <a name="up"></a>
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
 <a href="README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
-</td></tr></table><hr>
-[Direkt zur Inhaltsübersicht](#inhalt)
+</td></tr></table>
+<a href="#inhalt">Direkt zur Inhalts&uuml;bersicht</a><hr>
 
 # Willkommen auf mqtt4home   
 
@@ -46,7 +46,7 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 * Weitere ben&ouml;tigte Hilfsmittel, wie ZigBee-Stick, ZigBee-Sensoren, GSM-Modem oder Software etc., werden bei den jeweiligen Beispielen beschrieben.   
 
 ---   
-
+<a name="#inhalt"></a>   
 # Inhalt
 ## Bereich "Zentrale"
 * [Raspberry Pi installieren (2021-07-31)](md/m4h01_RasPiInstall.md)

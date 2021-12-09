@@ -2,8 +2,8 @@ Last modified: 2021-12-09 <a name="up"></a>
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT for domestic/home use :)</h1>
 <a href="LIESMICH.md">==> German version</a>&nbsp; &nbsp; &nbsp; 
-</td></tr></table><hr>
-[Directly to the content overview](#content)
+</td></tr></table>   
+<a href="#content">Directly to the content overview</a><hr>   
 
 # Welcome to mqtt4home
 
@@ -46,7 +46,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * Further required tools, such as ZigBee stick, ZigBee sensors, GSM modem or software etc., are described with the respective examples.   
 
 ---   
-
+<a name="#content"></a>   
 # Content
 ## Area "Central":
 * [Install Raspberry Pi (2021-07-31)](md/m4h01_RasPiInstall_e.md)
