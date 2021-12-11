@@ -84,7 +84,7 @@ With the help of the diagram you can see some important relationships:
 * The graphic element `Lamp` consists of a "controller" and "graphic" part (extension `.ts` and `.vue` respectively) and are derived from base components.   
 * The connection to the MQTT broker is established via the files `MqttClient.ts` and `MqttClientInstance.ts`, where all controllers must be registered in the file `MqttClientInstance.ts`. If this is forgotten, the controller will not receive MQTT messages ("switch open").   
 
-## 2. Preparation of the Vue project in VSC (short version).   
+## 2. Preparation of the Vue project in VSC   
 1. Start Visual Studio Code (VSC).   
 2. VSC: Open Terminal window: Menu Terminal - New Terminal.   
 3. VSC terminal: Change to the folder under which the Vue project is to be created:   
@@ -113,7 +113,7 @@ With the help of the diagram you can see some important relationships:
    VSC: Open Terminal window: Menu Terminal - New Terminal.   
    `npm install mqtt --save`   
 &nbsp;   
-## Customize the automatically created files
+## 3. Customize the automatically created files
 ### Complementing the Vue configuration   
 Create the file `vue.config.js`: click on the plus next to `VUE_MQTT_LAMP1`, enter name.   
 _Contents of the file_:   
