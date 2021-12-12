@@ -7,7 +7,7 @@ Last modified: 2021-12-12 <a name="up"></a>
 
 # What is it about?
 This Vue application "vue_ci_mqtt_mini" describes how to create a simple MQTT application using `CiMqttClient`.   
-It first describes the [required-tools](#required-tools) and the [trying-out/testing-the-app](#trying-out-the-app). After that, the questions [what CiMqttClient can do](#what-can-cimqttclient), [how-to-use-CiMqttClient](#how-to-use-cimqttclient), and [how-to-create-this-project](#how-to-create-this-project), are answered. The final part is [details-about-coding-of-CimqttClient](#details-about-coding-of-cimqttclient).
+It first describes the [required-tools](#required-tools) and the [trying-out/testing-the-app](#trying-out-the-app). After that, the questions [what CiMqttClient can do](#what-can-cimqttclient-do), [how-to-use-CiMqttClient](#how-to-use-cimqttclient), and [how-to-create-this-project](#how-to-create-this-project), are answered. The final part is [#details-about-the-coding-of-cimqttclient](#details-about-coding-of-cimqttclient).
 
 How to create this project?
 , a [how-to-use-CiMqttClient](#how-to-use-cimqttclient), the [creating-project](#how-to-create-this-project) and [details-about-coding-CiMqttClient](#details-about-coding-of-cimqttclient) are described.   
@@ -25,15 +25,15 @@ _Figure 2: View after connecting to the broker and pressing the "Publish message
 * Hardware: Raspberry Pi (or PC) running an MQTT broker (e.g. Mosquitto)
 * Software: Visual Studio Code ("VSC"), which is already prepared for Vue applications (Node.js, npm installed).   
 
-## Trying out the app   
+# Trying out the app   
 ## Prerequisites   
-1. the Raspberry Pi (RasPi) has been installed according to the [instructions (section "Central")](../../LIESMICH.md), i.e. on the RasPi with IP `10.1.1.1` the broker program (Mosquitto) is running   
-2. the Vue application is loaded in Visual Studio Code (VSC) and the internal server is running (input in terminal: `npm run serve`).   
-3. there is a network/WLAN connection between the computer running VSC and the RasPi.   
-4. a command/terminal window is open on the PC or Raspberry Pi showing received MQTT messages (input `mosquitto_sub -h 10.1.1.1 -t "#" -v`)   
+1. The Raspberry Pi (RasPi) has been installed according to the [instructions (section "Central")](../../LIESMICH.md), i.e. on the RasPi with IP `10.1.1.1` the broker program (Mosquitto) is running   
+2. The Vue application is loaded in Visual Studio Code (VSC) and the internal server is running (input in terminal: `npm run serve`).   
+3. There is a network/WLAN connection between the computer running VSC and the RasPi.   
+4. A command/terminal window is open on the PC or Raspberry Pi showing received MQTT messages (input `mosquitto_sub -h 10.1.1.1 -t "#" -v`)   
 
 ## Test   
-* If one enters the address `localhost:8080` in the browser, _image 1_ appears (briefly) in the brower.   
+* If one enters the address `localhost:8080` in the browser, _figure 1_ appears (briefly) in the brower.   
 * If there is a connection to the broker, the display "MQTT-State: connected" appears after a short time.   
 * If you press the [Publish message]-button, the message is displayed in the browser and in the command/terminal window.   
 
