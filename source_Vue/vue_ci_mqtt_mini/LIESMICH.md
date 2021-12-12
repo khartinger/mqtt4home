@@ -114,14 +114,14 @@ Der MQTT-Client `CiMqttClient` kann folgendes:
   `import { ciMiniController } from '@/controller/CiMiniController'`   
   `ciMqttClientInstance.registerController(ciMiniController)`   
 
-## 3. Einbinden des CiMqttClients in einen CiXxx-Controller
+## 3. Einbinden des CiMqttClients in einen CiXxxController
 * Importieren der Komponenten in den Controller.   
   Eingabe in der Datei `CiXxxController.ts`:   
   `import { reactive } from 'vue'`   
   `import { Message } from '@/services/CiMqttClient'`   
   `import { CiBaseController, IBase } from './CiBaseController'`   
 
-* Ableiten des CiXxx-Controllers von `CiBaseController`:   
+* Ableiten des CiXxxControllers von `CiBaseController`:   
   `export class CiXxxController extends CiBaseController {`   
 
 * Implementierung der abstrakten Methode onMessage:   
@@ -141,7 +141,6 @@ Der MQTT-Client `CiMqttClient` kann folgendes:
     `brokerip: function (): string { return ciMqttClientInstance.mqttConnection.host },`   
   * Abfrage, ob die Verbindung zum Broker besteht   
     `isConnected: function (): boolean { return ciMqttClientInstance.mqttState.connected },`   
-  * 
 
 &nbsp;   
 

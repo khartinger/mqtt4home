@@ -71,8 +71,8 @@ The MQTT client `CiMqttClient` can do the following:
 * __Subscribing to messages.__   
   Subscribing is done automatically when connecting to the broker. A change of the subscribe topic can be done by the method   
   `subscribe (topic, qos)`   
-  method.   
   Values for `qos`: send message at most once (0), at least once (1) or exactly once (2).   
+  
   To process the message, a method   
   `public onMessage (message: Message): void { ... }`   
   must be defined (received topic = `message.topic`, received payload = `message.payload`)   
@@ -82,46 +82,46 @@ The MQTT client `CiMqttClient` can do the following:
   `publish (topic, payload, retain, qos)`   
   or by own methods that are defined e.g. in the CiXxxController. (Example see [CiMini.vue](./src/controller/CiMiniController.ts))   
 
-* __Provide the connection state as text.__.   
+* __Provide the connection state as text.__   
   This text is obtained by calling the method `sConnMqttState()`.   
 
 * __Provide the connection URL.__   
   This is obtained by calling the `connectUrl()` method.   
 
-* __Providing other methods.__.   
+* __Providing other methods.__   
   These include `connect(host, port, endpoint)`, `disconnect()` and `unsubscribe ()`.
 
 # How to use CiMqttClient?
 
-## 1. include the necessary files
-* Creating the directory 'controller   
+## 1. Include the necessary files
+* Creating the directory "controller"   
   Right click on the directory `src`, select "New folder" and enter the name `controller`.   
 
-* Creating the "services" directory   
-  Right click on the `src` directory, select "New folder" and enter the name `services`.   
+* Creating the directory "services"   
+  Right click on the directory `src`, select "New folder" and enter the name `services`.   
 
 * Copy the files `CiMqttClient.ts` and `CiMqttClientInstance.ts` to the `src/services` directory.   
 
-* Copying the `CiBaseController.ts` file to the `src/controller` directory.   
+* Copy the `CiBaseController.ts` file to the `src/controller` directory.   
 
 * Copy the file `CiBase.vue` to the `src/components` directory.   
 
-## 2. customize the file CiMqttClientInstance
+## 2. Customize the file CiMqttClientInstance
 * Specify whether to connect to the broker and subscribe to the topic when the app is started with the default values (constructor value `true`).   
 
-* Entering all controllers that should send or receive Mqtt messages.   
+* Enter all controllers that should send or receive MQTT messages.   
   The following two lines are needed in each case (example: "ciMiniController"):   
   `import { ciMiniController } from '@/controller/CiMiniController'`.   
   `ciMqttClientInstance.registerController(ciMiniController)`   
 
-## 3. integration of the CiMqttClient into a CiXxx controller
+## 3. Integration of the CiMqttClient into a CiXxxController
 * Import the components into the controller.   
   Input in the file `CiXxxController.ts`:   
   `import { reactive } from 'vue'`.   
   `import { message } from '@/services/CiMqttClient'`   
   `import { CiBaseController, IBase } from './CiBaseController'`   
 
-* Derive the CiXxx controller from `CiBaseController`:   
+* Derive the CiXxxController from `CiBaseController`:   
   `export class CiXxxController extends CiBaseController {`   
 
 * Implementation of the abstract method onMessage:   
@@ -129,11 +129,11 @@ The MQTT client `CiMqttClient` can do the following:
   ` // ..ToDo..`   
   `}`   
 
-## 4. integration of the CiMqttClient into a CiXxx component
+## 4. Integration of the CiMqttClient into a CiXxxComponent
 * Import the ciMqttClientInstance object:   
   `import { ciMqttClientInstance } from '@/services/CiMqttClientInstance'`.   
 
-* In the `computed` area of the CiXxx component, the methods of `CiMqttClient` can be accessed via the `ciMqttClientInstance` object.   
+* In the `computed` area of the CiXxxComponent, the methods of `CiMqttClient` can be accessed via the `ciMqttClientInstance` object.   
   Examples:   
   * Query the broker IP and port:   
     `brokerurl: function (): string { return ciMqttClientInstance.connectUrl() },`   
@@ -141,13 +141,12 @@ The MQTT client `CiMqttClient` can do the following:
     `brokerip: function (): string { return ciMqttClientInstance.mqttConnection.host },`.   
   * query whether the connection to the broker exists   
     `isConnected: function (): boolean { return ciMqttClientInstance.mqttState.connected },`   
-  * 
 
 &nbsp;   
 
 ---   
 # How to create this project?
-## 1. general
+## 1. General
 The following diagram gives an overview of the files involved:   
 
 ![Overview Files](./images/vue_ci_mqtt_mini_files_1.png "Overview Files")   
@@ -160,11 +159,11 @@ With the help of the diagram you can see some important connections:
 * The connection to the MQTT broker is established via the files `MqttClient.ts` and `MqttClientInstance.ts`, where all controllers must be registered in the file `MqttClientInstance.ts`. If this is forgotten, the controller will not receive MQTT messages ("switch open").   
 
 
-## 2. creation of the Vue project in VSC
-1. start Visual Studio Code (VSC).   
+## 2. Creation of the Vue project in VSC
+1. Start Visual Studio Code (VSC).   
 2. VSC: Open terminal window: Menu Terminal - New Terminal.   
 3. VSC Terminal: Change to the folder under which the Vue project is to be created:   
-   `cd /g/github/mqtt4home/source_Vue`.   
+   `cd /g/github/mqtt4home/source_Vue`   
 4. VSC terminal: create Vue.js application:   
   `vue create vue_ci_mqtt_mini`  
   Use cursor keys, space bar and &lt;Enter&gt; to select the following:   
@@ -183,14 +182,14 @@ With the help of the diagram you can see some important connections:
    _`? Pick additional lint features: `_ &nbsp; __`Lint on save`__ &lt;Enter&gt;   
    _`? Where do you prefer placing config for Babel, ESLint, etc.?`_ &nbsp; __`In dedicated config file`__ &lt;Enter&gt;   
    _`? Save this as a preset for future projects? (y/N)`_ &nbsp; __`N`__ &lt;Enter&gt;   
-5. switch to the project folder: _VSC Menu File - Open folder_..
+5. Switch to the project folder: _VSC Menu File - Open folder_..
    `/github/mqtt4home/source_Vue/vue_ci_mqtt_mini` [select folder].   
-6. install MQTT library:   
+6. Install MQTT library:   
    VSC: Open Terminal window: Menu Terminal - New Terminal.   
    `npm install mqtt --save`   
 &nbsp;   
 
-## 3. completing the Vue configuration   
+## 3. Completing the Vue configuration   
 Create the file `vue.config.js`: click on the plus to the right of `VUE_CI_MQTT_MINI` (New file), enter name.   
 _Contents of the file_:   
 ```   
@@ -212,14 +211,14 @@ module.exports = {
 ```   
 With `publicPath: './',` the relative path is set and the `chainWebpack` entry avoids warnings about the file size (by setting the maximum file size higher ;) )
 
-## 4. disable linter warning "Unexpected any" at "(value: any)".    
+## 4. Disable linter warning "Unexpected any" at "(value: any)".    
   In the file `.eslintrc.js` under "`rules: {`" add:   
   ```   
   '@typescript-eslint/no-explicit-any': 'off',
   '@typescript-eslint/explicit-module-boundary-types': 'off',
   ```   
 
-## 5. customize `App.vue` file   
+## 5. Customize `App.vue` file   
 The `App.vue` file is responsible for the following items:   
   * Display of the component `CiMini`.
   * Definition of uniform styles for all pages.   
@@ -267,15 +266,15 @@ export default defineComponent({
 
 ```   
 
-## 6. delete files and directories that are not needed   
+## 6. Delete files and directories that are not needed   
   * Delete file `components/HelloWorld.vue   
   * delete directory `assets   
 
 
-## 7. add MQTT functionality
+## 7. Add MQTT functionality
 This is already described above in the chapter "[Instructions for using the CiMqttClient](#instructions-for-using-the-cimqttclient)".   
 
-## 8. create controller "CiMiniController.ts".
+## 8. Create controller "CiMiniController.ts".
 
 _Coding_:   
 ```   
@@ -321,7 +320,7 @@ export const ciMiniController = new CiMiniController()
 
 ```   
 
-## 9. create webpage "CiMini.vue
+## 9. Create webpage "CiMini.vue
 The webpage `CiMini.vue` consists like all components of the three parts &lt;template&gt;, &lt;script lang="ts"&gt; and &lt;style scoped&gt;. 
 
 _Coding_:   
@@ -382,7 +381,7 @@ export default defineComponent({
 &nbsp;
 ---   
 
-# details about the coding of CiMqttClient   
+# Details about the coding of CiMqttClient   
 
 ## CiBaseController.ts
 The file `CiBaseController.ts` normally does not have to be changed. It defines in the interface `IBase` some properties that all (derived) `CiXxxController` should have. The most important property is the `id`, which is the link between a representation and the data in the controller.   
