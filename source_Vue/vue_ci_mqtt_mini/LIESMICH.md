@@ -9,9 +9,6 @@ Letzte &Auml;nderung: 12.12.2021 <a name="up"></a>
 Diese Vue-Anwendung "vue_ci_mqtt_mini" beschreibt, wie man mit `CiMqttClient` eine einfache MQTT-Anwendung erstellt.   
 Es werden zuerst die [erforderlichen Hilfsmittel](#erforderliche-hilfsmittel) und das [Auspobieren/Testen der App](#ausprobieren-der-app) beschreiben. Danach werden die Fragen [was CiMqttClient kann](#was-kann-cimqttclient), [wie man CiMqttClient verwendet](#wie-verwendet-man-cimqttclient), und [wie man dieses Projekt erstellt](#wie-erstellt-man-dieses-projekt), beantwortet. Den Abschluss bilden [Details zur Codierung von CiMqttClient](#details-zur-codierung-von-cimqttclient).
 
-Wie erstellt man dieses Projekt?
-, eine [Anleitung zur Verwendung des CiMqttClients](#anleitung-zur-verwendung-des-cimqttclients), das [Erstellen des Projekts](#wie-erstellt-man-dieses-projekt) sowie [Details zur Codierung des CiMqttClients](#details-zur-codierung-von-cimqttclient) beschrieben.   
-
 Die Anwendung verbindet sich nach dem Start automatisch mit einem Broker und zeigt empfangene MQTT-Nachrichten an. Drückt man auf den Button "Publish message", wird eine MQTT-Nachricht gesendet.   
 
 ![GUI Mini-MQTT-Programm Ansicht 1](./images/vue_ci_mqtt_mini_view1.png "GUI Ansicht 1")   

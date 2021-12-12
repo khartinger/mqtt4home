@@ -7,10 +7,7 @@ Last modified: 2021-12-12 <a name="up"></a>
 
 # What is it about?
 This Vue application "vue_ci_mqtt_mini" describes how to create a simple MQTT application using `CiMqttClient`.   
-It first describes the [required-tools](#required-tools) and the [trying-out/testing-the-app](#trying-out-the-app). After that, the questions [what CiMqttClient can do](#what-can-cimqttclient-do), [how-to-use-CiMqttClient](#how-to-use-cimqttclient), and [how-to-create-this-project](#how-to-create-this-project), are answered. The final part is [#details-about-the-coding-of-cimqttclient](#details-about-coding-of-cimqttclient).
-
-How to create this project?
-, a [how-to-use-CiMqttClient](#how-to-use-cimqttclient), the [creating-project](#how-to-create-this-project) and [details-about-coding-CiMqttClient](#details-about-coding-of-cimqttclient) are described.   
+It first describes the [required-tools](#required-tools) and the [trying-out/testing-the-app](#trying-out-the-app). After that, the questions [what CiMqttClient can do](#what-can-cimqttclient-do), [how-to-use-CiMqttClient](#how-to-use-cimqttclient), and [how-to-create-this-project](#how-to-create-this-project), are answered. The final part is [details about the coding of ciMqttClient](#details-about-the-coding-of-cimqttclient).
 
 The application automatically connects to a broker after startup and displays received MQTT messages. If you press the "Publish message" button, an MQTT message is sent.   
 
