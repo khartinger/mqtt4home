@@ -9,13 +9,13 @@ Letzte &Auml;nderung: 12.12.2021 <a name="up"></a>
 Diese Vue-Anwendung "vue_ci_mqtt_mini" beschreibt, wie man mit `CiMqttClient` eine einfache MQTT-Anwendung erstellt.   
 Es werden zuerst die [erforderlichen Hilfsmittel](#erforderliche-hilfsmittel) und das [Auspobieren/Testen der App](#ausprobieren-der-app) beschreiben. Danach werden die Fragen [was CiMqttClient kann](#was-kann-cimqttclient), [wie man CiMqttClient verwendet](#wie-verwendet-man-cimqttclient), und [wie man dieses Projekt erstellt](#wie-erstellt-man-dieses-projekt), beantwortet. Den Abschluss bilden [Details zur Codierung von CiMqttClient](#details-zur-codierung-von-cimqttclient).
 
-Die Anwendung verbindet sich nach dem Start automatisch mit einem Broker und zeigt empfangene MQTT-Nachrichten an. Drückt man auf den Button "Publish message", wird eine MQTT-Nachricht gesendet.   
+Die Anwendung verbindet sich nach dem Start automatisch mit einem Broker und zeigt empfangene MQTT-Nachrichten an. Dr&uuml;ckt man auf den Button "Publish message", wird eine MQTT-Nachricht gesendet.   
 
 ![GUI Mini-MQTT-Programm Ansicht 1](./images/vue_ci_mqtt_mini_view1.png "GUI Ansicht 1")   
 _Bild 1: Startansicht der Anwendung "vue_ci_mqtt_mini"_   
 
 ![GUI Mini-MQTT-Programms Ansicht 2](./images/vue_ci_mqtt_mini_view2.png "GUI Ansicht 2")   
-_Bild 2: Ansicht nach dem Verbinden mit dem Broker und Drücken der Taste "Publish message"_   
+_Bild 2: Ansicht nach dem Verbinden mit dem Broker und Dr&uuml;cken der Taste "Publish message"_   
 
 # Erforderliche Hilfsmittel
 * Hardware: PC oder Laptop mit Internetzugang, Browser
@@ -27,15 +27,15 @@ _Bild 2: Ansicht nach dem Verbinden mit dem Broker und Drücken der Taste "Publi
 1. Das Raspberry Pi (RasPi) wurde entsprechend der [Anleitung (Bereich "Zentrale")](../../LIESMICH.md) installiert, d.h. auf dem RasPi mit der IP `10.1.1.1` l&auml;uft das Broker-Programm (Mosquitto)   
 2. Die Vue-Anwendung ist in Visual Studio Code (VSC) geladen und der interne Server l&auml;uft (Eingabe im Terminal: `npm run serve`).   
 3. Es besteht eine Netzwerk-/WLAN-Verbindung zwischen dem Rechner, auf dem VSC l&auml;uft, und dem RasPi.   
-4. Auf dem PC oder Raspberry Pi ist ein Command-/Terminal-Fenster geöffnet, das empfangene MQTT-Nachrichten anzeigt (Eingabe `mosquitto_sub -h 10.1.1.1 -t "#" -v`)   
+4. Auf dem PC oder Raspberry Pi ist ein Command-/Terminal-Fenster ge&ouml;ffnet, das empfangene MQTT-Nachrichten anzeigt (Eingabe `mosquitto_sub -h 10.1.1.1 -t "#" -v`)   
 
 ## Test   
 * Gibt man im Browser die Adresse `localhost:8080` ein, so erscheint (kurz) _Bild 1_ im Brower.   
 * Besteht eine Verbindung zum Broker, erscheint nach kurzer Zeit die Anzeige "MQTT-State: connected".   
-* Drückt man den [Publish message]-Button, wird die Meldung im Browser und im Command-/Terminal-Fenster angezeigt.   
+* Dr&uuml;ckt man den [Publish message]-Button, wird die Meldung im Browser und im Command-/Terminal-Fenster angezeigt.   
 
 # Was kann CiMqttClient?
-Der MQTT-Client `CiMqttClient` stellt die Verbindung zum MQTT-Broker dar. Er enthält sowohl Werte als auch Methoden für die MQTT-Kommunikation.   
+Der MQTT-Client `CiMqttClient` stellt die Verbindung zum MQTT-Broker dar. Er enth&auml;lt sowohl Werte als auch Methoden f&uuml;r die MQTT-Kommunikation.   
 
 ## Einige Vorgabewerte   
 Diese Werte werden beim automatischen Verbinden verwendet.   
@@ -45,34 +45,34 @@ Diese Werte werden beim automatischen Verbinden verwendet.
 | Host-IP            | 10.1.1.1             | MqttConnection.host    |   
 | WebSocket Port     | 1884                 | MqttConnection.port    |   
 | Subscribe-Topic    | # (alles)            | MqttSubscription.topic |   
-| Quality of Service | 0 (höchstens einmal) | MqttSubscription.qos   |   
+| Quality of Service | 0 (h&ouml;chstens einmal) | MqttSubscription.qos   |   
 
-Für die Interfaces (`mqttState`, `mqttConnection`, `mqttSubscription`) und ihre Eigenschaften siehe [Codierung der Datei `CiMqttClient.ts`](./src/services/CiMqttClient.ts)   
+F&uuml;r die Interfaces (`mqttState`, `mqttConnection`, `mqttSubscription`) und ihre Eigenschaften siehe [Codierung der Datei `CiMqttClient.ts`](./src/services/CiMqttClient.ts)   
 
 ## Methoden   
 Der MQTT-Client `CiMqttClient` kann folgendes:   
 * __Automatisches Verbinden mit dem Broker beim App-Start.__   
   Dazu ist in der Datei `ciMqttClientInstance` folgendes einzutragen:   
   `export const ciMqttClientInstance = new CiMqttClient(true)`   
-  Für die Verbindung incl. Abonnieren des Subscribe-Topics werden die oben stehenden Vorgabewerte verwendet.   
+  F&uuml;r die Verbindung incl. Abonnieren des Subscribe-Topics werden die oben stehenden Vorgabewerte verwendet.   
   Soll kein automatisches Verbinden erfolgen, muss `true` durch `false` ersetzt werden.   
 
 * __Manuelles Verbinden mit dem Broker.__   
-  Bei der Methode `hostSubscribe(host, topicSubscribe)` müssen die Host-IP und das Topic, das abonniert werden soll, angegeben werden.   
+  Bei der Methode `hostSubscribe(host, topicSubscribe)` m&uuml;ssen die Host-IP und das Topic, das abonniert werden soll, angegeben werden.   
 
 * __Automatisches Wiederverbinden,__   
   falls die Verbindung zum Broker verloren gegangen ist.   
 
 * __Registrieren von CiXxxControllern.__   
-  Alle Controller `CiXxxController` müssen vom Basiscontroller `CiBaseController.ts` abgeleitet und in der Datei `src/services/CiMqttClientInstance.ts` registriert werden:   
+  Alle Controller `CiXxxController` m&uuml;ssen vom Basiscontroller `CiBaseController.ts` abgeleitet und in der Datei `src/services/CiMqttClientInstance.ts` registriert werden:   
   `registerController (controller: CiBaseController)`   
-  Vergisst man auf das Registrieren eines Controllers, so erhält man keine Nachrichten ;)   
+  Vergisst man auf das Registrieren eines Controllers, so erh&auml;lt man keine Nachrichten ;)   
 
 * __Abonnieren von Nachrichten.__   
-  Das Abonnieren erfolgt automatisch beim Verbinden mit dem Broker. Eine Änderung des Subscribe-Topics kann durch die Methode   
+  Das Abonnieren erfolgt automatisch beim Verbinden mit dem Broker. Eine &auml;nderung des Subscribe-Topics kann durch die Methode   
   `subscribe (topic, qos)`   
   erfolgen.   
-  Werte für `qos`: Nachricht höchstens einmal (0), mindestens einmal (1) oder genau einmal (2) senden.   
+  Werte f&uuml;r `qos`: Nachricht h&ouml;chstens einmal (0), mindestens einmal (1) oder genau einmal (2) senden.   
   Zum Bearbeiten der Nachricht muss im Controller eine Methode   
   `public onMessage (message: Message): void { ... }`   
   definiert werden (Empfangenes Topic = `message.topic`, empfangene Payload = `message.payload`)   
@@ -83,10 +83,10 @@ Der MQTT-Client `CiMqttClient` kann folgendes:
   erfolgen oder durch eigene Methoden, die zB im CiXxxController definiert werden. (Beispiel siehe [CiMini.vue](./src/controller/CiMiniController.ts))   
 
 * __Bereitstellen des Verbindungszustandes als Text.__   
-  Diesen Text erhält man durch Aufruf der Methode `sConnMqttState()`.   
+  Diesen Text erh&auml;lt man durch Aufruf der Methode `sConnMqttState()`.   
 
 * __Bereitstellen der Verbindungs-URL.__   
-  Diese erhält man durch Aufruf der Methode `connectUrl()`.   
+  Diese erh&auml;lt man durch Aufruf der Methode `connectUrl()`.   
 
 * __Bereitstellen weiterer Methoden.__   
   Diese sind unter anderem `connect(host, port, endpoint)`, `disconnect()` und `unsubscribe ()`.
@@ -95,10 +95,10 @@ Der MQTT-Client `CiMqttClient` kann folgendes:
 
 ## 1. Einbinden der erforderlichen Dateien
 * Erstellen des Verzeichnisses "controller"   
-  Mit der rechten Maustaste auf das Verzeichnis `src` klicken, "Neuer Ordner" wählen und den Namen `controller` eingeben.   
+  Mit der rechten Maustaste auf das Verzeichnis `src` klicken, "Neuer Ordner" w&auml;hlen und den Namen `controller` eingeben.   
 
 * Erstellen des Verzeichnisses "services"   
-  Mit der rechten Maustaste auf das Verzeichnis `src` klicken, "Neuer Ordner" wählen und den Namen `services` eingeben.   
+  Mit der rechten Maustaste auf das Verzeichnis `src` klicken, "Neuer Ordner" w&auml;hlen und den Namen `services` eingeben.   
 
 * Kopieren der Dateien `CiMqttClient.ts` und `CiMqttClientInstance.ts` in das Verzeichnis `src/services`.   
 
@@ -110,7 +110,7 @@ Der MQTT-Client `CiMqttClient` kann folgendes:
 * Festlegen, ob beim Start der App mit den Vorgabewerten die Verbindung zum Broker hergestellt und das Topic abonniert werden soll (Konstruktor-Wert `true`).   
 
 * Eintragen aller Controller, die Mqtt-Nachrichten senden oder empfangen sollen.   
-  Folgende zwei Zeilen werden jeweils benötigt (Beispiel: "ciMiniController"):   
+  Folgende zwei Zeilen werden jeweils ben&ouml;tigt (Beispiel: "ciMiniController"):   
   `import { ciMiniController } from '@/controller/CiMiniController'`   
   `ciMqttClientInstance.registerController(ciMiniController)`   
 
@@ -133,7 +133,7 @@ Der MQTT-Client `CiMqttClient` kann folgendes:
 * Importieren des ciMqttClientInstance-Objekts:   
   `import { ciMqttClientInstance } from '@/services/CiMqttClientInstance'`   
 
-* Im `computed`-Bereich der CiXxx-Komponente kann über das `ciMqttClientInstance`-Objekt auf die Methoden von `CiMqttClient` zugegriffen werden.   
+* Im `computed`-Bereich der CiXxx-Komponente kann &uuml;ber das `ciMqttClientInstance`-Objekt auf die Methoden von `CiMqttClient` zugegriffen werden.   
   Beispiele:   
   * Abfrage der Broker-IP und des Ports:   
     `brokerurl: function (): string { return ciMqttClientInstance.connectUrl() },`   
@@ -155,7 +155,7 @@ _Bild 3: &Uuml;bersicht &uuml;ber die beteiligten Dateien_
 
 Mit Hilfe des Diagrammes erkennt man einige wichtige Zusammenh&auml;nge:   
 * Der User ruft mit dem Brower die Datei `index.html` auf, die die Applikation anzeigt   
-  (über `App.vue` - `main.ts` - `index.html`).   
+  (&uuml;ber `App.vue` - `main.ts` - `index.html`).   
 * Das Grafik-Element `CiMini` besteht aus einem "Controller"- und "Grafik"-Teil (Erweiterung `.ts` bzw. `.vue`). Diese sind von Basis-Komponenten abgeleitet.   
 * Die Verbindung zum MQTT-Broker wird &uuml;ber die Dateien `MqttClient.ts` und `MqttClientInstance.ts` hergestellt, wobei alle Controller in der Datei `MqttClientInstance.ts` registriert werden m&uuml;ssen. Vergisst man dies, erh&auml;lt der Controller keine MQTT-Nachrichten ("Schalter offen").   
 
@@ -225,7 +225,7 @@ Die Datei `App.vue` ist f&uuml;r folgende Punkte zust&auml;ndig:
   * Definition von einheitlichen Styles f&uuml;r alle Seiten.   
     Daher: Alle Styles erg&auml;nzen, die mit einem Punkt beginnen.   
 
-_Ändern des Inhalts der Datei auf_:   
+_&auml;ndern des Inhalts der Datei auf_:   
 ```   
 <!-- App.vue -->
 <template>
@@ -272,7 +272,7 @@ export default defineComponent({
   * Verzeichnis `assets` l&ouml;schen   
 
 
-## 7. MQTT-Funktionalität einbauen
+## 7. MQTT-Funktionalit&auml;t einbauen
 Dies wird bereits weiter oben im Kapitel "[Anleitung zur Verwendung des CiMqttClients](#anleitung-zur-verwendung-des-cimqttclients)" beschrieben.   
 
 ## 8. Controller "CiMiniController.ts" erstellen
@@ -385,7 +385,7 @@ export default defineComponent({
 # Details zur Codierung von CiMqttClient   
 
 ## CiBaseController.ts
-Die Datei `CiBaseController.ts` muss im Normalfall nicht verändert werden. Sie definiert im Interface `IBase` einige Eigenschaften, die alle (abgeleiteten) `CiXxxController` haben sollten. Die wichtigste Eigenschaft ist dabei die `id`, die die Verbindung zwischen einer Darstellung und den Daten im Controller darstellt.   
+Die Datei `CiBaseController.ts` muss im Normalfall nicht ver&auml;ndert werden. Sie definiert im Interface `IBase` einige Eigenschaften, die alle (abgeleiteten) `CiXxxController` haben sollten. Die wichtigste Eigenschaft ist dabei die `id`, die die Verbindung zwischen einer Darstellung und den Daten im Controller darstellt.   
 
 In der (abstrakten) Klasse `CiBaseController` werden dann die Methoden `registerClient`, `publish` und `onMessage(message: Message)` definiert.   
 
@@ -421,9 +421,9 @@ export abstract class CiBaseController {
 ```   
 
 ## CiMqttClient.ts
-Die Datei `CiMqttClient.ts` muss im Normalfall nicht verändert werden, außer man möchte zB die Vorgabe-Host-IP ändern (zB auf 192.168.0.123).   
+Die Datei `CiMqttClient.ts` muss im Normalfall nicht ver&auml;ndert werden, au&szlig;er man m&ouml;chte zB die Vorgabe-Host-IP &auml;ndern (zB auf 192.168.0.123).   
 
-Damit Eigenschaften nicht unabsichtlich verändert werden, gibt es jeweils eine private und eine schreibgeschützte öffentliche Variante.   
+Damit Eigenschaften nicht unabsichtlich ver&auml;ndert werden, gibt es jeweils eine private und eine schreibgesch&uuml;tzte &ouml;ffentliche Variante.   
 
 _Codierung_:   
 ```   
@@ -733,7 +733,7 @@ export class CiMqttClient {
 ```   
 
 ## CiMqttClientInstance.ts
-Die Datei `CiMqttClientInstance.ts` muss an das Projekt angepasst werden, damit die Controller die Nachrichen senden und empfangen können.   
+Die Datei `CiMqttClientInstance.ts` muss an das Projekt angepasst werden, damit die Controller die Nachrichen senden und empfangen k&ouml;nnen.   
 
 _Beispiel-Codierung_:   
 ```   

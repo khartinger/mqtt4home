@@ -157,12 +157,12 @@ With the help of the diagram you can see some important connections:
 * The user calls with the brower the file `index.html`, which displays the application   
   (via `App.vue` - `main.ts` - `index.html`).   
 * The graphics element `CiMini` consists of a "controller" and "graphics" part (extension `.ts` and `.vue` respectively). These are derived from base components.   
-* The connection to the MQTT broker is established &uuml;via the files `MqttClient.ts` and `MqttClientInstance.ts`, where all controllers must be registered in the file `MqttClientInstance.ts`. If this is forgotten, the controller will not receive MQTT messages ("switch open").   
+* The connection to the MQTT broker is established via the files `MqttClient.ts` and `MqttClientInstance.ts`, where all controllers must be registered in the file `MqttClientInstance.ts`. If this is forgotten, the controller will not receive MQTT messages ("switch open").   
 
 
 ## 2. creation of the Vue project in VSC
 1. start Visual Studio Code (VSC).   
-2. VSC: Open terminal window: Men&uuml; Terminal - New Terminal.   
+2. VSC: Open terminal window: Menu Terminal - New Terminal.   
 3. VSC Terminal: Change to the folder under which the Vue project is to be created:   
    `cd /g/github/mqtt4home/source_Vue`.   
 4. VSC terminal: create Vue.js application:   
@@ -183,10 +183,10 @@ With the help of the diagram you can see some important connections:
    _`? Pick additional lint features: `_ &nbsp; __`Lint on save`__ &lt;Enter&gt;   
    _`? Where do you prefer placing config for Babel, ESLint, etc.?`_ &nbsp; __`In dedicated config file`__ &lt;Enter&gt;   
    _`? Save this as a preset for future projects? (y/N)`_ &nbsp; __`N`__ &lt;Enter&gt;   
-5. switch to the project folder: _VSC Men&uuml; File - Folder &ouml;ffnen_..
+5. switch to the project folder: _VSC Menu File - Open folder_..
    `/github/mqtt4home/source_Vue/vue_ci_mqtt_mini` [select folder].   
 6. install MQTT library:   
-   VSC: Open Terminal window: Men&uuml; Terminal - New Terminal.   
+   VSC: Open Terminal window: Menu Terminal - New Terminal.   
    `npm install mqtt --save`   
 &nbsp;   
 
