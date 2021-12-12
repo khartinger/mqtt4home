@@ -272,7 +272,7 @@ export default defineComponent({
 
 
 ## 7. MQTT-Funktionalit&auml;t einbauen
-Dies wird bereits weiter oben im Kapitel "[Anleitung zur Verwendung des CiMqttClients](#anleitung-zur-verwendung-des-cimqttclients)" beschrieben.   
+Dies wird bereits weiter oben im Kapitel "[Wie verwendet man ciMqttClient?]((#wie-verwendet-man-cimqttclient)" beschrieben.   
 
 ## 8. Controller "CiMiniController.ts" erstellen
 

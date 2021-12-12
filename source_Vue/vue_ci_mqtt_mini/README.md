@@ -267,12 +267,12 @@ export default defineComponent({
 ```   
 
 ## 6. Delete files and directories that are not needed   
-  * Delete file `components/HelloWorld.vue   
-  * delete directory `assets   
+  * Delete file `components/HelloWorld.vue`   
+  * delete directory `assets`   
 
 
 ## 7. Add MQTT functionality
-This is already described above in the chapter "[Instructions for using the CiMqttClient](#instructions-for-using-the-cimqttclient)".   
+This is already described above in the chapter "[how-to-use-CiMqttClient](#how-to-use-cimqttclient)".   
 
 ## 8. Create controller "CiMiniController.ts".
 
