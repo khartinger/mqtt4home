@@ -58,7 +58,9 @@ The MQTT client `CiMqttClient` can do the following:
   If you don't want an automatic connection, `true` must be replaced by `false`.   
 
 * __Manually connect to the broker.__   
-  For the `hostSubscribe(host, topicSubscribe)` method, the host IP and the topic to be subscribed to must be specified.   
+    1. the file `ciMqttClientInstance` must contain the following line:   
+    `export const ciMqttClientInstance = new CiMqttClient(false)`   
+    2. connecting is done with the `hostSubscribe(host, topicSubscribe)` method, specifying the host IP and the topic to subscribe to.   
 
 * __Automatic reconnect,__   
   if the connection to the broker is lost.   
@@ -90,6 +92,11 @@ The MQTT client `CiMqttClient` can do the following:
 
 * __Providing other methods.__   
   These include `connect(host, port, endpoint)`, `disconnect()` and `unsubscribe ()`.
+
+## Special features
+* By default, all topics are subscribed and each Ci component checks itself whether the received message is addressed to it.   
+* If only one group of messages should be subscribed (e.g. all starting with `ci/`), this should be entered as default in the `CiMqttClient.ts` file, e.g. `subTopic = `ci/#`;`   
+* Only one topic should be subscribed to at a time, since `unsubscribe ()` only deletes the last subscribed topic.   
 
 # How to use CiMqttClient?
 

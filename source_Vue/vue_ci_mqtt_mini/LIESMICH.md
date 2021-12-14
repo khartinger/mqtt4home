@@ -58,7 +58,9 @@ Der MQTT-Client `CiMqttClient` kann folgendes:
   Soll kein automatisches Verbinden erfolgen, muss `true` durch `false` ersetzt werden.   
 
 * __Manuelles Verbinden mit dem Broker.__   
-  Bei der Methode `hostSubscribe(host, topicSubscribe)` m&uuml;ssen die Host-IP und das Topic, das abonniert werden soll, angegeben werden.   
+    1. In der Datei `ciMqttClientInstance` muss folgende Zeile stehen:   
+    `export const ciMqttClientInstance = new CiMqttClient(false)`   
+    2. Das Verbinden erfolgt mit der Methode `hostSubscribe(host, topicSubscribe)`, wobei die Host-IP und das zu abonnierende Topic angegeben werden.   
 
 * __Automatisches Wiederverbinden,__   
   falls die Verbindung zum Broker verloren gegangen ist.   
@@ -90,6 +92,11 @@ Der MQTT-Client `CiMqttClient` kann folgendes:
 
 * __Bereitstellen weiterer Methoden.__   
   Diese sind unter anderem `connect(host, port, endpoint)`, `disconnect()` und `unsubscribe ()`.
+
+## Besonderheiten
+* Standardm&auml;&szlig;ig werden alle Topics abonniert und jede Ci-Komponente pr&uuml;ft selbst, ob die empfangene Nachricht an sie gerichtet ist.   
+* Soll nur eine Gruppe von Nachrichten abonniert werden (zB alle, die mit `ci/` beginnen), sollte dies gleich in der Datei `CiMqttClient.ts` als Vorgabe eingetragen werden, zB `subTopic = 'ci/#';`   
+* Es sollte immer nur ein Topic abonniert werden, da `unsubscribe ()` lediglich das zuletzt abonnierte Topic l&ouml;scht.   
 
 # Wie verwendet man CiMqttClient?
 
