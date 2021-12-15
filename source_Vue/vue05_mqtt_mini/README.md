@@ -1,4 +1,4 @@
-# mqtt_mini
+# vue05_mqtt_mini
 
 ## Project setup
 ```

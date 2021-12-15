@@ -49,7 +49,7 @@ export default defineComponent({
     },
     publish: async function (): Promise<void> {
       try {
-        await mqttClientInstance.publish('test/vue', 'Hello from mqtt_mini')
+        await mqttClientInstance.publish('test/vue', 'Hello from vue05_mqtt_mini')
       } catch (e) {
         console.error('NO CONNECTION')
       }
