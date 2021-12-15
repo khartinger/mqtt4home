@@ -1,4 +1,4 @@
-Last modified: 2021-12-12 <a name="up"></a>   
+Last modified: 2021-12-13 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>How to create a Vue MQTT app easily?</h1>
 <a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 

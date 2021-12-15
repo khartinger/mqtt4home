@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 12.12.2021 <a name="up"></a>   
+Letzte &Auml;nderung: 13.12.2021 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Wie erstellt man einfach eine Vue-MQTT-App?</h1>
 <a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
