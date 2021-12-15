@@ -1,5 +1,5 @@
 Last modified: 2021-12-15 <a name="up"></a>   
-<table><tr><td><img src="logo/mqtt4home_96.png"></td><td>
+<table><tr><td><img src="./images/mqtt4home_96.png"></td><td>
 <h1>Vue: First application (without Visual Studio Code)</h1>
 <a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
 <a href="./LIESMICH.md">==> German version</a> &nbsp; &nbsp; &nbsp; 

@@ -1,5 +1,5 @@
 Letzte &Auml;nderung: 15.12.2021 <a name="up"></a>   
-<table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>
+<table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
 <h1>Vue: Erste Anwendung (ohne Visual Studio Code)</h1>
 <a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="./README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
