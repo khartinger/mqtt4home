@@ -1,7 +1,7 @@
 Letzte &Auml;nderung: 5.11.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>D1 mini: MQTT Relay mit PubSubClient</h1>
-<a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
+<a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h201_D1mqttRelayD1_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
 

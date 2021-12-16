@@ -1,6 +1,6 @@
 # RasPi: Reacting to specific keys in (JSON) payloads
 Program: m4hPayload, Version 2021-08-30   
-[--> Deutsche Version](./liesmich.md "Deutsche Version")   
+[--> Deutsche Version](./LIESMICH.md "Deutsche Version")   
 
 ## Purpose of the program
 The program `m4hPayload` serves as a basis for a C++ program, that   

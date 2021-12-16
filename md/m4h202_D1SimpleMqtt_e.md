@@ -1,7 +1,7 @@
 Last modified: 2021-11-12   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>D1mini: Class SimpleMqtt</h1>
-<a href="../readme.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
+<a href="../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h202_D1SimpleMqtt.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
 
@@ -45,7 +45,7 @@ This means: If you don't know the base topic of a system (e.g. button etc.), you
 D1 mini programs require the following project structure:   
   | Directory name | Contents (files) |   
   | --- | --- |   
-  | xxx | xxx.ino <br>eventually readme.md |   
+  | xxx | xxx.ino <br>eventually README.md |   
   | xxx/src/simplemqtt | `D1_class_SimpleMqtt.cpp`, `D1_class_SimpleMqtt.h`,<br> `PubSubClient.cpp`, `PubSubClient.h` |   
   
 _Example for Arduino IDE_:   

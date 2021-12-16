@@ -1,7 +1,7 @@
 Letzte &Auml;nderung: 12.10.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Vue: Erste Anwendung mit Visual Studio Code</h1>
-<a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
+<a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h502_Vue_Hello_VSC_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
   

@@ -1,7 +1,7 @@
 Last modified: 2021-11-11   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>D1 mini: Switching a relay via MQTT - Version 2</h1>
-<a href="../readme.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
+<a href="../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h203_D1smqttRelayD1.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
 

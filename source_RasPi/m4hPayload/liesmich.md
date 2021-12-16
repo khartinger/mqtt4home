@@ -1,6 +1,6 @@
 # RasPi: Reaktion auf bestimmte Schl&uuml;ssel in (JSON-)Payloads
 Programm: m4hPayload, Version 2021-08-30   
-[--> English Version](./readme.md "English Version")   
+[--> English Version](./README.md "English Version")   
 
 ## Zweck des Programms
 Das Programm `m4hPayload` dient als Grundlage f&uuml;r ein C++ Programm, das   

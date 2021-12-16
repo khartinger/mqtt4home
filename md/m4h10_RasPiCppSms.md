@@ -1,7 +1,7 @@
 Letzte &Auml;nderung: 27.8.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi: Senden und Empfangen von SMS &uuml;ber MQTT in C++</h1>
-<a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
+<a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h10_RasPiCppSms_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
   

@@ -1,9 +1,10 @@
 Last modified: 2021-09-15   
-<table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
+<table><tr><td><img src="logo/mqtt4home_96.png"></td><td>
 <h1>Vue: First application (without Visual Studio Code)</h1>
-<a href="../readme.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
+<a href="../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h501_Vue_Hello.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
-</td></tr></table><hr>
+</td></tr></table>
+<a href="https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue01_mini">==> Code @ GitHub</a><hr>
 
 ## Targets
 * Know what Vue is.   

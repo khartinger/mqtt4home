@@ -1,7 +1,7 @@
 Last modified: 2021-12-08   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Basic installation of the Raspberry Pi</h1>
-<a href="../readme.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
+<a href="../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h01_RasPiInstall.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h02_RasPiAccessPoint_e.md">==> RasPi As Access Point</a>
 </td></tr></table><hr>

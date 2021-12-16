@@ -1,7 +1,7 @@
 Letzte &Auml;nderung: 8.12.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Grundinstallation des Raspberry Pi</h1>
-<a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
+<a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h01_RasPiInstall_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h02_RasPiAccessPoint.md">==> RasPi Access Point</a>
 </td></tr></table><hr>

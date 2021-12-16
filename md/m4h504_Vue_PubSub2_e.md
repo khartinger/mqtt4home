@@ -1,7 +1,7 @@
 Last modified: 2021-10-15   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Vue + RasPi: Sending and automatically receiving MQTT messages</h1>
-<a href="../readme.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
+<a href="../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h504_Vue_PubSub2.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
 

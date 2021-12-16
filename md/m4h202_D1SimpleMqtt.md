@@ -1,7 +1,7 @@
 Letzte &Auml;nderung: 12.11.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>D1 mini: Die Klasse SimpleMqtt</h1>
-<a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
+<a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h202_D1SimpleMqtt_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
 
@@ -45,7 +45,7 @@ Das bedeutet: Weiß man von einem System (zB Taster etc.) nicht das Basis-Topic,
 D1 mini Programme setzen folgende Projektstruktur voraus:   
   | Verzeichnisname   | Inhalt (Dateien)    |   
   | --- | --- |   
-  | xxx | xxx.ino   <br>eventuell readme.md |   
+  | xxx | xxx.ino   <br>eventuell README.md |   
   | xxx/src/simplemqtt | `D1_class_SimpleMqtt.cpp`, `D1_class_SimpleMqtt.h`,<br>   `PubSubClient.cpp`, `PubSubClient.h`   |   
   
 _Beispiel für Arduino-IDE_:   

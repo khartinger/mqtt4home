@@ -1,7 +1,7 @@
 Letzte &Auml;nderung: 22.8.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi: Erstellen eigener Programme in C++</h1>
-<a href="../liesmich.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
+<a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h09_RasPiCppCreatingYourOwnProgs_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
   

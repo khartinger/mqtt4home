@@ -1,6 +1,6 @@
 # RasPi: Suchen des Anschlussnamens eines SIM-Moduls
 Programm: m4hFindSimModule.cpp, Version 2021-08-27   
-[--> English Version](./readme.md "English Version")   
+[--> English Version](./README.md "English Version")   
 
 Dieses einfache Programm versucht, der Reihe nach verschiedene serielle Schnittstellen zu &ouml;ffnen, an diese das Kommando `ATE0` zu senden und auf eine Antwort `OK` zu warten.   
 Das Ergebnis der Sendevorg&auml;nge wird auf der Konsole angezeigt.   
