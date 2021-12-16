@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 9.12.2021 <a name="up"></a>   
+Letzte &Auml;nderung: 16.12.2021 <a name="up"></a>   
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
 <a href="README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
@@ -70,7 +70,8 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 ## Bereich "Visualisierung"
 * [Erstes Vue-Programm (ohne Visual Studio Code) (2021-09-15)](md/m4h501_Vue_Hello.md)
 * [Vue+VSC: Erste Anwendung mit Visual Studio Code (2021-10-12)](md/m4h502_Vue_Hello_VSC.md)
-* [Vue: Erste MQTT Anwendung](md/m4h505_Mqtt_mini.md)
+* [Vue: Erste MQTT Anwendung "all-in-one" (2021-10-15)](md/m4h505_Mqtt_mini.md)
+* [Wie erstellt man einfach eine Vue-MQTT-App? (2021-12-13)](md/m4h510_Vue_ci_mqtt_mini.md)
 * [Vue+VSC+RasPi: Senden und automatisches Empfangen von MQTT-Nachrichten (2021-10-11)](md/m4h504_Vue_PubSub2.md)
 * [Vue+VSC: Senden und Empfangen von MQTT-Nachrichten (2021-10-03)](md/m4h505_Vue_Mqtt1.md)
 * [Wie erstellt man ein Vue-MQTT-Lampensymbol? (2021-12-09)](source_Vue/vue_mqtt_lamp1/LIESMICH.md)
