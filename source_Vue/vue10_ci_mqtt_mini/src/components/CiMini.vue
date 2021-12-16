@@ -1,7 +1,7 @@
 <!--CiMini.vue-->
-<!-- =========[1] GUI of vue_ci_mqtt_mini=================== -->
+<!-- =========[1] GUI of vue10_ci_mqtt_mini=================== -->
 <template>
-  <h1>vue_ci_mqtt_mini</h1>
+  <h1>vue10_ci_mqtt_mini</h1>
   <!-- -------[2] show connection info---------------------- -->
   Broker-URL: {{ brokerurl }} <br>
   MQTT-State: {{ mqttstate }} <br>
@@ -13,7 +13,7 @@
   Last received Payload: {{ mini.payloadIn }}
 </template>
 
-<!-- =========[5] script part of vue_ci_mqtt_mini=========== -->
+<!-- =========[5] script part of vue10_ci_mqtt_mini=========== -->
 <script lang="ts">
 // -----------[6] import required components--------------------
 import { defineComponent } from '@vue/runtime-core'
@@ -37,14 +37,14 @@ export default defineComponent({
     // _______[13] Publish the default message__________________
     clkPublish: async function (): Promise<void> {
       try {
-        // await ciMqttClientInstance.publish('test/vue', 'Hello from vue_ci_mqtt_mini', false, 0)
-        ciMiniController.publishCi('test/vue', 'Hello from vue_ci_mqtt_mini')
+        // await ciMqttClientInstance.publish('test/vue', 'Hello from vue10_ci_mqtt_mini', false, 0)
+        ciMiniController.publishCi('test/vue', 'Hello from vue10_ci_mqtt_mini')
       } catch (e) { console.error('NOT PUBLISHED: ', e) }
     }
   }
 })
 </script>
 
-<!-- =========[14] styles of vue_ci_mqtt_mini=============== -->
+<!-- =========[14] styles of vue10_ci_mqtt_mini=============== -->
 <style scoped>
 </style>

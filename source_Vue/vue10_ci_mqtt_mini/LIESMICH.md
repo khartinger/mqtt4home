@@ -1,179 +1,179 @@
-Last modified: 2021-12-13 <a name="up"></a>   
-<table><tr><td><img src="./images/mqtt4home_96.png"></td><td>&nbsp;</td><td>
-<h1>How to create a Vue MQTT app easily?</h1>
-<a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
-<a href="./LIESMICH.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
+Letzte &Auml;nderung: 13.12.2021 <a name="up"></a>   
+<table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
+<h1>Wie erstellt man einfach eine Vue-MQTT-App?</h1>
+<a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
+<a href="./README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
 
-# What is it about?
-This Vue application "vue_ci_mqtt_mini" describes how to create a simple MQTT application using `CiMqttClient`.   
-It first describes the [required-tools](#required-tools) and the [trying-out/testing-the-app](#trying-out-the-app). After that, the questions [what CiMqttClient can do](#what-can-cimqttclient-do), [how-to-use-CiMqttClient](#how-to-use-cimqttclient), and [how-to-create-this-project](#how-to-create-this-project), are answered. The final part is [details about the coding of ciMqttClient](#details-about-the-coding-of-cimqttclient).
+# Worum geht's?
+Diese Vue-Anwendung "vue10_ci_mqtt_mini" beschreibt, wie man mit `CiMqttClient` eine einfache MQTT-Anwendung erstellt.   
+Es werden zuerst die [erforderlichen Hilfsmittel](#erforderliche-hilfsmittel) und das [Auspobieren/Testen der App](#ausprobieren-der-app) beschreiben. Danach werden die Fragen [was CiMqttClient kann](#was-kann-cimqttclient), [wie man CiMqttClient verwendet](#wie-verwendet-man-cimqttclient), und [wie man dieses Projekt erstellt](#wie-erstellt-man-dieses-projekt), beantwortet. Den Abschluss bilden [Details zur Codierung von CiMqttClient](#details-zur-codierung-von-cimqttclient).
 
-The application automatically connects to a broker after startup and displays received MQTT messages. If you press the "Publish message" button, an MQTT message is sent.   
+Die Anwendung verbindet sich nach dem Start automatisch mit einem Broker und zeigt empfangene MQTT-Nachrichten an. Dr&uuml;ckt man auf den Button "Publish message", wird eine MQTT-Nachricht gesendet.   
 
-![GUI Mini-MQTT program view 1](./images/vue_ci_mqtt_mini_view1.png "GUI View 1")   
-_Figure 1: Start view of the application "vue_ci_mqtt_mini"_   
+![GUI Mini-MQTT-Programm Ansicht 1](./images/vue10_ci_mqtt_mini_view1.png "GUI Ansicht 1")   
+_Bild 1: Startansicht der Anwendung "vue10_ci_mqtt_mini"_   
 
-![GUI mini MQTT program view 2](./images/vue_ci_mqtt_mini_view2.png "GUI view 2")   
-_Figure 2: View after connecting to the broker and pressing the "Publish message"_ button.   
+![GUI Mini-MQTT-Programms Ansicht 2](./images/vue10_ci_mqtt_mini_view2.png "GUI Ansicht 2")   
+_Bild 2: Ansicht nach dem Verbinden mit dem Broker und Dr&uuml;cken der Taste "Publish message"_   
 
-# Required tools
-* Hardware: PC or laptop with internet access, browser
-* Hardware: Raspberry Pi (or PC) running an MQTT broker (e.g. Mosquitto)
-* Software: Visual Studio Code ("VSC"), which is already prepared for Vue applications (Node.js, npm installed).   
+# Erforderliche Hilfsmittel
+* Hardware: PC oder Laptop mit Internetzugang, Browser
+* Hardware: Raspberry Pi (oder PC), auf dem ein MQTT-Broker l&auml;uft (zB Mosquitto)
+* Software: Visual Studio Code ("VSC"), das f&uuml;r Vue-Anwendungen bereits vorbereitet ist (Node.js, npm installiert).   
 
-# Trying out the app   
-## Prerequisites   
-1. The Raspberry Pi (RasPi) has been installed according to the [instructions (section "Central")](../../LIESMICH.md), i.e. on the RasPi with IP `10.1.1.1` the broker program (Mosquitto) is running   
-2. The Vue application is loaded in Visual Studio Code (VSC) and the internal server is running (input in terminal: `npm run serve`).   
-3. There is a network/WLAN connection between the computer running VSC and the RasPi.   
-4. A command/terminal window is open on the PC or Raspberry Pi showing received MQTT messages (input `mosquitto_sub -h 10.1.1.1 -t "#" -v`)   
+# Ausprobieren der App   
+## Voraussetzungen   
+1. Das Raspberry Pi (RasPi) wurde entsprechend der [Anleitung (Bereich "Zentrale")](../../LIESMICH.md) installiert, d.h. auf dem RasPi mit der IP `10.1.1.1` l&auml;uft das Broker-Programm (Mosquitto)   
+2. Die Vue-Anwendung ist in Visual Studio Code (VSC) geladen und der interne Server l&auml;uft (Eingabe im Terminal: `npm run serve`).   
+3. Es besteht eine Netzwerk-/WLAN-Verbindung zwischen dem Rechner, auf dem VSC l&auml;uft, und dem RasPi.   
+4. Auf dem PC oder Raspberry Pi ist ein Command-/Terminal-Fenster ge&ouml;ffnet, das empfangene MQTT-Nachrichten anzeigt (Eingabe `mosquitto_sub -h 10.1.1.1 -t "#" -v`)   
 
 ## Test   
-* If one enters the address `localhost:8080` in the browser, _figure 1_ appears (briefly) in the brower.   
-* If there is a connection to the broker, the display "MQTT-State: connected" appears after a short time.   
-* If you press the [Publish message]-button, the message is displayed in the browser and in the command/terminal window.   
+* Gibt man im Browser die Adresse `localhost:8080` ein, so erscheint (kurz) _Bild 1_ im Brower.   
+* Besteht eine Verbindung zum Broker, erscheint nach kurzer Zeit die Anzeige "MQTT-State: connected".   
+* Dr&uuml;ckt man den [Publish message]-Button, wird die Meldung im Browser und im Command-/Terminal-Fenster angezeigt.   
 
-# What can CiMqttClient do?
-The MQTT client 'CiMqttClient' represents the connection to the MQTT broker. It contains values as well as methods for MQTT communication.   
+# Was kann CiMqttClient?
+Der MQTT-Client `CiMqttClient` stellt die Verbindung zum MQTT-Broker dar. Er enth&auml;lt sowohl Werte als auch Methoden f&uuml;r die MQTT-Kommunikation.   
 
-## Some default values   
-These values are used when connecting automatically.   
+## Einige Vorgabewerte   
+Diese Werte werden beim automatischen Verbinden verwendet.   
 
-| property           | value            | interface.property     |   
-| ------------------ | ---------------- | ---------------------- |   
-| Host IP            | 10.1.1           | MqttConnection.host    |   
-| WebSocket Port     | 1884             | MqttConnection.port    |   
-| Subscribe-Topic    | # (all)          | MqttSubscription.topic |   
-| Quality of Service | 0 (at most once) | MqttSubscription.qos   |   
+| Eigenschaft        | Wert                 | Interface.Eigenschaft  |   
+| ------------------ | -------------------- | ---------------------- |   
+| Host-IP            | 10.1.1.1             | MqttConnection.host    |   
+| WebSocket Port     | 1884                 | MqttConnection.port    |   
+| Subscribe-Topic    | # (alles)            | MqttSubscription.topic |   
+| Quality of Service | 0 (h&ouml;chstens einmal) | MqttSubscription.qos   |   
 
-For the interfaces (`mqttState`, `mqttConnection`, `mqttSubscription`) and their properties see [Coding of `CiMqttClient.ts`](./src/services/CiMqttClient.ts)   
+F&uuml;r die Interfaces (`mqttState`, `mqttConnection`, `mqttSubscription`) und ihre Eigenschaften siehe [Codierung der Datei `CiMqttClient.ts`](./src/services/CiMqttClient.ts)   
 
-## Methods   
-The MQTT client `CiMqttClient` can do the following:   
-* __Automatically connect to the broker at app startup.__   
-  To do this, enter the following in the `ciMqttClientInstance` file:   
+## Methoden   
+Der MQTT-Client `CiMqttClient` kann folgendes:   
+* __Automatisches Verbinden mit dem Broker beim App-Start.__   
+  Dazu ist in der Datei `ciMqttClientInstance` folgendes einzutragen:   
   `export const ciMqttClientInstance = new CiMqttClient(true)`   
-  For the connection including subscribing to the subscribe-topic the default values above are used.   
-  If you don't want an automatic connection, `true` must be replaced by `false`.   
+  F&uuml;r die Verbindung incl. Abonnieren des Subscribe-Topics werden die oben stehenden Vorgabewerte verwendet.   
+  Soll kein automatisches Verbinden erfolgen, muss `true` durch `false` ersetzt werden.   
 
-* __Manually connect to the broker.__   
-    1. the file `ciMqttClientInstance` must contain the following line:   
+* __Manuelles Verbinden mit dem Broker.__   
+    1. In der Datei `ciMqttClientInstance` muss folgende Zeile stehen:   
     `export const ciMqttClientInstance = new CiMqttClient(false)`   
-    2. connecting is done with the `hostSubscribe(host, topicSubscribe)` method, specifying the host IP and the topic to subscribe to.   
+    2. Das Verbinden erfolgt mit der Methode `hostSubscribe(host, topicSubscribe)`, wobei die Host-IP und das zu abonnierende Topic angegeben werden.   
 
-* __Automatic reconnect,__   
-  if the connection to the broker is lost.   
+* __Automatisches Wiederverbinden,__   
+  falls die Verbindung zum Broker verloren gegangen ist.   
 
-* __Registering CiXxxControllers.__   
-  All controllers `CiXxxController` must be derived from the base controller `CiBaseController.ts` and registered in the file `src/services/CiMqttClientInstance.ts`:   
-  `registerController (controller: CiBaseController)`.   
-  If you forget to register a controller, you will not receive any messages ;)   
+* __Registrieren von CiXxxControllern.__   
+  Alle Controller `CiXxxController` m&uuml;ssen vom Basiscontroller `CiBaseController.ts` abgeleitet und in der Datei `src/services/CiMqttClientInstance.ts` registriert werden:   
+  `registerController (controller: CiBaseController)`   
+  Vergisst man auf das Registrieren eines Controllers, so erh&auml;lt man keine Nachrichten ;)   
 
-* __Subscribing to messages.__   
-  Subscribing is done automatically when connecting to the broker. A change of the subscribe topic can be done by the method   
+* __Abonnieren von Nachrichten.__   
+  Das Abonnieren erfolgt automatisch beim Verbinden mit dem Broker. Eine &auml;nderung des Subscribe-Topics kann durch die Methode   
   `subscribe (topic, qos)`   
-  Values for `qos`: send message at most once (0), at least once (1) or exactly once (2).   
-  
-  To process the message, a method   
+  erfolgen.   
+  Werte f&uuml;r `qos`: Nachricht h&ouml;chstens einmal (0), mindestens einmal (1) oder genau einmal (2) senden.   
+  Zum Bearbeiten der Nachricht muss im Controller eine Methode   
   `public onMessage (message: Message): void { ... }`   
-  must be defined (received topic = `message.topic`, received payload = `message.payload`)   
+  definiert werden (Empfangenes Topic = `message.topic`, empfangene Payload = `message.payload`)   
 
-* __Sending messages.__   
-  Sending of messages can be done by the method   
+* __Senden von Nachrichten.__   
+  Das Senden von Nachrichten kann durch die Methode   
   `publish (topic, payload, retain, qos)`   
-  or by own methods that are defined e.g. in the CiXxxController. (Example see [CiMini.vue](./src/controller/CiMiniController.ts))   
+  erfolgen oder durch eigene Methoden, die zB im CiXxxController definiert werden. (Beispiel siehe [CiMini.vue](./src/controller/CiMiniController.ts))   
 
-* __Provide the connection state as text.__   
-  This text is obtained by calling the method `sConnMqttState()`.   
+* __Bereitstellen des Verbindungszustandes als Text.__   
+  Diesen Text erh&auml;lt man durch Aufruf der Methode `sConnMqttState()`.   
 
-* __Provide the connection URL.__   
-  This is obtained by calling the `connectUrl()` method.   
+* __Bereitstellen der Verbindungs-URL.__   
+  Diese erh&auml;lt man durch Aufruf der Methode `connectUrl()`.   
 
-* __Providing other methods.__   
-  These include `connect(host, port, endpoint)`, `disconnect()` and `unsubscribe ()`.
+* __Bereitstellen weiterer Methoden.__   
+  Diese sind unter anderem `connect(host, port, endpoint)`, `disconnect()` und `unsubscribe ()`.
 
-## Special features
-* By default, all topics are subscribed and each Ci component checks itself whether the received message is addressed to it.   
-* If only one group of messages should be subscribed (e.g. all starting with `ci/`), this should be entered as default in the `CiMqttClient.ts` file, e.g. `subTopic = `ci/#`;`   
-* Only one topic should be subscribed to at a time, since `unsubscribe ()` only deletes the last subscribed topic.   
+## Besonderheiten
+* Standardm&auml;&szlig;ig werden alle Topics abonniert und jede Ci-Komponente pr&uuml;ft selbst, ob die empfangene Nachricht an sie gerichtet ist.   
+* Soll nur eine Gruppe von Nachrichten abonniert werden (zB alle, die mit `ci/` beginnen), sollte dies gleich in der Datei `CiMqttClient.ts` als Vorgabe eingetragen werden, zB `subTopic = 'ci/#';`   
+* Es sollte immer nur ein Topic abonniert werden, da `unsubscribe ()` lediglich das zuletzt abonnierte Topic l&ouml;scht.   
 
-# How to use CiMqttClient?
+# Wie verwendet man CiMqttClient?
 
-## 1. Include the necessary files
-* Creating the directory "controller"   
-  Right click on the directory `src`, select "New folder" and enter the name `controller`.   
+## 1. Einbinden der erforderlichen Dateien
+* Erstellen des Verzeichnisses "controller"   
+  Mit der rechten Maustaste auf das Verzeichnis `src` klicken, "Neuer Ordner" w&auml;hlen und den Namen `controller` eingeben.   
 
-* Creating the directory "services"   
-  Right click on the directory `src`, select "New folder" and enter the name `services`.   
+* Erstellen des Verzeichnisses "services"   
+  Mit der rechten Maustaste auf das Verzeichnis `src` klicken, "Neuer Ordner" w&auml;hlen und den Namen `services` eingeben.   
 
-* Copy the files `CiMqttClient.ts` and `CiMqttClientInstance.ts` to the `src/services` directory.   
+* Kopieren der Dateien `CiMqttClient.ts` und `CiMqttClientInstance.ts` in das Verzeichnis `src/services`.   
 
-* Copy the `CiBaseController.ts` file to the `src/controller` directory.   
+* Kopieren der Datei `CiBaseController.ts` in das Verzeichnis `src/controller`.   
 
-* Copy the file `CiBase.vue` to the `src/components` directory.   
+* Kopieren der Datei `CiBase.vue` in das Verzeichnis `src/components`.   
 
-## 2. Customize the file CiMqttClientInstance
-* Specify whether to connect to the broker and subscribe to the topic when the app is started with the default values (constructor value `true`).   
+## 2. Anpassen der Datei CiMqttClientInstance
+* Festlegen, ob beim Start der App mit den Vorgabewerten die Verbindung zum Broker hergestellt und das Topic abonniert werden soll (Konstruktor-Wert `true`).   
 
-* Enter all controllers that should send or receive MQTT messages.   
-  The following two lines are needed in each case (example: "ciMiniController"):   
-  `import { ciMiniController } from '@/controller/CiMiniController'`.   
+* Eintragen aller Controller, die Mqtt-Nachrichten senden oder empfangen sollen.   
+  Folgende zwei Zeilen werden jeweils ben&ouml;tigt (Beispiel: "ciMiniController"):   
+  `import { ciMiniController } from '@/controller/CiMiniController'`   
   `ciMqttClientInstance.registerController(ciMiniController)`   
 
-## 3. Integration of the CiMqttClient into a CiXxxController
-* Import the components into the controller.   
-  Input in the file `CiXxxController.ts`:   
-  `import { reactive } from 'vue'`.   
-  `import { message } from '@/services/CiMqttClient'`   
+## 3. Einbinden des CiMqttClients in einen CiXxxController
+* Importieren der Komponenten in den Controller.   
+  Eingabe in der Datei `CiXxxController.ts`:   
+  `import { reactive } from 'vue'`   
+  `import { Message } from '@/services/CiMqttClient'`   
   `import { CiBaseController, IBase } from './CiBaseController'`   
 
-* Derive the CiXxxController from `CiBaseController`:   
+* Ableiten des CiXxxControllers von `CiBaseController`:   
   `export class CiXxxController extends CiBaseController {`   
 
-* Implementation of the abstract method onMessage:   
+* Implementierung der abstrakten Methode onMessage:   
   `public onMessage (message: Message): void {`   
-  ` // ..ToDo..`   
+  `  // ..ToDo..`   
   `}`   
 
-## 4. Integration of the CiMqttClient into a CiXxxComponent
-* Import the ciMqttClientInstance object:   
-  `import { ciMqttClientInstance } from '@/services/CiMqttClientInstance'`.   
+## 4. Einbinden des CiMqttClients in eine CiXxx-Komponente
+* Importieren des ciMqttClientInstance-Objekts:   
+  `import { ciMqttClientInstance } from '@/services/CiMqttClientInstance'`   
 
-* In the `computed` area of the CiXxxComponent, the methods of `CiMqttClient` can be accessed via the `ciMqttClientInstance` object.   
-  Examples:   
-  * Query the broker IP and port:   
+* Im `computed`-Bereich der CiXxx-Komponente kann &uuml;ber das `ciMqttClientInstance`-Objekt auf die Methoden von `CiMqttClient` zugegriffen werden.   
+  Beispiele:   
+  * Abfrage der Broker-IP und des Ports:   
     `brokerurl: function (): string { return ciMqttClientInstance.connectUrl() },`   
-  * Query only the broker IP:   
-    `brokerip: function (): string { return ciMqttClientInstance.mqttConnection.host },`.   
-  * query whether the connection to the broker exists   
+  * Abfrage nur der Broker-IP:   
+    `brokerip: function (): string { return ciMqttClientInstance.mqttConnection.host },`   
+  * Abfrage, ob die Verbindung zum Broker besteht   
     `isConnected: function (): boolean { return ciMqttClientInstance.mqttState.connected },`   
 
 &nbsp;   
 
 ---   
-# How to create this project?
-## 1. General
-The following diagram gives an overview of the files involved:   
+# Wie erstellt man dieses Projekt?
+## 1. Allgemeines
+Das folgende Diagramm gibt einen &Uuml;berblick &uuml;ber die beteiligten Dateien:   
 
-![Overview Files](./images/vue_ci_mqtt_mini_files_1.png "Overview Files")   
-_Fig. 3: &Overview of the involved files_   
+![Uebersicht Dateien](./images/vue10_ci_mqtt_mini_files_1.png "Uebersicht Dateien")   
+_Bild 3: &Uuml;bersicht &uuml;ber die beteiligten Dateien_   
 
-With the help of the diagram you can see some important connections:   
-* The user calls with the brower the file `index.html`, which displays the application   
-  (via `App.vue` - `main.ts` - `index.html`).   
-* The graphics element `CiMini` consists of a "controller" and "graphics" part (extension `.ts` and `.vue` respectively). These are derived from base components.   
-* The connection to the MQTT broker is established via the files `MqttClient.ts` and `MqttClientInstance.ts`, where all controllers must be registered in the file `MqttClientInstance.ts`. If this is forgotten, the controller will not receive MQTT messages ("switch open").   
+Mit Hilfe des Diagrammes erkennt man einige wichtige Zusammenh&auml;nge:   
+* Der User ruft mit dem Brower die Datei `index.html` auf, die die Applikation anzeigt   
+  (&uuml;ber `App.vue` - `main.ts` - `index.html`).   
+* Das Grafik-Element `CiMini` besteht aus einem "Controller"- und "Grafik"-Teil (Erweiterung `.ts` bzw. `.vue`). Diese sind von Basis-Komponenten abgeleitet.   
+* Die Verbindung zum MQTT-Broker wird &uuml;ber die Dateien `MqttClient.ts` und `MqttClientInstance.ts` hergestellt, wobei alle Controller in der Datei `MqttClientInstance.ts` registriert werden m&uuml;ssen. Vergisst man dies, erh&auml;lt der Controller keine MQTT-Nachrichten ("Schalter offen").   
 
 
-## 2. Creation of the Vue project in VSC
-1. Start Visual Studio Code (VSC).   
-2. VSC: Open terminal window: Menu Terminal - New Terminal.   
-3. VSC Terminal: Change to the folder under which the Vue project is to be created:   
+## 2. Anlegen des Vue-Projektes in VSC
+1. Visual Studio Code (VSC) starten.   
+2. VSC: Terminal-Fenster &ouml;ffnen: Men&uuml; Terminal - New Terminal.   
+3. VSC-Terminal: In den Ordner wechseln, unter dem das Vue-Projekt erzeugt werden soll:   
    `cd /g/github/mqtt4home/source_Vue`   
-4. VSC terminal: create Vue.js application:   
-  `vue create vue_ci_mqtt_mini`  
-  Use cursor keys, space bar and &lt;Enter&gt; to select the following:   
+4. VSC-Terminal: Vue.js Applikation erzeugen:   
+  `vue create vue10_ci_mqtt_mini`  
+  Mit Cursortasten, Leertaste und &lt;Enter&gt; Folgendes ausw&auml;hlen:   
    `> Manually select features` &nbsp; &lt;Enter&gt;   
    `(*) Choose Vue version`   
    `(*) Babel`   
@@ -187,18 +187,18 @@ With the help of the diagram you can see some important connections:
    _`? Use history mode for router? (Requires proper server setup for index fallback in production)`_ &nbsp; __`N`__ &lt;Enter&gt;   
    _`? Pick a linter / formatter config:`_ &nbsp; __`ESLint + Standard config`__ &lt;Enter&gt;   
    _`? Pick additional lint features: `_ &nbsp; __`Lint on save`__ &lt;Enter&gt;   
-   _`? Where do you prefer placing config for Babel, ESLint, etc.?`_ &nbsp; __`In dedicated config file`__ &lt;Enter&gt;   
+   _`? Where do you prefer placing config for Babel, ESLint, etc.?`_  &nbsp; __`In dedicated config file`__ &lt;Enter&gt;   
    _`? Save this as a preset for future projects? (y/N)`_ &nbsp; __`N`__ &lt;Enter&gt;   
-5. Switch to the project folder: _VSC Menu File - Open folder_..
-   `/github/mqtt4home/source_Vue/vue_ci_mqtt_mini` [select folder].   
-6. Install MQTT library:   
-   VSC: Open Terminal window: Menu Terminal - New Terminal.   
+5. In den Projektordner wechseln: _VSC Men&uuml; Datei - Ordner &ouml;ffnen_..
+   `/github/mqtt4home/source_Vue/vue10_ci_mqtt_mini` [Ordner ausw&auml;hlen]   
+6. MQTT Bibliothek installieren:   
+   VSC: Terminal-Fenster &ouml;ffnen: Men&uuml; Terminal - New Terminal.   
    `npm install mqtt --save`   
 &nbsp;   
 
-## 3. Completing the Vue configuration   
-Create the file `vue.config.js`: click on the plus to the right of `VUE_CI_MQTT_MINI` (New file), enter name.   
-_Contents of the file_:   
+## 3. Erg&auml;nzen der Vue-Konfiguration   
+Erstellen der Datei `vue.config.js`: auf das Plus rechts neben `VUE10_CI_MQTT_MINI` klicken (Neue Datei), Namen eingeben.   
+_Inhalt der Datei_:   
 ```   
 // ______vue.config.js__________________________________________
 module.exports = {
@@ -216,22 +216,22 @@ module.exports = {
 }
 
 ```   
-With `publicPath: './',` the relative path is set and the `chainWebpack` entry avoids warnings about the file size (by setting the maximum file size higher ;) )
+Mit `publicPath: './',` wird die relative Pfadangabe eingestellt und durch den `chainWebpack`-Eintrag werden Warnhinweise bez&uuml;glich der Dateigr&ouml;&szlig;e vermieden (indem man die maximale Dateigr&ouml;&szlig;en h&ouml;her setzt ;) )
 
-## 4. Disable linter warning "Unexpected any" at "(value: any)".    
-  In the file `.eslintrc.js` under "`rules: {`" add:   
+## 4. Linter-Warnung "Unexpected any" bei "(value: any)" abstellen    
+  In der Datei `.eslintrc.js` unter "`rules: {`" erg&auml;nzen:   
   ```   
   '@typescript-eslint/no-explicit-any': 'off',
   '@typescript-eslint/explicit-module-boundary-types': 'off',
   ```   
 
-## 5. Customize `App.vue` file   
-The `App.vue` file is responsible for the following items:   
-  * Display of the component `CiMini`.
-  * Definition of uniform styles for all pages.   
-    Therefore: add all styles starting with a dot.   
+## 5. Datei "App.vue" anpassen   
+Die Datei `App.vue` ist f&uuml;r folgende Punkte zust&auml;ndig:   
+  * Anzeige der Komponente `CiMini`.
+  * Definition von einheitlichen Styles f&uuml;r alle Seiten.   
+    Daher: Alle Styles erg&auml;nzen, die mit einem Punkt beginnen.   
 
-_Change the contents of the file to_:   
+_&auml;ndern des Inhalts der Datei auf_:   
 ```   
 <!-- App.vue -->
 <template>
@@ -273,17 +273,17 @@ export default defineComponent({
 
 ```   
 
-## 6. Delete files and directories that are not needed   
-  * Delete file `components/HelloWorld.vue`   
-  * delete directory `assets`   
+## 6. Nicht ben&ouml;tigte Dateien und Verzeichnisse l&ouml;schen   
+  * Datei `components/HelloWorld.vue` l&ouml;schen   
+  * Verzeichnis `assets` l&ouml;schen   
 
 
-## 7. Add MQTT functionality
-This is already described above in the chapter "[how-to-use-CiMqttClient](#how-to-use-cimqttclient)".   
+## 7. MQTT-Funktionalit&auml;t einbauen
+Dies wird bereits weiter oben im Kapitel "[Wie verwendet man ciMqttClient?]((#wie-verwendet-man-cimqttclient)" beschrieben.   
 
-## 8. Create controller "CiMiniController.ts".
+## 8. Controller "CiMiniController.ts" erstellen
 
-_Coding_:   
+_Codierung_:   
 ```   
 // ______CiMiniController.ts____________________________________
 // ===========[1] import required components====================
@@ -327,15 +327,15 @@ export const ciMiniController = new CiMiniController()
 
 ```   
 
-## 9. Create webpage "CiMini.vue
-The webpage `CiMini.vue` consists like all components of the three parts &lt;template&gt;, &lt;script lang="ts"&gt; and &lt;style scoped&gt;. 
+## 9. Webpage "CiMini.vue" erstellen
+Die Webpage `CiMini.vue` besteht wie alle Komponenten aus den drei Teilen &lt;template&gt;, &lt;script lang="ts"&gt; und &lt;style scoped&gt;.   
 
-_Coding_:   
+_Codierung_:   
 ```   
 <!--CiMini.vue-->
-<!-- =========[1] GUI of vue_ci_mqtt_mini=================== -->
+<!-- =========[1] GUI of vue10_ci_mqtt_mini=================== -->
 <template>
-  <h1>vue_ci_mqtt_mini</h1>
+  <h1>vue10_ci_mqtt_mini</h1>
   <!-- -------[2] show connection info---------------------- -->
   Broker-URL: {{ brokerurl }} <br>
   MQTT-State: {{ mqttstate }} <br>
@@ -347,7 +347,7 @@ _Coding_:
   Last received Payload: {{ mini.payloadIn }}
 </template>
 
-<!-- =========[5] script part of vue_ci_mqtt_mini=========== -->
+<!-- =========[5] script part of vue10_ci_mqtt_mini=========== -->
 <script lang="ts">
 // -----------[6] import required components--------------------
 import { defineComponent } from '@vue/runtime-core'
@@ -371,15 +371,15 @@ export default defineComponent({
     // _______[13] Publish the default message__________________
     clkPublish: async function (): Promise<void> {
       try {
-        // await ciMqttClientInstance.publish('test/vue', 'Hello from vue_ci_mqtt_mini', false, 0)
-        ciMiniController.publishCi('test/vue', 'Hello from vue_ci_mqtt_mini')
+        // await ciMqttClientInstance.publish('test/vue', 'Hello from vue10_ci_mqtt_mini', false, 0)
+        ciMiniController.publishCi('test/vue', 'Hello from vue10_ci_mqtt_mini')
       } catch (e) { console.error('NOT PUBLISHED: ', e) }
     }
   }
 })
 </script>
 
-<!-- =========[14] styles of vue_ci_mqtt_mini=============== -->
+<!-- =========[14] styles of vue10_ci_mqtt_mini=============== -->
 <style scoped>
 </style>
 
@@ -388,14 +388,14 @@ export default defineComponent({
 &nbsp;
 ---   
 
-# Details about the coding of CiMqttClient   
+# Details zur Codierung von CiMqttClient   
 
 ## CiBaseController.ts
-The file `CiBaseController.ts` normally does not have to be changed. It defines in the interface `IBase` some properties that all (derived) `CiXxxController` should have. The most important property is the `id`, which is the link between a representation and the data in the controller.   
+Die Datei `CiBaseController.ts` muss im Normalfall nicht ver&auml;ndert werden. Sie definiert im Interface `IBase` einige Eigenschaften, die alle (abgeleiteten) `CiXxxController` haben sollten. Die wichtigste Eigenschaft ist dabei die `id`, die die Verbindung zwischen einer Darstellung und den Daten im Controller darstellt.   
 
-In the (abstract) class `CiBaseController` the methods `registerClient`, `publish` and `onMessage(message: Message)` are then defined.   
+In der (abstrakten) Klasse `CiBaseController` werden dann die Methoden `registerClient`, `publish` und `onMessage(message: Message)` definiert.   
 
-_Coding_:   
+_Codierung_:   
 ```   
 // ______CiBaseController.ts____________________________________
 import { Message, CiMqttClient } from '@/services/CiMqttClient'
@@ -427,11 +427,11 @@ export abstract class CiBaseController {
 ```   
 
 ## CiMqttClient.ts
-The file `CiMqttClient.ts` normally does not have to be changed, unless you want to change the default host IP (e.g. to 192.168.0.123).   
+Die Datei `CiMqttClient.ts` muss im Normalfall nicht ver&auml;ndert werden, au&szlig;er man m&ouml;chte zB die Vorgabe-Host-IP &auml;ndern (zB auf 192.168.0.123).   
 
-To prevent properties from being changed unintentionally, there is a private and a read-only public variant.   
+Damit Eigenschaften nicht unabsichtlich ver&auml;ndert werden, gibt es jeweils eine private und eine schreibgesch&uuml;tzte &ouml;ffentliche Variante.   
 
-_Coding_:   
+_Codierung_:   
 ```   
 // ______CiMqttClient.ts________________________________________
 import { CiBaseController } from '@/controller/CiBaseController'
@@ -739,9 +739,9 @@ export class CiMqttClient {
 ```   
 
 ## CiMqttClientInstance.ts
-The file `CiMqttClientInstance.ts` must be adapted to the project, so that the controllers can send and receive the messages.   
+Die Datei `CiMqttClientInstance.ts` muss an das Projekt angepasst werden, damit die Controller die Nachrichen senden und empfangen k&ouml;nnen.   
 
-_Example Coding_:   
+_Beispiel-Codierung_:   
 ```   
 // ______CiMqttClientInstance.ts________________________________
 import { CiMqttClient } from './CiMqttClient'
@@ -755,4 +755,4 @@ ciMqttClientInstance.registerController(ciMiniController)
 
 ```   
 
-[Top of page](#up)
+[Zum Seitenanfang](#up)
