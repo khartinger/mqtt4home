@@ -1,6 +1,6 @@
 Letzte &Auml;nderung: 15.10.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
-<h1>Vue: Erste MQTT Anwendung</h1>
+<h1>Vue: Erste MQTT Anwendung (All-in-one)</h1>
 <a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="./README.md.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
