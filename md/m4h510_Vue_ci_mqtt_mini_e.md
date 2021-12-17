@@ -158,7 +158,7 @@ The MQTT client `CiMqttClient` can do the following:
 The following diagram gives an overview of the files involved:   
 
 ![Overview Files](./images/vue10_ci_mqtt_mini_files_1.png "Overview Files")   
-_Fig. 3: &Overview of the involved files_   
+_Fig. 3: Overview of the involved files_   
 
 With the help of the diagram you can see some important connections:   
 * The user calls with the brower the file `index.html`, which displays the application   
