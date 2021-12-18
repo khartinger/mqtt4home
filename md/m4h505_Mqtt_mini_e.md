@@ -4,7 +4,7 @@ Last modified: 2021-10-15
 <a href="../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h505_Mqtt_mini.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table>
-<a href="https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue05_ci_mqtt_mini">==> Code @ GitHub</a><hr>
+<a href="https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue05_mqtt_mini">==> Code @ GitHub</a><hr>
 
 ## Target
 * Create a simple MQTT application that sends an MQTT message and displays received MQTT messages at the push of a button.   

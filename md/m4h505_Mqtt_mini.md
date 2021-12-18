@@ -4,7 +4,7 @@ Letzte &Auml;nderung: 15.10.2021
 <a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h505_Vue_Mqtt_mini_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table>
-<a href="https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue05_ci_mqtt_mini">==> Code @ GitHub</a><hr>
+<a href="https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue05_mqtt_mini">==> Code @ GitHub</a><hr>
   
 ## Ziel
 * Erstellen einer einfachen MQTT-Anwendung, die auf Knopfdruck eine MQTT-Nachricht sendet und empfangene MQTT-Nachrichten anzeigt.   
