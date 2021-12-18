@@ -5,6 +5,7 @@ Letzte &Auml;nderung: 15.10.2021
 <a href="./README.md.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
 
+
 ## Ziel
 * Erstellen einer einfachen MQTT-Anwendung, die auf Knopfdruck eine MQTT-Nachricht sendet und empfangene MQTT-Nachrichten anzeigt.   
 * Die Anwendung soll sich beim Start automatisch mit einem Broker verbinden.   
@@ -69,6 +70,15 @@ Die MQTT-Anwendung `mqtt_mini` ...
    `npm install mqtt --save`   
 
 ## Erstellen der Anwendung
+* Das folgende Diagramm gibt einen &Uuml;berblick &uuml;ber die beteiligten Dateien:   
+  ![Uebersicht Dateien](./images/vue05_mqtt_mini_files_1.png "Uebersicht Dateien")   
+  _Bild 2: &Uuml;bersicht &uuml;ber die beteiligten Dateien_   
+
+  Mit Hilfe des Diagrammes erkennt man einige wichtige Zusammenh&auml;nge:   
+  * Der User ruft mit dem Brower die Datei `index.html` auf, die die Applikation anzeigt   
+  (&uuml;ber `App.vue` - `main.ts` - `index.html`).   
+  * Das Element `mqttMini.vue` stellt die Verbindung zum MQTT-Broker her und erzeugt auch die Browser-Anzeige.   
+
 * Die Datei `mqttMini.vue` anlegen:   
    Men&uuml; Anzeigen - Explorer. Mit der linken Maustaste auf `src` und danach mit der rechten Maustaste auf `components` klicken - "Neue Datei" w&auml;hlen und `mqttMini.vue` eingeben.   
 * Quelltext eingeben:

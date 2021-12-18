@@ -70,6 +70,15 @@ The MQTT application 'mqtt_mini' ...
    `npm install mqtt --save`   
 
 ## Create the application
+* The following diagram gives an overview of the files involved:   
+  ![overview files](./images/vue05_mqtt_mini_files_1.png "Overview files")   
+  _Fig. 2: &Overview of the involved files_   
+
+  With the help of the diagram you can see some important connections:   
+  * The user calls with the brower the file `index.html`, which displays the application   
+  (via `App.vue` - `main.ts` - `index.html`).   
+  * The `mqttMini.vue` element connects to the MQTT broker and also creates the browser display.   
+
 * Create the file `mqttMini.vue`:   
    Men&uuml; Display - Explorer. Left click on `src` and then right click on `components` - select "New file" and enter `mqttMini.vue`   
 * Enter source code:
