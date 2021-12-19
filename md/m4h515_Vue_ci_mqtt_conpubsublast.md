@@ -7,18 +7,14 @@ Letzte &Auml;nderung: 19.12.2021 <a name="up"></a>
 <a href="https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue15_ci_mqtt_conpubsublast">==> Code @ GitHub</a><hr>
 
 # Worum geht's?
-Diese Vue-Anwendung "vue15_ci_mqtt_conpubsublast" beschreibt eine einfache MQTT-App, bei der die Schritte Verbinden, Veröffentlichen, Abonnieren und Anzeigen durch einzelne einzelne Komponenten realisiert sind.   
-Jede dieser Komponenten kann in eigenen Programmen direkt oder geändert wiederverwendet werden. Als Basis dient die Komponente `CiMqttClient`.   
-Es werden zuerst die [erforderlichen Hilfsmittel](#erforderliche-hilfsmittel) und das [Auspobieren/Testen der App](#ausprobieren-der-app) beschreiben. Danach werden die Fragen [was CiMqttClient kann](#was-kann-cimqttclient), [wie man CiMqttClient verwendet](#wie-verwendet-man-cimqttclient), und [wie man dieses Projekt erstellt](#wie-erstellt-man-dieses-projekt), beantwortet. Den Abschluss bilden [Details zur Codierung von CiMqttClient](#details-zur-codierung-von-cimqttclient).
+Die Vue-Anwendung "vue15_ci_mqtt_conpubsublast" beschreibt eine MQTT-App, bei der die Schritte Verbinden, Veröffentlichen, Abonnieren und Anzeigen durch einzelne einzelne Komponenten realisiert sind. Jede Komponente kann in eigenen Programmen (direkt oder geändert) wiederverwendet werden.   
+Als Basis für die MQTT-Kommunikation dient die Komponente `CiMqttClient`.   
+Es werden zuerst die [erforderlichen Hilfsmittel](#erforderliche-hilfsmittel) und das [Auspobieren/Testen der App](#ausprobieren-der-app) beschrieben. Danach wird die Frage, [wie man dieses Projekt erstellt](#wie-erstellt-man-dieses-projekt), beantwortet und gezeigt, [wie man die MQTT-Funktionalität in die App einbaut](#mqtt-funktionalit&auml;t-einbauen) sowie wie die einzelnen Komponenten erzeugt werden bzw. funktionieren.   
 
 Die Anwendung ist nach dem Start noch nicht mit einem Broker verbunden.   
 
 ![GUI Vue-MQTT-Programm Verbinden-Senden-Empfangen-Anzeigen Ansicht 1](./images/vue15_ci_mqtt_conpubsublast_view1.png "GUI Ansicht 1")   
 _Bild 1: Startansicht der Anwendung "vue15_ci_mqtt_conpubsublast"_   
-
-![GUI Mini-MQTT-Programms Ansicht 2](./images/vue15_ci_mqtt_conpubsublast_view2.png "GUI Ansicht 2")   
-_Bild 2: Ansicht nach dem Drücken von [Connect], [Subscribe] und fünfmaligem Drücken von [Publish]_   
-
 
 # Erforderliche Hilfsmittel
 * Hardware: PC oder Laptop mit Internetzugang, Browser
@@ -27,7 +23,7 @@ _Bild 2: Ansicht nach dem Drücken von [Connect], [Subscribe] und fünfmaligem D
 
 # Ausprobieren der App   
 ## Voraussetzungen   
-1. Das Raspberry Pi (RasPi) wurde entsprechend der [Anleitung (Bereich "Zentrale")](../../LIESMICH.md) installiert, d.h. auf dem RasPi mit der IP `10.1.1.1` l&auml;uft das Broker-Programm (Mosquitto)   
+1. Das Raspberry Pi (RasPi) wurde entsprechend der [Anleitung (Bereich "Zentrale")](https://github.com/khartinger/mqtt4home/blob/main/LIESMICH.md) installiert, d.h. auf dem RasPi mit der IP `10.1.1.1` l&auml;uft das Broker-Programm (Mosquitto)   
 2. Die Vue-Anwendung ist in Visual Studio Code (VSC) geladen und der interne Server l&auml;uft (Eingabe im Terminal: `npm run serve`).   
 3. Es besteht eine Netzwerk-/WLAN-Verbindung zwischen dem Rechner, auf dem VSC l&auml;uft, und dem RasPi.   
 4. Auf dem PC oder Raspberry Pi ist ein Command-/Terminal-Fenster ge&ouml;ffnet, das empfangene MQTT-Nachrichten anzeigt (Eingabe `mosquitto_sub -h 10.1.1.1 -t "#" -v`)   
@@ -35,6 +31,9 @@ _Bild 2: Ansicht nach dem Drücken von [Connect], [Subscribe] und fünfmaligem D
 ## Test   
 * Gibt man im Browser die Adresse `localhost:8080` ein, so erscheint _Bild 1_ im Brower.   
 
+
+![GUI Mini-MQTT-Programms Ansicht 2](./images/vue15_ci_mqtt_conpubsublast_view2.png "GUI Ansicht 2")   
+_Bild 2: Ansicht nach dem Drücken von [Connect], [Subscribe] und fünfmaligem Drücken von [Publish]_   
 
 &nbsp;   
 
@@ -179,6 +178,7 @@ export default defineComponent({
 
 &nbsp;
 
+<a name="mqtt-funktionalit&auml;t-einbauen"></a>
 # MQTT-Funktionalit&auml;t einbauen
 ## Einbinden der erforderlichen Dateien
 * Erstellen des Verzeichnisses "controller"   
@@ -199,7 +199,8 @@ export default defineComponent({
 * Mit der rechten Maustaste auf das Verzeichnis `services` klicken, "Neue Datei" w&auml;hlen und den Namen `CiMqttClientInstance.ts` eingeben.   
 * Festlegen, dass beim Start der App keine Verbindung zum Broker hergestellt werden soll (Konstruktor-Wert `false`).   
 * Da lediglich die Komponente zum Empfangen (und Speichern) Zugriff auf die MQTT-Nachrichten ben&ouml;tigt, braucht auch nur diese Komponente registriert werden.   
-__Ergebnis:__   
+
+_Ergebnis:_   
 ```   
 // ______mqttClientInstance.ts__________________________________
 import { CiMqttClient } from './CiMqttClient'
@@ -210,10 +211,11 @@ ciMqttClientInstance.registerController(ciMqttLastXController)
 
 ```   
 
-# Verbindungs-GUI `CiMqttConnect.vue`
+# Verbindungs-GUI "CiMqttConnect.vue"
 Die Datei `MqttConnect.vue` enth&auml;lt eine grafische Oberfl&auml;che zur Eingabe der Verbindungsdaten f&uuml;r Host und Port sowie die Tasten [Connect] und [Disconnect] zum Verbinden und Trennen der Verbindung zum Host. Mit Hilfe der Eigenschaft `connected` und dem Status der Verbindung werden die Tasten ein- bzw. ausgeblendet und der Verbindungsstatus angezeigt.    
 _Anlegen der Datei:_   
 * Mit der rechten Maustaste auf das Verzeichnis `components` klicken, "Neue Datei" w&auml;hlen und den Namen `CiMqttConnect.vue` eingeben.   
+
 _Codierung:_   
 ```   
 
