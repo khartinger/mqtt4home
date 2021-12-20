@@ -49,7 +49,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 
 ---   
 
-<a name="#content1"></a>   
+<a name="content1"></a>   
 
 # Content
 ## Area "Central":
