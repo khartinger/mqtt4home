@@ -54,11 +54,13 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [Raspberry Pi as access point (2021-07-31)](md/m4h02_RasPiAccessPoint_e.md)
 * [Raspberry Pi as MQTT broker (2021-07-31)](md/m4h03_RasPiMQTTBroker_e.md)
 * [Raspberry Pi: Sending MQTT messages regularly (2021-10-12)](md/m4h104_RasPi_crontab_e.md)
+
 ---   
 ## Area "D1mini"
 * [D1mini: MQTT Relay with PubSubClient (2021-07-31)](md/m4h201_D1mqttRelayD1_e.md)
 * [D1mini: The SimpleMqtt class (2021-07-31)](md/m4h202_D1SimpleMqtt_e.md)
 * [D1mini: Switching a relay via MQTT - version 2 (2021-11-08)](md/m4h203_D1smqttRelayD1_e.md)
+
 ---   
 ## Area "auxiliary programs"
 * [RasPi: Template for MQTT programs in C++ (2021-08-21)](md/m4h07_RasPiCppBase_e.md)
@@ -74,6 +76,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [Vue: First MQTT application "all-in-one" (2021-10-15)](md/m4h505_Mqtt_mini_e.md)
 * [How to create a Vue MQTT app easily? (2021-12-13)](md/m4h510_Vue_ci_mqtt_mini_e.md)
 * [MQTT Vue components for connecting, publishing, subscribing, and viewing (2021-12-19)](md/m4h515_Vue_ci_mqtt_conpubsublast_e.md)
+
 ---   
 * [Vue+VSC+RasPi: Sending and automatically receiving MQTT messages (2021-10-11)](md/m4h504_Vue_PubSub2_e.md)
 * [Vue+VSC: Sending and receiving MQTT messages (2021-10-03)](md/m4h505_Vue_Mqtt1_e.md)
