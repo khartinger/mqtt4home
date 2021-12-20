@@ -3,8 +3,9 @@ Last modified: 2021-12-16 <a name="up"></a>
 <h1>MQTT for domestic/home use :)</h1>
 <a href="LIESMICH.md">==> German version</a>&nbsp; &nbsp; &nbsp; 
 </td></tr></table>   
-<a href="#content">Directly to the content overview</a>
-<hr />   
+<a href="#content1">Directly to the content overview</a>   
+
+---   
 
 # Welcome to mqtt4home
 
@@ -47,7 +48,9 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * Further required tools, such as ZigBee stick, ZigBee sensors, GSM modem or software etc., are described with the respective examples.   
 
 ---   
-<a name="#content"></a>   
+
+<a name="#content1"></a>   
+
 # Content
 ## Area "Central":
 * [Install Raspberry Pi (2021-07-31)](md/m4h01_RasPiInstall_e.md)
@@ -56,12 +59,14 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [Raspberry Pi: Sending MQTT messages regularly (2021-10-12)](md/m4h104_RasPi_crontab_e.md)
 
 ---   
+
 ## Area "D1mini"
 * [D1mini: MQTT Relay with PubSubClient (2021-07-31)](md/m4h201_D1mqttRelayD1_e.md)
 * [D1mini: The SimpleMqtt class (2021-07-31)](md/m4h202_D1SimpleMqtt_e.md)
 * [D1mini: Switching a relay via MQTT - version 2 (2021-11-08)](md/m4h203_D1smqttRelayD1_e.md)
 
 ---   
+
 ## Area "auxiliary programs"
 * [RasPi: Template for MQTT programs in C++ (2021-08-21)](md/m4h07_RasPiCppBase_e.md)
 * [RasPi: Helpful single programs in C++ (2021-08-21)](md/m4h08_RasPiCppDemos_e.md)
@@ -78,6 +83,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [MQTT Vue components for connecting, publishing, subscribing, and viewing (2021-12-19)](md/m4h515_Vue_ci_mqtt_conpubsublast_e.md)
 
 ---   
+
 * [Vue+VSC+RasPi: Sending and automatically receiving MQTT messages (2021-10-11)](md/m4h504_Vue_PubSub2_e.md)
 * [Vue+VSC: Sending and receiving MQTT messages (2021-10-03)](md/m4h505_Vue_Mqtt1_e.md)
 * [How to create a Vue MQTT lamp symbol? (2021-12-09)](source_Vue/vue_mqtt_lamp1)
