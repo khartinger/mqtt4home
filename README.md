@@ -1,4 +1,4 @@
-Last modified: 2021-12-20 <a name="up"></a>   
+Last modified: 2021-12-23 <a name="up"></a>   
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>
 <h1>MQTT for domestic/home use :)</h1>
 <a href="LIESMICH.md">==> German version</a>&nbsp; &nbsp; &nbsp; 
@@ -57,7 +57,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [Raspberry Pi as access point (2021-07-31)](md/m4h02_RasPiAccessPoint_e.md)
 * [Raspberry Pi as MQTT broker (2021-07-31)](md/m4h03_RasPiMQTTBroker_e.md)
 * [Raspberry Pi: Sending MQTT messages regularly (2021-10-12)](md/m4h104_RasPi_crontab_e.md)
-
+* [Vue-MQTT: How to create a CI symbol? (Example: Lamp) (2021-12-23)](md/m4h520_Vue_ci_mqtt_lamp1_e.md)
 ---   
 
 ## Area "D1mini"
