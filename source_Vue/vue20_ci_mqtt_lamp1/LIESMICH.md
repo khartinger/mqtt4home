@@ -1,73 +1,72 @@
-Last modified: 2021-12-23 <a name="up"></a>   
-<table><tr><td><img src="./images/mqtt4home_96.png"></td><td>
-<h1>Vue-MQTT: How to create a CI symbol? (Example: Lamp)</h1>
-<a href="../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
-<a href="m4h520_Vue_ci_mqtt_lamp1.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
-</td></tr></table>
-<a href="https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue20_ci_mqtt_lamp1">==> Code @ GitHub</a><hr>
+Letzte &Auml;nderung: 23.12.2021 <a name="up"></a>   
+<table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
+<h1>Vue-MQTT: Wie erstellt man ein CI-Symbol? (Beispiel: Lampe)</h1>
+<a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
+<a href="./README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
+</td></tr></table><hr>
 
-This project "Vue: MQTT Lamp1" describes how to create a Vue lamp icon that can send and receive MQTT messages and that can be easily integrated into your own web pages.   
+Dieses Projekt "Vue: MQTT Lamp1" beschreibt, wie man ein Vue Lampen-Symbol erstellt, das MQTT-Nachrichten senden und empfangen kann und das einfach in eigene Web-Seiten eingebunden werden kann.   
 
-There will be   
-* the [required tools](#required-tools) and then   
-* the [functional-test](#functional-test),   
-* the [use of a CI symbol (CI: controller/indicator)](#use-of-a-ci-symbol),   
-* the [creation of the project](#creating-the-project),   
-* the [installation of the MQTT functionality](#mqtt-function),   
-* the [function of the Ci_Base-element](#the-cibase-element) and 
-* the [creation of the lamp symbol](#create-the-lamp-symbol)
+Es werden   
+* die [erforderlichen Hilfsmittel](#erforderliche-hilfsmittel) und danach   
+* der [Funktionstest](#funktionstest),   
+* die [Verwendung eines CI-Symbols (CI: controller/indicator)](#verwendung-eines-ci-symbols),   
+* das [Erstellen des Projektes](#wie-erstellt-man-dieses-projekt),   
+* der [Einbau der MQTT-Funktionalit&auml;t](#mqtt-function),   
+* die [Funktion des Ci_Basis-Elementes](#das-cibase-element) und 
+* das [Erstellen des Lampensymbols](#erstellen-des-lampensymbols)
 
-are described.   
+beschrieben.   
 
-The following picture shows different representations of the lamp symbol (name and frame, name + text5 + simple frame, symbol without texts and frame):   
-![lamp-symbols](./images/vue20_ci_mqtt_lamp1_blue.png "lamp-symbols")   
-_Fig. 1: Different variants of the lamp symbol_   
+Das folgende Bild zeigt verschiedene Darstellungen des Lampensymbols (Name und Rahmen, Name + Text5 + einfacher Rahmen, Symbol ohne Texte und Rahmen):   
+![Lampensymbole](./images/vue20_ci_mqtt_lamp1_blue.png "Lampensymbole")   
+_Bild 1: Verschiedene Varianten des Lampensymbols_   
 
-# Required tools
-* Hardware: PC or laptop with internet access, browser
-* Hardware: Raspberry Pi (or PC) running an MQTT broker (e.g. Mosquitto)
-* Software: Visual Studio Code ("VSC"), which is already prepared for Vue applications.   
-   (I.e. at least one Vue application has already been created in Visual Code).   
+# Erforderliche Hilfsmittel
+* Hardware: PC oder Laptop mit Internetzugang, Browser
+* Hardware: Raspberry Pi (oder PC), auf dem ein MQTT-Broker l&auml;uft (zB Mosquitto)
+* Software: Visual Studio Code ("VSC"), das f&uuml;r Vue-Anwendungen bereits vorbereitet ist.   
+   (Dh. es wurde bereits mindestens eine Vue-Anwendung in Visual Code erstellt.)   
 
-# Functional test
-## Requirements for the test   
-1. the Raspberry Pi (RasPi) has been installed according to the [manual (section "Central")](../../README.md), i.e. on the RasPi with IP '10.1.1.1' the broker program (Mosquitto) is running   
-2. the Vue application is loaded in Visual Studio Code (VSC) and the internal server is running (input in terminal: `npm run serve`).   
-3. there is a network/WLAN connection between the computer running VSC and the RasPi.   
-4. a command/terminal window is open on the PC or Raspberry Pi showing received MQTT messages (enter `mosquitto_sub -h 10.1.1.1 -t "#" -v`).   
+# Funktionstest
+## Voraussetzungen f&uuml;r den Test   
+1. Das Raspberry Pi (RasPi) wurde entsprechend der [Anleitung (Bereich "Zentrale")](../../LIESMICH.md) installiert, d.h. auf dem RasPi mit der IP `10.1.1.1` l&auml;uft das Broker-Programm (Mosquitto)   
+2. Die Vue-Anwendung ist in Visual Studio Code (VSC) geladen und der interne Server l&auml;uft (Eingabe im Terminal: `npm run serve`).   
+3. Es besteht eine Netzwerk-/WLAN-Verbindung zwischen dem Rechner, auf dem VSC l&auml;uft, und dem RasPi.   
+4. Auf dem PC oder Raspberry Pi ist ein Command-/Terminal-Fenster offen, das empfangene MQTT-Nachrichten anzeigt (Eingabe `mosquitto_sub -h 10.1.1.1 -t "#" -v`)   
 
-Note: If the RasPi has a different IP than 10.1.1.1, the IP must be adjusted in the `App.vue` file (`const hostip = '...'`).   
+Anmerkung: Hat das RasPi eine andere IP als 10.1.1.1, so muss die IP in der Datei `App.vue` angepasst werden (`const hostip = '...'`).   
 ## Test   
-* If you enter the address `localhost:8080` in the browser, _image 1_ appears in the brower.   
-  Since the lamp status is unknown, the lamp symbols are colored blue.   
-* If you click on the left lamp symbol, an MQTT message `ci/lamp/1/set/lamp` with the payload `1` is sent.   
-The message is displayed in the command/terminal window.   
-* Since all three lamps in this example have specified this topic at `subTopic:`, all three lamps also receive this message, set the status to 1 and color themselves yellow accordingly.   
-* If you click on the middle or right lamp symbol, an MQTT message `ci/lamp/1/set/lamp` with the payload `0` is sent.   
-The message is displayed in the command/terminal window.   
-* All three lamps receive this message, set the status to 0 and turn gray accordingly.   
+* Gibt man im Browser die Adresse `localhost:8080` ein, so erscheint _Bild 1_ im Brower.   
+  Da der Lampenstatus unbekannt ist, sind die Lampensymbole blau gef&auml;rbt.   
+* Klickt man auf das linke Lampensymbol, wird eine MQTT-Nachricht `ci/lamp/1/set/lamp` mit der Payload `1` gesendet.   
+Die Nachricht wird im Command-/Terminal-Fenster angezeigt.   
+* Da alle drei Lampen in diesem Beispiel dieses Topic bei `subTopic:` angegeben haben, empfangen auch alle drei Lampen diese Nachricht, setzen den Status auf 1 und f&auml;rben sich entsprechend gelb ein.   
+* Klickt man auf das mittlere oder rechte Lampensymbol, wird eine MQTT-Nachricht `ci/lamp/1/set/lamp` mit der Payload `0` gesendet.   
+Die Nachricht wird im Command-/Terminal-Fenster angezeigt.   
+* Alle drei Lampen empfangen diese Nachricht, setzen den Status auf 0 und f&auml;rben sich entsprechend grau ein.   
 
 &nbsp;
 
-# Use of a CI symbol
-The use of a CI symbol is shown by the example of the lamp symbol, where three steps are required:   
+# Verwendung eines CI-Symbols
+Die Verwendung eines CI-Symbols wird am Beispiel des Lampensymbols gezeigt, wobei drei Schritte erforderlich sind:   
 
 <a name="define-properties"></a>   
 
-## Step 1: Definition of the lamp symbol properties
-Each lamp must be entered into the `lamps` array in the lamp controller (file `controller/CiLampController`). The following properties are possible for a lamp:   
+## Schritt 1: Definition der Eigenschaften des Lampensymbols
+Jede Lampe muss im Lampencontroller (Datei `controller/CiLampController`) im Array `lamps` eingetragen werden, wobei folgende Eigenschaften f&uuml;r eine Lampe m&ouml;glich sind:   
 
-* __id__: ID of the lamp. This must be unique.
-* name__: (Additional) name of the lamp.
-* __subTopic__: Topic to which the lamp responds (subscribe).
-* __pubTopic__: Topic of the message that will be sent when clicked.
-* pubPayload__: Payload of the message that will be sent on click.
-* __iLampState__: Lamp state (0=off, 1=on, -1=unknown). 
-* text5?: Text for line 5 (if desired).
+* __id__: ID der Lampe. Diese muss eindeutig sein.
+* name?: (Zus&auml;tzlicher) Name der Lampe.
+* __subTopic__: Topic, auf das die Lampe reagiert (subscribe).
+* __pubTopic__: Topic der Nachricht, die bei einem Klick versendet wird.
+* pubPayload?: Payload der Nachricht, die bei einem Klick versendet wird.
+* __iLampState__: Lampenstatus (0=off, 1=on, -1=unknown) 
+* text5?: Text f&uuml;r die Zeile 5 (falls gew&uuml;nscht).
 
-A question mark after the name indicates that this value does not need to be specified.   
+Ein Fragezeichen nach dem Namen zeigt an, dass dieser Wert nicht angegeben werden muss.   
 
-_example_:   
+_Beispiel_:   
 ```   
   public lamps: Array<Lamp> = reactive(
     [
@@ -83,48 +82,47 @@ _example_:
     ]
   );
 ```   
-At least the properties `id`, `iLampState`, `subTopic` and `pubTopic` must be specified.   
+Mindestens angegeben werden m&uuml;ssen die Eigenschaften `id`, `iLampState`, `subTopic` und `pubTopic`.   
 
-## Step 2: Displaying the lamp symbol in a .vue file
-The installation of a lamp symbol is done in the `<template>` area of a Vue file, e.g. by the following statement:
+## Schritt 2: Darstellung des Lampensymbols in einer .vue-Datei
+Der Einbau eines Lampensymbols erfolgt im `<template>`-Bereich einer Vue-Datei, zB durch folgende Anweisung:
 
 `<CiLamp :x="160" :y="50" sid="lamp1" lines="2" border="0"></CiLamp>`   
 
-The center of the symbol (`x`, `y`) and the ID of the lamp (`sid=`) must be specified, where the ID must match the id in the lamp controller.   
-The specification of `lines` and `border` is optional. If this specification is omitted, a symbol with header (= `name`) and yellow border will be drawn.   
+Der Mittelpunkt des Symbols (`x`, `y`) sowie die ID der Lampe (`sid=`) m&uuml;ssen angegeben werden, wobei die ID mit der id im Lampencontroller &uuml;bereinstimmen muss.   
+Die Angabe von `lines` und `border` ist optional. Entf&auml;llt diese Angabe, wird ein Symbol mit Kopfzeile (= `name`) und gelbem Rand gezeichnet.   
 
-## Step 3: Include the lamp symbol in a .vue file
-To be able to use the lamp symbol in the `<template>` area, two commands are required in the `<script>` area:   
-* import lamp encoding:   
+## Schritt 3: Einbinden des Lampensymbols in einer .vue-Datei
+Um das Lampensymbol im `<template>`-Bereich verwenden zu k&ouml;nnen, sind zwei Befehle im `<script>`-Bereich erforderlich:   
+*  Importieren der Lampenkodierung:   
   `import CiLamp from './CiLamp.vue'`   
-* Enumerate in the components used:   
+* Aufz&auml;hlen bei den verwendeten Komponenten:   
   `components: {`   
-  ` CiLamp`   
+  `  CiLamp`   
   `},`   
 
 &nbsp;   
 
 ---   
+# Wie erstellt man dieses Projekt?
+## 1. Allgemeines
+Das folgende Diagramm gibt einen &Uuml;berblick &uuml;ber die beteiligten Dateien:   
 
-# Creating the project
-## 1. General
-The following diagram gives an overview of the files involved:   
+![Uebersicht Dateien](./images/vue20_ci_mqtt_lamp1_files_1.png "Uebersicht Dateien")   
+_Bild 2: &Uuml;bersicht &uuml;ber die beteiligten Dateien_   
 
-![Overview Files](./images/vue20_ci_mqtt_lamp1_files_1.png "Overview Files")   
-_Fig. 2: Overview of the involved files_   
+Mit Hilfe des Diagrammes erkennt man einige wichtige Zusammenh&auml;nge:   
+* Das Grafik-Element `CiLamp` besteht aus einem "Controller"- und "Grafik"-Teil (Erweiterung `.ts` bzw. `.vue`), welche von Basis-Komponenten abgeleitet werden.   
+* Die Verbindung zum MQTT-Broker wird &uuml;ber die Dateien `CiMqttClient.ts` und `CiMqttClientInstance.ts` hergestellt, wobei alle Controller in der Datei `CiMqttClientInstance.ts` registriert werden m&uuml;ssen. Vergisst man dies, erh&auml;lt der Controller keine MQTT-Nachrichten ("Schalter offen").   
 
-With the help of the diagram you can see some important relationships:   
-* The graphic element `CiLamp` consists of a "controller" and "graphic" part (extension `.ts` and `.vue` respectively) and are derived from base components.   
-* The connection to the MQTT broker is established via the files `CiMqttClient.ts` and `CiMqttClientInstance.ts`, where all controllers must be registered in the file `CiMqttClientInstance.ts`. If this is forgotten, the controller will not receive MQTT messages ("switch open").   
-
-## 2. Preparation of the Vue project in VSC   
-1. Start Visual Studio Code (VSC).   
-2. VSC: Open Terminal window: Menu Terminal - New Terminal.   
-3. VSC terminal: Change to the folder under which the Vue project is to be created:   
+## 2. Anlegen des Vue-Projektes in VSC   
+1. Visual Studio Code (VSC) starten.   
+2. VSC: Terminal-Fenster &ouml;ffnen: Men&uuml; Terminal - New Terminal.   
+3. VSC-Terminal: In den Ordner wechseln, unter dem das Vue-Projekt erzeugt werden soll:   
    `cd /g/github/mqtt4home/source_Vue`   
-4. VSC terminal: create Vue.js application:   
+4. VSC-Terminal: Vue.js Applikation erzeugen:   
   `vue create vue20_ci_mqtt_lamp1`  
-  Use cursor keys, space bar and &lt;Enter&gt; to select the following:   
+  Mit Cursortasten, Leertaste und &lt;Enter&gt; Folgendes ausw&auml;hlen:   
    `> Manually select features` &nbsp; &lt;Enter&gt;   
    `(*) Choose Vue version`   
    `(*) Babel`   
@@ -138,17 +136,18 @@ With the help of the diagram you can see some important relationships:
    _`? Use history mode for router? (Requires proper server setup for index fallback in production)`_ &nbsp; __`N`__ &lt;Enter&gt;   
    _`? Pick a linter / formatter config:`_ &nbsp; __`ESLint + Standard config`__ &lt;Enter&gt;   
    _`? Pick additional lint features: `_ &nbsp; __`Lint on save`__ &lt;Enter&gt;   
-   _`? Where do you prefer placing config for Babel, ESLint, etc.?`_ &nbsp; __`In dedicated config file`__ &lt;Enter&gt;   
+   _`? Where do you prefer placing config for Babel, ESLint, etc.?`_  &nbsp; __`In dedicated config file`__ &lt;Enter&gt;   
    _`? Save this as a preset for future projects? (y/N)`_ &nbsp; __`N`__ &lt;Enter&gt;   
-5. Switch to the project folder: _VSC Menu File - Open Folder_..
-   `/github/mqtt4home/source_Vue/vue20_ci_mqtt_lamp1` [select folder].   
-6. Install MQTT library:   
-   VSC: Open Terminal window: Menu Terminal - New Terminal.   
+5. In den Projektordner wechseln: _VSC Men&uuml; Datei - Ordner &ouml;ffnen_..
+   `/github/mqtt4home/source_Vue/vue20_ci_mqtt_lamp1` [Ordner ausw&auml;hlen]   
+6. MQTT Bibliothek installieren:   
+   VSC: Terminal-Fenster &ouml;ffnen: Men&uuml; Terminal - New Terminal.   
    `npm install mqtt --save`   
 &nbsp;   
-## 3. Customize the automatically created files
-Create the file `vue.config.js`: click on the plus next to `VUE20_CI_MQTT_LAMP1`, enter name.   
-_Content of the file_:   
+
+## 3. Erg&auml;nzen der Vue-Konfiguration   
+Erstellen der Datei `vue.config.js`: auf das Plus neben `VUE20_CI_MQTT_LAMP1` klicken, Namen eingeben.   
+_Inhalt der Datei_:   
 ```   
 // ______vue.config.js__________________________________________
 module.exports = {
@@ -165,22 +164,22 @@ module.exports = {
   }
 }
 ```   
-With `publicPath: './',` the relative path is set and the `chainWebpack` entry avoids warnings regarding the file size (by setting the maximum file size higher ;) )
+Mit `publicPath: './',` wird die relative Pfadangabe eingestellt und durch den `chainWebpack`-Eintrag werden Warnhinweise bez&uuml;glich der Dateigr&ouml;&szlig;e vermieden (indem man die maximale Dateigr&ouml;&szlig;en h&ouml;her setzt ;) )
 
-## 4 Disable linter warning "Unexpected any" at "(value: any)".    
-  In the file `.eslintrc.js` under "`rules: {`" add:   
+## 4. Linter-Warnung "Unexpected any" bei "(value: any)" abstellen    
+  In der Datei `.eslintrc.js` unter "`rules: {`" erg&auml;nzen:   
   ```   
   '@typescript-eslint/no-explicit-any': 'off',
   '@typescript-eslint/explicit-module-boundary-types': 'off',
   ```   
 
-## 5. Customize `App.vue` file   
-The `App.vue` file is responsible for the following:   
-  * Display of the component `CiMain`.
-  * Definition of uniform styles for all pages.   
-    Therefore: Add all styles starting with a dot.   
+## 5. Datei `App.vue` anpassen   
+Die Datei `src/App.vue` ist f&uuml;r folgende Punkte zust&auml;ndig:   
+  * Anzeige der Komponente `CiMain`.
+  * Definition von einheitlichen Styles f&uuml;r alle Seiten.   
+    Daher: Alle Styles erg&auml;nzen, die mit einem Punkt beginnen.   
 
-_Content of the file_:   
+_Inhalt der Datei_:   
 ```   
 <!-- App.vue -->
 <template>
@@ -221,71 +220,71 @@ export default defineComponent({
 </style>
 ```   
 
-## 6. Delete files and directories that are not needed   
-  * delete file `components/HelloWorld.vue`   
-  * delete `assets` directory   
+## 6. Nicht ben&ouml;tigte Dateien und Verzeichnisse l&ouml;schen   
+  * Datei `components/HelloWorld.vue` l&ouml;schen   
+  * Verzeichnis `assets` l&ouml;schen   
 
 &nbsp;
 
 <a name="mqtt-function"></a>
-## Include MQTT functionality
-## Include the required files
-* Create the directory "controller"   
-  Right click on the `src` directory, select "New folder" and enter the name `controller`   
-* Creating the "services" directory   
-  Right click on the `src` directory, select "New folder" and enter the name `services`   
-* Create the `CiMqttClient.ts` file   
-  * Right click on the `services` directory, select "New file" and enter the name `CiMqttClient.ts`   
-  * Get the content of the file e.g. from [GitHub](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/services/CiMqttClient.ts), copy it and save the file.   
-* Create the file `CiBaseController.ts`.   
-  * Right click on the directory `controller`, select "New file" and enter the name `CiBaseController.ts`   
-  * Get content of file e.g. from [GitHub](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/controller/CiBaseController.ts), copy into it and save file.   
-* Create the file `CiBase.vue`.   
-  * Right click on the directory `components`, select "New file" and enter the name `CiBase.vue`   
-  * Get content of file e.g. from [GitHub](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/components/CiBase.vue), copy into it and save file.   
+# MQTT-Funktionalit&auml;t einbauen
+## Einbinden der erforderlichen Dateien
+* Erstellen des Verzeichnisses "controller"   
+  Mit der rechten Maustaste auf das Verzeichnis `src` klicken, "Neuer Ordner" w&auml;hlen und den Namen `controller` eingeben.   
+* Erstellen des Verzeichnisses "services"   
+  Mit der rechten Maustaste auf das Verzeichnis `src` klicken, "Neuer Ordner" w&auml;hlen und den Namen `services` eingeben.   
+* Erstellen der Datei `CiMqttClient.ts`   
+  * Mit der rechten Maustaste auf das Verzeichnis `services` klicken, "Neue Datei" w&auml;hlen und den Namen `CiMqttClient.ts` eingeben.   
+  * Inhalt der Datei zB von [GitHub holen](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/services/CiMqttClient.ts), hineinkopieren und Datei speichern.   
+* Erstellen der Datei `CiBaseController.ts`   
+  * Mit der rechten Maustaste auf das Verzeichnis `controller` klicken, "Neue Datei" w&auml;hlen und den Namen `CiBaseController.ts` eingeben.   
+  * Inhalt der Datei zB von [GitHub holen](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/controller/CiBaseController.ts), hineinkopieren und Datei speichern.   
+* Erstellen der Datei `CiBase.vue`   
+  * Mit der rechten Maustaste auf das Verzeichnis `components` klicken, "Neue Datei" w&auml;hlen und den Namen `CiBase.vue` eingeben.   
+  * Inhalt der Datei zB von [GitHub holen](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/components/CiBase.vue), hineinkopieren und Datei speichern.   
 
-## Create the file "services/CiMqttClientInstance".
-* Right click on the `services` directory, select "New File" and enter the name `CiMqttClientInstance.ts`   
-* Specify that a connection to the broker should be established when the app is started (constructor value `true`).   
-* Since only the component for receiving (and storing) needs access to the MQTT messages, only this component needs to be registered.   
+## Erstellen der Datei "services/CiMqttClientInstance"
+* Mit der rechten Maustaste auf das Verzeichnis `services` klicken, "Neue Datei" w&auml;hlen und den Namen `CiMqttClientInstance.ts` eingeben.   
+* Festlegen, dass beim Start der App eine Verbindung zum Broker hergestellt werden soll (Konstruktor-Wert `true`).   
+* Da lediglich die Komponente zum Empfangen (und Speichern) Zugriff auf die MQTT-Nachrichten ben&ouml;tigt, braucht auch nur diese Komponente registriert werden.   
 
-_Result:_   
+_Ergebnis:_   
 ```   
 // ______mqttClientInstance.ts__________________________________
-import { CiMqttClient } from './CiMqttClient'.
-import { ciLampController } from '.@/controller/CiLampController'.
+import { CiMqttClient } from './CiMqttClient'
+import { ciLampController } from '@/controller/CiLampController'
 
 export const ciMqttClientInstance = new CiMqttClient(true)
 ciMqttClientInstance.registerController(ciLampController)
 
 ```   
 
-# The CiBase element
-The CiBase element is the base element for all control/indicate symbols (in short "CI symbols") and consists of a display part `CiBase.vue` and a control part `CiBaseController.ts`.
+# Das CiBase-Element
+Das CiBase-Element ist das Basiselement f&uuml;r alle Steuer-/Anzeige-Symbole (kurz "CI-Symbole") und besteht aus einem Anzeigeteil `CiBase.vue` und einem Steuerteil `CiBaseController.ts`.
 
 ## components/CiBase.vue
-The base view `CiBase.vue` is responsible for displaying symbols:   
-1. drawing a border around the symbol or not (`border = 2 | 1 | 0`)   
-2. providing geometry data for drawing a symbol. These are provided by the class `Geo`.    
+Die Basis-Ansicht `CiBase.vue` ist f&uuml;r die Darstellung von Symbolen zust&auml;ndig:   
+1. Zeichnen eines Rahmens um das Symbol oder nicht (`border = 2 | 1 | 0`)   
+2. Bereitstellung von Geometriedaten zum Zeichnen eines Symbols. Diese werden von der Klasse `Geo` zur Verf&uuml;gung gestellt.    
 
-![Geometry data](./images/geo_CI_Symbol_1.png "Geometry data")   
-_Fig. 3: Geometry data of a CI symbol_   
+![Geometrie-Daten](./images/geo_CI_Symbol_1.png "Geometriedaten")   
+_Bild 3: Geometriedaten eines CI-Symbols_   
 
-### Notes on the geometry of symbols
-* Symbols are normally square.   
-* The positioning point of each symbol is the center (x/y).   
-* The size of a symbol depends on the size of the font (e.g. font height `fh_ = 11`). This also determines the number of characters per line (e.g. `tmax_ = 14`).   
-* Each symbol can contain up to five lines of text (line height `dyl`).   
-* Line 2 can also be split into two parts.   
-* Each symbol has an outer dimension (`dxo`, `dyo`) and an inner dimension (`dxi`, `dyi`). This results in a (yellow) border, which can also be displayed invisibly.   
-* The upper left outer corner has the coordinates (x0/y0).   
-* The upper left inner corner has the coordinates (x1/y1).   
-* The five rectangles have the starting point (xr/yr(i))   
-with i as the number of the rectangle from 1 to 5.   
-* The five texts have the starting point (xt/yt(i))   
-with i as the number of the text from 1 to 5.   
+### Anmerkungen zur Geometrie der Symbole
+* Symbole sind im Normalfall quadratisch.   
+* Der Positionierpunkt jedes Symbols ist das Zentrum (x/y).   
+* Die Gr&ouml;&szlig;e eines Symbols ist abh&auml;ngig von der Gr&ouml;&szlig;e der Schrift (zB font height `fh_ = 11`). Daraus ergibt sich auch die Anzahl der Zeichen pro Zeile (zB `tmax_ = 14`).   
+* Jedes Symbol kann bis zu f&uuml;nf Text-Zeilen enthalten (Zeilenh&ouml;he `dyl`).   
+* Die Zeile 2 kann auch in zwei Teile zerlegt werden.   
+* Jedes Symbol hat ein Au&szlig;enma&szlig; (`dxo`, `dyo`) und ein Innenma&szlig; (`dxi`, `dyi`). Daraus ergibt sich ein (gelber) Rand, der auch nicht sichtbar dargestellt werden kann.   
+* Die linke obere Au&szlig;en-Ecke hat die Koordinaten (x0/y0).   
+* Die linke obere Innen-Ecke hat die Koordinaten (x1/y1).   
+* Die f&uuml;nf Rechtecke haben den Startpunkt (xr/yr(i))   
+mit i als Nummer des Rechtecks von 1 bis 5.   
+* Die f&uuml;nf Texte haben den Startpunkt (xt/yt(i))   
+mit i als Nummer des Textes von 1 bis 5.   
 
-_Coding_:   
+_Codierung_:   
 ```   
 <!--CiBase.vue-->
 <template>
@@ -460,11 +459,11 @@ export class Geo {
 ```   
 
 ## controller/CiBaseController.ts
-The file `CiBaseController.ts` normally does not need to be modified. It defines some properties in the `IBase` interface that all (derived) `CiXxxControllers` should have. The most important property is the `id`, which represents the connection between a representation and the data in the controller.   
+Die Datei `CiBaseController.ts` muss im Normalfall nicht ver&auml;ndert werden. Sie definiert im Interface `IBase` einige Eigenschaften, die alle (abgeleiteten) `CiXxxController` haben sollten. Die wichtigste Eigenschaft ist dabei die `id`, die die Verbindung zwischen einer Darstellung und den Daten im Controller darstellt.   
 
-In the (abstract) class `CiBaseController` the methods `registerClient`, `publish` and `onMessage(message: Message)` are then defined.   
+In der (abstrakten) Klasse `CiBaseController` werden dann die Methoden `registerClient`, `publish` und `onMessage(message: Message)` definiert.   
 
-_Coding_:   
+_Codierung_:   
 ```   
 // ______CiBaseController.ts____________________________________
 import { Message, CiMqttClient } from '@/services/CiMqttClient'
@@ -494,29 +493,29 @@ export abstract class CiBaseController {
 
 ```   
 
-## Create the lamp symbol
-## Properties
-* The representation of a lamp symbol in an application should be done by the following example code:   
+# Erstellen des Lampensymbols
+## Eigenschaften
+* Die Darstellung eines Lampensymbols in einer Anwendung soll durch folgenden Beispiel-Code erfolgen:   
 `<CiLamp :x="160" :y="60" sid="lamp2" :border="1" lines="2"></CiLamp>`   
-where the parameters `border` and `lines` can also be omitted. (Default: `border="2"` and `lines="1"`)   
-`:x` and `:y` are the coordinates of the center of the symbol.   
-`sid` is the ID of the symbol (= the name of the lamp symbol).   
+wobei die Parameter `border` und `lines` auch weggelassen werden k&ouml;nnen. (Vorgabe: `border="2"` und `lines="1"`)   
+`:x` und `:y` sind die Koordinaten des Zentrums des Symbols.   
+`sid` ist die ID des Symbols (= der Name des Lampensymbols).   
 
-* The _image 1_ above shows the lamp symbol with the default values on the left, in the center with a single border (`:border="1"`) and two lines of text (`lines="2"`) and on the right with no border and no text (`:border="0" lines="0"`)
+* Das _Bild 1_ oben zeigt links das Lampensymbol mit den Vorgabewerten, in der Mitte mit einfachem Rand (`:border="1"`) und zwei Textzeilen (`lines="2"`) und rechts ohne Rand und ohne Text (`:border="0" lines="0"`)
 
-## Creating the view of the lamp symbol
-* The lamp symbol consists of a circle and the cross in the center. Both the coordinates of the circle center and the radius depend on the number of lines to be displayed, so these values are calculated separately. (See coding `cx`, `cy`, `cr`)
-* The two lines of the lamp cross are calculated using the circle parameters. (See coding `lampCross`)
-* The lamp state `iLampState` can be `-1` (unknown), `0` (off) or `1` (on).   
-* The lamp color `colorLamp` depends on the lamp state and can be gray (0), yellow (1) or blue (-1).   
-* If allowed: The name of the lamp is displayed in line 1.   
-* If allowed: A `text5` is displayed in line 5.   
-* When clicking on the lamp symbol, messages with the topics listed in `pubPayload` are sent, the value specified in `pubPayload` serves as payload.   
+## Erstellen der Ansicht der Lampensymbols
+* Das Lampensymbol besteht aus einem Kreis und dem Kreuz in der Mitte. Sowohl die Koordinaten des Kreismittelpunktes als auch der Radius sind abh&auml;ngig von der Anzahl der Zeilen, die dargestellt werden sollen, daher werden diese Werte extra berechnet. (Siehe Codierung `cx`, `cy`, `cr`)
+* Die beiden Linien des Lampenkreuzes werden mit Hilfe der Kreisparameter berechnet. (Siehe Codierung `lampCross`)
+* Der Lampenstatus `iLampState` kann `-1` (unbekannt), `0` (off) oder `1` (on) sein.   
+* Die Lampenfarbe `colorLamp` ist abh&auml;ngig vom Lampenstatus und kann grau (0), gelb (1) oder blau (-1) sein.   
+* Wenn erlaubt: In der Zeile 1 wird der Name der Lampe angezeigt.   
+* Wenn erlaubt: In der Zeile 5 wird ein `text5` angezeigt.   
+* Beim Klicken auf das Lampensymbol werden Nachrichten mit den in `pubPayload` aufgez&auml;hlten Topics versendet, als Payload dient der bei `pubPayload` angegebene Wert.   
 
-_Creating the file:_   
-* Right click on the directory `components`, select "New file" and enter the name `CiLamp.vue`.   
+_Anlegen der Datei:_   
+* Mit der rechten Maustaste auf das Verzeichnis `components` klicken, "Neue Datei" w&auml;hlen und den Namen `CiLamp.vue` eingeben.   
 
-_Coding:_
+_Codierung:_
 ```  
 <!--CiLamp.vue-->
 <template>
@@ -642,19 +641,19 @@ export default defineComponent({
 
 ```  
 
-## Lamp symbol control
-The lamp symbol control contains 
-* a field with the data of all lamps to be displayed,   
-  see above ["Step 1: Definition of lamp symbol properties"](#define-properties) or the following coding,
-* a method for processing the incoming messages (`onMessage`),   
-  (if the message matches the lamp, the payload is evaluated)
-* a method to send a message (`publishCi`) and
-* a `LampController` object.   
+## Steuerung des Lampensymbols
+Die Steuerung des Lampensymbols enth&auml;lt 
+* ein Feld mit den Daten aller darzustellenden Lampen,   
+  siehe oben ["Schritt 1: Definition der Eigenschaften  des Lampensymbols"](#define-properties) oder die folgende Codierung,
+* eine Methode zur Bearbeitung der eintreffenden Nachrichten (`onMessage`),   
+  (wenn die Nachricht zur Lampe passt, wird die Payload ausgewertet)
+* eine Methode zum Senden einer Nachricht (`publishCi`) und
+* ein Objekt "LampenController".
 
-_Creating the file:_   
-* Right click on the directory `controller`, select "New file" and enter the name `CiLampController.ts`.   
+_Anlegen der Datei:_   
+* Mit der rechten Maustaste auf das Verzeichnis `controller` klicken, "Neue Datei" w&auml;hlen und den Namen `CiLampController.ts` eingeben.   
 
-_Content of the file:_   
+_Inhalt der Datei:_   
 ```   
 // ______CiLampController.ts____________________________________
 import { reactive } from 'vue'
@@ -720,4 +719,4 @@ export const ciLampController = new CiLampController()
 
 ```  
 
-[Top of page](#up)
+[Zum Seitenanfang](#up)

@@ -224,6 +224,7 @@ ciMqttClientInstance.registerController(ciMqttLastXController)
 
 # Verbindungs-GUI "CiMqttConnect.vue"
 Die Datei `MqttConnect.vue` enth&auml;lt eine grafische Oberfl&auml;che zur Eingabe der Verbindungsdaten f&uuml;r Host und Port sowie die Tasten [Connect] und [Disconnect] zum Verbinden und Trennen der Verbindung zum Host. Mit Hilfe der Eigenschaft `connected` und dem Status der Verbindung werden die Tasten ein- bzw. ausgeblendet und der Verbindungsstatus angezeigt.   
+
 _Anlegen der Datei:_   
 * Mit der rechten Maustaste auf das Verzeichnis `components` klicken, "Neue Datei" w&auml;hlen und den Namen `CiMqttConnect.vue` eingeben.   
 
