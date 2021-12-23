@@ -5,9 +5,8 @@ import type { QoS } from 'mqtt'
 export interface IBase {
   id: string;
   name?: string;
-  border?: number
-  subTopic?: string;
-  pubTopic?: string;
+  subTopic: string;
+  pubTopic: string;
   pubPayload?: string;
 }
 

@@ -1,9 +1,6 @@
-// ______CiMqttClientInstance.ts________________________________
+// ______mqttClientInstance.ts__________________________________
 import { CiMqttClient } from './CiMqttClient'
-import { ciMiniController } from '@/controller/CiMiniController'
+import { ciLampController } from '@/controller/CiLampController'
 
-// -----------mqtt client: true=connect and subscribe at start--
 export const ciMqttClientInstance = new CiMqttClient(true)
-
-// -----------register all controllers to send/receive messages-
-ciMqttClientInstance.registerController(ciMiniController)
+ciMqttClientInstance.registerController(ciLampController)

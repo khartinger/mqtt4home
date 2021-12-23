@@ -93,6 +93,7 @@ export class CiMqttClient {
   // _________constructor_______________________________________
   constructor (connectOnStart: boolean) {
     this.privateMqttState.connectOnStart = connectOnStart
+    console.log('MqttClient-Constructor: privateMqttState.connectOnStart = ', this.privateMqttState.connectOnStart)
     if (this.privateMqttState.connectOnStart) {
       console.log('MqttClient-Constructor: connecting to ' + this.connectUrl())
       this.connect_()
@@ -298,5 +299,9 @@ export class CiMqttClient {
   public registerController (controller: CiBaseController): void {
     this.controller.push(controller)
     controller.registerClient(this)
+  }
+
+  public init (): void {
+    console.log('CiMqttClient.init')
   }
 }
