@@ -120,6 +120,10 @@ The following diagram gives an overview of the files involved:
 _Fig. 2: Overview of the involved files_   
 
 With the help of the diagram you can see some important relationships:   
+
+* The right branch with (browser -->) index.html --> main.ts --> App.vue is created automatically and needs some customization.   
+* The file `main.ts` creates the app element which is displayed in `index.html`.   
+* `App.vue` represents `<CiMain>` and contains css elements that can be used throughout the project.   
 * The graphic element `CiLamp` consists of a "controller" and "graphic" part (extension `.ts` and `.vue` respectively) and are derived from base components.   
 * The connection to the MQTT broker is established via the files `CiMqttClient.ts` and `CiMqttClientInstance.ts`, where all controllers must be registered in the file `CiMqttClientInstance.ts`. If this is forgotten, the controller will not receive MQTT messages ("switch open").   
 

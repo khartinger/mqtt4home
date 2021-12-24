@@ -118,6 +118,10 @@ Das folgende Diagramm gibt einen &Uuml;berblick &uuml;ber die beteiligten Dateie
 _Bild 2: &Uuml;bersicht &uuml;ber die beteiligten Dateien_   
 
 Mit Hilfe des Diagrammes erkennt man einige wichtige Zusammenh&auml;nge:   
+
+* Der rechte Zweig mit (Browser -->) index.html --> main.ts --> App.vue wird automatisch erstellt und muss etwas angepasst werden.   
+* Die Datei `main.ts` erzeugt das App-Element, das in `index.html` angezeigt wird.   
+* `App.vue` stellt `<CiMain>` dar und enth&auml;lt css-Elemente, die im gesamten Projekt verwendet werden können.   
 * Das Grafik-Element `CiLamp` besteht aus einem "Controller"- und "Grafik"-Teil (Erweiterung `.ts` bzw. `.vue`), welche von Basis-Komponenten abgeleitet werden.   
 * Die Verbindung zum MQTT-Broker wird &uuml;ber die Dateien `CiMqttClient.ts` und `CiMqttClientInstance.ts` hergestellt, wobei alle Controller in der Datei `CiMqttClientInstance.ts` registriert werden m&uuml;ssen. Vergisst man dies, erh&auml;lt der Controller keine MQTT-Nachrichten ("Schalter offen").   
 
