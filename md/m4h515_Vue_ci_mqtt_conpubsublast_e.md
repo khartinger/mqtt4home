@@ -9,7 +9,12 @@ Last modified: 2021-12-19 <a name="up"></a>
 # What is it about?
 The Vue application "vue15_ci_mqtt_conpubsublast" describes an MQTT app, where the steps connect, publish, subscribe and view are realized by single individual components. Each component can be reused in its own programs (directly or modified).   
 The component 'CiMqttClient' serves as the basis for MQTT communication.   
-First the [required tools](#required-tools) and the [trying-out/testing-the-app](#trying-out-the-app) are described. After that, the question [how-to-create-this-project](#how-to-create-this-project) is answered and it is shown [how to build the MQTT functionality into the app](#incorporating-mqtt-functionality) as well as how the individual components are created or work.   
+First the   
+* [required tools](#required-tools) and the   
+* [trying-out/testing-the-app](#trying-out-the-app) are described. After that, the question   
+* [how-to-create-this-project](#how-to-create-this-project) is answered and it is shown   
+* [how to build the MQTT functionality into the app](#incorporating-mqtt-functionality) as well as   
+* how the individual components are created or work.   
 
 The app is not yet connected to a broker after launch.   
 
