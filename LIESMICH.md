@@ -73,7 +73,7 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 * [Vue: Erste MQTT Anwendung "all-in-one" (2021-10-15)](md/m4h505_Mqtt_mini.md)
 * [Wie erstellt man einfach eine Vue-MQTT-App? (2021-12-13)](md/m4h510_Vue_ci_mqtt_mini.md)
 * [MQTT-Vue-Komponenten zum Verbinden, Ver&ouml;ffentlichen, Abonnieren und Anzeigen (2021-12-19)](md/m4h515_Vue_ci_mqtt_conpubsublast.md)
-* [Vue-MQTT: Wie erstellt man ein CI-Symbol? (Beispiel: Lampe) (2021-12-23)](md/m4h520_Vue_ci_mqtt_lamp1.md)
+* [Vue-MQTT: Wie erstellt man ein CI-Symbol? (Beispiel: CiLamp) (2021-12-23)](md/m4h520_Vue_ci_mqtt_lamp1.md)
 ---   
 * [Vue+VSC+RasPi: Senden und automatisches Empfangen von MQTT-Nachrichten (2021-10-11)](md/m4h504_Vue_PubSub2.md)
 * [Vue+VSC: Senden und Empfangen von MQTT-Nachrichten (2021-10-03)](md/m4h505_Vue_Mqtt1.md)
