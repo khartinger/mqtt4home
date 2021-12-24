@@ -23,6 +23,12 @@ The following picture shows different representations of the lamp symbol (name a
 ![lamp-symbols](./images/vue20_ci_mqtt_lamp1_blue.png "lamp-symbols")   
 _Fig. 1: Different variants of the lamp symbol_   
 
+You can see:   
+* The entire GUI is an svg graphic.   
+* Control or display icons are square and the same size.   
+* Symbols can be displayed with or without borders.   
+* Symbols can be displayed with or without text.   
+
 # Required tools
 * Hardware: PC or laptop with internet access, browser
 * Hardware: Raspberry Pi (or PC) running an MQTT broker (e.g. Mosquitto)

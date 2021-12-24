@@ -22,6 +22,12 @@ Das folgende Bild zeigt verschiedene Darstellungen des Lampensymbols (Name und R
 ![Lampensymbole](./images/vue20_ci_mqtt_lamp1_blue.png "Lampensymbole")   
 _Bild 1: Verschiedene Varianten des Lampensymbols_   
 
+Man erkennt:   
+* Das gesamte GUI ist eine svg-Grafik.   
+* Steuer- oder Anzeigesymbole sind quadratisch und gleich groß.   
+* Symbole können mit oder ohne Rand dargestellt werden.   
+* Symbole können mit oder ohne Text dargestellt werden.   
+
 # Erforderliche Hilfsmittel
 * Hardware: PC oder Laptop mit Internetzugang, Browser
 * Hardware: Raspberry Pi (oder PC), auf dem ein MQTT-Broker l&auml;uft (zB Mosquitto)
