@@ -1,4 +1,4 @@
-// ______mqttClientInstance.ts__________________________________
+// ______CimqttClientInstance.ts________________________________
 import { CiMqttClient } from './CiMqttClient'
 import { ciLampController } from '@/controller/CiLampController'
 import { ciButtonController } from '@/controller/CiButtonController'
