@@ -1,6 +1,6 @@
 Letzte &Auml;nderung: 6.12.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
-<h1>Erstellen eines Vue Projekts mit mehreren Web-Seiten</h1>
+<h1>Wie erstellt man ein Vue Projekt mit mehreren Web-Seiten?</h1>
 <a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h507_Vue_2webpages_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
@@ -286,11 +286,12 @@ export default defineComponent({
 * Erstellen des Verzeichnisses "services"   
   Mit der rechten Maustaste auf das Verzeichnis `src` klicken, "Neuer Ordner" w&auml;hlen und den Namen `services` eingeben.   
 
-* Kopieren der Dateien [`CiMqttClient.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/services/CiMqttClient.ts) und [`CiMqttClientInstance.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/services/CiMqttClientInstance.ts) in das Verzeichnis `src/services`.   
 
-* Kopieren der Datei [`CiBaseController.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/controller/CiBaseController.ts) in das Verzeichnis `src/controller`.   
+* Kopieren der Dateien [`CiMqttClient.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue35_ci_mqtt_multipage1/src/services/CiMqttClient.ts) und [`CiMqttClientInstance.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue35_ci_mqtt_multipage1/src/services/CiMqttClientInstance.ts) in das Verzeichnis `src/services`.   
 
-* Kopieren der Datei [`CiBase.vue`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/components/CiBase.vue) in das Verzeichnis `src/components`.   
+* Kopieren der Datei [`CiBaseController.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue35_ci_mqtt_multipage1/src/controller/CiBaseController.ts) in das Verzeichnis `src/controller`.   
+
+* Kopieren der Datei [`CiBase.vue`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue35_ci_mqtt_multipage1/src/components/CiBase.vue) in das Verzeichnis `src/components`.   
 
 ## 4.2 Anpassen der Datei CiMqttClientInstance
 * Festlegen, dass beim Start der App mit den Vorgabewerten die Verbindung zum Broker hergestellt und das Topic abonniert werden soll (Konstruktor-Wert `true`).   
