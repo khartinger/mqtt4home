@@ -9,7 +9,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Home',
     component: Home,
     meta: {
-      title: 'vue_mqtt3_2webpages-Home'
+      title: 'vue35_ci_mqtt_multipage1-Home'
     }
   },
   {
@@ -17,7 +17,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Page2',
     component: Page2,
     meta: {
-      title: 'vue_mqtt3_2webpages-Home'
+      title: 'vue35_ci_mqtt_multipage1-Page2'
     }
   },
   {
@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
     meta: {
-      title: 'vue_mqtt3_2webpages-About'
+      title: 'vue35_ci_mqtt_multipage1-About'
     }
   }
 ]

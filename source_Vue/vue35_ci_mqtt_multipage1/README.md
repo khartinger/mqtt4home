@@ -34,7 +34,7 @@ _Fig. 3: About page (About)_
 
 # Creating the project
 ## 1. Overview of the files involved
-![Overview Files](./images/vue_mqtt3_3webpages_files.png "Overview Files")   
+![Overview Files](./images/vue35_ci_mqtt_multipage1_files_1.png "Overview Files")   
 _Fig. 4: Overview of the involved files_   
 
 ## 2. Preparation of the Vue project in VSC   
@@ -118,7 +118,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Home',
     component: Home,
     meta: {
-      title: 'vue_mqtt3_2webpages-Home'
+      title: 'vue35_ci_mqtt_multipage1-Home'
     }
   },
   {
@@ -126,7 +126,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Page2',
     component: Page2,
     meta: {
-      title: 'vue_mqtt3_2webpages-Home'
+      title: 'vue35_ci_mqtt_multipage1-Page2'
     }
   },
   {
@@ -137,7 +137,7 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
     meta: {
-      title: 'vue_mqtt3_2webpages-About'
+      title: 'vue35_ci_mqtt_multipage1-About'
     }
   }
 ]
