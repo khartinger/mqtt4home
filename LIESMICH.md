@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 23.12.2021 <a name="up"></a>   
+Letzte &Auml;nderung: 26.12.2021 <a name="up"></a>   
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
 <a href="README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
