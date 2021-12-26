@@ -217,7 +217,7 @@ export default defineComponent({
   margin-top: 0px;
 }
 
-  .styleM11  { font: bold 11px monospace; fill: black; white-space: pre; }
+  .ciFont1  { font: bold 11px monospace; fill: black; white-space: pre; }
   .cursor    { cursor: pointer; }
   .ciBackground {fill: #ddFFdd; }
   .ciOut     { fill: yellow; stroke: yellow; stroke-width: 1; }
@@ -537,8 +537,8 @@ _Coding:_
   <path   :d="lampCross" fill="none" stroke="black" stroke-width="2" class="cursor" />
   <circle :cx="cx" :cy="cy" :r="cr" fill="none" stroke="black" stroke-width="2" class="cursor" />
   <!--write text-------------------------------------------- -->
-  <text v-if="iLines>0" :x="geo.xt()" :y="geo.yt(1)" class="styleM11">{{title}}</text>
-  <text v-if="iLines>1" :x="geo.xt()" :y="geo.yt(5)" class="styleM11">{{line5}}</text>
+  <text v-if="iLines>0" :x="geo.xt()" :y="geo.yt(1)" class="ciFont1">{{title}}</text>
+  <text v-if="iLines>1" :x="geo.xt()" :y="geo.yt(5)" class="ciFont1">{{line5}}</text>
   <!--define click area------------------------------------- -->
   <rect @click="onClk()" class="ciClick" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
 </template>
