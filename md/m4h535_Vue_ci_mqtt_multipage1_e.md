@@ -1,7 +1,7 @@
 
 Last modified: 2021-12-26 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></td><td>
-<h1>How to ...</h1>
+<h1>How to create a Vue project with multiple web pages?</h1>
 <a href="../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
 <a href="./m4h535_Vue_ci_mqtt_multipage1.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table>
