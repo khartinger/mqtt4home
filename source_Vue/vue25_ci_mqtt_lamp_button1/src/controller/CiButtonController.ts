@@ -1,11 +1,14 @@
 // ______CiButtonController.ts__________________________________
-import { Message } from '@/services/CiMqttClient'
 import { reactive } from 'vue'
+import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
 
 export interface Button extends IBase {
   iButtonState: number;
   battery: string;
+  shape?: string;
+  color?: string;
+  text3?: string;
   text5?: string;
 }
 
@@ -15,7 +18,9 @@ export class CiButtonController extends CiBaseController {
       {
         id: 'button1',
         name: 'turn lamp off',
-        iButtonState: 0x555500,
+        iButtonState: 0,
+        shape: 'round',
+        color: '#555500',
         battery: '-',
         text5: 'ci/lamp/+/ret',
         subTopic: 'ci/lamp/1/ret ci/lamp/2/ret',
@@ -34,7 +39,7 @@ export class CiButtonController extends CiBaseController {
         if ((message.payload === '1') || (message.payload === 'on')) button.iButtonState = -1
         else {
           if ((message.payload === '0') || (message.payload === 'off')) button.iButtonState = -2
-          else { button.iButtonState = -1 }
+          else { button.iButtonState = -9 }
         }
         // console.log('CiButtonController:onMessage: message.payload=', message.payload)
       }

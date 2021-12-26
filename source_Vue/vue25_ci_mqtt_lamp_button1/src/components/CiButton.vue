@@ -3,8 +3,11 @@
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border"></CiBase>
   <!--draw symbol------------------------------------------- -->
-  <circle :cx="cx" :cy="cy" :r="cr" :fill="colorButton" />
-  <circle :cx="cx" :cy="cy" :r="cr" fill="none" stroke="black" stroke-width="2" class="cursor" />
+  <rect :x="Rx0" :y="Ry0" :rx="Rrx" :ry="Rry" :width="Rw" :height="Rh" :fill="colorButton" stroke="black" stroke-width="2" class="cursor" />
+  <!--draw extra symbol (shape)----------------------------- -->
+  <path v-if="isShape" :d="drawShape" fill="none" stroke="black" stroke-width="1"/>
+  <!--write center text------------------------------------- -->
+  <text v-if="line3.length>0" :x="geo.xt()" :y="dy + geo.yt(3)" class="ciFont1">{{line3}}</text>
   <!--write text-------------------------------------------- -->
   <text v-if="iLines>0" :x="geo.xt()" :y="geo.yt(1)" class="ciFont1">{{title}}</text>
   <text v-if="iLines>1" :x="geo.xt()" :y="geo.yt(5)" class="ciFont1">{{line5}}</text>
@@ -60,7 +63,12 @@ export default defineComponent({
     iLines: function (): number {
       return parseInt(this.lines)
     },
-
+    isShape: function (): boolean {
+      if (this.button?.shape) {
+        if (this.button.shape.length > 0) return true
+      }
+      return false
+    },
     // -------circle parameters: center, radius-----------------
     cx: function (): number { return (this.x) },
     cy: function (): number {
@@ -69,17 +77,40 @@ export default defineComponent({
       return (this.y + this.geo.dyl / 2)
     },
     cr: function (): number {
-      if (this.iLines === 0) return (this.geo.dyi / 2 - 1)
-      if (this.iLines === 2) return (this.geo.dyi * 3 / 10 - 1)
+      const i = 0 + this.iLines
+      if (i === 0) return (this.geo.dyi / 2 - 1)
+      if (i === 2) return (this.geo.dyi * 3 / 10 - 1)
       return (2 * this.geo.dyl - 1)
+    },
+    // -------rectangle parameters: up left, ...----------------
+    Rx0: function (): number { return (this.cx - this.cr) },
+    Ry0: function (): number { return (this.cy - this.cr) },
+    Rrx: function (): number {
+      if (!this.button?.shape) return this.cr / 10
+      const sym = this.button.shape.toLowerCase()
+      if ((sym.indexOf('circle') >= 0) || (sym.indexOf('round') >= 0)) return this.cr
+      return (this.cr / 10)
+    },
+    Rry: function (): number {
+      return this.Rrx
+    },
+    Rw: function (): number {
+      return 2 * this.cr
+    },
+    Rh: function (): number {
+      return 2 * this.cr
+    },
+    // -------center text position depending on number of lines_
+    dy: function (): number {
+      if (this.iLines === 1) return this.geo.dyl / 2
+      return 0
     },
     // -------button representation-------------------------------
     colorButton: function (): string {
-      if (this.iButtonState === -2) return 'grey' //       off
-      if (this.iButtonState === -1) return 'lightgreen' // on
-      const s1 = '#' + this.iButtonState.toString(16).padStart(6, '0')
-      // console.log('pushbuttonColor=', s1)
-      return s1
+      if (this.iButtonState === -2) return this.geo.colorOff
+      if (this.iButtonState === -1) return this.geo.colorOn
+      if (this.iButtonState < 0) return this.geo.colorUnknown
+      return this.button?.color ?? this.geo.colorError
     },
     // -------text in line 1 and 5------------------------------
     title: function (): string {
@@ -90,8 +121,34 @@ export default defineComponent({
       if (this.button?.text5) return this.geo.center(this.button.text5)
       if (this.button?.battery) return this.geo.center(this.button.battery)
       return this.geo.center(this.sid)
+    },
+    // -------symbol text in line 3-----------------------------
+    line3: function (): string {
+      if (this.button?.text3) return this.geo.center(this.button.text3)
+      return ''
+    },
+    drawShape: function (): string {
+      if (!this.button?.shape) return ''
+      if (this.button.shape.length < 1) return ''
+      let s1 = ''
+      const sym = this.button.shape.toLowerCase()
+      const cR = 0.8 * this.cr //           radius of perimeter
+      const ca = cR * Math.sqrt(3) //       Side length of triangle
+      s1 = 'M' + this.cx + ',' + this.cy
+      if (sym.indexOf('up') >= 0) {
+        s1 += 'm0,-' + cR + ' l-' + (0.5 * ca) + ',' + (1.5 * cR) + ' h' + ca + ' z'
+      }
+      if (sym.indexOf('down') >= 0) {
+        s1 += 'm0,' + cR + ' l-' + (0.5 * ca) + ',-' + (1.5 * cR) + ' h' + ca + ' z'
+      }
+      if (sym.indexOf('left') >= 0) {
+        s1 += 'm-' + cR + ',0 l' + (1.5 * cR) + ',-' + (0.5 * ca) + ' v' + ca + ' z'
+      }
+      if (sym.indexOf('right') >= 0) {
+        s1 += 'm' + cR + ',0 l-' + (1.5 * cR) + ',-' + (0.5 * ca) + ' v' + ca + ' z'
+      }
+      return s1
     }
-
   },
   methods: {
     onClk: function (): void {
