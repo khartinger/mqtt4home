@@ -6,14 +6,14 @@
     <router-link to="/about">About</router-link>
     &nbsp; &nbsp; &nbsp;
     <span v-if="isConnected">
-      <b><font color="lightgreen">Connected to {{ getConnectUrl }}</font></b>
+      <text class="fontOK">Connected to {{ getConnectUrl }}</text>
     </span>
     <span v-if="!isConnected && !isConnecting">
-      <b><font color="red"> Not connected! &nbsp; </font></b>
-      <button @click="connect()">Connect</button>
+      <text class="fontNOK"> Not connected! &nbsp;</text>
+      <button @click="reconnect()">Reconnect</button>
     </span>
     <span v-if=isConnecting>
-      <b><font color="red"> Is connecting... &nbsp; </font></b>
+      <text class="fontNOK"> Is connecting... &nbsp;</text>
       &nbsp; <button @click="cancel()">Cancel</button>
     </span>
   <router-view/>
@@ -22,51 +22,39 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mqttClientInstance } from '@/services/MqttClientInstance'
-
-// ------MQTT broker parameter----------------------------------
-const hostip = '10.1.1.1'
-const hostport = 1884
-const subtopic = '#'
+import { ciMqttClientInstance } from '@/services/CiMqttClientInstance'
 
 export default defineComponent({
   name: 'Home',
   components: {
   },
-  mounted: async function (): Promise<void> {
-    mqttClientInstance.connect(hostip, hostport, '')
-    mqttClientInstance.subscribe(subtopic, 0)
-  },
   computed: {
     isConnected: function (): boolean {
-      return mqttClientInstance.mqttState.connected
+      return ciMqttClientInstance.mqttState.connected
     },
     isConnecting: function (): boolean {
-      if (mqttClientInstance.mqttState.iConnMqttState === 2) return true
+      if (ciMqttClientInstance.mqttState.iConnMqttState === 2) return true
       return false
     },
     isSubscribed: function (): boolean {
-      return mqttClientInstance.mqttSubscription.subscribed
+      return ciMqttClientInstance.mqttSubscription.subscribed
     },
     getMqttState: function (): string {
-      return mqttClientInstance.sConnMqttState()
+      return ciMqttClientInstance.sConnMqttState()
     },
     getConnectUrl: function (): string {
-      return mqttClientInstance.connectUrl()
+      return ciMqttClientInstance.connectUrl()
     }
   },
   methods: {
-    connect: async function (): Promise<void> {
-      if (!this.isConnected) {
-        mqttClientInstance.connect(hostip, hostport, '')
-        mqttClientInstance.subscribe(subtopic, 0)
-      }
+    reconnect: async function (): Promise<void> {
+      ciMqttClientInstance.reconnectBroker()
     },
     end: async function (): Promise<void> {
-      mqttClientInstance.disconnect()
+      ciMqttClientInstance.disconnect()
     },
     cancel: async function (): Promise<void> {
-      mqttClientInstance.disconnect()
+      ciMqttClientInstance.disconnect()
     }
   }
 })
@@ -75,7 +63,7 @@ export default defineComponent({
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -95,10 +83,9 @@ export default defineComponent({
   color: #42b983;
 }
 
-  .fontOK    { font-weight: bold; fill: lightgreen; }
-  .fontNOK   { font-weight: bold; fill: red; }
-
-  .ciFont1   { font-size: 11px; font-weight: bold; font-family: monospace; fill: black; white-space: pre; }
+  .ciFont1   { font-size: 11px; font-weight: bold; font-family: monospace; color: black; white-space: pre; }
+  .fontOK    { font-weight: bold; color: lightgreen; }
+  .fontNOK   { font-weight: bold; color: red; }
   .cursor    { cursor: pointer; }
   .ciBackground {fill: #ddFFdd; }
   .ciOut     { fill: yellow; stroke: yellow; stroke-width: 1; }

@@ -1,6 +1,6 @@
 // ______CiButton2Controller.ts__________________________________
-import { Message } from '@/services/MqttClient'
 import { reactive } from 'vue'
+import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
 
 export interface Button2 extends IBase {

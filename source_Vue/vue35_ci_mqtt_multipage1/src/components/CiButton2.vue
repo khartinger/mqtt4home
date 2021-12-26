@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
-import { Button2, ciButton2Controller } from '../controller/CiButton2Controller'
+import { Button2, ciButton2Controller } from '@/controller/CiButton2Controller'
 import CiBase, { Geo } from './CiBase.vue'
 
 export default defineComponent({
@@ -60,9 +60,7 @@ export default defineComponent({
       return this.button2?.iButton2State ?? -1
     },
     geo: function (): Geo {
-      const geo1 = new Geo()
-      geo1.x = this.x
-      geo1.y = this.y
+      const geo1 = new Geo(this.x, this.y)
       return geo1
     },
     iLines: function (): number {

@@ -12,24 +12,14 @@ export class CiLampController extends CiBaseController {
   public lamps: Array<Lamp> = reactive(
     [
       {
-        id: 'lamp1',
+        id: 'lamp_1',
         name: 'Lamp_1',
         iLampState: -1,
         text5: 'Text_5',
         // subTopic: 'ci/lamp/1/ret/lamp',
         subTopic: 'ci/lamp/1/set/lamp',
         pubTopic: 'ci/lamp/1/set/lamp',
-        pubPayload: '1'
-      },
-      {
-        id: 'lamp2',
-        name: 'Lamp_2',
-        iLampState: -1,
-        text5: 'Text_5',
-        // subTopic: 'ci/lamp/1/ret/lamp',
-        subTopic: 'ci/lamp/1/set/lamp ci/lamp/2/set/lamp',
-        pubTopic: 'ci/lamp/1/set/lamp ci/lamp/1/set/lamp',
-        pubPayload: '0'
+        pubPayload: '-1'
       }
     ]
   );
