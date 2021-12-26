@@ -7,12 +7,9 @@ Last modified: 2021-12-06
 
 ## Target
 This Vue project shows the creation of a web application with three pages:   
-1. main page ("Home")   
-  Representation of a lamp and a button that can be used to switch the lamp.   
-2. history page ("Page2")   
-  Display of the last five received MQTT commands.   
-3. about page ("About")   
-  Info about the application.   
+1. main page ("Home"): Representation of a lamp and a button that can be used to switch the lamp.   
+2. history page ("Page2"): Display of the last five received MQTT commands.   
+3. about page ("About"): Info about the application.   
 
 ![Main page multi-webpages project](./images/vue_mqtt3_3webpages_home.png "Main page two-webpages project")   
 _image 1: Main page of the multi-webpages project (Home)_   
@@ -28,8 +25,6 @@ _image 3: About page (About)_
 * Hardware: Raspberry Pi (or PC) running an MQTT broker (e.g. Mosquitto)
 * Software: Visual Studio Code ("VSC"), which is already prepared for Vue applications.   
    (I.e. (at least) one Vue application has already been created in Visual Code).   
-
-Finished project: [https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue_mqtt3_3webpages](https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue_mqtt3_3webpages)
 
 # Creating the project
 ## 1. overview of the involved files

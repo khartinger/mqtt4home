@@ -148,13 +148,13 @@ export default router
 
 ```   
 
-### 3.5 Datei `src/App.vue` anpassen   
-Die Datei `App.vue` ist f&uuml;r folgende Punkte zust&auml;ndig:   
+### 3.5 Datei `App.vue` anpassen   
+Die Datei `src/App.vue` ist f&uuml;r folgende Punkte zust&auml;ndig:   
   * Darstellung einer Linkzeile mit Links auf die einzelnen Seiten.   
     Daher: Die Zeile `<router-link to="/page2">Page2</router-link> |` erg&auml;nzen.   
   * Herstellung der Verbindung zum Broker.   
     Dies sollte nicht in der Seite "Home" erfolgen, da sonst bei jedem Laden der Seite die Verbindung neu hergestellt wird.   
-    Der Zustand der Verbindung wird in der Linkzeile angezeigt.   
+  * Der Zustand der Verbindung wird in der Linkzeile angezeigt.   
   * Definition von einheitlichen Styles f&uuml;r alle Seiten.   
     Daher: Die Styles mit Punkt erg&auml;nzen.   
 
@@ -279,12 +279,46 @@ export default defineComponent({
   * Verzeichnis `assets` l&ouml;schen   
 
 ## 4. MQTT Client erg&auml;nzen
-Verzeichnis `src/services` erstellen, die Dateien `MqttClient.ts` und `MqttClientInstance.ts` erg&auml;nzen.   
-Erkl&auml;rungen siehe "Teil 1: Erstellung des MQTT Clients" in [m4h504_Vue_PubSub2.md](m4h504_Vue_PubSub2.md)
+## 4.1 Einbinden der erforderlichen Dateien
+* Erstellen des Verzeichnisses "controller"   
+  Mit der rechten Maustaste auf das Verzeichnis `src` klicken, "Neuer Ordner" w&auml;hlen und den Namen `controller` eingeben.   
 
-## 
-## 6. Home-Seite erstellen
-Die Startseite ("Home") enth&auml;lt die beiden Steuerungs-/Anzeige-Elemente (CI-Elemente) "Lamp" und "Button2", die mit Hilfe folgender Dateien erzeugt werden:   
+* Erstellen des Verzeichnisses "services"   
+  Mit der rechten Maustaste auf das Verzeichnis `src` klicken, "Neuer Ordner" w&auml;hlen und den Namen `services` eingeben.   
+
+* Kopieren der Dateien [`CiMqttClient.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/services/CiMqttClient.ts) und [`CiMqttClientInstance.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/services/CiMqttClientInstance.ts) in das Verzeichnis `src/services`.   
+
+* Kopieren der Datei [`CiBaseController.ts`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/controller/CiBaseController.ts) in das Verzeichnis `src/controller`.   
+
+* Kopieren der Datei [`CiBase.vue`](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue10_ci_mqtt_mini/src/components/CiBase.vue) in das Verzeichnis `src/components`.   
+
+## 4.2 Anpassen der Datei CiMqttClientInstance
+* Festlegen, dass beim Start der App mit den Vorgabewerten die Verbindung zum Broker hergestellt und das Topic abonniert werden soll (Konstruktor-Wert `true`).   
+
+* Eintragen aller Controller, die Mqtt-Nachrichten senden oder empfangen sollen.   
+_Ergebnis:_
+```  
+// ______mqttClientInstance.ts__________________________________
+import { CiMqttClient } from './CiMqttClient'
+import { ciLampController } from '@/controller/CiLampController'
+import { ciButton2Controller } from '@/controller/CiButton2Controller'
+import { mqttLastXController } from '@/controller/MqttLastXController'
+
+export const ciMqttClientInstance = new CiMqttClient(true)
+ciMqttClientInstance.registerController(ciLampController)
+ciMqttClientInstance.registerController(ciButton2Controller)
+ciMqttClientInstance.registerController(mqttLastXController)
+```   
+
+# 5. Home-Seite erstellen
+Die Startseite ("Home") enth&auml;lt die beiden Steuerungs-/Anzeige-Elemente (CI-Elemente) "CiLamp" und "CiButton2", die mit Hilfe folgender Dateien erzeugt werden:   
+
+
+
+
+
+
+
 * [`components/CiBase.vue ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/components/CiBase.vue) Definition von Geometrie-Daten (Klasse Geo) sowie Darstellung des Randes der CI-Elemente.   
 * [`controller/CiBaseController.ts ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/controller/CiBaseController.ts) Definition der Basis-Eigenschaften f&uuml;r alle CI-Elemente (Interface IBase) sowie eines abstrakten Basis-Controllers (CiBaseController) mit der Definition der f&uuml;r alle Controller erforderlichen Methoden `registerClient`, `publish` und `onMessage`.   
 * [`components/CiLamp.vue ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/components/CiLamp.vue) Darstellung des Lampensymbols und Realisierung der Funktion `onClk`, die beim Klicken auf das Symbol ausgef&uuml;hrt wird.   
@@ -321,7 +355,7 @@ export default defineComponent({
 Die Lampe ben&ouml;tigt als Parameter den Mittelpunkt x und y und die ID. Mit `:border="0"` wird das Zeichnen eines Randes verhindert. Da die Anzahl der Zeilen (`lines=`) nicht angegeben ist, wird die Vorgabe `lines="1"` verwendet und der Name der Lampe angezeigt.   
 Der Schalter ben&ouml;tigt als Parameter den Mittelpunkt x und y und die ID. Mit `:border="0"` wird das Zeichnen eines Randes und mit `lines="0"` wird die Anzeige weiterer Informationen verhindert.   
 
-## 7. Seite "Page2" erstellen
+# 6. Seite "Page2" erstellen
 Die Seite "Page2" nutzt die Komponente `MqttLastX` zum Anzeigen der letzten f&uuml;nf empfangenen MQTT-Nachrichten:   
 * [`components/MqttLastX.vue ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/components/MqttLastX.vue) Darstellung der Tabelle der letzten Nachrichten.   
 * [`controller/MqttLastXController.ts ... `](https://github.com/khartinger/mqtt4home/blob/main/source_Vue/vue_mqtt3_3webpages/src/controller/MqttLastXController.ts) Definition der Klasse MqttLastXController, die mit Hilfe der Methode `onMessage` die empfangene Nachricht in den Speicher MessageStore schreibt.   
@@ -350,7 +384,7 @@ export default defineComponent({
 </script>
 ```   
 
-## 8. Seite "About" erstellen
+# 7. Seite "About" erstellen
 Die "About"-Seite gibt Text aus und zeigt, wie man innerhalb einer SVG-Grafik einen Link auf eine andere Seite erzeugt.   
 ```   
 <template>
