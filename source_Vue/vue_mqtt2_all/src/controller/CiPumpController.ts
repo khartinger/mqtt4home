@@ -1,8 +1,8 @@
 // ______CiPumpController.ts____________________________________
-import { Message } from '@/services/MqttClient'
 import { reactive } from 'vue'
+import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
-import { Geo } from '../components/CiBase.vue'
+import { Geo } from '@/components/CiBase.vue'
 
 export interface Pump extends IBase {
   type: string;
@@ -27,12 +27,13 @@ export class CiPumpController extends CiBaseController {
         lastPumpDate: '--.--.--',
         lastPumpTime: '--:--:--',
         subTopic: 'ci/pump/-1/ret/pump',
-        subTopicTime: 'ci/pump/-1/ret/pump/time'
+        subTopicTime: 'ci/pump/-1/ret/pump/time',
+        pubTopic: ''
       }
     ]
   );
 
-  geo = new Geo();
+  geo2 = new Geo(0, 0);
 
   // ---------Message for this ci (control/indicator)?----------
   public onMessage (message: Message): void {
@@ -48,8 +49,9 @@ export class CiPumpController extends CiBaseController {
           if (aPayload.pump === '1') pump.iPumpState = 1
           pump.sSensor = aPayload.sensor
           pump.sStatus = aPayload.status
-          pump.lastPumpDate = this.geo.noDate
-          pump.lastPumpTime = this.geo.noTime
+          const geo3 = new Geo(0, 0)
+          pump.lastPumpDate = geo3.noDate
+          pump.lastPumpTime = geo3.noTime
         }
       } // END pump topic found
     })

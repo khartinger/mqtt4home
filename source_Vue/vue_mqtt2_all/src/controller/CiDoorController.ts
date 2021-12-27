@@ -1,8 +1,7 @@
 // ______CiDoorController.ts____________________________________
-import { Message } from '@/services/MqttClient'
 import { reactive } from 'vue'
+import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
-import { Geo } from '../components/CiBase.vue'
 
 export interface Door extends IBase {
   iDoorState: number;
@@ -160,8 +159,6 @@ export class CiDoorController extends CiBaseController {
       }
     ]
   );
-
-  geo = new Geo();
 
   // ---------Message for this ci (control/indicator)?----------
   public onMessage (message: Message): void {

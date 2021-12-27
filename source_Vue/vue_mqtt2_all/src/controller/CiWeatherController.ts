@@ -1,6 +1,6 @@
 // ______CiWeatherController.ts_________________________________
-import { Message } from '@/services/MqttClient'
 import { reactive } from 'vue'
+import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
 
 export interface Weather extends IBase {
@@ -22,7 +22,8 @@ export class CiWeatherController extends CiBaseController {
         name: 'Weather1_zb',
         iWeatherState: -1,
         battery: '100',
-        subTopic: 'zb/weather/1/ret'
+        subTopic: 'zb/weather/1/ret',
+        pubTopic: ''
       },
       { // weather 2
         id: 'weather2',
@@ -30,7 +31,8 @@ export class CiWeatherController extends CiBaseController {
         name: 'Weather2_d1i',
         iWeatherState: -1,
         battery: '-',
-        subTopic: 'ci/weather/2/ret'
+        subTopic: 'ci/weather/2/ret',
+        pubTopic: ''
       }
     ]
   );

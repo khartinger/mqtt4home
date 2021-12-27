@@ -58,7 +58,7 @@ export default defineComponent({
       return this.socket?.iSocketState ?? -1
     },
     geo: function (): Geo {
-      const geo1 = new Geo()
+      const geo1 = new Geo(this.x, this.y)
       geo1.x = this.x
       geo1.y = this.y
       return geo1

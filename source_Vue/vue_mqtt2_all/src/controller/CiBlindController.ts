@@ -1,9 +1,7 @@
 // ______CiBlindController.ts____________________________________
-import { Message } from '@/services/MqttClient'
 import { reactive } from 'vue'
+import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
-import { Geo } from '../components/CiBase.vue'
-
 export interface Blind extends IBase {
   iBlindState: number;
   type?: string;
@@ -32,8 +30,6 @@ export class CiBlindController extends CiBaseController {
       }
     ]
   );
-
-  geo = new Geo();
 
   // ---------Message for this ci (control/indicator)?----------
   public onMessage (message: Message): void {

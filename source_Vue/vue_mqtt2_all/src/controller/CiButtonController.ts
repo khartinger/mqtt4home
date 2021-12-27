@@ -1,6 +1,6 @@
 // ______CiButtonController.ts__________________________________
-import { Message } from '@/services/MqttClient'
 import { reactive } from 'vue'
+import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
 
 export interface Button extends IBase {
@@ -35,9 +35,19 @@ export class CiButtonController extends CiBaseController {
         name: 'Button2',
         iButtonState: 0,
         battery: '-',
+        shape: 'round',
+        color: '#777700',
+        subTopic: '',
+        pubTopic: 'ci/lamp/2/ret',
+        pubPayload: '1'
+      },
+      {
+        id: 'button_3',
+        name: 'Button3',
+        iButtonState: 0,
+        battery: '-',
         color: '#DDFFCC',
         text3: 'ON',
-        text5: 'ci/lamp/+/ret',
         subTopic: '',
         // subTopic: 'ci/lamp/2/ret ci/lamp/9/ret',
         pubTopic: 'ci/lamp/2/ret ci/lamp/9/ret',

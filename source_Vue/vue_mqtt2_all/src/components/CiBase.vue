@@ -1,4 +1,4 @@
-<!--CiBase.vue-->
+<!--CiBase.vue----------------------------------- 2021-12-27 -->
 <template>
   <!--border: outer and inner rectangle--------------------- -->
   <rect v-if="border0" class="ciOut" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
@@ -7,6 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { ciMqttClientInstance } from '@/services/CiMqttClientInstance'
 
 export default defineComponent({
   name: 'CiBase',
@@ -22,25 +23,30 @@ export default defineComponent({
     border: {
       type: Number,
       required: false,
-      default: 3
+      default: 2
     }
   },
   emits: ['onClk'],
   computed: {
     geo: function (): Geo {
-      const geo1 = new Geo()
-      geo1.x = this.x
-      geo1.y = this.y
+      const geo1 = new Geo(this.x, this.y)
       return geo1
     },
     border0: function (): boolean {
-      if (this.border > 1) return true
+      if (this.border) {
+        if (this.border > 1) return true
+      }
       return false
     },
     border1: function (): boolean {
-      if (this.border > 0) return true
+      if (this.border) {
+        if (this.border > 0) return true
+      }
       return false
     }
+  },
+  mounted: function (): void {
+    ciMqttClientInstance.init()
   },
   methods: {
   }
@@ -48,7 +54,7 @@ export default defineComponent({
 
 // -----------font data-----------------------------------------
 // examples: fh_=11, tmax_=14 or 16/13, ...
-const fh_ = 16 //            font height [pixel]
+const fh_ = 11 //            font height [pixel]
 const tmax_ = 14 //          max number character per line
 // -----------y direction---------------------------------------
 const dyl_ = Math.round(0.5 + 22 * fh_ / 14) //  line hight
@@ -104,6 +110,13 @@ export class Geo {
   public x = 0 //                 x value of center
   public y = 0 //                 y value of center
 
+  // =========methods===========================================
+  // _________constructor_______________________________________
+  constructor (xC: number, yC: number) {
+    this.x = xC
+    this.y = yC
+  }
+
   // ---------coordinates of upper left corners-----------------
   public x0 (): number { return (this.x - this.dxo2) }
   public y0 (): number { return (this.y - this.dyo2) }
@@ -145,10 +158,13 @@ export class Geo {
     const len = text.length
     if (len >= this.tmax) return text.substr(0, this.tmax)
     const numBlank = Math.round((this.tmax - len) / 2)
+    // const numBlank = Math.round((this.tmax - len) / 2 - 1)
     const s1 = text.padStart(numBlank + len, ' ')
     return s1
   }
 }
+
+export const geo0 = new Geo(0, 0)
 </script>
 
 <style>

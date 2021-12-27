@@ -1,8 +1,8 @@
 // ______CiMotionController.ts__________________________________
-import { Message } from '@/services/MqttClient'
 import { reactive } from 'vue'
+import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
-import { Geo } from '../components/CiBase.vue'
+import geo0 from '@/components/CiBase.vue'
 
 export interface Motion extends IBase {
   type: string;
@@ -25,12 +25,11 @@ export class CiMotionController extends CiBaseController {
         lastMotionDate: '--.--.--',
         lastMotionTime: '--:--:--',
         subTopic: 'ci/motion/-1',
-        subTopicTime: 'ci/motion/-1/time'
+        subTopicTime: 'ci/motion/-1/time',
+        pubTopic: ''
       }
     ]
   );
-
-  geo = new Geo();
 
   // ---------Message for this ci (control/indicator)?----------
   public onMessage (message: Message): void {
@@ -45,8 +44,8 @@ export class CiMotionController extends CiBaseController {
           if (aPayload.occupancy === 'true') motion.iMotionState = 1
           if (aPayload.occupancy === true) motion.iMotionState = 1
           if (aPayload.battery) motion.battery = aPayload.battery + '%'
-          motion.lastMotionDate = this.geo.noDate
-          motion.lastMotionTime = this.geo.noTime
+          motion.lastMotionDate = geo0.noDate
+          motion.lastMotionTime = geo0.noTime
         }
       } // END motion topic found
     })

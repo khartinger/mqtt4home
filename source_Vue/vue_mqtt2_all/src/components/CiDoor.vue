@@ -67,7 +67,7 @@ export default defineComponent({
     },
     // -------provide geometric data----------------------------
     geo: function (): Geo {
-      const geo1 = new Geo()
+      const geo1 = new Geo(this.x, this.y)
       geo1.x = this.x
       geo1.y = this.y
       return geo1

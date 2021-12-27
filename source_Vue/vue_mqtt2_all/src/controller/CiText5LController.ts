@@ -1,8 +1,8 @@
 // ______CiText5LLController.ts__________________________________
-import { Message } from '@/services/MqttClient'
+import { Message } from '@/services/CiMqttClient'
 import { reactive } from 'vue'
 import { CiBaseController, IBase } from './CiBaseController'
-import { Geo } from '../components/CiBase.vue'
+import geo0 from '@/components/CiBase.vue'
 
 export interface Text5L extends IBase {
   iText5LState: number;
@@ -17,12 +17,13 @@ export class CiText5LController extends CiBaseController {
         name: 'Text5L_1',
         iText5LState: -1,
         lines: [],
-        subTopic: 'ci/text5L/set'
+        subTopic: 'ci/text5L/set',
+        pubTopic: ''
       }
     ]
   );
 
-  geo = new Geo();
+  // geo = new Geo(0, 0);
 
   // ---------Message for this ci (control/indicator)?----------
   public onMessage (message: Message): void {
@@ -48,7 +49,7 @@ export class CiText5LController extends CiBaseController {
         if (text5L.lines.length === 1) {
           // -split one long line up into max. 5 short lines----
           const len = text5L.lines[0].length
-          const charmax = 2 * this.geo.tmax + 2
+          const charmax = 2 * geo0.tmax + 2
           // console.log('Text5LController: len=', len + ', max=', max)
           if (len > charmax) {
             const s0 = text5L.lines[0]

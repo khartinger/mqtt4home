@@ -1,20 +1,19 @@
 // ______CiBaseController.ts____________________________________
-import { Message, MqttClient } from '@/services/MqttClient'
+import { Message, CiMqttClient } from '@/services/CiMqttClient'
 import type { QoS } from 'mqtt'
 
 export interface IBase {
   id: string;
   name?: string;
-  border?: number
   subTopic: string;
-  pubTopic?: string;
+  pubTopic: string;
   pubPayload?: string;
 }
 
 export abstract class CiBaseController {
-  protected client: MqttClient | null = null;
+  protected client: CiMqttClient | null = null;
 
-  public registerClient (mqttClient: MqttClient): void {
+  public registerClient (mqttClient: CiMqttClient): void {
     this.client = mqttClient
   }
 

@@ -23,7 +23,9 @@ export default defineComponent({
   margin-top: 0px;
 }
 
-  .ciFont1   { font: bold 16px monospace; fill: black; white-space: pre; }
+  .ciFont1   { font-size: 11px; font-weight: bold; font-family: monospace; color: black; white-space: pre; }
+  .fontOK    { font-weight: bold; color: lightgreen; }
+  .fontNOK   { font-weight: bold; color: red; }
   .cursor    { cursor: pointer; }
   .ciBackground {fill: #ddFFdd; }
   .ciOut     { fill: yellow; stroke: yellow; stroke-width: 1; }

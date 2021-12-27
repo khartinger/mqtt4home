@@ -1,11 +1,13 @@
-// ______MqttClient.ts__________________________________________
-import { CiBaseController } from '@/controller/CiBaseController'
+// ______CiMqttClient.ts_________________________2021-12-26_____
 import mqtt, { QoS } from 'mqtt'
+import { CiBaseController } from '@/controller/CiBaseController'
 import { reactive, readonly } from 'vue'
 
-// -------------------------------------------------------------
+// *************************************************************
 // interfaces
-// -------------------------------------------------------------
+// *************************************************************
+
+// -----------message properties--------------------------------
 export interface Message {
   topic: string,
   payload: string,
@@ -13,6 +15,7 @@ export interface Message {
   qos: QoS
 }
 
+// -----------state of the MQTT connection----------------------
 export interface MqttState {
   connectOnStart: boolean;
   connected: boolean;
@@ -20,6 +23,7 @@ export interface MqttState {
   message: Message;
 }
 
+// -----------properties for the MQTT connection----------------
 export interface MqttConnection {
   host: string;
   port: number;
@@ -32,20 +36,28 @@ export interface MqttConnection {
   password: string;
 }
 
+// -----------info about the subscribed messages----------------
 export interface MqttSubscription {
   topic: string;
   qos: QoS;
   subscribed: boolean;
 }
 
-// -------------------------------------------------------------
-// class MqttClient
-// -------------------------------------------------------------
-export class MqttClient {
-  public client: mqtt.Client | null = null;
+// *************************************************************
+// class CiMqttClient
+// *************************************************************
 
+export class CiMqttClient {
+  // ---------basic properties----------------------------------
+  public client: mqtt.Client | null = null;
   public controller: Array<CiBaseController> = [];
 
+  private subTopic = '#';
+  private subQos: QoS = 0;
+
+  // ---------some more properties (interfaces)-----------------
+  // To prevent values from being changed by mistake,
+  // there is always a private and a public variant.
   private privateMqttState: MqttState = reactive<MqttState>({
     connectOnStart: false,
     connected: false,
@@ -77,21 +89,28 @@ export class MqttClient {
 
   public mqttSubscription = readonly(this.privateMqttSubscription)
 
-  // ---------methods-------------------------------------------
-  constructor () {
-    if (this.mqttState.connectOnStart) {
+  // =========methods===========================================
+  // _________constructor_______________________________________
+  constructor (connectOnStart: boolean) {
+    this.privateMqttState.connectOnStart = connectOnStart
+    console.log('MqttClient-Constructor: privateMqttState.connectOnStart = ', this.privateMqttState.connectOnStart)
+    if (this.privateMqttState.connectOnStart) {
       console.log('MqttClient-Constructor: connecting to ' + this.connectUrl())
       this.connect_()
-      console.log('MqttClient-Constructor: subscribe ' + this.mqttSubscription.topic)
+      this.subTopic = this.privateMqttSubscription.topic
+      this.subQos = this.privateMqttSubscription.qos
+      console.log('MqttClient-Constructor: subscribe ' + this.privateMqttSubscription.topic)
       this.subscribe_()
       console.log('MqttClient-Constructor: finished')
     }
   }
 
+  // _________connect url like 10.1.1.1:1884____________________
   public connectUrl (): string {
     return `ws://${this.mqttConnection.host}:${this.mqttConnection.port}${this.mqttConnection.endpoint}`
   }
 
+  // _________public variant: connect to server (broker)________
   public connect (host: string, port: number, endpoint: string): Promise<void> {
     this.privateMqttConnection.host = host
     this.privateMqttConnection.port = port
@@ -99,6 +118,7 @@ export class MqttClient {
     return this.connect_()
   }
 
+  // _________private variant: connect to server (broker)_______
   private connect_ (): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.client) this.disconnect()
@@ -167,50 +187,74 @@ export class MqttClient {
     })
   }
 
+  // _________disconnect from broker____________________________
   public disconnect (): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.client) return reject(new Error('Not Connected'))
       this.privateMqttState.iConnMqttState = 9
       this.client.end(true, {}, (err) => {
-        if (err) return reject(new Error('Could not disconnect'))
+        if (err) {
+          // console.log('CiMqttClient:disconnect: ', 'failed!')
+          return reject(new Error('Could not disconnect'))
+        }
+        // console.log('CiMqttClient:disconnect: ', 'success!')
         resolve()
       })
     })
   }
 
+  // _________public variant: subscribe topic___________________
   public subscribe (topic: string, qos: QoS): Promise<void> {
-    this.privateMqttSubscription.topic = topic
-    this.privateMqttSubscription.qos = qos
+    this.subTopic = topic
+    this.subQos = qos
     return this.subscribe_()
   }
 
+  // _________private variant: subscribe topic__________________
   private subscribe_ (): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!this.client) return reject(new Error('subscribe: Not Connected'))
-      if (this.mqttSubscription.subscribed) {
-        this.unsubscribe()
-        if (this.mqttSubscription.subscribed) return reject(new Error('subscribe: Could not unsubscribe'))
+      if (!this.client) {
+        // console.log('CiMqttClient:subscribe: failed - not connected! ' + this.privateMqttSubscription.topic)
+        return reject(new Error('subscribe: Not Connected'))
       }
-      console.log('MqttClient.ts-subscribe: ' + this.mqttSubscription.topic)
-      this.client.subscribe(this.mqttSubscription.topic, { qos: this.mqttSubscription.qos }, (err) => {
-        if (err) return reject(new Error('Could not subscribe topic ' + this.mqttSubscription.topic))
+      this.unsubscribe()
+      this.client.subscribe(this.subTopic, { qos: this.subQos }, (err) => {
+        if (err) {
+          // console.log('CiMqttClient:subscribe: failed! ' + this.subTopic)
+          return reject(new Error('Could not subscribe topic ' + this.subTopic))
+        }
         this.privateMqttSubscription.subscribed = true
+        this.privateMqttSubscription.topic = this.subTopic
+        this.privateMqttSubscription.qos = this.subQos
+        // console.log('CiMqttClient:subscribe: success! ' + this.privateMqttSubscription.topic)
         resolve()
       })
     })
   }
 
+  // _________unsubscribe topic_________________________________
   public unsubscribe (): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!this.client) return reject(new Error('Not Connected'))
-      this.client.unsubscribe(this.mqttSubscription.topic, {}, (err) => {
-        if (err) return reject(new Error('Could not unsubscribe topic ' + this.mqttSubscription.topic))
-        this.privateMqttSubscription.subscribed = false
-        resolve()
-      })
+      const subscribedOld = this.privateMqttSubscription.subscribed
+      this.privateMqttSubscription.subscribed = false
+      if (!this.client) {
+        // console.log('CiMqttClient:unsubscribe: failed - not connected! ', this.privateMqttSubscription.topic)
+        return reject(new Error('Not Connected'))
+      }
+      if (subscribedOld) {
+        this.client.unsubscribe(this.privateMqttSubscription.topic, {}, (err) => {
+          if (err) {
+            // console.log('CiMqttClient:unsubscribe: failed! ', this.privateMqttSubscription.topic)
+            return reject(new Error('Could not unsubscribe topic ' + this.privateMqttSubscription.topic))
+          }
+          // console.log('CiMqttClient:unsubscribe: success! ', this.privateMqttSubscription.topic)
+          resolve()
+        })
+      }
     })
   }
 
+  // _________publish a message_________________________________
   public publish (topic: string, payload: string, retain: boolean, qos: QoS): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.client) return reject(new Error('Not Connected'))
@@ -221,6 +265,7 @@ export class MqttClient {
     })
   }
 
+  // _________return mqtt connection state as string____________
   public sConnMqttState (): string {
     switch (this.mqttState.iConnMqttState) {
       case -1: return 'not connected'
@@ -236,6 +281,7 @@ export class MqttClient {
     return 'undefined'
   }
 
+  // _________connect to a broker and subscribe a topic_________
   public hostSubscribe (host: string, topicSubscribe: string): boolean {
     this.privateMqttConnection.host = host
     this.privateMqttSubscription.topic = topicSubscribe
@@ -243,14 +289,32 @@ export class MqttClient {
       this.connect_()
       this.subscribe_()
     } catch (err) {
-      console.error('hostSubscribe: Error ' + err)
+      console.error('CiMqttClient.hostSubscribe: Error ' + err)
       return false
     }
     return true
   }
 
+  // _________method to register controller_____________________
   public registerController (controller: CiBaseController): void {
     this.controller.push(controller)
     controller.registerClient(this)
+  }
+
+  // _________reconnect to broker with default values___________
+  public reconnectBroker (): boolean {
+    try {
+      this.connect_()
+      this.subscribe_()
+    } catch (err) {
+      console.error('CiMqttClient.reconnectBroker: Error ' + err)
+      return false
+    }
+    return true
+  }
+
+  // _________nothing to do...__________________________________
+  public init (): void {
+    console.log('CiMqttClient.init')
   }
 }
