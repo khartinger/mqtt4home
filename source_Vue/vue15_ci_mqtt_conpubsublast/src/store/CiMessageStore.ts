@@ -1,4 +1,4 @@
-// ______CiessageStore.ts______________________________________
+// ______CiMessageStore.ts______________________________________
 import { Message } from '@/services/CiMqttClient'
 import { computed, reactive } from '@vue/runtime-core'
 
