@@ -82,8 +82,9 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [How to create a Vue MQTT app easily? (2021-12-13)](md/m4h510_Vue_ci_mqtt_mini_e.md)
 * [MQTT Vue components for connecting, publishing, subscribing, and viewing (2021-12-19)](md/m4h515_Vue_ci_mqtt_conpubsublast_e.md)
 * [Vue-MQTT: How to create a CI symbol? (Example: CiLamp) (2021-12-23)](md/m4h520_Vue_ci_mqtt_lamp1_e.md)
-* [Vue+VSC: Switching lamps with MQTT (2021-12-25)](md/m4h525_Vue_ci_mqtt_lamp_button1.md)
-* [Vue+VSC: How to create a Vue project with multiple web pages? (2021-12-26)](md/m4h535_Vue_ci_mqtt_multipage1.md)   
+* [Vue+VSC: Switching lamps with MQTT (2021-12-25)](md/m4h525_Vue_ci_mqtt_lamp_button1_e.md)
+* [Vue+VSC: How to create a Vue project with multiple web pages? (2021-12-26)](md/m4h535_Vue_ci_mqtt_multipage1_e.md)   
 
+* [Vue+VSC: How to create wall elements? (2021-12-27)](md/m4h560_Vue_ci_mqtt_wall1_e.md)   
 
 [To the top of the page](#up)   

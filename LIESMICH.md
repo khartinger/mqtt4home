@@ -77,5 +77,6 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 * [Vue+VSC: Schalten von Lampen mit MQTT (2021-12-25)](md/m4h525_Vue_ci_mqtt_lamp_button1.md)
 * [Vue+VSC: Wie erstellt man ein Vue Projekt mit mehreren Web-Seiten? (2021-12-26)](md/m4h535_Vue_ci_mqtt_multipage1.md)   
 
+* [Vue+VSC: Wie erstellt man Wand-elemente? (2021-12-27)](md/m4h560_Vue_ci_mqtt_wall1.md)   
 
 [Zum Seitenanfang](#up)
