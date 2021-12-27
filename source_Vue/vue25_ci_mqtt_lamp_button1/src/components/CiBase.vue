@@ -1,4 +1,4 @@
-<!--CiBase.vue-->
+<!--CiBase.vue----------------------------------- 2021-12-27 -->
 <template>
   <!--border: outer and inner rectangle--------------------- -->
   <rect v-if="border0" class="ciOut" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
@@ -163,6 +163,8 @@ export class Geo {
     return s1
   }
 }
+
+export const geo0 = new Geo(0, 0)
 </script>
 
 <style>
