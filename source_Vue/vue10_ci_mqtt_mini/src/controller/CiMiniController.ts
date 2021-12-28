@@ -16,6 +16,8 @@ export class CiMiniController extends CiBaseController {
   public mini: Mini = reactive(
     {
       id: 'mini1',
+      subTopic: '#',
+      pubTopic: '',
       topicIn: '--no message--',
       payloadIn: '--no message--'
     }

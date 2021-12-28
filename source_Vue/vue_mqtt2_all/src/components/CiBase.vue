@@ -1,13 +1,15 @@
-<!--CiBase.vue----------------------------------- 2021-12-27 -->
+<!--CiBase.vue----------------------------------- 2021-12-28 -->
 <template>
   <!--border: outer and inner rectangle--------------------- -->
-  <rect v-if="border0" class="ciOut" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
-  <rect v-if="border1" class="ciIn"  :x="geo.x1()" :y="geo.y1()" :width="geo.dxi" :height="geo.dyi" />
+  <rect v-if="border1" class="ciOut0" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
+  <rect v-if="border2" class="ciOut" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
+  <rect v-if="border3" class="ciIn"  :x="geo.x1()" :y="geo.y1()" :width="geo.dxi" :height="geo.dyi" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { ciMqttClientInstance } from '@/services/CiMqttClientInstance'
+// import { ciMqttClientInstance } from '@/services/CiMqttClientInstance'
+import '@/services/CiMqttClientInstance'
 
 export default defineComponent({
   name: 'CiBase',
@@ -32,21 +34,27 @@ export default defineComponent({
       const geo1 = new Geo(this.x, this.y)
       return geo1
     },
-    border0: function (): boolean {
+    border1: function (): boolean {
       if (this.border) {
-        if (this.border > 1) return true
+        if (this.border === 1) return true
       }
       return false
     },
-    border1: function (): boolean {
+    border2: function (): boolean {
       if (this.border) {
-        if (this.border > 0) return true
+        if (this.border > 2) return true
+      }
+      return false
+    },
+    border3: function (): boolean {
+      if (this.border) {
+        if (this.border > 1) return true
       }
       return false
     }
   },
   mounted: function (): void {
-    ciMqttClientInstance.init()
+    // ciMqttClientInstance.init()
   },
   methods: {
   }
@@ -163,9 +171,22 @@ export class Geo {
     return s1
   }
 }
-
 export const geo0 = new Geo(0, 0)
 </script>
 
 <style>
+  .ciFont1   { font-size: 11px; font-weight: bold; font-family: monospace; color: black; white-space: pre; }
+  .fontOK    { font-weight: bold; color: lightgreen; }
+  .fontNOK   { font-weight: bold; color: red; }
+  .cursor    { cursor: pointer; }
+  .ciBackground {fill: #ddFFdd; }
+  .ciOut     { fill: yellow; stroke: yellow; stroke-width: 1; }
+  .ciOut0    { fill: none; stroke: blue; stroke-width: 1; }
+  .ciInColor { fill: #F4F4F4; }
+  .ciIn      { fill: #F4F4F4; stroke:blue; stroke-width: 1; }
+  .ciLine    { stroke: blue; stroke-width: 1; }
+  .ciRect    { fill: none; stroke: blue; stroke-width: 1; }
+  .ciFillIt  { stroke: blue; stroke-width: 1; }
+  .ciClick   { fill-opacity: 0.0; stroke-width: 1; }
+  .ciBorder  { fill-opacity: 0.0; stroke: blue; stroke-width: 1; }
 </style>

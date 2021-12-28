@@ -1,6 +1,6 @@
 // ______mqttClientInstance.ts__________________________________
 import { CiMqttClient } from './CiMqttClient'
-import { ciLampController } from '@/controller/CiLampController'
+import { ciMiniController } from '@/controller/CiMiniController'
 
 export const ciMqttClientInstance = new CiMqttClient(true)
-ciMqttClientInstance.registerController(ciLampController)
+ciMqttClientInstance.registerController(ciMiniController)

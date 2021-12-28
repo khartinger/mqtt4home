@@ -1,4 +1,4 @@
-<!--CiBase.vue----------------------------------- 2021-12-27 -->
+<!--CiBase.vue----------------------------------- 2021-12-28 -->
 <template>
   <!--border: outer and inner rectangle--------------------- -->
   <rect v-if="border1" class="ciOut0" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
@@ -8,7 +8,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { ciMqttClientInstance } from '@/services/CiMqttClientInstance'
+// import { ciMqttClientInstance } from '@/services/CiMqttClientInstance'
+import '@/services/CiMqttClientInstance'
 
 export default defineComponent({
   name: 'CiBase',
@@ -53,7 +54,7 @@ export default defineComponent({
     }
   },
   mounted: function (): void {
-    ciMqttClientInstance.init()
+    // ciMqttClientInstance.init()
   },
   methods: {
   }
