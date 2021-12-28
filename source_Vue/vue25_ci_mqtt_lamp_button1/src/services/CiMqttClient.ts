@@ -1,4 +1,4 @@
-// ______CiMqttClient.ts________________________________________
+// ______CiMqttClient.ts_________________________2021-12-26_____
 import { CiBaseController } from '@/controller/CiBaseController'
 import mqtt, { QoS } from 'mqtt'
 import { reactive, readonly } from 'vue'
@@ -289,7 +289,7 @@ export class CiMqttClient {
       this.connect_()
       this.subscribe_()
     } catch (err) {
-      console.error('hostSubscribe: Error ' + err)
+      console.error('CiMqttClient.hostSubscribe: Error ' + err)
       return false
     }
     return true
@@ -301,6 +301,19 @@ export class CiMqttClient {
     controller.registerClient(this)
   }
 
+  // _________reconnect to broker with default values___________
+  public reconnectBroker (): boolean {
+    try {
+      this.connect_()
+      this.subscribe_()
+    } catch (err) {
+      console.error('CiMqttClient.reconnectBroker: Error ' + err)
+      return false
+    }
+    return true
+  }
+
+  // _________nothing to do...__________________________________
   public init (): void {
     console.log('CiMqttClient.init')
   }
