@@ -20,9 +20,9 @@ _Fig. 2: Calculation of the wall type_
 
 _Examples:_   
 ` 1 + 2 = 3` : wall like an L   
-` 1 + 5 = 5` : Horizontal line --   
-` 2 + 8 = 10` : Vertical line   
-`32 + 16 = 48` : Wall like a V   
+` 1 + 4 = 5` : Horizontal line --   
+` 2 + 8 = 10` : Vertical line |   
+`16 + 32 = 48` : Wall like a V   
 `1 + 2 + 8 = 11` : Vertical wall with a horizontal extension on the right |-   
-`4 + 2 + 8 = 14` : vertical wall with horizontal extension on the left -|   
+`2 + 4 + 8 = 14` : Vertical wall with a horizontal extension on the left -|   
 etc.   

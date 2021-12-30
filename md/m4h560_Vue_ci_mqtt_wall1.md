@@ -20,9 +20,9 @@ _Bild 2: Berechnung des Wand-Typs_
 
 _Beispiele:_   
 ` 1 +  2 =  3` : Wand wie ein L   
-` 1 +  5 =  5` : Waagrechte Linie --   
+` 1 +  4 =  5` : Waagrechte Linie --   
 ` 2 +  8 = 10` : Senkrechte Linie |   
-`32 + 16 = 48` : Wand wie ein V   
+`16 + 32 = 48` : Wand wie ein V   
 `1 + 2 + 8 = 11` : senkrechte Wand mit waagrechten Ansatz rechts |-   
-`4 + 2 + 8 = 14` : senkrechte Wand mit waagrechten Ansatz links  -|   
+`2 + 4 + 8 = 14` : senkrechte Wand mit waagrechten Ansatz links  -|   
 usw.   
