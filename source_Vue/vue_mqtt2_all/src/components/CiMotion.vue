@@ -1,4 +1,4 @@
-<!--CiMotion.vue-->
+<!-- CiMotion.vue ---------------------------2022-01-01----- -->
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border"></CiBase>
@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
-import { Motion, ciMotionController } from '../controller/CiMotionController'
+import { Motion, ciMotionController } from '@/controller/CiMotionController'
 import CiBase, { Geo } from './CiBase.vue'
 
 export default defineComponent({
@@ -92,8 +92,10 @@ export default defineComponent({
       return this.geo.center(this.lastMotionTime)
     },
     line5: function (): string {
-      if (this.motion?.battery) return this.geo.center(this.motion.battery.toString())
+      if (this.motion?.text5) return this.geo.center(this.motion.text5)
+      if (this.motion?.battery) return this.geo.center(this.motion.battery)
       return ''
+      // return this.geo.center(this.sid)
     },
     // -------color line 2 to 4 depending on iMotionState------
     colorState: function (): string {
@@ -106,6 +108,7 @@ export default defineComponent({
 
     // -------color of rectangle 5 depending on battery value---
     colorBattery: function (): string {
+      if (this.motion?.text5) return 'none' // this.geo.colorOk
       if (this.motion?.battery) {
         try {
           const batt = parseInt(this.geo.center(this.motion.battery).valueOf())
