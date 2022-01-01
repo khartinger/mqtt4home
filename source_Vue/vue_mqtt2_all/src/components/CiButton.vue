@@ -1,12 +1,8 @@
-<!--CiButton.vue-->
+<!-- CiButton.vue ---------------------------2022-01-01----- -->
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border"></CiBase>
   <!--draw symbol------------------------------------------- -->
-  <!--
-  <circle :cx="cx" :cy="cy" :r="cr" :fill="colorButton" />
-  <circle :cx="cx" :cy="cy" :r="cr" fill="none" stroke="black" stroke-width="2" class="cursor" />
-  -->
   <rect :x="Rx0" :y="Ry0" :rx="Rrx" :ry="Rry" :width="Rw" :height="Rh" :fill="colorButton" stroke="black" stroke-width="2" class="cursor" />
   <!--draw extra symbol (shape)----------------------------- -->
   <path v-if="isShape" :d="drawShape" fill="none" stroke="black" stroke-width="1"/>
@@ -62,8 +58,6 @@ export default defineComponent({
     },
     geo: function (): Geo {
       const geo1 = new Geo(this.x, this.y)
-      geo1.x = this.x
-      geo1.y = this.y
       return geo1
     },
     iLines: function (): number {

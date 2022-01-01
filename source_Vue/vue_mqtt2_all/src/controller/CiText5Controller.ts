@@ -24,8 +24,6 @@ export class CiText5Controller extends CiBaseController {
     ]
   );
 
-  // geo = new Geo(0, 0);
-
   // ---------Message for this ci (control/indicator)?----------
   public onMessage (message: Message): void {
     // -------search for text5 topic---------------------------

@@ -59,8 +59,6 @@ export default defineComponent({
     },
     geo: function (): Geo {
       const geo1 = new Geo(this.x, this.y)
-      geo1.x = this.x
-      geo1.y = this.y
       return geo1
     },
     iLines: function (): number {
