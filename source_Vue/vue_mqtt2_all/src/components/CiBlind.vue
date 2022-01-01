@@ -70,7 +70,17 @@ export default defineComponent({
     },
     // -------text in line ...----------------------------------
     title: function (): string {
-      if (this.blind?.name) return this.geo.center(this.blind.name)
+      if (this.blind?.name) {
+        if (this.blind.name.includes('?')) {
+          const i2 = this.blind.name.indexOf('?')
+          const s1 = this.blind.name.substring(0, i2)
+          let s2 = '?'
+          if (this.iBlindState === 0) s2 = 'ZU' // CLOSED
+          if (this.iBlindState === 1) s2 = 'AUF' // OPEN
+          return this.geo.center(s1 + s2)
+        }
+        return this.geo.center(this.blind.name)
+      }
       return this.geo.center(this.sid)
     },
     line5: function (): string {
