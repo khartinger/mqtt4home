@@ -8,6 +8,7 @@ export interface Motion extends IBase {
   type: string;
   iMotionState: number;
   battery?: string;
+  text5?: string;
   lastMotionDate: string;
   lastMotionTime: string;
   subTopicTime: string;
