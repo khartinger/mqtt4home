@@ -5,7 +5,7 @@
   <g id="doorgroup" :transform="rotateGroup">
     <path :d="doorWall" fill="black" stroke="black" stroke-width="1"/>
     <path :d="doorRect" :fill="colorDoor" stroke="black" stroke-width="1"/>
-<!--write text-------------------------------------------- -->
+    <!--write text------------------------------------------ -->
     <text class="ciFont1" :x="geo.xt()" :y="geo.yt(1)">{{title}}</text>
     <rect :x="x1" :y="y5" :width="geo.dxi" :height="geo.dyl" :fill="colorBattery"/>
     <text class="ciFont1" :x="geo.xt()" :y="geo.yt(5)">{{line5}}</text>
@@ -72,20 +72,32 @@ export default defineComponent({
     },
     // -------text in line ...----------------------------------
     title: function (): string {
-      if (this.door?.name) return this.geo.center(this.door.name)
+      if (this.door?.name) {
+        if (this.door.name.includes('?')) {
+          const i2 = this.door.name.indexOf('?')
+          const s1 = this.door.name.substring(0, i2)
+          let s2 = '?'
+          if (this.iDoorState === 0) s2 = 'ZU' // CLOSED
+          if (this.iDoorState === 1) s2 = 'AUF' // OPEN
+          if (this.iDoorState === 2) s2 = 'SPERRE' // LOCKED
+          return this.geo.center(s1 + s2)
+        }
+        return this.geo.center(this.door.name)
+      }
       return this.geo.center(this.sid)
     },
     line5: function (): string {
       if (this.door?.text5) return this.geo.center(this.door.text5)
       if (this.door?.battery) return this.geo.center(this.door.battery)
-      return this.geo.center(this.sid)
+      return ''
+      // this.geo.center(this.sid)
     },
     // -------door color----------------------------------------
     colorDoor: function (): string {
       if (this.iDoorState === 0) return '#FF6666' //    closed (light red)
       if (this.iDoorState === 1) return 'lightgreen' // open (light green)
       if (this.iDoorState === 2) return '#C00000' //    locked (red)
-      return 'lightblue'
+      return this.geo.colorUnknown
     },
 
     x0: function (): number { return (this.x - this.geo.dxo2) },
@@ -104,7 +116,6 @@ export default defineComponent({
       if (this.door?.battery) {
         try {
           const batt = parseInt(this.geo.center(this.door.battery).valueOf())
-          // if (batt > this.geo.batteryMin) return this.geo.colorOk
           if (batt > this.geo.batteryMin) return this.geo.colorBackground
           return this.geo.colorNotOk
         } catch (error) { return 'none' }
@@ -115,23 +126,12 @@ export default defineComponent({
       let s1 = ''
       const dxof = this.geo.dxo * this.f
       const dwx = 2 * this.geo.dxm
-      const dwy2 = this.geo.dyl
+      const dwy2 = 0.75 * this.geo.dyl
       s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
       s1 += 'm-' + dxof / 2 + ',-' + dwy2 + ' h' + dwx + ' v' + (2 * dwy2) + ' h-' + dwx + ' z'
       s1 += 'm' + dxof + ',0' + ' h-' + dwx + ' v' + (2 * dwy2) + ' h' + dwx + ' z'
-      // s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
-      // s1 += 'm-' + this.geo.dxo2 + ',-' + this.geo.dyl + ' h' + 2 * this.geo.dxm + ' v' + (2 * this.geo.dyl) + ' h-' + 2 * this.geo.dxm + ' z'
-      // s1 += 'm' + this.geo.dxo + ',0' + ' h-' + 2 * this.geo.dxm + ' v' + (2 * this.geo.dyl) + ' h' + 2 * this.geo.dxm + ' z'
       return s1
     },
-    // doorRect: function (): string {
-    //   const dxd = this.geo.dxo - 2 * 2 * this.geo.dxm
-    //   let s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
-    //   s1 = s1 + ' m' + (-this.geo.dxo2 + 2 * this.geo.dxm) + ',-' + this.geo.dyl / 2
-    //   s1 = s1 + ' v' + this.geo.dyl + ' h' + dxd + ' v-' + this.geo.dyl + ' z'
-    //   s1 += 'M' + this.x.toString(10) + ',' + this.y.toString(10) + ' m0 -' + this.geo.dyl + ' v' + 2 * this.geo.dyl
-    //   return s1
-    // },
     doorRect: function (): string {
       const dxof = this.geo.dxo * this.f
       const dwx = 2 * this.geo.dxm
@@ -140,8 +140,6 @@ export default defineComponent({
       let s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
       s1 = s1 + ' m' + (-dxof / 2 + dwx) + ',-' + dby / 2
       s1 = s1 + ' v' + dby + ' h' + dxd + ' v-' + dby + ' z'
-      // s1 = s1 + ' m0,' + dby / 3 + ' h' + dxd
-      // s1 = s1 + ' m0,' + dby / 3 + ' h-' + dxd
       s1 = s1 + 'M' + this.x.toString(10) + ',' + this.y.toString(10) + ' m0,-' + dby + ' v' + 2 * dby
       return s1
     },
@@ -153,20 +151,28 @@ export default defineComponent({
       const dr = this.geo.dyl / 2 // this.geo.dyl // 15
       let a1 = r
       let a2 = r
-      if (this.doorDir.charAt(0) === 'h' || this.doorDir.charAt(0) === 'v') {
+      const sDir = this.doorDir.toLowerCase()
+      if (this.doorDir.charAt(0) === 'h' || this.doorDir.charAt(0) === 'v' || this.doorDir.charAt(0) === 'd') {
         a1 = this.geo.dyo2 - this.geo.dyl // 72
         a2 = r - Math.sqrt(r * r - a1 * a1) // 48
       }
       let s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
-      if (this.doorDir === 'H1' || this.doorDir === 'h1' || this.doorDir === 'V2' || this.doorDir === 'v2') s1 += ' m-' + r2 + ',-' + dr + ' h' + r + ' a' + r + ',' + r + ' 0 0 0 -' + a2 + ',-' + a1 + ' z'
-      if (this.doorDir === 'H2' || this.doorDir === 'h2' || this.doorDir === 'V3' || this.doorDir === 'v3') s1 += ' m' + r2 + ',-' + dr + ' h-' + r + ' a' + r + ',' + r + ' 0 0 1 ' + a2 + ',-' + a1 + ' z'
-      if (this.doorDir === 'H3' || this.doorDir === 'h3' || this.doorDir === 'V4' || this.doorDir === 'v4') s1 += ' m' + r2 + ',' + dr + ' h-' + r + ' a' + r + ',' + r + ' 0 0 0 ' + a2 + ',' + a1 + ' z'
-      if (this.doorDir === 'H4' || this.doorDir === 'h4' || this.doorDir === 'V1' || this.doorDir === 'v1') s1 += ' m-' + r2 + ',' + dr + ' h' + r + ' a' + r + ',' + r + ' 0 0 1 -' + a2 + ',' + a1 + ' z'
+      if (sDir === 'h1' || sDir === 'v2' || sDir === 'd1y' || sDir === 'd4x') s1 += ' m-' + r2 + ',-' + dr + ' h' + r + ' a' + r + ',' + r + ' 0 0 0 -' + a2 + ',-' + a1 + ' z'
+      if (sDir === 'h2' || sDir === 'v3' || sDir === 'd3x' || sDir === 'd2y') s1 += ' m' + r2 + ',-' + dr + ' h-' + r + ' a' + r + ',' + r + ' 0 0 1 ' + a2 + ',-' + a1 + ' z'
+      if (sDir === 'h3' || sDir === 'v4' || sDir === 'd3y' || sDir === 'd2x') s1 += ' m' + r2 + ',' + dr + ' h-' + r + ' a' + r + ',' + r + ' 0 0 0 ' + a2 + ',' + a1 + ' z'
+      if (sDir === 'h4' || sDir === 'v1' || sDir === 'd1x' || sDir === 'd4y') s1 += ' m-' + r2 + ',' + dr + ' h' + r + ' a' + r + ',' + r + ' 0 0 1 -' + a2 + ',' + a1 + ' z'
       return s1
     },
     rotateGroup: function (): string {
       let grad = 0
-      if (this.doorDir.charAt(0) === 'V' || this.doorDir.charAt(0) === 'v') grad = -90
+      // if (this.door) {
+      const sDir = this.doorDir.toLowerCase()
+      if (this.doorDir.length > 1) {
+        if (sDir.charAt(0) === 'v') grad = -90
+        if (sDir === 'd1x' || sDir === 'd1y' || sDir === 'd3x' || sDir === 'd3y') grad = -45
+        if (sDir === 'd2x' || sDir === 'd2y' || sDir === 'd4x' || sDir === 'd4y') grad = 45
+      // }
+      }
       return 'rotate(' + grad + ',' + this.x + ',' + this.y + ')'
     }
   },
