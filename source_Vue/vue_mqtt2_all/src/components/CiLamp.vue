@@ -1,4 +1,4 @@
-<!--CiLamp.vue-->
+<!-- CiLamp.vue -----------------------------2022-01-01----- -->
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border"></CiBase>
@@ -101,7 +101,6 @@ export default defineComponent({
       if (this.lamp?.battery) return this.geo.center(this.lamp.battery)
       return this.geo.center(this.sid)
     }
-
   },
   methods: {
     onClk: function (): void {
