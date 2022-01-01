@@ -11,7 +11,6 @@ export interface Motion extends IBase {
   text5?: string;
   lastMotionDate: string;
   lastMotionTime: string;
-  subTopicTime: string;
 }
 
 export class CiMotionController extends CiBaseController {
@@ -19,14 +18,13 @@ export class CiMotionController extends CiBaseController {
     [
       { // motion 1
         id: 'motion1',
-        type: 'zb',
+        type: 'RTCGQ11LM',
         name: 'Motion_1',
         iMotionState: -1,
         battery: '-',
         lastMotionDate: '--.--.--',
         lastMotionTime: '--:--:--',
-        subTopic: 'ci/motion/-1',
-        subTopicTime: 'ci/motion/-1/time',
+        subTopic: 'ci/motion/-1 ci/motion/-1/time',
         pubTopic: ''
       }
     ]
@@ -39,29 +37,30 @@ export class CiMotionController extends CiBaseController {
       const aSubTopic = motion.subTopic.split(' ')
       if (aSubTopic.includes(message.topic)) {
         // ---motion topic found -------------------------------
-        if (motion.type === 'd1' || motion.type === 'zb') {
-          const aPayload = JSON.parse(message.payload)
-          motion.iMotionState = 0
-          if (aPayload.occupancy === 'true') motion.iMotionState = 1
-          if (aPayload.occupancy === true) motion.iMotionState = 1
-          if (aPayload.battery) motion.battery = aPayload.battery + '%'
+        if (message.topic.includes('time')) {
+          if (message.payload.length === 15) {
+            motion.lastMotionDate = message.payload.substring(6, 8) + '.' + message.payload.substring(4, 6) + '.' + message.payload.substring(2, 4)
+            motion.lastMotionTime = message.payload.substring(9, 11) + ':' + message.payload.substring(11, 13) + ':' + message.payload.substring(13, 15)
+          } else {
+            motion.lastMotionDate = geo0.noDate
+            motion.lastMotionTime = geo0.noTime
+          }
+        } else { // -motion info--------------------------------
           motion.lastMotionDate = geo0.noDate
           motion.lastMotionTime = geo0.noTime
+          if (motion.type === 'RTCGQ11LM' || motion.type === 'E1745') {
+            const aPayload = JSON.parse(message.payload)
+            motion.iMotionState = -1
+            motion.battery = `${aPayload.battery}`
+            if (aPayload.occupancy === true) motion.iMotionState = 1
+            if (aPayload.occupancy === 'true') motion.iMotionState = 1
+            if (aPayload.occupancy === false) motion.iMotionState = 0
+            if (aPayload.occupancy === 'false') motion.iMotionState = 0
+          }
+          // if (motion.type === 'D1') {
+          // }
         }
       } // END motion topic found
-    })
-    // -------search for time topic-----------------------------
-    this.motions.forEach(motion => {
-      const aSubTopic = motion.subTopicTime.split(' ')
-      if (aSubTopic.includes(message.topic)) {
-        // ---motion topic time found --------------------------
-        const s1 = message.payload
-        if (s1.length === 15) {
-          motion.lastMotionDate = s1.substr(6, 2) + '.' + s1.substr(4, 2) + '.' + s1.substr(0, 4)
-          motion.lastMotionTime = s1.substr(9, 2) + ':' + s1.substr(11, 2) + ':' + s1.substr(13, 2)
-          // console.log('CiMotionController:onMessage: ', motion.lastMotionDate + ' ' + motion.lastMotionTime)
-        }
-      } // END motion topic time found
     })
   }
 
