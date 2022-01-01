@@ -1,8 +1,8 @@
-// ______CiPumpController.ts____________________________________
+// ______CiPumpController.ts_____________________2022-01-01_____
 import { reactive } from 'vue'
 import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
-import { Geo } from '@/components/CiBase.vue'
+import geo0 from '@/components/CiBase.vue'
 
 export interface Pump extends IBase {
   type: string;
@@ -11,7 +11,6 @@ export interface Pump extends IBase {
   sStatus?: string;
   lastPumpDate: string;
   lastPumpTime: string;
-  subTopicTime: string;
 }
 
 export class CiPumpController extends CiBaseController {
@@ -26,47 +25,40 @@ export class CiPumpController extends CiBaseController {
         sStatus: 'NO STATE',
         lastPumpDate: '--.--.--',
         lastPumpTime: '--:--:--',
-        subTopic: 'ci/pump/-1/ret/pump',
-        subTopicTime: 'ci/pump/-1/ret/pump/time',
+        subTopic: 'ci/pump/-1/ret/pump ci/pump/-1/ret/pump/time',
         pubTopic: ''
       }
     ]
   );
 
-  geo2 = new Geo(0, 0);
-
   // ---------Message for this ci (control/indicator)?----------
   public onMessage (message: Message): void {
-    // -------search for pump topic---------------------------
+    // -------search for pump topic-----------------------------
     this.pumps.forEach(pump => {
       const aSubTopic = pump.subTopic.split(' ')
       if (aSubTopic.includes(message.topic)) {
-        // ---pump topic found -------------------------------
-        if (pump.type === 'd1' || pump.type === 'esp32') {
-          const aPayload = JSON.parse(message.payload)
-          pump.iPumpState = -1
-          if (aPayload.pump === '0') pump.iPumpState = 0
-          if (aPayload.pump === '1') pump.iPumpState = 1
-          pump.sSensor = aPayload.sensor
-          pump.sStatus = aPayload.status
-          const geo3 = new Geo(0, 0)
-          pump.lastPumpDate = geo3.noDate
-          pump.lastPumpTime = geo3.noTime
+        // ---pump topic found ---------------------------------
+        if (message.topic.includes('time')) {
+          if (message.payload.length === 15) {
+            pump.lastPumpDate = message.payload.substring(6, 8) + '.' + message.payload.substring(4, 6) + '.' + message.payload.substring(2, 4)
+            pump.lastPumpTime = message.payload.substring(9, 11) + ':' + message.payload.substring(11, 13) + ':' + message.payload.substring(13, 15)
+          } else {
+            pump.lastPumpDate = geo0.noDate
+            pump.lastPumpTime = geo0.noTime
+          }
+        } else { // -pump info----------------------------------
+          pump.lastPumpDate = geo0.noDate
+          pump.lastPumpTime = geo0.noTime
+          if (pump.type === 'D1' || pump.type === 'ESP32') {
+            const aPayload = JSON.parse(message.payload)
+            pump.iPumpState = -1
+            if (aPayload.pumpe === 0 || aPayload.pumpe === '0') pump.iPumpState = 0
+            if (aPayload.pumpe === 1 || aPayload.pumpe === '1') pump.iPumpState = 1
+            pump.sSensor = `${aPayload.sensor}`
+            pump.sStatus = aPayload.status
+          }
         }
       } // END pump topic found
-    })
-    // -------search for time topic-----------------------------
-    this.pumps.forEach(pump => {
-      const aSubTopic = pump.subTopicTime.split(' ')
-      if (aSubTopic.includes(message.topic)) {
-        // ---pump topic time found --------------------------
-        const s1 = message.payload
-        if (s1.length === 15) {
-          pump.lastPumpDate = s1.substr(6, 2) + '.' + s1.substr(4, 2) + '.' + s1.substr(0, 4)
-          pump.lastPumpTime = s1.substr(9, 2) + ':' + s1.substr(11, 2) + ':' + s1.substr(13, 2)
-          // console.log('CiPumpController:onMessage: ', pump.lastPumpDate + ' ' + pump.lastPumpTime)
-        }
-      } // END pump topic time found
     })
   }
 
