@@ -63,7 +63,7 @@ export default defineComponent({
 // -----------font data-----------------------------------------
 // examples: fh_=11, tmax_=14 or 16/13, ...
 const fh_ = 11 //            font height [pixel]
-const tmax_ = 14 //          max number character per line
+const tmax_ = 11 //          max number character per line
 // -----------y direction---------------------------------------
 const dyl_ = Math.round(0.5 + 22 * fh_ / 14) //  line hight
 const dyi_ = 5 * dyl_ //                         inner hight
@@ -175,7 +175,7 @@ export const geo0 = new Geo(0, 0)
 </script>
 
 <style>
-  .ciFont1   { font-size: 11px; font-weight: bold; font-family: monospace; color: black; white-space: pre; }
+  .ciFont1   { font-size: 14px; font-weight: bold; font-family: monospace; color: black; white-space: pre; }
   .fontOK    { font-weight: bold; color: lightgreen; }
   .fontNOK   { font-weight: bold; color: red; }
   .cursor    { cursor: pointer; }
