@@ -1,4 +1,4 @@
-<!--CiBase.vue----------------------------------- 2021-12-28 -->
+<!-- CiBase.vue -----------------------------2022-01-01----- -->
 <template>
   <!--border: outer and inner rectangle--------------------- -->
   <rect v-if="border1" class="ciOut0" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
