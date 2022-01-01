@@ -63,7 +63,7 @@ export default defineComponent({
 // -----------font data-----------------------------------------
 // examples: fh_=11, tmax_=14 or 16/13, ...
 const fh_ = 11 //            font height [pixel]
-const tmax_ = 14 //          max number character per line
+const tmax_ = 10 //          max number character per line
 // -----------y direction---------------------------------------
 const dyl_ = Math.round(0.5 + 22 * fh_ / 14) //  line hight
 const dyi_ = 5 * dyl_ //                         inner hight
@@ -84,9 +84,9 @@ export class Geo {
   // =========special values====================================
   public colorOk = '#CCFFCC' //         light green
   public colorNotOk = '#FFCCCC' //      light red
-  public colorError = '#FF0000' //      red
+  public colorError = '#FF3333' //      red
   public colorOn = '#FFFF66' //         yellow
-  public colorOff = '#AAAAAA' //        light grey
+  public colorOff = '#D0D0D0' //        light grey
   public colorUnknown = '#9999FF' //    light blue
   public colorBackground = '#DDFFDD' // light green
   public noDate = '--.--.----'
@@ -155,7 +155,7 @@ export class Geo {
   // ---------trim text to line length--------------------------
   public checkLen (text: string): string {
     if (text) {
-      if (text.length > this.tmax) return text.substr(0, this.tmax)
+      if (text.length > this.tmax) return text.substring(0, this.tmax)
       return text
     }
     return ''
@@ -164,9 +164,10 @@ export class Geo {
   // ---------center text (or trim text to line length)---------
   public center (text: string): string {
     const len = text.length
-    if (len >= this.tmax) return text.substr(0, this.tmax)
-    const numBlank = Math.round((this.tmax - len) / 2)
-    // const numBlank = Math.round((this.tmax - len) / 2 - 1)
+    if (len < 1) return ''
+    if (len >= this.tmax) return text.substring(0, this.tmax)
+    const numBlank = Math.round((this.tmax - len - 1) / 2)
+    // console.log('center: text=', '|' + text + '| numBlank=' + numBlank)
     const s1 = text.padStart(numBlank + len, ' ')
     return s1
   }
@@ -175,7 +176,7 @@ export const geo0 = new Geo(0, 0)
 </script>
 
 <style>
-  .ciFont1   { font-size: 11px; font-weight: bold; font-family: monospace; color: black; white-space: pre; }
+  .ciFont1   { font-size: 14px; font-weight: bold; font-family: "DejaVu Sans Mono","monospace"; color: black; white-space: pre; }
   .fontOK    { font-weight: bold; color: lightgreen; }
   .fontNOK   { font-weight: bold; color: red; }
   .cursor    { cursor: pointer; }
