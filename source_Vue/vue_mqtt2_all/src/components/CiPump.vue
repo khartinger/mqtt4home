@@ -1,4 +1,4 @@
-<!--CiPump.vue-->
+<!-- CiPump.vue -----------------------------2022-01-01----- -->
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border"></CiBase>
@@ -103,24 +103,13 @@ export default defineComponent({
     },
     // -------color line 2 to 4 depending on iPumpState------
     colorState: function (): string {
-      // console.log('colorState: ', 'iPumpState=' + this.iPumpState)
+      if (this.sStatus === 'ALARM') return this.geo.colorAlarm
+      if (this.sStatus === 'ERROR') return this.geo.colorError
       if (this.iPumpState === 0) return this.geo.colorOff
       if (this.iPumpState === 1) return this.geo.colorOn
+      if (this.iPumpState === 2) return this.geo.colorError
       return this.geo.colorUnknown
     }
-    /*
-    // -------color of rectangle 5 depending on battery value---
-    colorBattery: function (): string {
-      if (this.pump?.battery) {
-        try {
-          const batt = parseInt(this.geo.center(this.pump.battery).valueOf())
-          if (batt > this.geo.batteryMin) return this.geo.colorOk
-          return this.geo.colorNotOk
-        } catch (error) { return 'none' }
-      }
-      return 'none'
-    }
-    */
   },
 
   methods: {
