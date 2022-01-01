@@ -1,12 +1,8 @@
-<!--CiButton2.vue-->
+<!-- CiButton2.vue --------------------------2022-01-01----- -->
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border"></CiBase>
   <!--draw symbol------------------------------------------- -->
-  <!--
-  <circle :cx="cx" :cy="cy" :r="cr" :fill="colorButton2" />
-  <circle :cx="cx" :cy="cy" :r="cr" fill="none" stroke="black" stroke-width="2" class="cursor" />
-  -->
   <rect :x="Rx0" :y="Ry0" :rx="Rrx" :ry="Rry" :width="Rw" :height="Rh" :fill="colorButton2" stroke="black" stroke-width="4" class="cursor" />
   <line :x1="Rx0" :y1="cy" :x2="Rx0 + Rw" :y2="cy" stroke="black" stroke-width="2" />
   <!--draw extra symbol (shape)----------------------------- -->
