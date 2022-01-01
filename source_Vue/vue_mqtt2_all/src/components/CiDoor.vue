@@ -113,6 +113,7 @@ export default defineComponent({
     cr: function (): number { return (2 * this.geo.dyl - 1) },
     // -------color of rectangle 5 depending on battery value---
     colorBattery: function (): string {
+      if (this.door?.text5) return 'none' // this.geo.colorOk
       if (this.door?.battery) {
         try {
           const batt = parseInt(this.geo.center(this.door.battery).valueOf())
