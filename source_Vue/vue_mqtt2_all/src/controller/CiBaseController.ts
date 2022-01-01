@@ -1,4 +1,4 @@
-// ______CiBaseController.ts____________________________________
+// ______CiBaseController.ts_____________________2022-01-01_____
 import { Message, CiMqttClient } from '@/services/CiMqttClient'
 import type { QoS } from 'mqtt'
 
