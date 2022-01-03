@@ -10,13 +10,17 @@ Letzte &Auml;nderung: 27.12.2021 <a name="up"></a>
 Dieses Vue-Projekt zeigt das Erstellen von Wand-Elementen, die dem CI-Raster entsprechen.   
 Das folgende Bild zeigt Beispiele für diese Wand-Elemente:   
 
-![wall_elements](./images/vue60_ci_mqtt_wall1_view1.png "wall_elements")   
+![wall_elements](./images/vue60_ci_mqtt_wall1_view1a.png "wall_elements")   
 _Bild 1: Wand-Elemente_   
 
 Der Typ der Grafik wird als Nummer angegeben, die als Summe folgender Werte zusammengesetzt wird:   
 
 ![wall_type](./images/vue60_ci_mqtt_wall1_type1.png "wall_type")   
 _Bild 2: Berechnung des Wand-Typs_   
+
+Zus&auml;tzlich gibt es noch die Werte 256 = Quadrat und 512 = schr&auml;g stehendes Quadrat. Diese Elemente dienen dazu, bei senkrecht aufeinander stehenden Elementen die abgeschr&auml;gten Ecken spitz zu machen.    
+
+Der "type"-Wert kann sowohl als Dezimalzahl als auch als Hexadezimalzahl angegeben werden (zB 10 = 0x0A).   
 
 _Beispiele:_   
 ` 1 +  2 =  3` : Wand wie ein L   
@@ -25,4 +29,5 @@ _Beispiele:_
 `16 + 32 = 48` : Wand wie ein V   
 `1 + 2 + 8 = 11` : senkrechte Wand mit waagrechten Ansatz rechts |-   
 `2 + 4 + 8 = 14` : senkrechte Wand mit waagrechten Ansatz links  -|   
+` 1 +  2 +256 =  259 = 0x103` : Wand wie ein L mit spitzer Ecke   
 usw.   

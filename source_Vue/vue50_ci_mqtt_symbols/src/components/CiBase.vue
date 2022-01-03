@@ -1,4 +1,4 @@
-<!-- CiBase.vue -----------------------------2022-01-01----- -->
+<!-- CiBase.vue -----------------------------2022-01-03----- -->
 <template>
   <!--border: outer and inner rectangle--------------------- -->
   <rect v-if="border1" class="ciOut0" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
@@ -177,6 +177,7 @@ export const geo0 = new Geo(0, 0)
 
 <style>
   .ciFont1   { font-size: 14px; font-weight: bold; font-family: "DejaVu Sans Mono","monospace"; color: black; white-space: pre; }
+  .ciFont2   { font-size: 28px; font-weight: bold; font-family: "DejaVu Sans Mono","monospace"; color: black; white-space: pre; }
   .fontOK    { font-weight: bold; color: lightgreen; }
   .fontNOK   { font-weight: bold; color: red; }
   .cursor    { cursor: pointer; }

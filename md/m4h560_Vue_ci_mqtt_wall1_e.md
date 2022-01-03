@@ -18,6 +18,10 @@ The type of the graphic is specified as a number, which is composed as the sum o
 ![wall_type](./images/vue60_ci_mqtt_wall1_type1.png "wall_type")   
 _Fig. 2: Calculation of the wall type_   
 
+In addition, there are the values 256 = square and 512 = slanted square. These elements are used to make the beveled corners of vertically stacked elements pointed.    
+
+The "type" value can be specified both as a decimal number and as a hexadecimal number (e.g. 10 = 0x0A).   
+
 _Examples:_   
 ` 1 + 2 = 3` : wall like an L   
 ` 1 + 4 = 5` : Horizontal line --   
@@ -25,4 +29,5 @@ _Examples:_
 `16 + 32 = 48` : Wall like a V   
 `1 + 2 + 8 = 11` : Vertical wall with a horizontal extension on the right |-   
 `2 + 4 + 8 = 14` : Vertical wall with a horizontal extension on the left -|   
+` 1 + 2 +256 = 259 = 0x103` : Wall like an L with pointed corner   
 etc.   
