@@ -2,7 +2,6 @@
 <template>
 <svg width="100%" viewBox="0 0 1600 510">
   <rect class="ciBackground" x="0" y="0" width="1600" height="510" />
-
   <text :x="1" :y="0.25*dy" class="ciFont2">Basic Elements</text>
   <text   :x="0.2*dx" :y="0.45*dy" class="ciFont1">0 = 0x00</text>
   <CiWall :x="0.5*dx" :y="1.0*dy"  sid="w01" type="0" :border="1"></CiWall>
@@ -78,7 +77,23 @@
   <CiWall :x="12.5*dx" :y="4.2*dy"   sid="w" type="9" :fx="5" :fy="0.5" :border="1"></CiWall>
   <text   :x="13.5*dx" :y="3.65*dy" class="ciFont1">0</text>
   <CiWall :x="13.5*dx" :y="4.2*dy"   sid="w" type="0" :border="1"></CiWall>
+<!--
+  <text   :x="7*dx" :y="3.65*dy" class="ciFont1">3</text>
+  <CiWall :x="7*dx" :y="4.2*dy"   sid="w" type="3" :border="1"></CiWall>
+  <text   :x="8*dx" :y="3.65*dy" class="ciFont1">5</text>
+  <CiWall :x="8*dx" :y="4.2*dy"   sid="w" type="5" :border="1"></CiWall>
+  <text   :x="9*dx" :y="3.65*dy" class="ciFont1">5</text>
+  <CiWall :x="9*dx" :y="4.2*dy"   sid="w" type="5" :border="1"></CiWall>
+  <text   :x="10*dx" :y="3.65*dy" class="ciFont1">5</text>
+  <CiWall :x="10*dx" :y="4.2*dy"   sid="w" type="5" :border="1"></CiWall>
+  <text   :x="11*dx" :y="3.65*dy" class="ciFont1">6</text>
+  <CiWall :x="11*dx" :y="4.2*dy"   sid="w" type="6" :border="1"></CiWall>
 
+  <text   :x="7*dx" :y="3.65*dy" class="ciFont1">3</text>
+  <CiWall :x="7*dx" :y="4.2*dy"   sid="w" type="3" :fx="7" :border="1"></CiWall>
+  <text   :x="11*dx" :y="3.65*dy" class="ciFont1">6</text>
+  <CiWall :x="11*dx" :y="4.2*dy"   sid="w" type="6" :border="1"></CiWall>
+-->
 </svg>
 </template>
 
@@ -86,10 +101,12 @@
 import { defineComponent } from 'vue'
 import { Geo } from './CiBase.vue'
 import CiWall from './CiWall.vue'
+import WallRoom1 from './WallRoom1.vue'
 
 export default defineComponent({
   name: 'CiMain',
   components: {
+    WallRoom1,
     CiWall
   },
   computed: {
