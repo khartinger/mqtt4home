@@ -85,6 +85,6 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [Vue+VSC: Switching lamps with MQTT (2021-12-25)](md/m4h525_Vue_ci_mqtt_lamp_button1_e.md)
 * [Vue+VSC: How to create a Vue project with multiple web pages? (2021-12-26)](md/m4h535_Vue_ci_mqtt_multipage1_e.md)   
 
-* [Vue+VSC: How to create wall elements? (2021-12-27)](md/m4h560_Vue_ci_mqtt_wall1_e.md)   
+* [Vue+VSC: How to draw a house plan? (CiWall elements) (2022-01-04)](md/m4h560_Vue_ci_mqtt_wall1_e.md)   
 
 [To the top of the page](#up)   
