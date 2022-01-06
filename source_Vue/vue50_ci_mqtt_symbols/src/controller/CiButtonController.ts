@@ -5,6 +5,7 @@ import { CiBaseController, IBase } from './CiBaseController'
 
 export interface Button extends IBase {
   iButtonState: number;
+  type: string;
   battery: string;
   shape?: string;
   color?: string;
@@ -19,6 +20,7 @@ export class CiButtonController extends CiBaseController {
         id: 'button_1',
         name: 'button/1',
         iButtonState: 0,
+        type: 'D1',
         battery: '-',
         shape: 'rect',
         color: '#CC8888',
@@ -31,10 +33,13 @@ export class CiButtonController extends CiBaseController {
       {
         id: 'button_2',
         name: 'button/2',
-        iButtonState: 0,
+        iButtonState: -9,
+        type: 'D1',
         battery: '-',
         shape: 'round',
-        subTopic: '',
+        // color: '#60B060',
+        text3: 'ON',
+        subTopic: 'ci/lamp/1/set/lamp',
         pubTopic: 'ci/button/2 ci/lamp/1/set/lamp',
         pubPayload: '1'
       },
@@ -42,6 +47,7 @@ export class CiButtonController extends CiBaseController {
         id: 'button_3',
         name: 'button/3',
         iButtonState: -9,
+        type: 'D1',
         battery: '-',
         shape: 'up',
         text3: 'UP',
@@ -55,6 +61,7 @@ export class CiButtonController extends CiBaseController {
         id: 'button_4',
         name: 'button/4',
         iButtonState: -9,
+        type: 'D1',
         battery: '-',
         shape: 'down_circle',
         text3: 'DOWN',
@@ -63,7 +70,7 @@ export class CiButtonController extends CiBaseController {
         pubTopic: 'ci/button/4',
         // pubTopic: 'ci/lamp/1/set ci/lamp/2/set',
         pubPayload: '0'
-      },
+      }
     ]
   );
 
@@ -72,10 +79,12 @@ export class CiButtonController extends CiBaseController {
       const aSubTopic = button.subTopic.split(' ')
       if (aSubTopic.includes(message.topic)) {
         // ---button found ---------------------------------
-        if ((message.payload === '1') || (message.payload === 'on')) button.iButtonState = -1
-        else {
-          if ((message.payload === '0') || (message.payload === 'off')) button.iButtonState = -2
-          else { button.iButtonState = -9 }
+        if (button.type === 'D1') {
+          if ((message.payload === '1') || (message.payload === 'on')) button.iButtonState = -1
+          else {
+            if ((message.payload === '0') || (message.payload === 'off')) button.iButtonState = -2
+            else { button.iButtonState = -9 }
+          }
         }
         // console.log('CiButtonController:onMessage: message.payload=', message.payload)
       }

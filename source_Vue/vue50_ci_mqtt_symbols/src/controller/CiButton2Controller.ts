@@ -5,6 +5,7 @@ import { CiBaseController, IBase } from './CiBaseController'
 
 export interface Button2 extends IBase {
   iButton2State: number;
+  type: string;
   battery: string;
   textOn: string;
   textOff: string;
@@ -22,21 +23,24 @@ export class CiButton2Controller extends CiBaseController {
         id: 'button2_1',
         name: 'button2/1',
         iButton2State: 0,
+        type: 'D1',
         battery: '-',
-        textOn: 'ON',
-        textOff: 'OFF',
+        textOn: 'OPEN',
+        textOff: 'CLOSE',
         shape: 'rect',
         color: '#E2B007',
+        text5: 'switchDoor...',
         subTopic: 'ci/button2/1',
-        pubTopic: 'ci/lamp/1/set/lamp',
+        pubTopic: 'ci/lamp/1/set/lamp ci/door/x/ret/status',
         pubPayload: '1',
-        pubTopicOff: 'ci/lamp/1/set/lamp',
+        pubTopicOff: 'ci/lamp/1/set/lamp ci/door/x/ret/status',
         pubPayloadOff: '0'
       },
       {
         id: 'button2_2',
         name: 'button2_2',
         iButton2State: 0,
+        type: 'D1',
         battery: '-',
         textOn: 'ON',
         textOff: 'OFF',
@@ -57,12 +61,14 @@ export class CiButton2Controller extends CiBaseController {
       const aSubTopic = button2.subTopic.split(' ')
       if (aSubTopic.includes(message.topic)) {
         // ---button2 found ---------------------------------
-        if ((message.payload === '1') || (message.payload === 'on')) button2.iButton2State = -1
-        else {
-          if ((message.payload === '0') || (message.payload === 'off')) button2.iButton2State = -2
-          else { button2.iButton2State = -9 }
-        }
+        if (button2.type === 'D1') {
+          if ((message.payload === '1') || (message.payload === 'on')) button2.iButton2State = -1
+          else {
+            if ((message.payload === '0') || (message.payload === 'off')) button2.iButton2State = -2
+            else { button2.iButton2State = -9 }
+          }
         // console.log('CiButton2Controller:onMessage: message.payload=', message.payload)
+        }
       }
     })
   }

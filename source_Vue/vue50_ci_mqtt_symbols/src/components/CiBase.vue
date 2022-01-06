@@ -1,4 +1,4 @@
-<!-- CiBase.vue -----------------------------2022-01-03----- -->
+<!-- CiBase.vue -----------------------------2022-01-06----- -->
 <template>
   <!--border: outer and inner rectangle--------------------- -->
   <rect v-if="border1" class="ciOut0" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
@@ -82,13 +82,18 @@ const dxt_ = Math.round(0.5 + fh_ / 14 + 18 / 14) // text-border
 
 export class Geo {
   // =========special values====================================
-  public colorOk = '#CCFFCC' //         light green
+  public colorOk = '#CCFFCC' //         light green 2
   public colorNotOk = '#FFCCCC' //      light red
   public colorError = '#FF3333' //      red
+  public colorAlarm = '#FF3333' //      red
   public colorOn = '#FFFF66' //         yellow
   public colorOff = '#D0D0D0' //        light grey
-  public colorUnknown = '#9999FF' //    light blue
-  public colorBackground = '#DDFFDD' // light green
+  public colorUnknown = '#add8e6' //    light blue
+  public colorBackground = '#DDFFDD' // very light green
+  public colorOpen = '#90ee90' //       light green
+  public colorClose = '#FF6666' //      light red
+  public colorLock = '#C00000' //       red
+  public colorWall = '#600000' //       dark red
   public noDate = '--.--.----'
   public noTime = '--:--:--'
   public batteryMin = 15

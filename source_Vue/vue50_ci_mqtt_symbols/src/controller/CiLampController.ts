@@ -13,7 +13,7 @@ export class CiLampController extends CiBaseController {
   public lamps: Array<Lamp> = reactive(
     [
       {
-        id: 'lamp1',
+        id: 'lamp_1',
         name: 'Lamp_1',
         iLampState: -1,
         battery: '-',
@@ -23,7 +23,7 @@ export class CiLampController extends CiBaseController {
         pubPayload: '-1'
       },
       {
-        id: 'lamp2',
+        id: 'lamp_2',
         name: 'Lamp_2',
         iLampState: -1,
         battery: '-',
