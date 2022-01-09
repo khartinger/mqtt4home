@@ -20,9 +20,9 @@ export class CiSocketController extends CiBaseController {
         iSocketState: -9, // 0x9999FF,
         battery: '-',
         text5: 'ci/socket/1',
-        subTopic: 'ci/socket/1/set',
-        pubTopic: 'ci/socket/1',
-        pubPayload: '0'
+        subTopic: 'ci/socket/1',
+        pubTopic: 'ci/socket/1/set',
+        pubPayload: 'TOGGLE'
       }
     ]
   );

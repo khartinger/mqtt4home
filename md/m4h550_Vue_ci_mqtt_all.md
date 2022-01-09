@@ -10,7 +10,7 @@ Letzte &Auml;nderung: 1.1.2022 <a name="up"></a>
 Dieses Vue-Projekt zeigt viele Steuer- und Anzeigeelemente zur Verwendung in Haussteuerungen ("Control and Indicator elements", CI-Elemente). Von den meisten Elementen (Symbolen) gibt es mehrere Darstellungsvarianten, die in weiteren Projekten genauer erläutert werden.   
 Beispiele für ergänzende Projekte sind:   
 * Wandelemente CiWall [(vue60_ci_mqtt_wall1)](vue60_ci_mqtt_wall1)   
-* Fenster, Türen und Rollos[(vue65_ci_mqtt_door_window)](vue65_ci_mqtt_door_window)   
+* Fenster, Türen und Rollos [(vue65_ci_mqtt_door_etc)](vue65_ci_mqtt_door_window)   
 
 ![CI-Symbole](./images/vue50_ci_mqtt_symbol_view1.png "CI-Symbole")   
 _Bild 1: CI-Symbole_   

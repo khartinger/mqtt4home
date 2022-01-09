@@ -1,4 +1,4 @@
-<!-- CiBase.vue -----------------------------2022-01-06----- -->
+<!-- CiBase.vue -----------------------------2022-01-08----- -->
 <template>
   <!--border: outer and inner rectangle--------------------- -->
   <rect v-if="border1" class="ciOut0" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
@@ -79,6 +79,7 @@ const dxm_ = dym_ //                             left margin
 const dxi_ = dxo_ - 2 * dxm_ //                  inner width
 const dxi2_ = dxo2_ - dxm_ //                    half dxi_
 const dxt_ = Math.round(0.5 + fh_ / 14 + 18 / 14) // text-border
+const dw2_ = Math.round(dyl_ / 2) //             half wall thickness
 
 export class Geo {
   // =========special values====================================
@@ -87,16 +88,22 @@ export class Geo {
   public colorError = '#FF3333' //      red
   public colorAlarm = '#FF3333' //      red
   public colorOn = '#FFFF66' //         yellow
+  public colorOn2 = '#FFD700' //        gold
   public colorOff = '#D0D0D0' //        light grey
+  public colorOff2 = '#505050' //        dark grey
   public colorUnknown = '#add8e6' //    light blue
   public colorBackground = '#DDFFDD' // very light green
   public colorOpen = '#90ee90' //       light green
   public colorClose = '#FF6666' //      light red
   public colorLock = '#C00000' //       red
-  public colorWall = '#600000' //       dark red
+  public colorWall = '#C00000' //       dark red 6
   public noDate = '--.--.----'
   public noTime = '--:--:--'
   public batteryMin = 15
+  // ---------texts in different languages----------------------
+  public textOpen = 'OPEN' // 'AUF' //    OPEN
+  public textClose = 'CLOSE' // 'ZU' //    CLOSE
+  public textLock = 'LOCK' // 'SPERRE' // LOCK
 
   // =========relative geometric values=========================
   // ---------font data-----------------------------------------
@@ -117,6 +124,8 @@ export class Geo {
   public dxi = dxi_ //            inner width
   public dxi2 = dxi2_ //          half inner width
   public dxt = dxt_ //            text start in x direction
+  // ---------other dimensions----------------------------------
+  public dw2 = dw2_ //            half wall thickness
 
   // =========absolute geometric values=========================
   // ---------center of symbol----------------------------------

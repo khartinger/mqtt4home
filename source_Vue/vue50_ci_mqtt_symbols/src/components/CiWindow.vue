@@ -1,18 +1,18 @@
-<!-- CiWindow.vue ---------------------------2022-01-01----- -->
+<!-- CiWindow.vue ---------------------------2022-01-08----- -->
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border"></CiBase>
   <g id="windowgroup" :transform="rotateGroup">
-    <path :d="windowWall" fill="black" stroke="black" stroke-width="1"/>
+    <path :d="windowWall" :fill="colorWall" :stroke="colorWall" stroke-width="1"/>
     <path :d="windowRect" :fill="colorWindow" stroke="black" stroke-width="1"/>
     <!--write text------------------------------------------ -->
     <text class="ciFont1" :x="geo.xt()" :y="geo.yt(1)">{{title}}</text>
-    <rect :x="x1" :y="y5" :width="geo.dxi" :height="geo.dyl" :fill="colorBattery"/>
+    <rect :x="geo.x1()" :y="geo.yr(5)" :width="geo.dxi" :height="geo.dyl" :fill="colorBattery"/>
     <text class="ciFont1" :x="geo.xt()" :y="geo.yt(5)">{{line5}}</text>
     <!--draw open window-------------------------------------- -->
     <path v-if="iWindowState===1" :d="windowArc" fill="none" stroke="black" stroke-width="1"/>
   </g>
-    <rect @click="onClk()" class="ciClick" :x="x0" :y="y0" :width="geo.dxo" :height="geo.dyo" />
+    <rect @click="onClk()" class="ciClick" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
 </template>
 
 <script lang="ts">
@@ -43,7 +43,7 @@ export default defineComponent({
       type: String,
       required: true
     },
-    windowDir: {
+    dir: {
       type: String,
       required: true
     },
@@ -52,7 +52,12 @@ export default defineComponent({
       required: false,
       default: 1
     },
-    type: {
+    text5: {
+      type: String,
+      required: false,
+      default: ''
+    },
+    shape: {
       type: String,
       required: false,
       default: ''
@@ -77,9 +82,9 @@ export default defineComponent({
           const i2 = this.window.name.indexOf('?')
           const s1 = this.window.name.substring(0, i2)
           let s2 = '?'
-          if (this.iWindowState === 0) s2 = 'ZU' // CLOSED
-          if (this.iWindowState === 1) s2 = 'AUF' // OPEN
-          if (this.iWindowState === 2) s2 = 'SPERRE' // LOCKED
+          if (this.iWindowState === 0) s2 = this.geo.textClose // CLOSED
+          if (this.iWindowState === 1) s2 = this.geo.textOpen // OPEN
+          if (this.iWindowState === 2) s2 = this.geo.textLock // LOCKED
           return this.geo.center(s1 + s2)
         }
         return this.geo.center(this.window.name)
@@ -87,7 +92,19 @@ export default defineComponent({
       return this.geo.center(this.sid)
     },
     line5: function (): string {
-      if (this.window?.text5) return this.geo.center(this.window.text5)
+      if (this.text5.length > 0) return this.text5
+      if (this.window?.text5) {
+        if (this.window.text5.includes('?')) {
+          const i2 = this.window.text5.indexOf('?')
+          const s1 = this.window.text5.substring(0, i2)
+          let s2 = '?'
+          if (this.iWindowState === 0) s2 = this.geo.textClose // CLOSED
+          if (this.iWindowState === 1) s2 = this.geo.textOpen // OPEN
+          if (this.iWindowState === 2) s2 = this.geo.textLock // LOCKED
+          return this.geo.center(s1 + s2)
+        }
+        return this.geo.center(this.window.text5)
+      }
       if (this.window?.battery) return this.geo.center(this.window.battery)
       return ''
       // return this.geo.center(this.sid)
@@ -103,17 +120,6 @@ export default defineComponent({
       if (this.iWindowState === 2) return this.geo.colorLock //    locked (red)
       return this.geo.colorUnknown
     },
-    x0: function (): number { return (this.x - this.geo.dxo2) },
-    y0: function (): number { return (this.y - this.geo.dyo2) },
-    x1: function (): number { return (this.x - this.geo.dxi2) },
-    y1: function (): number { return (this.y - this.geo.dyi2) },
-    y2: function (): number { return (this.y - this.geo.dyi2 + 1 * this.geo.dyl) },
-    y3: function (): number { return (this.y - this.geo.dyi2 + 2 * this.geo.dyl) },
-    y4: function (): number { return (this.y - this.geo.dyi2 + 3 * this.geo.dyl) },
-    y5: function (): number { return (this.y - this.geo.dyi2 + 4 * this.geo.dyl) },
-    cx: function (): number { return (this.x) },
-    cy: function (): number { return (this.y + this.geo.dyl / 2) },
-    cr: function (): number { return (2 * this.geo.dyl - 1) },
     // -------color of rectangle 5 depending on battery value---
     colorBattery: function (): string {
       if (this.window?.battery) {
@@ -127,11 +133,10 @@ export default defineComponent({
       return 'none'
     },
     windowWall: function (): string {
-      let s1 = ''
       const dxof = this.geo.dxo * this.f
       const dwx = 2 * this.geo.dxm
       const dwy2 = 0.5 * this.geo.dyl
-      s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
+      let s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
       s1 += 'm-' + dxof / 2 + ',-' + dwy2 + ' h' + dwx + ' v' + (2 * dwy2) + ' h-' + dwx + ' z'
       s1 += 'm' + dxof + ',0' + ' h-' + dwx + ' v' + (2 * dwy2) + ' h' + dwx + ' z'
       return s1
@@ -146,10 +151,11 @@ export default defineComponent({
       s1 = s1 + ' v' + dby + ' h' + dxd + ' v-' + dby + ' z'
       s1 = s1 + ' m0,' + dby / 3 + ' h' + dxd
       s1 = s1 + ' m0,' + dby / 3 + ' h-' + dxd
-      s1 = s1 + 'M' + this.x.toString(10) + ',' + this.y.toString(10) + ' m0,-' + dby + ' v' + 2 * dby
+      // s1 = s1 + 'M' + this.x.toString(10) + ',' + this.y.toString(10) + ' m0,-' + dby + ' v' + 2 * dby
       return s1
     },
     windowArc: function (): string {
+      if (this.dir.length < 2) return ''
       const dxof = this.geo.dxo * this.f
       const dwx = 2 * this.geo.dxm
       const r = dxof - 2 * dwx
@@ -157,15 +163,16 @@ export default defineComponent({
       const dr = this.geo.dyl / 2 // this.geo.dyl // 15
       let a1 = r
       let a2 = r
-      const sDir = this.windowDir.toLowerCase()
-      if (this.windowDir.charAt(0) === 'h' || this.windowDir.charAt(0) === 'v' || this.windowDir.charAt(0) === 'd') {
+      let dxy = r / 2 // 3 * this.geo.dxm
+      const sDir = this.dir.toLowerCase()
+      if (this.dir.charAt(0) === 'h' || this.dir.charAt(0) === 'v' || this.dir.charAt(0) === 'd') {
         a1 = this.geo.dyo2 - this.geo.dyl // 72
         a2 = r - Math.sqrt(r * r - a1 * a1) // 48
+        dxy = 0.9 * this.geo.dyl
       }
       let s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
       // console.log('windowArc: this.type=', this.type)
-      if (this.type === 'rect') {
-        const dxy = 3 * this.geo.dxm
+      if (this.shape === 'rect') {
         if (sDir === 'h1' || sDir === 'v2' || sDir === 'd1y' || sDir === 'd4x') s1 += ' m-' + r2 + ',-' + dr + ' h' + r + ' v-' + dxy + ' h-' + r + ' z'
         if (sDir === 'h2' || sDir === 'v3' || sDir === 'd3x' || sDir === 'd2y') s1 += ' m' + r2 + ',-' + dr + ' h-' + r + ' v-' + dxy + ' h' + r + ' z'
         if (sDir === 'h3' || sDir === 'v4' || sDir === 'd3y' || sDir === 'd2x') s1 += ' m' + r2 + ',' + dr + ' h-' + r + ' v' + dxy + ' h' + r + ' z'
@@ -180,8 +187,8 @@ export default defineComponent({
     },
     rotateGroup: function (): string {
       let grad = 0
-      const sDir = this.windowDir.toLowerCase()
-      if (this.windowDir.length > 1) {
+      const sDir = this.dir.toLowerCase()
+      if (this.dir.length > 1) {
         if (sDir.charAt(0) === 'v') grad = -90
         if (sDir === 'd1x' || sDir === 'd1y' || sDir === 'd3x' || sDir === 'd3y') grad = -45
         if (sDir === 'd2x' || sDir === 'd2y' || sDir === 'd4x' || sDir === 'd4y') grad = 45

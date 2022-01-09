@@ -11,7 +11,7 @@
   <CiDoor   :x="0.0*dx" :y="1.3*dy" sid="doorh1" door-dir="h1" :border="0"></CiDoor>
   <CiDoor   :x="1.5*dx" :y="1.3*dy" sid="doorD4x" door-dir="D4x" :border="0"></CiDoor>
   <CiWindow :x="3.0*dx" :y="1.3*dy" sid="window_1" window-dir="V4" :border="0"></CiWindow>
-  <CiWindow :x="4.5*dx" :y="1.3*dy" sid="window_2" window-dir="d1x" :f="1.5" :border="0"></CiWindow>
+  <CiWindow :x="4.5*dx" :y="1.3*dy" sid="window_2" window-dir="d1x" :f="1.8" :border="1"></CiWindow>
   <CiBlind  :x="6.0*dx" :y="1.3*dy" sid="blind_1" blind-dir="h1" :border="0"></CiBlind>
   <CiBlind  :x="7.5*dx" :y="1.3*dy" :f="2" sid="blind_2" blind-dir="V1" :border="0"></CiBlind>
 
@@ -34,7 +34,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { Geo } from './CiBase.vue'
-import CiBlind from './CiBlind.vue'
+import CiBlind from './CiBlind_old.vue'
 import CiButton from './CiButton.vue'
 import CiButton2 from './CiButton2.vue'
 import CiDoor from './CiDoor.vue'

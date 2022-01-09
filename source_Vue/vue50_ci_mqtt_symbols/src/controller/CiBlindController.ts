@@ -1,10 +1,11 @@
-// ______CiBlindController.ts____________________________________
+// ______CiBlindController.ts____________________2022-01-08_____
 import { reactive } from 'vue'
 import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
 export interface Blind extends IBase {
   iBlindState: number;
-  type?: string;
+  type: string;
+  iMotorState?: number;
   battery?: string;
   text5?: string;
 }
@@ -18,7 +19,7 @@ export class CiBlindController extends CiBaseController {
         iBlindState: -1,
         type: 'D1',
         battery: '-',
-        subTopic: 'ci/blind/1/ret ci/door/x/ret/status',
+        subTopic: 'ci/blind/1/ret ci/blind/1/ret/motor ci/blind/x/ret/status',
         pubTopic: ''
       },
       {
@@ -27,7 +28,7 @@ export class CiBlindController extends CiBaseController {
         iBlindState: -1,
         type: 'D1',
         battery: '-',
-        subTopic: 'ci/blind/1/ret ci/door/x/ret/status',
+        subTopic: 'ci/blind/1/ret ci/blind/x/ret/status',
         pubTopic: ''
       }
     ]
@@ -42,7 +43,7 @@ export class CiBlindController extends CiBaseController {
         if (blind.type === 'zb') {
           const aPayload = JSON.parse(message.payload)
           blind.battery = `${aPayload.battery}`
-          const doorstate_ = String(aPayload.contact)
+          const doorstate_ = `${aPayload.contact}`
           if (doorstate_ === 'true') blind.iBlindState = 0
           else {
             if (doorstate_ === 'false') blind.iBlindState = 1
@@ -61,12 +62,16 @@ export class CiBlindController extends CiBaseController {
           if (message.topic.includes('voltage')) {
             blind.battery = `${message.payload}`
           }
+          if (message.topic.includes('motor')) {
+            const aPayload = JSON.parse(message.payload)
+            if (aPayload === 1) blind.iMotorState = 1
+            if (aPayload === 0) blind.iMotorState = 0
+            if (aPayload === -1) blind.iMotorState = -1
+            if (aPayload.motor === -1) blind.iMotorState = -1
+            if (aPayload.motor === 0) blind.iMotorState = 0
+            if (aPayload.motor === 1) blind.iMotorState = 1
+          }
         }
-        // if ((message.payload === '1') || (message.payload === 'on')) blind.iBlindState = 1
-        // else {
-        //   if ((message.payload === '0') || (message.payload === 'off')) blind.iBlindState = 0
-        //   else { blind.iBlindState = -1 }
-        // }
       } // END blind topic found
     })
   }

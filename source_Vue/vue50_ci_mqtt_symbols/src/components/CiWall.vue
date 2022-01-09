@@ -64,7 +64,7 @@ export default defineComponent({
       return geo1
     },
     wallColor: function (): string {
-      return '#600000'
+      return this.geo.colorWall
     },
     wallBorder: function (): number {
       if (this.border) return this.border
@@ -73,7 +73,7 @@ export default defineComponent({
     wallPath: function (): string {
       if (this.type.length < 1) return '' // no type
       // ----calculation of wall thickness values (integers!)---
-      const dw2 = Math.round(this.geo.dyl / 2) // start value
+      const dw2 = this.geo.dw2 // start value
       const dw = dw2 * 2
       const dw2W = Math.round(dw2 * Math.sqrt(2)) // = 2 * dw2V // = dw2 * Math.sqrt(2)
       const a = dw2W - dw2

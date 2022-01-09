@@ -117,11 +117,11 @@ In line 5 (`line5`) of the symbol different texts can be output:
 2. text entered in the controller under the `text5` property. If this text contains a question mark, it will be replaced by `OPEN`, `CLOSE` or `LOCK` (constant `textOpen`, `textClose` and `textLock` in `CiBase.vue`).   
   The text is centered and limited in length (`tmax_` in `CiBase.vue`).   
 3. if the element contains a `battery` property, this value is displayed centered.   
-Otherwise, no text is output.   
+4. Otherwise, no text is output.   
   
 
 # Special properties
-## Window shape (shape)
+## Window shape
 By default, open windows are drawn with an arc. By specifying `shape="rect"` a rectangle is drawn instead of the arc:   
 ![window shapes](./images/vue65_ci_mqtt_door_etc_winshape.png "window shapes")   
 _Fig. 5: Window shapes_   

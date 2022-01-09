@@ -1,16 +1,16 @@
-<!--CiBlind.vue-->
+<!-- CiBlind.vue ----------------------------2022-01-08----- -->
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border"></CiBase>
   <g id="blindgroup" :transform="rotateGroup">
-    <path :d="blindWall" fill="black" stroke="black" stroke-width="1"/>
-    <path :d="blindRect" :fill="colorBlind" stroke="black" stroke-width="1"/>
-  <!--write text-------------------------------------------- -->
+    <path :d="blindMotor" :fill="colorMotor" stroke="black" stroke-width="1"/>
+    <path :d="blindRect" :fill="colorBlind" :stroke="colorBlindline" :stroke-width="1"/>
+    <!--write text------------------------------------------ -->
     <text class="ciFont1" :x="geo.xt()" :y="geo.yt(1)">{{title}}</text>
-    <rect :x="x1" :y="y5" :width="geo.dxi" :height="geo.dyl" :fill="colorBattery"/>
+    <rect :x="geo.x1()" :y="geo.yr(5)" :width="geo.dxi" :height="geo.dyl" :fill="colorBattery"/>
     <text class="ciFont1" :x="geo.xt()" :y="geo.yt(5)">{{line5}}</text>
   </g>
-    <rect @click="onClk()" class="ciClick" :x="x0" :y="y0" :width="geo.dxo" :height="geo.dyo" />
+  <rect @click="onClk()" class="ciClick" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
 </template>
 
 <script lang="ts">
@@ -41,7 +41,7 @@ export default defineComponent({
       type: String,
       required: true
     },
-    blindDir: {
+    dir: {
       type: String,
       required: true
     },
@@ -49,6 +49,16 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 1
+    },
+    text5: {
+      type: String,
+      required: false,
+      default: ''
+    },
+    type: {
+      type: String,
+      required: false,
+      default: ''
     }
   },
   computed: {
@@ -70,8 +80,9 @@ export default defineComponent({
           const i2 = this.blind.name.indexOf('?')
           const s1 = this.blind.name.substring(0, i2)
           let s2 = '?'
-          if (this.iBlindState === 0) s2 = 'ZU' // CLOSED
-          if (this.iBlindState === 1) s2 = 'AUF' // OPEN
+          if (this.iBlindState === 0) s2 = this.geo.textClose // CLOSED
+          if (this.iBlindState === 1) s2 = this.geo.textOpen // OPEN
+          if (this.iBlindState === 2) s2 = this.geo.textLock // LOCKED
           return this.geo.center(s1 + s2)
         }
         return this.geo.center(this.blind.name)
@@ -79,37 +90,47 @@ export default defineComponent({
       return this.geo.center(this.sid)
     },
     line5: function (): string {
-      if (this.blind?.text5) return this.geo.center(this.blind.text5)
+      if (this.text5.length > 0) return this.text5
+      if (this.blind?.text5) {
+        if (this.blind.text5.includes('?')) {
+          const i2 = this.blind.text5.indexOf('?')
+          const s1 = this.blind.text5.substring(0, i2)
+          let s2 = '?'
+          if (this.iBlindState === 0) s2 = this.geo.textClose // CLOSED
+          if (this.iBlindState === 1) s2 = this.geo.textOpen // OPEN
+          if (this.iBlindState === 2) s2 = this.geo.textLock // LOCKED
+          return this.geo.center(s1 + s2)
+        }
+        return this.geo.center(this.blind.text5)
+      }
       if (this.blind?.battery) return this.geo.center(this.blind.battery)
       return ''
+      // return this.geo.center(this.sid)
     },
     // -------color wall----------------------------------------
-    colorWall: function (): string {
+    colorMotor: function (): string {
+      try {
+        if (this.blind?.iMotorState === undefined) return this.geo.colorWall
+        if (this.blind) {
+          if (this.blind.iMotorState === -1) return this.geo.colorOn2 // motor down
+          if (this.blind.iMotorState === 0) return this.geo.colorOff2 // motor stopp
+          if (this.blind.iMotorState === 1) return this.geo.colorOn // motor up
+          return this.geo.colorUnknown
+        }
+      } catch (error) { console.error(error) }
       return this.geo.colorWall
     },
-
     // -------blind color----------------------------------------
     colorBlind: function (): string {
-      if (this.iBlindState === 0) return this.geo.colorClose //    closed (light red)
-      if (this.iBlindState === 1) return this.geo.colorOpen // open (light green)
+      if (this.iBlindState === 0) return this.geo.colorOff2 //    closed (light red)
+      if (this.iBlindState === 1) return this.geo.colorBackground // open (light green)
       if (this.iBlindState === 2) return this.geo.colorLock //    locked (red)
       return this.geo.colorUnknown
     },
-
-    x0: function (): number { return (this.x - this.geo.dxo2) },
-    y0: function (): number { return (this.y - this.geo.dyo2) },
-    x1: function (): number { return (this.x - this.geo.dxi2) },
-    y1: function (): number { return (this.y - this.geo.dyi2) },
-    y2: function (): number { return (this.y - this.geo.dyi2 + 1 * this.geo.dyl) },
-    y3: function (): number { return (this.y - this.geo.dyi2 + 2 * this.geo.dyl) },
-    y4: function (): number { return (this.y - this.geo.dyi2 + 3 * this.geo.dyl) },
-    y5: function (): number { return (this.y - this.geo.dyi2 + 4 * this.geo.dyl) },
-    cx: function (): number { return (this.x) },
-    cy: function (): number {
-      return (this.y + this.geo.dyl / 2)
-    },
-    cr: function (): number {
-      return (2 * this.geo.dyl - 1)
+    // -------color of line around blind rectangle--------------
+    colorBlindline: function (): string {
+      if (this.iBlindState === 1) return this.geo.colorOff
+      return 'black'
     },
     // -------color of rectangle 5 depending on battery value---
     colorBattery: function (): string {
@@ -119,36 +140,59 @@ export default defineComponent({
           // if (batt > this.geo.batteryMin) return this.geo.colorOk
           if (batt > this.geo.batteryMin) return this.geo.colorBackground
           return this.geo.colorNotOk
-        } catch (error) { return 'none' }
+        } catch (error) { console.error(error) }
       }
       return 'none'
     },
-    blindWall: function (): string {
-      let s1 = ''
+    // strokewidth: function (): string {
+    //   return '2'
+    // },
+    blindMotor: function (): string {
       const dxof = this.geo.dxo * this.f
-      const dwx = 2 * this.geo.dxm
-      const dwy2 = this.geo.dyl
-      s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
-      s1 += 'm-' + dxof / 2 + ',-' + dwy2 + ' h' + dwx + ' v' + (2 * dwy2) + ' h-' + dwx + ' z'
-      s1 += 'm' + dxof + ',0' + ' h-' + dwx + ' v' + (2 * dwy2) + ' h' + dwx + ' z'
+      const dyb01 = 3 * this.geo.dyl / 2
+      const dmx = 2 * this.geo.dxm
+      const dmy = dyb01 - this.geo.dw2
+      const sDir = this.dir.toLowerCase()
+      let s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
+      if (sDir === 'h1' || sDir === 'h2' || sDir === 'v2' || sDir === 'v4' || sDir === 'd1y' || sDir === 'd2y' || sDir === 'd3x' || sDir === 'd4x') {
+        s1 += 'm-' + dxof / 2 + ',-' + dyb01 + ' h' + dmx + ' v' + dmy + ' h-' + dmx + ' z'
+        s1 += 'm' + dxof + ',0 h-' + dmx + ' v' + dmy + ' h' + dmx + ' z'
+      }
+      if (sDir === 'h3' || sDir === 'h4' || sDir === 'v1' || sDir === 'v3' || sDir === 'd1x' || sDir === 'd2x' || sDir === 'd3y' || sDir === 'd4y') {
+        s1 += 'm-' + dxof / 2 + ',' + dyb01 + ' h' + dmx + ' v-' + dmy + ' h-' + dmx + ' z'
+        s1 += 'm' + dxof + ',0 h-' + dmx + ' v-' + dmy + ' h' + dmx + ' z'
+      }
       return s1
     },
     blindRect: function (): string {
+      if (this.dir.length < 2) return ''
       const dxof = this.geo.dxo * this.f
-      const dwx = 2 * this.geo.dxm
-      const dby = this.geo.dyl
-      const dxd = dxof - 2 * dwx
+      const dmx = 2 * this.geo.dxm
+      const dxb = dxof - 2 * dmx
+      const dyb01 = 3 * this.geo.dyl / 2
+      const dyb0 = this.geo.dyl * 3 / 4
+      const dyb1 = dyb01 - dyb0
+      const dyb2 = this.geo.dyi / 2 - dyb0
+      const sDir = this.dir.toLowerCase()
+      let dybx = dyb1
+      if (this.dir.charAt(0) === 'H' || this.dir.charAt(0) === 'V' || this.dir.charAt(0) === 'D') dybx = dyb2
       let s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
-      s1 = s1 + ' m' + (-dxof / 2 + dwx) + ',-' + dby / 2
-      s1 = s1 + ' v' + dby + ' h' + dxd + ' v-' + dby + ' z'
-      s1 = s1 + ' m0,' + dby / 3 + ' h' + dxd
-      s1 = s1 + ' m0,' + dby / 3 + ' h-' + dxd
-      s1 = s1 + 'M' + this.x.toString(10) + ',' + this.y.toString(10) + ' m0,-' + dby + ' v' + 2 * dby
+      if (sDir === 'h1' || sDir === 'h2' || sDir === 'v2' || sDir === 'v4' || sDir === 'd1y' || sDir === 'd2y' || sDir === 'd3x' || sDir === 'd4x') {
+        s1 = s1 + ' m-' + (dxof / 2 - dmx) + ',-' + dyb0 + ' h' + dxb + 'v-' + dybx + ' h-' + dxb + ' z'
+      }
+      if (sDir === 'h3' || sDir === 'h4' || sDir === 'v1' || sDir === 'v3' || sDir === 'd1x' || sDir === 'd2x' || sDir === 'd3y' || sDir === 'd4y') {
+        s1 = s1 + ' m-' + (dxof / 2 - dmx) + ',' + dyb0 + ' h' + dxb + 'v' + dybx + ' h-' + dxb + ' z'
+      }
       return s1
     },
     rotateGroup: function (): string {
       let grad = 0
-      if (this.blindDir.charAt(0) === 'V' || this.blindDir.charAt(0) === 'v') grad = -90
+      const sDir = this.dir.toLowerCase()
+      if (this.dir.length > 1) {
+        if (sDir.charAt(0) === 'v') grad = -90
+        if (sDir === 'd1x' || sDir === 'd1y' || sDir === 'd3x' || sDir === 'd3y') grad = -45
+        if (sDir === 'd2x' || sDir === 'd2y' || sDir === 'd4x' || sDir === 'd4y') grad = 45
+      }
       return 'rotate(' + grad + ',' + this.x + ',' + this.y + ')'
     }
   },

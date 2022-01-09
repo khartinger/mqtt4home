@@ -1,11 +1,11 @@
-// ______CiWindowController.ts___________________2022-01-01_____
+// ______CiWindowController.ts___________________2022-01-08_____
 import { reactive } from 'vue'
 import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
 
 export interface Window extends IBase {
   iWindowState: number;
-  type?: string;
+  type: string;
   battery?: string;
   text5?: string;
 }
@@ -18,6 +18,7 @@ export class CiWindowController extends CiBaseController {
         name: 'Window_V4',
         iWindowState: -1,
         type: 'D1',
+        text5: '?',
         subTopic: 'ci/window/1/ret ci/door/x/ret/status',
         pubTopic: ''
       },

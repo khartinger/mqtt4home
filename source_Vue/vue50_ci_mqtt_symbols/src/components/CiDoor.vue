@@ -1,18 +1,18 @@
-<!-- CiDoor.vue -----------------------------2022-01-01----- -->
+<!-- CiDoor.vue -----------------------------2022-01-08----- -->
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border"></CiBase>
   <g id="doorgroup" :transform="rotateGroup">
-    <path :d="doorWall" :fill="colorWall" stroke="colorWall" stroke-width="1"/>
+    <path :d="doorWall" :fill="colorWall" :stroke="colorWall" stroke-width="1"/>
     <path :d="doorRect" :fill="colorDoor" stroke="black" stroke-width="1"/>
     <!--write text------------------------------------------ -->
     <text class="ciFont1" :x="geo.xt()" :y="geo.yt(1)">{{title}}</text>
-    <rect :x="x1" :y="y5" :width="geo.dxi" :height="geo.dyl" :fill="colorBattery"/>
+    <rect :x="geo.x1()" :y="geo.yr(5)" :width="geo.dxi" :height="geo.dyl" :fill="colorBattery"/>
     <text class="ciFont1" :x="geo.xt()" :y="geo.yt(5)">{{line5}}</text>
     <!--draw open door-------------------------------------- -->
     <path v-if="iDoorState===1" :d="doorArc" fill="none" stroke="black" stroke-width="1"/>
   </g>
-    <rect @click="onClk()" class="ciClick" :x="x0" :y="y0" :width="geo.dxo" :height="geo.dyo" />
+    <rect @click="onClk()" class="ciClick" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
 </template>
 
 <script lang="ts">
@@ -43,7 +43,7 @@ export default defineComponent({
       type: String,
       required: true
     },
-    doorDir: {
+    dir: {
       type: String,
       required: true
     },
@@ -51,6 +51,11 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 1
+    },
+    text5: {
+      type: String,
+      required: false,
+      default: ''
     }
   },
   computed: {
@@ -72,9 +77,9 @@ export default defineComponent({
           const i2 = this.door.name.indexOf('?')
           const s1 = this.door.name.substring(0, i2)
           let s2 = '?'
-          if (this.iDoorState === 0) s2 = 'ZU' // CLOSED
-          if (this.iDoorState === 1) s2 = 'AUF' // OPEN
-          if (this.iDoorState === 2) s2 = 'SPERRE' // LOCKED
+          if (this.iDoorState === 0) s2 = this.geo.textClose // CLOSED
+          if (this.iDoorState === 1) s2 = this.geo.textOpen // OPEN
+          if (this.iDoorState === 2) s2 = this.geo.textLock // LOCKED
           return this.geo.center(s1 + s2)
         }
         return this.geo.center(this.door.name)
@@ -82,7 +87,19 @@ export default defineComponent({
       return this.geo.center(this.sid)
     },
     line5: function (): string {
-      if (this.door?.text5) return this.geo.center(this.door.text5)
+      if (this.text5.length > 0) return this.text5
+      if (this.door?.text5) {
+        if (this.door.text5.includes('?')) {
+          const i2 = this.door.text5.indexOf('?')
+          const s1 = this.door.text5.substring(0, i2)
+          let s2 = '?'
+          if (this.iDoorState === 0) s2 = this.geo.textClose // CLOSED
+          if (this.iDoorState === 1) s2 = this.geo.textOpen // OPEN
+          if (this.iDoorState === 2) s2 = this.geo.textLock // LOCKED
+          return this.geo.center(s1 + s2)
+        }
+        return this.geo.center(this.door.text5)
+      }
       if (this.door?.battery) return this.geo.center(this.door.battery)
       return ''
       // return this.geo.center(this.sid)
@@ -98,18 +115,6 @@ export default defineComponent({
       if (this.iDoorState === 2) return this.geo.colorLock //    locked (red)
       return this.geo.colorUnknown
     },
-
-    x0: function (): number { return (this.x - this.geo.dxo2) },
-    y0: function (): number { return (this.y - this.geo.dyo2) },
-    x1: function (): number { return (this.x - this.geo.dxi2) },
-    y1: function (): number { return (this.y - this.geo.dyi2) },
-    y2: function (): number { return (this.y - this.geo.dyi2 + 1 * this.geo.dyl) },
-    y3: function (): number { return (this.y - this.geo.dyi2 + 2 * this.geo.dyl) },
-    y4: function (): number { return (this.y - this.geo.dyi2 + 3 * this.geo.dyl) },
-    y5: function (): number { return (this.y - this.geo.dyi2 + 4 * this.geo.dyl) },
-    cx: function (): number { return (this.x) },
-    cy: function (): number { return (this.y + this.geo.dyl / 2) },
-    cr: function (): number { return (2 * this.geo.dyl - 1) },
     // -------color of rectangle 5 depending on battery value---
     colorBattery: function (): string {
       if (this.door?.text5) return 'none' // this.geo.colorOk
@@ -122,28 +127,31 @@ export default defineComponent({
       }
       return 'none'
     },
+    // -------two rectangles next to door rectangle ("wall")----
     doorWall: function (): string {
-      let s1 = ''
       const dxof = this.geo.dxo * this.f
       const dwx = 2 * this.geo.dxm
-      const dwy2 = 0.75 * this.geo.dyl
-      s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
+      const dwy2 = 1.2 * this.geo.dw2
+      let s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
       s1 += 'm-' + dxof / 2 + ',-' + dwy2 + ' h' + dwx + ' v' + (2 * dwy2) + ' h-' + dwx + ' z'
       s1 += 'm' + dxof + ',0' + ' h-' + dwx + ' v' + (2 * dwy2) + ' h' + dwx + ' z'
       return s1
     },
+    // -------door rectangle and middle line--------------------
     doorRect: function (): string {
       const dxof = this.geo.dxo * this.f
       const dwx = 2 * this.geo.dxm
-      const dby = this.geo.dyl
+      const dyd = this.geo.dyl
       const dxd = dxof - 2 * dwx
       let s1 = 'M' + this.x.toString(10) + ',' + this.y.toString(10)
-      s1 = s1 + ' m' + (-dxof / 2 + dwx) + ',-' + dby / 2
-      s1 = s1 + ' v' + dby + ' h' + dxd + ' v-' + dby + ' z'
-      s1 = s1 + 'M' + this.x.toString(10) + ',' + this.y.toString(10) + ' m0,-' + dby + ' v' + 2 * dby
+      s1 = s1 + ' m' + (-dxof / 2 + dwx) + ',-' + dyd / 2
+      s1 = s1 + ' v' + dyd + ' h' + dxd + ' v-' + dyd + ' z'
+      s1 = s1 + 'M' + this.x.toString(10) + ',' + this.y.toString(10) + ' m0,-' + dyd + ' v' + 2 * dyd
       return s1
     },
+    // -------door arch (door area) small or 90 degree----------
     doorArc: function (): string {
+      if (this.dir.length < 2) return ''
       const dxof = this.geo.dxo * this.f
       const dwx = 2 * this.geo.dxm
       const r = dxof - 2 * dwx
@@ -151,8 +159,8 @@ export default defineComponent({
       const dr = this.geo.dyl / 2 // this.geo.dyl // 15
       let a1 = r
       let a2 = r
-      const sDir = this.doorDir.toLowerCase()
-      if (this.doorDir.charAt(0) === 'h' || this.doorDir.charAt(0) === 'v' || this.doorDir.charAt(0) === 'd') {
+      const sDir = this.dir.toLowerCase()
+      if (this.dir.charAt(0) === 'h' || this.dir.charAt(0) === 'v' || this.dir.charAt(0) === 'd') {
         a1 = this.geo.dyo2 - this.geo.dyl // 72
         a2 = r - Math.sqrt(r * r - a1 * a1) // 48
       }
@@ -163,11 +171,12 @@ export default defineComponent({
       if (sDir === 'h4' || sDir === 'v1' || sDir === 'd1x' || sDir === 'd4y') s1 += ' m-' + r2 + ',' + dr + ' h' + r + ' a' + r + ',' + r + ' 0 0 1 -' + a2 + ',' + a1 + ' z'
       return s1
     },
+    // -------rorate x-Door-------------------------------------
     rotateGroup: function (): string {
       let grad = 0
       // if (this.door) {
-      const sDir = this.doorDir.toLowerCase()
-      if (this.doorDir.length > 1) {
+      const sDir = this.dir.toLowerCase()
+      if (this.dir.length > 1) {
         if (sDir.charAt(0) === 'v') grad = -90
         if (sDir === 'd1x' || sDir === 'd1y' || sDir === 'd3x' || sDir === 'd3y') grad = -45
         if (sDir === 'd2x' || sDir === 'd2y' || sDir === 'd4x' || sDir === 'd4y') grad = 45

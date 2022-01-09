@@ -1,4 +1,4 @@
-// ______CiDoorController.ts____________________________________
+// ______CiDoorController.ts_____________________2022-01-08_____
 import { reactive } from 'vue'
 import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
