@@ -86,5 +86,6 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [Vue+VSC: How to create a Vue project with multiple web pages? (2021-12-26)](md/m4h535_Vue_ci_mqtt_multipage1_e.md)   
 
 * [Vue+VSC: How to draw a house plan? (CiWall elements) (2022-01-04)](md/m4h560_Vue_ci_mqtt_wall1_e.md)   
+* [Vue+VSC: How to draw doors and windows in a house plan? (CiDoor, CiWindow, CiBlind) (2022-01-08)](md/m4h565_Vue_ci_mqtt_door_etc_e.md)   
 
 [To the top of the page](#up)   

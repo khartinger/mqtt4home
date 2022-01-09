@@ -78,5 +78,5 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 * [Vue+VSC: Wie erstellt man ein Vue Projekt mit mehreren Web-Seiten? (2021-12-26)](md/m4h535_Vue_ci_mqtt_multipage1.md)   
 
 * [Vue+VSC: Wie zeichnet man einen Hausplan? (CiWall-Elemente) (2022-01-04)](md/m4h560_Vue_ci_mqtt_wall1.md)   
-
+* [Vue+VSC: Wie zeichnet man Türen und Fenster in einem Hausplan? (CiDoor, CiWindow, CiBlind) (2022-01-08)](md/m4h565_Vue_ci_mqtt_door_etc.md)   
 [Zum Seitenanfang](#up)
