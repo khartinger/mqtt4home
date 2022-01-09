@@ -1,4 +1,4 @@
-<!-- CiWall.vue --------------------------------- 2022-01-06 -->
+<!-- CiWall.vue --------------------------------- 2022-01-08 -->
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="wallBorder"></CiBase>
@@ -64,7 +64,7 @@ export default defineComponent({
       return geo1
     },
     wallColor: function (): string {
-      return '#600000'
+      return this.geo.colorWall
     },
     wallBorder: function (): number {
       if (this.border) return this.border

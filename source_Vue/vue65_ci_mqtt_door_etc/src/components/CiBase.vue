@@ -96,7 +96,7 @@ export class Geo {
   public colorOpen = '#90ee90' //       light green
   public colorClose = '#FF6666' //      light red
   public colorLock = '#C00000' //       red
-  public colorWall = '#C00000' //       dark red 6
+  public colorWall = '#600000' //       dark red 6
   public noDate = '--.--.----'
   public noTime = '--:--:--'
   public batteryMin = 15
