@@ -74,6 +74,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [RasPi: Sending and receiving SMS via MQTT in C++ (2021-08-27)](md/m4h10_RasPiCppSms_e.md)
 
 ## Area "Zigbee"
+* [How to connect Zigbee devices with MQTT? (2022-01-15)](md/m4h301_zbInstall_e.md)
 
 ## Area "Visualization"
 * [First Vue program (without Visual Studio code) (2021-09-15)](md/m4h501_Vue_Hello_e.md)

@@ -66,6 +66,7 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 * [RasPi: Senden und Empfangen von SMS &uuml;ber MQTT in C++ (2021-08-27)](md/m4h10_RasPiCppSms.md)
 
 ## Bereich "ZigBee"
+* [Wie verbindet man Zigbee-Ger&auml;te mit MQTT? (2022-01-15)](md/m4h301_zbInstall.md)
 
 ## Bereich "Visualisierung"
 * [Erstes Vue-Programm (ohne Visual Studio Code) (2021-09-15)](md/m4h501_Vue_Hello.md)
