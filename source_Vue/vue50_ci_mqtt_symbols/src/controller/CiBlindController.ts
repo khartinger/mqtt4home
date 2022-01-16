@@ -15,7 +15,7 @@ export class CiBlindController extends CiBaseController {
     [
       {
         id: 'blind_1',
-        name: 'Rollo ?',
+        name: 'Blind ?',
         iBlindState: -1,
         type: 'D1',
         battery: '-',
@@ -24,7 +24,7 @@ export class CiBlindController extends CiBaseController {
       },
       {
         id: 'blind_2',
-        name: 'Rollo ?',
+        name: 'Blind ?',
         iBlindState: -1,
         type: 'D1',
         battery: '-',

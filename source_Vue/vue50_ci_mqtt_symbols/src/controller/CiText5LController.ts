@@ -2,7 +2,7 @@
 import { Message } from '@/services/CiMqttClient'
 import { reactive } from 'vue'
 import { CiBaseController, IBase } from './CiBaseController'
-import geo0 from '@/components/CiBase.vue'
+import { geo0 } from '@/components/CiBase.vue'
 
 export interface Text5L extends IBase {
   iText5LState: number;
@@ -13,10 +13,10 @@ export class CiText5LController extends CiBaseController {
   public text5Ls: Array<Text5L> = reactive(
     [
       {
-        id: 'text5L',
+        id: 'text5L_1',
         name: 'Text5L_1',
         iText5LState: -1,
-        lines: [],
+        lines: ['Text5L_1', 'MQTT-Messages:', 'Next line', 'with \\n', 'This is the last line....'],
         subTopic: 'ci/text5L/set',
         pubTopic: ''
       }
@@ -32,34 +32,45 @@ export class CiText5LController extends CiBaseController {
       const aSubTopic = text5L.subTopic.split(' ')
       if (aSubTopic.includes(message.topic)) {
         // ---text5L topic found -------------------------------
+        text5L.iText5LState = 0
         let s1 = message.payload
-        const i1 = s1.indexOf('\\|')
-        const i2 = s1.indexOf('/|')
-        if (i1 >= 0 || i2 >= 0) {
-          s1 = s1.replaceAll('\\|', '$^~$')
-          s1 = s1.replaceAll('/|', '$^~$')
-          text5L.lines = s1.split('|')
-          for (let i = 0; i < text5L.lines.length; i++) {
-            text5L.lines[i] = text5L.lines[i].replaceAll('$^~$', '|')
+        s1 = s1.replaceAll('\\\\n', '$^~$') // replace "text" \n
+        let anzN = s1.match(/\\n/g)?.length
+        if (typeof anzN === 'undefined') anzN = 0
+        console.log('Anzahl \\n=', anzN)
+        if (anzN < 2) {
+          // ---------only (title+) one long line: split it up to lines-
+          let iLine = 0
+          if (anzN === 1) {
+            // ----there is a title-----------------------------
+            const aHelp = s1.split('\\n')
+            text5L.lines[0] = aHelp[0].replaceAll('$^~$', '\\\\n')
+            s1 = aHelp[1]
+            text5L.iText5LState = 2
+            iLine = 1
           }
-        } else {
-          text5L.lines = s1.split('|')
-        }
-        // ---only one long line?-------------------------------
-        if (text5L.lines.length === 1) {
-          // -split one long line up into max. 5 short lines----
-          const len = text5L.lines[0].length
-          const charmax = 2 * geo0.tmax + 2
-          // console.log('Text5LController: len=', len + ', max=', max)
-          if (len > charmax) {
-            const s0 = text5L.lines[0]
-            for (let i3 = 0; i3 < 5; i3++) {
-              text5L.lines[i3] = s0.substr(i3 * charmax, charmax)
+          s1 = s1.replaceAll('$^~$', '\\\\n')
+          const max = 2 * geo0.tmax
+          let iStart = 0
+          for (let iL = iLine; iL < 5; iL++) {
+            let iEnd = iStart + max
+            if (s1.at(iEnd - 2) === ' ' && s1.at(iEnd) !== ' ') iEnd = iEnd - 1
+            else {
+              if (s1.at(iEnd) === ' ') iEnd++
             }
-            text5L.iText5LState = 1
+            text5L.lines[iL] = s1.substring(iStart, iEnd)
+            iStart = iEnd
           }
+          if (text5L.iText5LState !== 2) text5L.iText5LState = 1
+        } else {
+          // ------payload contains \n (next line) commands-----
+          s1 = s1.replaceAll('$^~$', '\\\\n')
+          text5L.lines = s1.split('\\n')
+          for (let i = 0; i < text5L.lines.length; i++) {
+            text5L.lines[i] = text5L.lines[i].replaceAll('$^~$', '\\n')
+          }
+          text5L.iText5LState = 1
         }
-        // console.log('Text5LController: text5L.lines = ', text5L.lines)
       } // END text5L topic found
     })
   }

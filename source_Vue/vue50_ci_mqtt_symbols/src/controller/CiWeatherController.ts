@@ -11,17 +11,18 @@ export interface Weather extends IBase {
   pressure?: string;
   brightness?: string;
   battery?: string;
+  text5?: string;
 }
 
 export class CiWeatherController extends CiBaseController {
   public weathers: Array<Weather> = reactive(
     [
       { // weather 1
-        id: 'weather1',
+        id: 'weather_1',
         type: 'zb',
         name: 'Weather1_zb',
         iWeatherState: -1,
-        battery: '100',
+        battery: '100%',
         subTopic: 'zb/weather/1/ret',
         pubTopic: ''
       }

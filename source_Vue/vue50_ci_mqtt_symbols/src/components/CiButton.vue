@@ -107,10 +107,11 @@ export default defineComponent({
     },
     // -------button representation-------------------------------
     colorButton: function (): string {
+      if (this.button?.color) return this.button.color
       if (this.iButtonState === -2) return this.geo.colorOff
       if (this.iButtonState === -1) return this.geo.colorOn
-      if (this.iButtonState < 0) return this.geo.colorUnknown
-      return this.button?.color ?? this.geo.colorError
+      if (this.iButtonState <= 0) return this.geo.colorUnknown
+      return this.geo.colorError
     },
     // -------text in line 1 and 5------------------------------
     title: function (): string {

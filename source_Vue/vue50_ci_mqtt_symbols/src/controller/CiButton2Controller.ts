@@ -22,7 +22,7 @@ export class CiButton2Controller extends CiBaseController {
       {
         id: 'button2_1',
         name: 'button2/1',
-        iButton2State: 0,
+        iButton2State: -9,
         type: 'D1',
         battery: '-',
         textOn: 'OPEN',
@@ -39,7 +39,7 @@ export class CiButton2Controller extends CiBaseController {
       {
         id: 'button2_2',
         name: 'button2_2',
-        iButton2State: 0,
+        iButton2State: -9,
         type: 'D1',
         battery: '-',
         textOn: 'ON',
@@ -67,7 +67,16 @@ export class CiButton2Controller extends CiBaseController {
             if ((message.payload === '0') || (message.payload === 'off')) button2.iButton2State = -2
             else { button2.iButton2State = -9 }
           }
-        // console.log('CiButton2Controller:onMessage: message.payload=', message.payload)
+        }
+        if (button2.type === 'E1743') {
+          const aPayload = JSON.parse(message.payload)
+          button2.battery = `${aPayload.battery}`
+          const stateA = `${aPayload.action}`
+          if (stateA === 'on') button2.iButton2State = -1
+          else {
+            if (stateA === 'off') button2.iButton2State = -2
+            else { button2.iButton2State = -9 }
+          }
         }
       }
     })

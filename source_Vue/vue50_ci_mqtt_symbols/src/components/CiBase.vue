@@ -186,6 +186,7 @@ export class Geo {
     return s1
   }
 }
+
 export const geo0 = new Geo(0, 0)
 </script>
 

@@ -22,7 +22,7 @@ export class CiSocketController extends CiBaseController {
         text5: 'ci/socket/1',
         subTopic: 'ci/socket/1',
         pubTopic: 'ci/socket/1/set',
-        pubPayload: 'TOGGLE'
+        pubPayload: '{"state": "TOGGLE"}'
       }
     ]
   );

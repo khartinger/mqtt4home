@@ -2,7 +2,7 @@
 import { reactive } from 'vue'
 import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
-import geo0 from '@/components/CiBase.vue'
+import { geo0 } from '@/components/CiBase.vue'
 
 export interface Pump extends IBase {
   type: string;
@@ -17,7 +17,7 @@ export class CiPumpController extends CiBaseController {
   public pumps: Array<Pump> = reactive(
     [
       { // pump 1
-        id: 'pump1',
+        id: 'pump_1',
         type: 'D1', // 'ESP32'
         name: 'Pump_1',
         iPumpState: -1,

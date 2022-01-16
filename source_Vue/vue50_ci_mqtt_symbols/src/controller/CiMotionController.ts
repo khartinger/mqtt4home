@@ -2,7 +2,7 @@
 import { reactive } from 'vue'
 import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
-import geo0 from '@/components/CiBase.vue'
+import { geo0 } from '@/components/CiBase.vue'
 
 export interface Motion extends IBase {
   type: string;
