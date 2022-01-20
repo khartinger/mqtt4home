@@ -85,7 +85,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [Vue-MQTT: How to create a CI symbol? (Example: CiLamp) (2021-12-23)](md/m4h520_Vue_ci_mqtt_lamp1_e.md)
 * [Vue+VSC: Switching lamps with MQTT (2021-12-25)](md/m4h525_Vue_ci_mqtt_lamp_button1_e.md)
 * [Vue+VSC: How to create a Vue project with multiple web pages? (2021-12-26)](md/m4h535_Vue_ci_mqtt_multipage1_e.md)   
-
+* [__Vue+VSC: Examples of Ci symbols (2022-01-20)__](md/m4h550_Vue_ci_mqtt_all_e.md)   
 * [Vue+VSC: How to draw a house plan? (CiWall elements) (2022-01-04)](md/m4h560_Vue_ci_mqtt_wall1_e.md)   
 * [Vue+VSC: How to draw doors and windows in a house plan? (CiDoor, CiWindow, CiBlind) (2022-01-08)](md/m4h565_Vue_ci_mqtt_door_etc_e.md)   
 
