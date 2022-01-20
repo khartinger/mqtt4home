@@ -31,9 +31,9 @@ export class CiButton2Controller extends CiBaseController {
         color: '#E2B007',
         text5: 'switchDoor...',
         subTopic: 'ci/button2/1',
-        pubTopic: 'ci/lamp/1/set/lamp ci/door/x/ret/status',
+        pubTopic: 'ci/button2/1/status',
         pubPayload: '1',
-        pubTopicOff: 'ci/lamp/1/set/lamp ci/door/x/ret/status',
+        pubTopicOff: 'ci/button2/1/status',
         pubPayloadOff: '0'
       },
       {

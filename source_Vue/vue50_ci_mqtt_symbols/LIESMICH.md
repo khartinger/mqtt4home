@@ -1,10 +1,10 @@
 Letzte &Auml;nderung: 20.1.2022 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
 <h1>Beispiele f&uuml;r Ci-Symbole</h1>
-<a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
-<a href="./m4h550_Vue_ci_mqtt_all_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
+<a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
+<a href="./README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table>
-<a href="https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue50_ci_mqtt_symbols">==> Code @ GitHub</a><hr>
+<hr>
 
 # Worum geht es?
 Dieses Vue-Projekt zeigt viele Steuer- und Anzeigeelemente ("Control and Indicator elements", CI-Elemente), die man bei der Visualisierung der eigenen Haussteuerung mit Vue verwenden kann. Alle hier gezeigten Elemente k&ouml;nnen &uuml;ber MQTT angesprochen werden (sofern ein Broker auf dem Host 10.1.1.1 l&auml;uft...).   

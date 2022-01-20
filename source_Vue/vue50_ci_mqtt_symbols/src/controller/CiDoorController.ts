@@ -19,7 +19,7 @@ export class CiDoorController extends CiBaseController {
         iDoorState: -1,
         type: 'D1',
         text5: 'doorh1',
-        subTopic: 'ci/door/1/ret ci/door/x/ret/status',
+        subTopic: 'ci/door/1/ret ci/button2/1/status',
         pubTopic: ''
       },
       {
@@ -28,7 +28,7 @@ export class CiDoorController extends CiBaseController {
         iDoorState: -1,
         type: 'D1',
         battery: '100%',
-        subTopic: 'ci/door/2/ret ci/door/x/ret/status',
+        subTopic: 'ci/door/2/ret ci/button2/1/status',
         pubTopic: ''
       }
     ]

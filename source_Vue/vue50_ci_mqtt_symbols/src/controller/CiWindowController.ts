@@ -19,7 +19,7 @@ export class CiWindowController extends CiBaseController {
         iWindowState: -1,
         type: 'D1',
         text5: '?',
-        subTopic: 'ci/window/1/ret ci/door/x/ret/status',
+        subTopic: 'ci/window/1/ret ci/button2/1/status',
         pubTopic: ''
       },
       { // TEST
@@ -28,7 +28,7 @@ export class CiWindowController extends CiBaseController {
         iWindowState: -1,
         type: 'D1',
         battery: '10%',
-        subTopic: 'ci/window/2/ret ci/door/x/ret/status',
+        subTopic: 'ci/window/2/ret ci/button2/1/status',
         pubTopic: ''
       }
     ]

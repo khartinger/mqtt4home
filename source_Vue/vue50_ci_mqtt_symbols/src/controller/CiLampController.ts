@@ -17,7 +17,7 @@ export class CiLampController extends CiBaseController {
         name: 'Lamp_1',
         iLampState: -1,
         battery: '-',
-        text5: '',
+        text5: 'text5',
         subTopic: 'ci/lamp/1/set/lamp',
         pubTopic: 'ci/lamp/1/set/lamp',
         pubPayload: '-1'

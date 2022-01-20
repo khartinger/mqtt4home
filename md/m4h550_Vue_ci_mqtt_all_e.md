@@ -1,10 +1,10 @@
 Last modified: 2022-01-20 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></td><td>
 <h1>Examples of Ci symbols</h1>
-<a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
-<a href="./LIESMICH.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
+<a href="../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
+<a href="./m4h550_Vue_ci_mqtt_all.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table>
-<hr>
+<a href="https://github.com/khartinger/mqtt4home/tree/main/source_Vue/vue50_ci_mqtt_symbols">==> Code @ GitHub</a><hr>
 
 # What is it about?
 This Vue project shows many control and indicator elements ("CI elements") that you can use when visualizing your own home control with Vue. All elements shown here can be accessed via MQTT (as long as a broker is running on host 10.1.1.1...).   

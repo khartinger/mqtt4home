@@ -19,7 +19,7 @@ export class CiBlindController extends CiBaseController {
         iBlindState: -1,
         type: 'D1',
         battery: '-',
-        subTopic: 'ci/blind/1/ret ci/blind/1/ret/motor ci/blind/x/ret/status',
+        subTopic: 'ci/blind/1/ret ci/blind/1/ret/motor ci/blind/x/ret/status ci/button2/1/status',
         pubTopic: ''
       },
       {
@@ -28,7 +28,7 @@ export class CiBlindController extends CiBaseController {
         iBlindState: -1,
         type: 'D1',
         battery: '-',
-        subTopic: 'ci/blind/1/ret ci/blind/x/ret/status',
+        subTopic: 'ci/blind/1/ret ci/blind/x/ret/status ci/button2/1/status',
         pubTopic: ''
       }
     ]

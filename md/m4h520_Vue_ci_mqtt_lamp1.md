@@ -20,7 +20,7 @@ Es werden
 beschrieben.   
 
 Das folgende Bild zeigt verschiedene Darstellungen des Lampensymbols (Name und Rahmen, Name + Text5 + einfacher Rahmen, Symbol ohne Texte und Rahmen):   
-![Lampensymbole](./images/vue20_ci_mqtt_lamp1_blue.png "Lampensymbole")   
+![Lampensymbole](./images/vue_mqtt_lamp_borderX.png "Lampensymbole") ![Lampensymbole](./images/vue_mqtt_lamp_linesX.png "Lampensymbole")      
 _Bild 1: Verschiedene Varianten des Lampensymbols_   
 
 Man erkennt:   
