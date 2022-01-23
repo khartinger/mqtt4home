@@ -36,7 +36,7 @@ export class CiText5Controller extends CiBaseController {
         s1 = s1.replaceAll('\\\\n', '$^~$') // replace "text" \n
         let anzN = s1.match(/\\n/g)?.length
         if (typeof anzN === 'undefined') anzN = 0
-        console.log('Anzahl \\n=', anzN)
+        // console.log('Anzahl \\n=', anzN)
         if (anzN < 2) {
           // ---------only (title+) one long line: split it up to lines-
           let iLine = 0

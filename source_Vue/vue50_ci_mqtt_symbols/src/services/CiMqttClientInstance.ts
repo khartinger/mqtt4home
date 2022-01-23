@@ -7,6 +7,8 @@ import { ciDoorController } from '@/controller/CiDoorController'
 import { ciLampController } from '@/controller/CiLampController'
 import { ciMotionController } from '@/controller/CiMotionController'
 import { ciPumpController } from '@/controller/CiPumpController'
+import { ciSmsInController } from '@/controller/CiSmsInController'
+import { ciSmsOutController } from '@/controller/CiSmsOutController'
 import { ciSocketController } from '@/controller/CiSocketController'
 import { ciText5Controller } from '@/controller/CiText5Controller'
 import { ciText5LController } from '@/controller/CiText5LController'
@@ -21,6 +23,8 @@ ciMqttClientInstance.registerController(ciDoorController)
 ciMqttClientInstance.registerController(ciLampController)
 ciMqttClientInstance.registerController(ciMotionController)
 ciMqttClientInstance.registerController(ciPumpController)
+ciMqttClientInstance.registerController(ciSmsInController)
+ciMqttClientInstance.registerController(ciSmsOutController)
 ciMqttClientInstance.registerController(ciSocketController)
 ciMqttClientInstance.registerController(ciText5Controller)
 ciMqttClientInstance.registerController(ciText5LController)
