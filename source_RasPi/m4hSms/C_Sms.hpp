@@ -7,6 +7,7 @@
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2021-08-25 First release
+// 2022-01-23 Add pubNum, formatSmsDate
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
@@ -20,8 +21,12 @@
 #define  SMS_TO_KEY          "to"
 #define  SMS_TOPICSUB_KEY    "sub"
 #define  SMS_TOPICSUB        "m4hSms/send"
+#define  SMS_TOPICSUBRET_KEY "subret"
+#define  SMS_TOPICSUBRET     "m4hSms/send/ret"
 #define  SMS_TOPICPUB_KEY    "pub"
-#define  SMS_TOPICPUB        "m4hSms/send/ret"
+#define  SMS_TOPICPUB        "m4hSms/received"
+#define  SMS_PUB_NUM_KEY     "pubnum"
+#define  SMS_PUB_NUM         false
 #define  SMS_CMD_VERSION_KEY "cmdversion"
 #define  SMS_CMD_VERSION     "cmd_version"
 #define  SMS_CMD_END_KEY     "cmdend"
@@ -39,6 +44,9 @@
 #define  SMS_SEND_MAX_SEC    60
 #define  SMS_SMS_START_KEY   "smsstart"
 #define  SMS_SMS_END_KEY     "smsend"
+
+#define  SMS_SENT            "SMS sent"
+#define  SMS_NOT_SENT        "SMS NOT sent"
 
 //-------global values------------------------------------------
 extern bool g_prt;                     //true=printf,false=quiet
@@ -61,8 +69,10 @@ class Sms
  std::vector<std::string> vFrom;       // authorizised SMS from
  std::vector<std::string> vTo;         // authorizised SMS to
  std::string topicSub;                 // topic base subscribe
+ std::string topicSubRet;              // topic subscribe answer
  std::string topicPub;                 // topic base publish
  bool retainOut;                       // retain publish
+ bool pubNum;                          // publish phone number
  std::string cmdVersion;               // command send version
  std::string cmdEnd;                   // command end of program
  std::string cmdReload;                // cmd reload config file
@@ -100,6 +110,7 @@ class Sms
  double getHotEuro(std::string text);  // hot credit
  bool split2phone(std::string sIn, std::vector<std::string>&vOut);
  int  parseSmsIn( std::string smsText, std::string& topicIn, std::string& payloadIn, bool& retainIn);
+ std::string formatSmsDate(std::string smsDate, int format_);
  static void threadFunctionSendSms(std::string phone, std::string text, std::string device_, struct mosquitto *mosq, std::string sTopic, int iTimeout);
 };
 
@@ -120,7 +131,9 @@ void Sms::setDefaults()
  vFrom.clear();                        // authorizised SMS from
  vTo.clear();                          // authorizised SMS to
  topicSub   = SMS_TOPICSUB;            // topic base subscribe
+ topicSubRet= SMS_TOPICSUBRET;         // topic subscribe answer
  topicPub   = SMS_TOPICPUB;            // topic base publish
+ pubNum     = SMS_PUB_NUM;             // publish phone number
  retainOut  = false;                   // retain publish msg
  cmdEnd     = SMS_CMD_END;             // command end of program
  cmdVersion = SMS_CMD_VERSION;         // command send version
@@ -135,7 +148,8 @@ void Sms::setDefaults()
  vSmsEnd.clear();                      // send sms on prog end
  keys=std::string(SMS_DEVICE_KEY);
  keys+="|"+std::string(SMS_FROM_KEY)+"|"+std::string(SMS_TO_KEY);
- keys+="|"+std::string(SMS_TOPICSUB_KEY)+"|"+std::string(SMS_TOPICPUB_KEY);
+ keys+="|"+std::string(SMS_TOPICSUB_KEY)+"|"+std::string(SMS_TOPICSUBRET_KEY);
+ keys+="|"+std::string(SMS_TOPICPUB_KEY)+"|"+std::string(SMS_PUB_NUM_KEY);
  keys+="|"+std::string(SMS_SMS_START_KEY)+"|"+std::string(SMS_SMS_END_KEY);
  keys+="|"+std::string(SMS_CMD_VERSION_KEY)+"|"+std::string(SMS_CMD_END_KEY);
  keys+="|"+std::string(SMS_CMD_RELOAD_KEY)+"|"+std::string(SMS_CMD_CREDIT_KEY);
@@ -189,8 +203,12 @@ bool Sms::readConfig(std::string pfConf)
   if(sKey==SMS_TO_KEY) split2phone(sVal, vTo);
   //.....subscribe topic -> to send sms.........................
   if(sKey==SMS_TOPICSUB_KEY) topicSub=sVal;
+  //.....anser topic after sending sms..........................
+  if(sKey==SMS_TOPICSUBRET_KEY) topicSubRet=sVal;
   //.....publish topic, if a sms was received...................
   if(sKey==SMS_TOPICPUB_KEY) topicPub=sVal;
+  //.....publish topic, if a sms was received...................
+  if(sKey==SMS_PUB_NUM_KEY) pubNum=(sVal=="true");
   //.....sms command to request program version by sms..........
   if(sKey==SMS_CMD_VERSION_KEY) cmdVersion=sVal;
   //.....sms command to exit program............................
@@ -230,7 +248,10 @@ void Sms::show()
  for(int i=0; i<vTo.size(); i++) std::cout<<vTo.at(i)<<" | ";
  std::cout<<std::endl;
  std::cout<<"topicSub (send SMS) | "<<topicSub<<std::endl;
+ std::cout<<"topicSubRet (answer)| "<<topicSubRet<<std::endl;
  std::cout<<"topicPub (SMS in)   | "<<topicPub<<std::endl;
+ std::cout<<"publish phone number| ";
+ if(pubNum) std::cout<<"true"<<std::endl; else std::cout<<"false"<<std::endl;
  std::cout<<"-----send sms on prog start to---------"<<std::endl;
  for(int i=0; i<vSmsStart.size(); i++) std::cout<<vSmsStart.at(i)<<std::endl;
  std::cout<<"-----send sms on prog end to-----------"<<std::endl;
@@ -367,12 +388,14 @@ int Sms::lookForSmsIn(struct mosquitto *mosq)
   }
  }
  //-----------analyse incoming sms test-------------------------
+ // iret <0: error (IN values unchanged), 1: only plain text
+ //      2: correct MQTT message (-t -m [-r]) IN values changed
  std::string smsTopic, smsPayload;
  bool smsRetain;
  iRet=parseSmsIn(smsIn.text, smsTopic, smsPayload, smsRetain);
  if(iRet==1)
  {//----------SMS is plain text (command or credit answer)------
-  if(smsIn.text==cmdEnd) return 2;     // sms cmnd end
+  if(smsIn.text==cmdEnd) return 2;     // sms cmd end
   if(smsIn.text==cmdVersion) {
    if(!sendSms(smsIn.phone,g_base.msgVersion.payloadOut,mosq)) return -1;
    return 1;
@@ -383,10 +406,13 @@ int Sms::lookForSmsIn(struct mosquitto *mosq)
    bRet=sendSms(netTel, netTxt, mosq); // request credit sms
    if(!bRet) return -1;
    return 1;
-
   }
-  //------other plain text: publish it---------------------------
-  if(!publish(mosq, topicPub, smsIn.text, false)) return -1;
+  //----------other plain text (not a command!): publish it-----
+  std::string s1= smsIn.text;
+  // .........publish all? (phone number, date and sms text)....
+  if(pubNum) s1=smsIn.phone+"\\n"+formatSmsDate(smsIn.date,2)+"\\n"+smsIn.text;
+std::cout << "try to publish -t " << topicPub << " -m " << s1 << std::endl;
+  if(!publish(mosq, topicPub, s1, false)) return -1;
   return 1;
  } // end SMS is plain text
  if(iRet==2)
@@ -420,8 +446,20 @@ bool Sms::isAuthSmsTo(std::string phoneNumber)
 // return: true=sms sending started, false: not started
 bool Sms::sendSms(std::string phone, std::string text, struct mosquitto *mosq)
 {
- if(!isAuthSmsTo(phone)) return false;
- std::thread mythreadSendSms(threadFunctionSendSms, phone, text, device, mosq, topicPub, sendTimeout);
+ if(!isAuthSmsTo(phone)) {
+   std::string payload_ = SMS_NOT_SENT;
+   payload_ += " #6 not allowed ("+phone+": "+text+")";
+   bool retain_ = false;
+   int iRet=mosquitto_publish(mosq, NULL, topicSubRet.c_str(),
+    payload_.length(), payload_.c_str(), 0, retain_);
+   if(iRet!=0) {
+    if(g_prt) fprintf(stderr, "Error %d: NOT published -t %s -m %s.\n",
+     iRet, topicSubRet.c_str(), payload_.c_str());
+    return false; 
+   }
+   return false;
+ }
+ std::thread mythreadSendSms(threadFunctionSendSms, phone, text, device, mosq, topicSubRet, sendTimeout);
  mythreadSendSms.detach();
  return true;
 }
@@ -583,6 +621,24 @@ int Sms::parseSmsIn(std::string smsText,
  return 2;                                  // correct message
 }
 
+//_______format sms date+time___________________________________
+// format_ 0: unchanged, 1: yyyy-mm-dd HH:MM:SS
+//         2: dd.mm.yyyy HH:MM:SS
+std::string Sms::formatSmsDate(std::string smsDate, int format_)
+{
+  std::string s1="";
+  if(smsDate.length()<17) return smsDate;
+  switch(format_)
+  {
+    case 1: s1="20"+smsDate.substr(0,2)+"-"+smsDate.substr(3,2)+"-"+smsDate.substr(6,2)+" "+smsDate.substr(9,8);
+     break;
+    case 2: s1=smsDate.substr(6,2)+"."+smsDate.substr(3,2)+"."+"20"+smsDate.substr(0,2)+" "+smsDate.substr(9,8);
+     break;
+    default: s1=smsDate; break;
+  }
+  return s1;
+}
+
 //_______thread send sms________________________________________
 // uses g_modemBusy: true if modem is used to send/receive
 void Sms::threadFunctionSendSms(std::string sPhone,
@@ -601,23 +657,28 @@ void Sms::threadFunctionSendSms(std::string sPhone,
  }
  //-----------start sms sending procedure-----------------------
  if(watchdog1<1) {
-  s1="SMS NOT sent #1: timeout ("+sPhone+": "+sText+")";
+  s1 = SMS_NOT_SENT;
+  s1 += " #1 timeout ("+sPhone+": "+sText+")";
  } else {
   g_modemBusy=true;                    // start sending
   Gsm gsm_=Gsm(sDevice);
   std::this_thread::sleep_for(std::chrono::milliseconds(100));
   if(!gsm_.isModule()) {
-    s1="SMS NOT sent #3: "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
+    s1 = SMS_NOT_SENT;
+    s1 += " #3 "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
   } else {
    std::this_thread::sleep_for(std::chrono::milliseconds(100));
    if(!gsm_.begin()) {
-    s1="SMS NOT sent #4: "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
+    s1 = SMS_NOT_SENT;
+    s1 += " #4 "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
    } else {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     if(gsm_.sendSms(sPhone, sText)) {
-     s1="SMS sent ("+sPhone+": "+sText+")";
+     s1 = SMS_SENT;
+     s1 += " ("+sPhone+": "+sText+")";
     } else {
-     s1="SMS NOT sent #5: "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
+     s1 = SMS_NOT_SENT;
+     s1 += " #5 "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
     }
    }
   }

@@ -1,26 +1,54 @@
-Letzte &Auml;nderung: 27.8.2021   
+Letzte &Auml;nderung: 23.1.2022   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi: Senden und Empfangen von SMS &uuml;ber MQTT in C++</h1>
 <a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h10_RasPiCppSms_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
   
-## Ziel
+# Worum geht es?
 M&ouml;chte man bei der Hausautomation in bestimmten Situationen eine SMS erhalten oder Dinge &uuml;ber SMS steuern, so ist das hier vorgestellte Programm `m4hSms` daf&uuml;r sehr hilfreich:   
 * Das Programm `m4hSms` wandelt SMS in MQTT-Nachrichten um und umgekehrt.   
 * Viele Eigenschaften des Programms k&ouml;nnen in der Konfigurationsdatei (`m4h.conf`) festgelegt werden.   
-* Mit ein wenig C++ Kenntnissen kann das Programm leicht an eigene Bed&uuml;rfnisse angepasst werden.   
-## Erforderliche Hilfsmittel (Stand August 2021)
-* Hardware: RasPi   
-* Hardware: SIM808 Modul GSM mit GPS Antenne f&uuml;r 3G 4G SIM Karte zB von [AliExpress](https://de.aliexpress.com/item/1005002384541464.html?spm=a2g0s.9042311.0.0.5c824c4dqUu43E) oder [Amazon](https://www.amazon.de/dp/B09CM8TSX9/ref=sspa_dk_detail_0?psc=1&pd_rd_i=B09CM8TSX9&pd_rd_w=yNPjf&pf_rd_p=4f2ceb27-95e9-46ab-8808-db390b56ec01&pd_rd_wg=Muvvr&pf_rd_r=3NTH9ZQRZNE3VBZKD1YV&pd_rd_r=58ca39f9-b9f0-40b5-9b14-7f5d8a37ce1d&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEzN1A5OTA0NUNBTTA2JmVuY3J5cHRlZElkPUEwMzcxNzc3MlkxMFpaUTBTRjhYMSZlbmNyeXB0ZWRBZElkPUEwNzU2MTYzMjRJSlNTREJMTjVHSiZ3aWRnZXROYW1lPXNwX2RldGFpbCZhY3Rpb249Y2xpY2tSZWRpcmVjdCZkb05vdExvZ0NsaWNrPXRydWU=)   
-* Hardware: Breadboard Jumper Dr&auml;hte weiblich auf weiblich 4polig zB von [Amazon](https://www.amazon.de/Female-Female-Male-Female-Male-Male-Steckbr%C3%BCcken-Drahtbr%C3%BCcken-bunt/dp/B01EV70C78/ref=sr_1_1_sspa?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=Breadboard+Jumper+Dr%C3%A4hte&qid=1629911840&sr=8-1-spons&psc=1&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEzRVMzTE5FRDJTWjJSJmVuY3J5cHRlZElkPUEwODQwNzA5MUZGVVRTNVE1WDBBTiZlbmNyeXB0ZWRBZElkPUExMDAwNjg1MUFSNzFTUlhGM0hSOSZ3aWRnZXROYW1lPXNwX2F0ZiZhY3Rpb249Y2xpY2tSZWRpcmVjdCZkb05vdExvZ0NsaWNrPXRydWU=)   
-* Hardware: DSD TECH USB zu TTL Seriell Adapter Konverter SH-U09C mit FTDI FT232RL zB von [Amazon](https://www.amazon.de/gp/product/B07BBPX8B8/ref=ppx_yo_dt_b_asin_title_o09_s00?ie=UTF8&psc=1) oder DSD TECH USB zu TTL Seriell Adapter Konverter SH-U09C5 zB von [Amazon](https://www.amazon.de/DSD-TECH-SH-U09C5-Konverterkabel-Unterst%C3%BCtzung/dp/B07WX2DSVB/ref=sr_1_10?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=DSD+TECH+USB+zu+TTL+Seriell+Adapter+Konverter&qid=1629910857&s=computers&sr=1-10)   
-* Hardware: USB-Verl&auml;ngerungskabel USB A Stecker auf A Buchse zB [PIPIKA USB 3.0 Verl&auml;ngerung von Amazon](https://www.amazon.de/Verl%C3%A4ngerung-Verl%C3%A4ngerungskabel-Superschnelle-Vergoldeten-Kartenleseger%C3%A4t/dp/B08BHWJLLS/ref=sr_1_4?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=USB+verl%C3%A4ngerungskabel+A-Buchse+1m&qid=1629911382&smid=A3PTYKYXFT73EG&sr=8-4)   
-* Hardware: SIM-Karte zB [in &ouml;sterreich HOT von Hofer/Aldi](https://www.hot.at/tarife.html?gclid=CjwKCAjw1JeJBhB9EiwAV612y80Gd6MxAkyvJRJ2BAeTtinSp9OnIBslTwBgd_B-iJANhbW7v5TQSBoCckgQAvD_BwE) mit Tarif "HoT flex-unser Basistarif ohne Fixkosten".   
+* Mit ein wenig C++ Kenntnissen kann das Programm einfach an eigene Bed&uuml;rfnisse angepasst werden.   
+
+# Wie werden SMS und MQTT-Nachrichten ineinander umgewandelt?
+Die Umwandlung erfolgt nach folgendem Schema:   
+![m4hSms1](./images/m4hSms_mqtt-sms.png "m4hSms function")   
+_Bild 1: Funktionsschema von `m4hSms`_   
+## MQTT zu SMS
+* Das __Topic__ zum Senden einer SMS wird in der Konfigurationsdatei `m4h.conf`, Abschnitt `[sms]`, Schlüssel `sub:` definiert (zB `sub: sms/send`).   
+* Die __Payload__ muss aus der Telefonnummer (ohne Leerzeichen!), einem nachfolgenden Leerzeichen (als Trennzeichen) und dem SMS-Text bestehen.   
+
+_Beispiel:_   
+  `mosquitto_pub -h 10.1.1.1 -t sms/send -m "+43680XXXXX This SMS was sent via m4hSMS :-)"`   
+Anmerkung: Die Telefonnummer (`+43680XXXXX`) muss durch eine in `m4h.conf` freigegebene Nummer (unter `to:`) ersetzt werden.   
+
+## SMS zu MQTT
+* Ein __normaler SMS-Text__ wird unter dem in der Konfigurationsdatei `m4h.conf`, Abschnitt `[sms]`, Schlüssel `pub:` (zB `pub: sms/send/ret`) angegebenen Topic als Nachricht versendet.   
+* __MQTT-formatierter Text__ enthält die Schlüssel -t (für Topic), -m (für Nachricht) und optinoal -r (für retain) und wird als entsprechende Nachricht veröffentlicht.   
+_Beispiel_:   
+`-t info/test -m Das ist eine SMS-Test-Nachricht :-)`   
+Anmerkung: Die SMS muss von einer in `m4h.conf` freigegebenen Nummer (unter `from:`) kommen.
+
+* __Befehle__
+Mögliche Befehle müssen in der Konfigurationsdatei `m4h.conf` im Abschnitt `[sms]` angeführt werden. Sie bestehen aus dem Schlüssel (zB `cmdversion:`) und dem Text für den Befehl (zB `-version-`). Das heißt: Schickt man eine SMS mit dem Text `-version-` an das Programm `m4hSms`, so erhält man eine Antwort-SMS mit der Versionsnummer.   
+
+## Welche Hilfsmittel werden benötigt? (Stand August 2021)
+* _Hardware_: RasPi   
+* _Hardware_: ein SIM808 Modul   
+  zB SIM808 Modul GSM mit GPS Antenne f&uuml;r 3G 4G SIM Karte zB von [AliExpress](https://de.aliexpress.com/item/1005002384541464.html?spm=a2g0s.9042311.0.0.5c824c4dqUu43E) oder [Amazon](https://www.amazon.de/dp/B09CM8TSX9/ref=sspa_dk_detail_0?psc=1&pd_rd_i=B09CM8TSX9&pd_rd_w=yNPjf&pf_rd_p=4f2ceb27-95e9-46ab-8808-db390b56ec01&pd_rd_wg=Muvvr&pf_rd_r=3NTH9ZQRZNE3VBZKD1YV&pd_rd_r=58ca39f9-b9f0-40b5-9b14-7f5d8a37ce1d&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEzN1A5OTA0NUNBTTA2JmVuY3J5cHRlZElkPUEwMzcxNzc3MlkxMFpaUTBTRjhYMSZlbmNyeXB0ZWRBZElkPUEwNzU2MTYzMjRJSlNTREJMTjVHSiZ3aWRnZXROYW1lPXNwX2RldGFpbCZhY3Rpb249Y2xpY2tSZWRpcmVjdCZkb05vdExvZ0NsaWNrPXRydWU=)   
+* _Hardware_: 4 Drähte   
+  zB Breadboard Jumper Dr&auml;hte weiblich auf weiblich 4polig zB von [Amazon](https://www.amazon.de/Female-Female-Male-Female-Male-Male-Steckbr%C3%BCcken-Drahtbr%C3%BCcken-bunt/dp/B01EV70C78/ref=sr_1_1_sspa?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=Breadboard+Jumper+Dr%C3%A4hte&qid=1629911840&sr=8-1-spons&psc=1&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEzRVMzTE5FRDJTWjJSJmVuY3J5cHRlZElkPUEwODQwNzA5MUZGVVRTNVE1WDBBTiZlbmNyeXB0ZWRBZElkPUExMDAwNjg1MUFSNzFTUlhGM0hSOSZ3aWRnZXROYW1lPXNwX2F0ZiZhY3Rpb249Y2xpY2tSZWRpcmVjdCZkb05vdExvZ0NsaWNrPXRydWU=)   
+* _Hardware_: ein USB zu TTL Seriell Adapter   
+  DSD TECH USB zu TTL Seriell Adapter Konverter SH-U09C mit FTDI FT232RL zB von [Amazon](https://www.amazon.de/gp/product/B07BBPX8B8/ref=ppx_yo_dt_b_asin_title_o09_s00?ie=UTF8&psc=1) oder DSD TECH USB zu TTL Seriell Adapter Konverter SH-U09C5 zB von [Amazon](https://www.amazon.de/DSD-TECH-SH-U09C5-Konverterkabel-Unterst%C3%BCtzung/dp/B07WX2DSVB/ref=sr_1_10?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=DSD+TECH+USB+zu+TTL+Seriell+Adapter+Konverter&qid=1629910857&s=computers&sr=1-10)   
+* _Hardware_: USB-Verl&auml;ngerungskabel USB A Stecker auf A Buchse   
+  zB [PIPIKA USB 3.0 Verl&auml;ngerung von Amazon](https://www.amazon.de/Verl%C3%A4ngerung-Verl%C3%A4ngerungskabel-Superschnelle-Vergoldeten-Kartenleseger%C3%A4t/dp/B08BHWJLLS/ref=sr_1_4?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=USB+verl%C3%A4ngerungskabel+A-Buchse+1m&qid=1629911382&smid=A3PTYKYXFT73EG&sr=8-4)   
+* _Hardware_: SIM-Karte   
+zB [in &Ouml;sterreich HOT von Hofer/Aldi](https://www.hot.at/tarife.html?gclid=CjwKCAjw1JeJBhB9EiwAV612y80Gd6MxAkyvJRJ2BAeTtinSp9OnIBslTwBgd_B-iJANhbW7v5TQSBoCckgQAvD_BwE) mit Tarif "HoT flex-unser Basistarif ohne Fixkosten".   
 ---   
-* Software: Internetzugang zu GitHub   
-* Software: Terminal-Programm [putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) auf dem PC/Laptop   
-* Software: Eventuell   
+* _Software_: Internetzugang zu GitHub   
+* _Software_: Terminal-Programm [putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) auf dem PC/Laptop   
+* _Software_: Eventuell   
    [Visual Studio Code](https://code.visualstudio.com/) und   
    [WinSCP](https://winscp.net/eng/docs/lang:de) zur Daten&uuml;bertragung vom PC/Laptop zum RasPi   
 

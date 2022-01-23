@@ -1,4 +1,4 @@
-Last modified: 2021-08-27   
+Last modified: 2022-01-23   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi: Sending and receiving SMS via MQTT in C++</h1>
 <a href="../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
