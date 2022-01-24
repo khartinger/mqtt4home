@@ -45,8 +45,8 @@
 #define  SMS_SMS_START_KEY   "smsstart"
 #define  SMS_SMS_END_KEY     "smsend"
 
-#define  SMS_SENT            "SMS sent"
-#define  SMS_NOT_SENT        "SMS NOT sent"
+#define  SMS_TXT_SENT        "SMS sent"
+#define  SMS_TXT_NOT_SENT    "SMS NOT sent"
 
 //-------global values------------------------------------------
 extern bool g_prt;                     //true=printf,false=quiet
@@ -447,7 +447,7 @@ bool Sms::isAuthSmsTo(std::string phoneNumber)
 bool Sms::sendSms(std::string phone, std::string text, struct mosquitto *mosq)
 {
  if(!isAuthSmsTo(phone)) {
-   std::string payload_ = SMS_NOT_SENT;
+   std::string payload_ = SMS_TXT_NOT_SENT;
    payload_ += " #6 not allowed ("+phone+": "+text+")";
    bool retain_ = false;
    int iRet=mosquitto_publish(mosq, NULL, topicSubRet.c_str(),
@@ -657,27 +657,27 @@ void Sms::threadFunctionSendSms(std::string sPhone,
  }
  //-----------start sms sending procedure-----------------------
  if(watchdog1<1) {
-  s1 = SMS_NOT_SENT;
+  s1 = SMS_TXT_NOT_SENT;
   s1 += " #1 timeout ("+sPhone+": "+sText+")";
  } else {
   g_modemBusy=true;                    // start sending
   Gsm gsm_=Gsm(sDevice);
   std::this_thread::sleep_for(std::chrono::milliseconds(100));
   if(!gsm_.isModule()) {
-    s1 = SMS_NOT_SENT;
+    s1 = SMS_TXT_NOT_SENT;
     s1 += " #3 "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
   } else {
    std::this_thread::sleep_for(std::chrono::milliseconds(100));
    if(!gsm_.begin()) {
-    s1 = SMS_NOT_SENT;
+    s1 = SMS_TXT_NOT_SENT;
     s1 += " #4 "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
    } else {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     if(gsm_.sendSms(sPhone, sText)) {
-     s1 = SMS_SENT;
+     s1 = SMS_TXT_SENT;
      s1 += " ("+sPhone+": "+sText+")";
     } else {
-     s1 = SMS_NOT_SENT;
+     s1 = SMS_TXT_NOT_SENT;
      s1 += " #5 "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
     }
    }

@@ -1,39 +1,58 @@
-Letzte &Auml;nderung: 23.1.2022   
-<table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
+Letzte &Auml;nderung: 24.1.2022 <a name="up">   
+<table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi: Senden und Empfangen von SMS &uuml;ber MQTT in C++</h1>
 <a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h10_RasPiCppSms_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
-</td></tr></table><hr>
-  
+</td></tr></table>
+<a href="https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hSms">==> Code @ GitHub</a><hr>
+
 # Worum geht es?
 M&ouml;chte man bei der Hausautomation in bestimmten Situationen eine SMS erhalten oder Dinge &uuml;ber SMS steuern, so ist das hier vorgestellte Programm `m4hSms` daf&uuml;r sehr hilfreich:   
 * Das Programm `m4hSms` wandelt SMS in MQTT-Nachrichten um und umgekehrt.   
 * Viele Eigenschaften des Programms k&ouml;nnen in der Konfigurationsdatei (`m4h.conf`) festgelegt werden.   
 * Mit ein wenig C++ Kenntnissen kann das Programm einfach an eigene Bed&uuml;rfnisse angepasst werden.   
 
+## Diese Anleitung beantwortet folgende Fragen:   
+1. [Wie werden SMS und MQTT-Nachrichten ineinander umgewandelt?](#a10)   
+2. [Welche Hilfsmittel werden benötigt? (Stand August 2021)](#a20)   
+3. [Wie verbindet man das SIM-Modul mit dem RasPi?](#a30)   
+4. [Wie stelle ich fest, an welchem Anschluss das SIM-Modul hängt?](#a40)   
+5. [Wie erstellt man das Programm m4hSms?](#a50)   
+6. [Wie kann ich das Programm konfigurieren?](#a60)   
+
+<a name="a10"></a>[Zum Seitenanfang](#up)   
+
 # Wie werden SMS und MQTT-Nachrichten ineinander umgewandelt?
-Die Umwandlung erfolgt nach folgendem Schema:   
+Das folgende Schema skizziert die Umwandlung von MQTT und SMS. Die MQTT-Topics zum Senden (bei `sub:`), für die Rückantwort (`subret:`) und für das Empfangen von SMS (bei `pub:`) können frei gewählt werden und stehen in der Konfigurationsdatei `m4h.conf`.   
 ![m4hSms1](./images/m4hSms_mqtt-sms.png "m4hSms function")   
 _Bild 1: Funktionsschema von `m4hSms`_   
-## MQTT zu SMS
+
+## Senden einer MQTT-Nachricht als SMS
 * Das __Topic__ zum Senden einer SMS wird in der Konfigurationsdatei `m4h.conf`, Abschnitt `[sms]`, Schlüssel `sub:` definiert (zB `sub: sms/send`).   
-* Die __Payload__ muss aus der Telefonnummer (ohne Leerzeichen!), einem nachfolgenden Leerzeichen (als Trennzeichen) und dem SMS-Text bestehen.   
+* Die __Payload__ zum Senden einer SMS muss aus der Telefonnummer (ohne Leerzeichen!), einem nachfolgenden Leerzeichen (als Trennzeichen) und dem SMS-Text bestehen.   
 
-_Beispiel:_   
-  `mosquitto_pub -h 10.1.1.1 -t sms/send -m "+43680XXXXX This SMS was sent via m4hSMS :-)"`   
-Anmerkung: Die Telefonnummer (`+43680XXXXX`) muss durch eine in `m4h.conf` freigegebene Nummer (unter `to:`) ersetzt werden.   
+_Beispiel: Nachricht als SMS versenden_   
+* `mosquitto_pub -h 10.1.1.1 -t sms/send -m "+43680XXXXX This SMS was sent via m4hSMS :-)"`   
+  _Anmerkung 1_: Die Telefonnummer (`+43680XXXXX`) muss durch eine in `m4h.conf` freigegebene Nummer (unter `to:`) ersetzt werden.   
+  _Anmerkung 2_: Das Programm `m4hSms` muss auf dem RasPi laufen ;)   
 
-## SMS zu MQTT
+Unter dem Topic `subret:` kommt eine Nachricht, ob das Senden erfolgreich war (Payload `SMS sent ...` oder `SMS NOT sent ...`).   
+
+## Umwandeln einer SMS in eine MQTT-Nachricht
 * Ein __normaler SMS-Text__ wird unter dem in der Konfigurationsdatei `m4h.conf`, Abschnitt `[sms]`, Schlüssel `pub:` (zB `pub: sms/send/ret`) angegebenen Topic als Nachricht versendet.   
-* __MQTT-formatierter Text__ enthält die Schlüssel -t (für Topic), -m (für Nachricht) und optinoal -r (für retain) und wird als entsprechende Nachricht veröffentlicht.   
+Mit Hilfe des Eintrags `pubNum: true` kann festgelegt werden, dass auch die Telefonnummer und Datum+Uhrzeit der SMS in der Payload mitgeschickt werden.   
+
+* __MQTT-formatierter Text__ enthält die Abkürzungen `-t` (für Topic), `-m` (für Nachricht) und optional `-r` (für retain) und wird als entsprechende Nachricht veröffentlicht.   
 _Beispiel_:   
 `-t info/test -m Das ist eine SMS-Test-Nachricht :-)`   
 Anmerkung: Die SMS muss von einer in `m4h.conf` freigegebenen Nummer (unter `from:`) kommen.
 
 * __Befehle__
-Mögliche Befehle müssen in der Konfigurationsdatei `m4h.conf` im Abschnitt `[sms]` angeführt werden. Sie bestehen aus dem Schlüssel (zB `cmdversion:`) und dem Text für den Befehl (zB `-version-`). Das heißt: Schickt man eine SMS mit dem Text `-version-` an das Programm `m4hSms`, so erhält man eine Antwort-SMS mit der Versionsnummer.   
+Mögliche Befehle müssen in der Konfigurationsdatei `m4h.conf` im Abschnitt `[sms]` angeführt sein. Sie bestehen aus dem Schlüssel (zB `cmdversion:`) und dem SMS-Text für den Befehl (zB `-version-`). Das heißt: Schickt man eine SMS mit dem Text `-version-` an das Programm `m4hSms`, so erhält man eine Antwort-SMS mit der Versionsnummer.   
 
-## Welche Hilfsmittel werden benötigt? (Stand August 2021)
+<a name="a20"></a>[Zum Seitenanfang](#up)   
+
+# Welche Hilfsmittel werden benötigt? (Stand August 2021)
 * _Hardware_: RasPi   
 * _Hardware_: ein SIM808 Modul   
   zB SIM808 Modul GSM mit GPS Antenne f&uuml;r 3G 4G SIM Karte zB von [AliExpress](https://de.aliexpress.com/item/1005002384541464.html?spm=a2g0s.9042311.0.0.5c824c4dqUu43E) oder [Amazon](https://www.amazon.de/dp/B09CM8TSX9/ref=sspa_dk_detail_0?psc=1&pd_rd_i=B09CM8TSX9&pd_rd_w=yNPjf&pf_rd_p=4f2ceb27-95e9-46ab-8808-db390b56ec01&pd_rd_wg=Muvvr&pf_rd_r=3NTH9ZQRZNE3VBZKD1YV&pd_rd_r=58ca39f9-b9f0-40b5-9b14-7f5d8a37ce1d&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEzN1A5OTA0NUNBTTA2JmVuY3J5cHRlZElkPUEwMzcxNzc3MlkxMFpaUTBTRjhYMSZlbmNyeXB0ZWRBZElkPUEwNzU2MTYzMjRJSlNTREJMTjVHSiZ3aWRnZXROYW1lPXNwX2RldGFpbCZhY3Rpb249Y2xpY2tSZWRpcmVjdCZkb05vdExvZ0NsaWNrPXRydWU=)   
@@ -52,25 +71,47 @@ zB [in &Ouml;sterreich HOT von Hofer/Aldi](https://www.hot.at/tarife.html?gclid=
    [Visual Studio Code](https://code.visualstudio.com/) und   
    [WinSCP](https://winscp.net/eng/docs/lang:de) zur Daten&uuml;bertragung vom PC/Laptop zum RasPi   
 
+<a name="a30"></a>[Zum Seitenanfang](#up)   
 
-## Beschreibung der Hardware
+# Wie verbindet man das SIM-Modul mit dem RasPi?
 Zum Senden und Empfangen von SMS ist zumindest ein SIM-Modul und eine SIM-Karte erforderlich. Das SIM-Modul kann entweder
-* an die Pins des RasPi angeschlossen werden (Pin 2-5V, Pin 6-GND, Pin 8-TxD0 und Pin 10-RxD0), wobei eine Pegelanpassung 5V/3V3 erforderlich ist, oder   
+* an die Pins der seriellen Schnittstelle des RasPi angeschlossen werden (Pin 2-5V, Pin 6-GND, Pin 8-TxD0 und Pin 10-RxD0), wobei eine Pegelanpassung 5V/3V3 erforderlich ist, oder   
 * &uuml;ber einen USB-Serial-Adapter am RasPi angeschlossen werden.   
 
 Der Anschluss &uuml;ber einen USB-Serial-Adapter ist zwar teurer (da die Kosten f&uuml;r den Adapter anfallen), daf&uuml;r aber einfacher.   
 
 ![Modul SIM808 mit USB-Serial-Adapter](./images/210825_SIM808_480b.png "Modul SIM808 mit USB-Serial-Adapter")   
-_Bild 1: USB-Serial-Adapter SH-U09C, Modul SIM808 und GSM-Antenne (von links nach rechts)_   
+_Bild 2: USB-Serial-Adapter SH-U09C, Modul SIM808 und GSM-Antenne (von links nach rechts)_   
    
 Der Jumper auf dem USB-Serial-Adapter muss auf 5V gesteckt werden, da die Versorgungsspannung des SIM-Moduls zwischen 5 und 18V betragen muss. (3,3V ist zu wenig.)  
 
 Beim Verbinden des SIM-Moduls mit dem USB-Serial-Adapter oder RasPi ist darauf zu achten, dass die Pins TxD mit RxD und RxD mit TxD verbunden werden ("auskreuzen" der Datenleitungen).   
 
-Weiters wird eine SIM-Karte ben&ouml;tigt, wobei f&uuml;r viele Anwendungen eine Prepaid-Karte ausreicht, bei der keine Fixkosten anfallen. Die SIM-Karte wird in den SIM-Modul eingelegt (siehe Bild 1, links unten im Modul).   
+![USB-SIM-connection](./images/m4hSms_connect.png "USB-SIM-connection")   
+_Bild 3: Verbindung zwischen USB-Serial-Adapter und SIM-Modul_   
 
-Hat man das SIM-Modul am RasPi angesteckt, so kann man mit Hilfe des Programms [`
-m4hFindSimModule`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hFindSimModule) feststellen, als welches "Device" das Modul angesprochen werden kann:   
+__Nicht vergessen__: Zum Senden und Empfangen von SMS wird eine SIM-Karte ben&ouml;tigt, wobei f&uuml;r viele Anwendungen eine Prepaid-Karte ausreicht, bei der keine Fixkosten anfallen. Die SIM-Karte wird in den SIM-Modul eingelegt (siehe Bild 1, links unten im Modul).   
+
+<a name="a40"></a>[Zum Seitenanfang](#up)   
+
+# Wie stelle ich fest, an welchem Anschluss das SIM-Modul hängt?   
+Sind mehrere USB-Geräte am RasPi angeschlossen, ist nicht immer klar, mit welchem logischen Port (`/dev/ttyS0`, `/dev/ttyACM0`, `/dev/ttyUSB0`, `/dev/ttyUSB1` usw.) das SIM-Modul verbunden ist. Dies kann man mit Hilfe des Programms [`
+m4hFindSimModule`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hFindSimModule) feststellen:   
+
+1. Mit Putty eine Verbindung zum RasPi herstellen.   
+2. Auf dem RasPi ein Verzeichnis für das Programm anlegen und hineinwechseln:   
+  `mkdir ~/m4hFindSimModule`   
+  `cd ~/m4hFindSimModule`   
+3. Eine leere Datei erstellen:   
+  `nano m4hFindSimModule.cpp`   
+4. Den [Quellcode für `m4hFindSimModule`](https://github.com/khartinger/mqtt4home/blob/main/source_RasPi/m4hFindSimModule/m4hFindSimModule.cpp) auf Github mit [Raw] &lt;strg&gt; a markieren, mit &lt;strg&gt; c kopieren und in die leere Datei einfügen (rechte Maustaste).   
+5. Die Datei speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
+6. Die ausführbare Datei erzeugen:   
+   `g++ m4hFindSimModule.cpp -o m4hFindSimModule`   
+7. Das Programm starten:   
+  `~/m4hFindSimModule/m4hFindSimModule`   
+
+Ergebnis (zum Beispiel):   
 ```   
 pi_@raspi:~/m4hFindSimModule $ ./m4hFindSimModule
 Searching for modem...
@@ -80,44 +121,77 @@ Searching for modem...
 /dev/ttyUSB1: Could not open device (Error 2: No such file or directory)
 ```   
 In diesem Beispiel ist der Device-Name also `/dev/ttyUSB0`.   
-_Anmerkung_: Das Erzeugen des Programmes `m4hFindSimModule` erfolgt mit   
-`g++ m4hFindSimModule.cpp -o m4hFindSimModule`.   
 
 &nbsp;   
-## Erstellung des Programms m4hSms
+<a name="a50"></a>[Zum Seitenanfang](#up)   
+
+# Wie erstellt man das Programm m4hSms?
 Die Erstellung der ausf&uuml;hrbaren Datei erfolgt gleich wie es im Kapitel [Raspberry Pi: Hilfreiche Einzel-Programme in C++](m4h08_RasPiCppDemos.md) beispielhaft beschrieben wurde:   
 1. Erstellen eines Projektverzeichnisses `mkdir ~/m4hSms`   
 2. Wechseln in das Projektverzeichnis `cd ~/m4hSms`   
 3. Kopieren der Projektdateien von GitHub in das Projektverzeichnis   
 4. Erstellen der ausf&uuml;hrbaren Datei `m4hSms`  
-   `g++ m4hMain.cpp m4hBase.cpp ./modem/C_X232.cpp ./modem/C_Gsm.cpp -o m4hSms -lmosquitto -lpthread`   
+  `g++ m4hMain.cpp m4hBase.cpp ./modem/C_X232.cpp ./modem/C_Gsm.cpp -o m4hSms -lmosquitto -lpthread`   
+5. Starten des Programms   
+  `~/m4hSms/m4hSms`   
 
-## Beschreibung der Konfigurationsm&ouml;glichkeiten
-Die Konfiguration des Programms m4hSms erfolgt mit Hilfe der Konfigurationsdatei `m4h.conf`. Dabei sind in der Sektion `[sms]` folgende Eintr&auml;ge erforderlich:   
-* `device:` Schnittstelle, an der das SIM-Modul angeschlossen ist. M&ouml;gliche Werte sind `ttyS0` f&uuml;r die serielle Schnittstelle oder `ttyUSB0`, `ttyUSB1` usw. f&uuml;r die USB-Schnittstelle.   
+Beenden des Programms zB mit der Tastenkombination &lt;Strg&gt;c   
+
+<a name="a60"></a>[Zum Seitenanfang](#up)   
+
+# Wie kann ich das Programm konfigurieren?
+
+Die Konfiguration des Programms m4hSms erfolgt mit Hilfe der Konfigurationsdatei `m4h.conf`. Diese kann mit dem Texteditor Nano bearbeitet werden, zB   
+`nano ~/m4hSms/m4h.conf`   
+
+In der Sektion `[sms]` sind folgende Eintr&auml;ge erforderlich:   
+
+* `device:` Schnittstelle, an der das SIM-Modul angeschlossen ist.   
+  M&ouml;gliche Werte sind `ttyS0` f&uuml;r die serielle Schnittstelle oder `ttyACM0`, `ttyUSB0`, `ttyUSB1` usw. f&uuml;r die USB-Schnittstelle.   
+
 * `from: ` Auflistung der Telefonnummern, von denen SMS empfangen werden d&uuml;rfen   
    (Telefonnummern durch Beistriche getrennt, Nummern beginnen mit +...).
+
 * `to: `  Auflistung der Telefonnummern, zu denen SMS geschickt werden d&uuml;rfen   
    (Telefonnummern durch Beistriche getrennt, Nummern beginnen mit +...).
+
 * `sub: ` Topic f&uuml;r das Senden einer SMS. Die Payload muss die Telefonnummer, ein Leerzeichen und dann den gew&uuml;nschten SMS-Text enthalten.   
+
+* `subret: ` Topic f&uuml;r eine Antwortnachricht nach dem Senden einer SMS.   
+
 * `pub: ` Topic, unter dem ankommende SMS verschickt werden, sofern kein Topic in der SMS angegeben wurde.   
    Aufbau einer SMS mit vorgegebenem Topic: `-t topic -m payload`   
    `-t ` steht f&uuml;r Topic, `-m ` steht f&uuml;r die Payload. Folgt noch ein `-r`, so wird das Retain-Flag gesetzt.   
 ---   
 Folgende Eintr&auml;ge sind optional:   
-* `smsStart: ` Senden einer SMS an die angegebene Telefonnummer, wenn das Programm `m4hSms` gestartet wurde, zB `smsStart: +43..... program m4hSms started!`   
-* `smsEnd: ` Senden einer SMS an die angegebene Telefonnummer, wenn das Programm `m4hSms` beendet wurde, zB `smsEnd: +43..... program m4hSms finished!`   
-* `cmdversion:` definert einen SMS-Text, der eine Antwort-SMS mit der Versionsnummer des Programms `m4hSms` bewirkt.   
-* `cmdend:` definert einen SMS-Text, der das Beenden des Programms `m4hSms` bewirkt.   
-* `cmdreload:` definert einen SMS-Text, der das neuerliche Laden der Konfigurationsdatei `m4h.conf` bewirkt.   
-* `cmdcredit:` definert einen SMS-Text, der das Abfragen des Guthabens beim Provider bewirkt und den Betrag (in Euro) als Antwort-SMS zur&uuml;ckschickt.   
 
+* `pubNum: ` Gibt an, ob bei einer empfangenen SMS in der Payload zusätzlich zum SMS-Text auch die Telefonnummer und Datum+Uhrzeit angegeben werden soll.   
+  Vorgabe: `false` (d.h. nur SMS-Text als Payload verwenden).
+
+* `smsStart: ` Senden einer SMS an die angegebene Telefonnummer, wenn das Programm `m4hSms` gestartet wurde, zB   
+  `smsStart: +43..... program m4hSms started!`   
+  Für jede Telefonnummer muss eine eigene Zeile verwendet werden.   
+  Vorgabe: keine Start-SMS   
+
+* `smsEnd: ` Senden einer SMS an die angegebene Telefonnummer, wenn das Programm `m4hSms` beendet wurde, zB   
+  `smsEnd: +43..... program m4hSms finished!`   
+  Für jede Telefonnummer muss eine eigene Zeile verwendet werden.   
+  Vorgabe: keine End-SMS   
+
+* `cmdversion:` definert einen SMS-Text, der eine Antwort-SMS mit der Versionsnummer des Programms `m4hSms` bewirkt.   
+
+* `cmdend:` definert einen SMS-Text, der das Beenden des Programms `m4hSms` bewirkt.   
+
+* `cmdreload:` definert einen SMS-Text, der das neuerliche Laden der Konfigurationsdatei `m4h.conf` bewirkt.   
+
+* `cmdcredit:` definert einen SMS-Text, der das Abfragen des Guthabens beim Provider bewirkt und den Betrag (in Euro) als Antwort-SMS zur&uuml;ckschickt.   
    
 _Anmerkung_: Alle Schl&uuml;ssel wie `device`, `from`, `to` usw. sind im Quellcode der Datei `C_Sms.hpp` mit   
 `#define SMS_..._KEY ...`   
 definiert und k&ouml;nnen leicht an eigene Bed&uuml;rfnisse angepasst werden.   
 
-### Ausf&uuml;hrliche Beispiel-Konfiguration:
+### Beispiel für eine Konfigurationsdatei:   
+
 ```   
 ________m4h.conf________________________________khartinger_____
 # Configuration file for mqtt4home
@@ -140,11 +214,15 @@ from: 6700,+43.....
 to: 6700,+43.....
 # mqtt base topics for sending and receiving
 # sub-topic with payload num txt --> sms
-# --> sms send result published under pub
+# --> sms send result published under "subret:"
 # sms (cmd, plain)          --> publish with topic pub
 # sms (-t topic -m payload) --> publish topic payload
 sub: sms/send
-pub: sms/send/ret
+subret: sms/send/ret
+pub: sms/received
+# payload for received sms with phonenumber date+time sms-text
+pubNum: true
+
 smsStart: +43..... program m4hSms started!
 smsEnd:   +43..... program m4hSms finished!
 # sms or mqtt commands to which the program responds
@@ -157,3 +235,5 @@ cmdcredit:  -credit-
 #nettext:    GUTHABEN
 ```   
 _Anmerkung_: Zeilen mit # am Beginn sind Kommentarzeilen und werden ignoriert.   
+
+[Zum Seitenanfang](#up)   
