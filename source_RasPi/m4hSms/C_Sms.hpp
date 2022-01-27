@@ -8,6 +8,7 @@
 // Updates:
 // 2021-08-25 First release
 // 2022-01-23 Add pubNum, formatSmsDate
+// 2022-01-27 Add init()
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
@@ -97,6 +98,7 @@ class Sms
  bool readConfig(std::string pfConf);  // read config file
  void show();                          // show config values
  bool isModule();                      // check for SIM module
+ bool init();                          // send start sms
  bool onMessage(struct mosquitto *mosq, std::string topic, std::string payload);
  void onExit(struct mosquitto *mosq, int reason);
  int  lookForSmsIn(struct mosquitto *mosq);
@@ -276,6 +278,33 @@ bool Sms::isModule()
  bRet=gsm2.isModule();                 // test module
  g_modemBusy=false;                    // modem not busy
  return bRet;
+}
+
+//_______Init program: send start sms___________________________
+bool Sms::init()
+{
+ //------check for module---------------------------------------
+ bool bRet=isModule();
+ if(g_prt) {
+  fprintf(stdout, "GSM module ");
+  if(!bRet) fprintf(stdout, "NOT ");
+  fprintf(stdout, "found at %s!\n",getDevice().c_str());
+ }
+ return bRet;
+/*
+ //------send start sms-----------------------------------------
+ Conf conf=Conf();
+ if(g_prt) std::cout<<"send start sms..."<<std::endl;
+ for(int i=0; i<vSmsStart.size(); i++)
+ {
+  std::string phone, text;
+  std::string s1=vSmsStart.at(i);
+  conf.split2String(s1, phone, text, ' ');
+  if(!isAuthSmsTo(phone)) continue;
+  std::thread mythreadSendSms(threadFunctionSendSms, phone, text, device, mosq, topicPub, 30);
+  mythreadSendSms.join();
+ }
+*/
 }
 
 //_______act on messages..._____________________________________
