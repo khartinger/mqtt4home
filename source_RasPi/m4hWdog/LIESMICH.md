@@ -1,26 +1,33 @@
-Letzte Änderung: 2.2.2022 <a name="up">   
+Letzte Änderung: 2.2.2022 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
-<h1>Raspberry Pi: Überwachung von MQTT-Sensoren</h1>
+<h1>Raspberry Pi: Zeitliche Überwachung von MQTT-Sensoren</h1>
 <a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="./README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table>
 <hr>
 
 # Worum geht es?
-
+Viele Sensoren senden Messwerte und gehen dann in einen Sleep-Modus, um Energie zu sparen. Bei batteriebetriebenen Sensoren geht irgendwann die Energie zu Ende und sie können nichts mehr senden oder sie verlieren die Netzwerkverbindung.   
+Das Projekt `m4hWdog` ("Watchdog") hilft zu erkennen, wenn ein Sensor innerhalb einer vorgegebenen Zeit keine Nachricht mehr gesendet hat.   
+Dazu wird in der Konfigurationsdatei festgelegt, welches Topic innerhalb welcher Zeitspanne eine Nachricht senden muss.   
 
 ## Diese Anleitung beantwortet folgende Fragen:   
-1. [...](#a10)   
+1. [Welche Dinge ben&ouml;tige ich für dieses Projekt?](#a10)   
 
-## Welche Dinge ben&ouml;tige ich?
+
+99. [Wie würde ich selbst dieses Programm erstellen?](#a99)   
+
+<a name="a10"></a>[Zum Seitenanfang](#up)   
+# Welche Dinge ben&ouml;tige ich für dieses Projekt?
 * Hardware: PC oder Laptop mit Internetzugang, Browser   
-* Hardware: Raspberry Pi, auf dem ein MQTT-Broker l&auml;uft (zB Mosquitto)   
-* Software: Visual Studio Code ("VSC"), das f&uuml;r C++-Anwendungen bereits vorbereitet ist.   
-* Software: Terminal-Programm [putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) auf dem PC/Laptop   
-* Software: [WinSCP](https://winscp.net/eng/docs/lang:de) zur Daten&uuml;bertragung vom PC/Laptop zum RasPi   
+* Hardware: Raspberry Pi als Access Point (WLAN Raspi11, PW 12345678) mit der IP 10.1.1.1, auf dem ein MQTT-Broker l&auml;uft (zB Mosquitto)   
+* Software: Visual Studio Code ("VSC"), das f&uuml;r C++-Anwendungen vorbereitet ist.   
+* Software: Terminal-Programm [__*putty*__](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) auf dem PC/Laptop   
+* Software: [__*WinSCP*__](https://winscp.net/eng/docs/lang:de) zur Daten&uuml;bertragung vom PC/Laptop zum RasPi   
 * Software: Die MQTT-Klient-Programme `mosquitto_sub` und ` mosquitto_pub` (auf dem PC oder RasPi installiert)   
-* 
 
+
+<a name="a99"></a>[Zum Seitenanfang](#up)   
 # Wie würde ich selbst dieses Programm erstellen?
 ## Anlegen des Projektes
 1. Windows: Anlegen des Projektordners `m4hWdog`   
@@ -41,11 +48,42 @@ Letzte Änderung: 2.2.2022 <a name="up">
    Menü Datei - Alles speichern
 
 Das Projekt kann bereits auf das RasPi übertragen und dort gestestet werden:   
+* RasPi starten, PC mit dem RasPi über WLAN verbinden.   
+* Übertragen des Verzeichnisses `m4hWdog` vom PC zum RasPi (mit _WinSCP_)   
+* Mittels _Putty_ auf das RasPi zugreifen (User `pi_`, PW `pass`) und in den Projektordner wechseln:   
+  `cd ~/m4hWdog`   
+* _Putty_: Ausführbares Programm erzeugen:   
+  `g++ m4hMain.cpp m4hBase.cpp -o m4hWdog -lmosquitto -lpthread`   
+* _Putty_: Das Programm ausführen:   
+  `./m4hWdog`   
+* PC: Terminalfenster (`cmd.exe`) öffnen und das Programm zum Anzeigen von MQTT-Nachrichten starten:   
+  `mosquitto_sub -h 10.1.1.1 -t "#" -v`   
+* PC: Ein zweites Terminalfenster (`cmd.exe`) öffnen und eine MQTT-Nachricht senden:   
+  `mosquitto_pub -h 10.1.1.1 -t m4hWdog/get -m version`   
+  Im ersten Terminalfenster erscheinen die Meldungen   
+  `m4hWdog/get version`   
+  `m4hWdog/ret/version 2022-02-02`   
+* PC: Das Programm mittels MQTT-Befehl beenden:   
+  `mosquitto_pub -h 10.1.1.1 -t m4hWdog/set -m ...end...`   
+  Im ersten Terminalfenster erscheinen die Meldungen   
+  `m4hWdog/set ...end...`   
+  `info/end__ m4hWdog (02.02.2022 18:13:19)`   
+  bzw. in _Putty_ erscheinen die Meldungen   
+  `Exit program... MQTT end message sent.`   
+  `Program terminated by MQTT (02.02.2022 18:13:19)`   
+  `Beendet`   
 
+# Funktionen einfügen...
 
-
-# ---
 ---   
+# ..ToDo..   
+
+---    
+
+&nbsp;
+
+---   
+---------------------------------
 ---   
 # ---
 Möchte man bei der Hausautomation in bestimmten Situationen eine SMS erhalten oder Dinge über SMS steuern, so ist das hier vorgestellte Programm `m4hSms` dafür sehr hilfreich:   
@@ -62,7 +100,7 @@ Möchte man bei der Hausautomation in bestimmten Situationen eine SMS erhalten o
 6. [Wie kann man das Programm konfigurieren?](#a60)   
 7. [Wie testet man das Programm m4hSms?](#a70)   
 
-<a name="a10"></a>[Zum Seitenanfang](#up)   
+<a name="aa10"></a>[Zum Seitenanfang](#up)   
 
 # Wie werden SMS und MQTT-Nachrichten ineinander umgewandelt?
 Das folgende Schema skizziert die Umwandlung von MQTT in SMS und umgekehrt. Die MQTT-Topics zum Senden (bei `sub:`), für die Rückantwort (`subret:`) und für das Empfangen von SMS (bei `pub:`) können frei gewählt werden und stehen in der Konfigurationsdatei `m4h.conf`.   
@@ -93,7 +131,7 @@ Anmerkung: Die SMS muss von einer in `m4h.conf` freigegebenen Nummer (unter `fro
 
 * Mögliche __Befehle__ müssen in der Konfigurationsdatei `m4h.conf` im Abschnitt `[sms]` angeführt sein. Sie bestehen aus dem Schlüssel (zB `cmdversion:`) und dem SMS-Text für den Befehl (zB `-version-`). Das heißt: Schickt man eine SMS mit dem Text `-version-` an das Programm `m4hSms`, so erhält man eine Antwort-SMS mit der Versionsnummer.   
 
-<a name="a20"></a>[Zum Seitenanfang](#up)   
+<a name="aa20"></a>[Zum Seitenanfang](#up)   
 
 # Welche Hilfsmittel werden benötigt? (Stand August 2021)
 * _Hardware_: RasPi mit laufenden Broker (zB mosquitto)   
