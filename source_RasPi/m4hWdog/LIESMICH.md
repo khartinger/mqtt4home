@@ -1,4 +1,4 @@
-Letzte Änderung: 2.2.2022 <a name="up"></a>   
+Letzte Änderung: 3.2.2022 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
 <h1>Raspberry Pi: Zeitliche Überwachung von MQTT-Sensoren</h1>
 <a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -8,12 +8,12 @@ Letzte Änderung: 2.2.2022 <a name="up"></a>
 
 # Worum geht es?
 Viele Sensoren senden Messwerte und gehen dann in einen Sleep-Modus, um Energie zu sparen. Bei batteriebetriebenen Sensoren geht irgendwann die Energie zu Ende und sie können nichts mehr senden oder sie verlieren die Netzwerkverbindung.   
-Das Projekt `m4hWdog` ("Watchdog") hilft zu erkennen, wenn ein Sensor innerhalb einer vorgegebenen Zeit keine Nachricht mehr gesendet hat.   
-Dazu wird in der Konfigurationsdatei festgelegt, welches Topic innerhalb welcher Zeitspanne eine Nachricht senden muss.   
+Das Projekt `m4hWdog` ("Watchdog") hilft, diesen Fehlerfall zu erkennen. Es schickt eine MQTT-Nachricht, wenn ein Sensor innerhalb einer vorgegebenen Zeit keine Nachricht mehr gesendet hat.   
+In einer Konfigurationsdatei wird festgelegt, innerhalb welcher Zeitspanne eine Nachricht von einem bestimmten Topic eintreffen muss.   
 
 ## Diese Anleitung beantwortet folgende Fragen:   
 1. [Welche Dinge ben&ouml;tige ich für dieses Projekt?](#a10)   
-
+2. [Wie verwende ich dieses Programm?](#a20)
 
 99. [Wie würde ich selbst dieses Programm erstellen?](#a99)   
 
@@ -26,9 +26,20 @@ Dazu wird in der Konfigurationsdatei festgelegt, welches Topic innerhalb welcher
 * Software: [__*WinSCP*__](https://winscp.net/eng/docs/lang:de) zur Daten&uuml;bertragung vom PC/Laptop zum RasPi   
 * Software: Die MQTT-Klient-Programme `mosquitto_sub` und ` mosquitto_pub` (auf dem PC oder RasPi installiert)   
 
+<a name="a20"></a>[Zum Seitenanfang](#up)   
+# Wie verwende ich dieses Programm?   
+Die Registrierung der zu überwachenden Sensoren erfolgt in der Konfigurationsdatei im Abschnitt `[wdog]`. Für jeden Sensor muss eine Zeile mit dem Key "in:" und dem Wert Topic + Leerzeichen + maximale Antwortzeit im Format `[HHHH]H:MM:SS` angelegt werden, wobei die Stundenzahl (nahezu) beliebig sein kann, zb 0 bis zu 8760 (= 365*24 = 1 Jahr) oder mehr.   
+_Beispiel_: Der Sensor `z2m/schalter_2` soll mindestens 1x am Tag betätigt werden. Eintrag in der Konfigurationsdatei:   
+`[wdog]`   
+`in:  z2m/schalter_2 24:00:00`   
+
+Mit dem Key `out` kann festgelegt werden, unter welchem Topic die Warnung verschickt werden soll.   
+Beispiel:   
+`out: m4hWdog/attention Sensor <in> missing!`   
+Der Platzhalter `<in>` wird durch den entsprechenden Sensornamen ersetzt.   
 
 <a name="a99"></a>[Zum Seitenanfang](#up)   
-# Wie würde ich selbst dieses Programm erstellen?
+# Wie würde ich selbst dieses Programm erstellen?   
 ## Anlegen des Projektes
 1. Windows: Anlegen des Projektordners `m4hWdog`   
 2. Windows: Kopieren der Dateien der Vorlage `m4hWdog` in den Ordner `m4hWdog`   
@@ -73,7 +84,35 @@ Das Projekt kann bereits auf das RasPi übertragen und dort gestestet werden:
   `Program terminated by MQTT (02.02.2022 18:13:19)`   
   `Beendet`   
 
-# Funktionen einfügen...
+## Klasse "WdogIn1" für Sensor-Daten
+Da für jeden zu überwachenden Sensor ein Topic und eine Zeitdauer gespeichert werden muss, wird dafür eine eigene Klasse `WdogIn1` definiert.   
+
+## Konstante definieren
+Um das Programm möglichst flexibel benutzen zu können, wird in der Datei `C_Wdog.hpp` für jeden Schlüssel und jeden Wert der Konfigurationsdatei eine Konstante und eine Variable definiert:   
+```   
+#define  WDOG_OUT_KEY        "out"
+#define  WDOG_OUT            "m4hWdog/attention"
+#define  WDOG_IN_KEY         "in"
+```   
+und in der Klasse `Wdog`   
+```   
+ std::string wdog_out_key;             // topic out key
+ std::string wdog_out;                 // topic out value
+ std::string wdog_in_key;              // topic in key
+ std::vector<WdogIn1>vIn;              // topic in values
+```   
+
+## Einlesen der Konfigurationsdatei (readConfig)   
+
+
+## Anzeige der eingelesenen Daten (show)   
+
+
+## Reaktion auf eintreffende Nachrichten (onMessage)
+
+
+
+
 
 ---   
 # ..ToDo..   

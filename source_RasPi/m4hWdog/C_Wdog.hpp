@@ -15,12 +15,32 @@
 #define  WDOG_SECTION        "wdog"
 #define  WDOG_DEMO_KEY       "demokey"
 #define  WDOG_DEMO           "demodefault"
+#define  WDOG_OUT_KEY        "out"
+#define  WDOG_OUT            "m4hWdog/attention"
+#define  WDOG_IN_KEY         "in"
+// #define  WDOG_IN             ""
+
 
 //-------global values------------------------------------------
 extern bool g_prt;                     //true=printf,false=quiet
 
 // *************************************************************
-//    class Log: add incomming messages to files
+//    class WdogIn1: class for one sensor in line @ config file
+// *************************************************************
+class WdogIn1
+{
+ public:
+ //------properties---------------------------------------------
+ std::string topicIn;
+ unsigned long sec;
+ public:
+ //------constructor & co---------------------------------------
+ WdogIn1() { topicIn=""; sec=32000000; }
+ WdogIn1(std::string in_, unsigned long sec_) {topicIn=in_; sec=sec_;}
+}
+
+// *************************************************************
+//    class Wdog: watchdog for sensors
 // *************************************************************
 class Wdog
 {
@@ -32,6 +52,11 @@ class Wdog
  //------application specific properties------------------------
  std::string keys;                     // keys for [wdog]
  std::string _demo_;                   // demo value
+ std::string wdog_out_key;             // topic out key
+ std::string wdog_out;                 // topic out value
+ std::string wdog_in_key;              // topic in key
+ std::vector<WdogIn1>vIn;              // topic in values
+
  public:
  //------constructor & co---------------------------------------
  Wdog();                               // constructor
