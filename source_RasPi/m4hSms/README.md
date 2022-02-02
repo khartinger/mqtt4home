@@ -1,4 +1,4 @@
-Last modified: 2022-01-24 <a name="up">   
+Last modified: 2022-01-24 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi: Sending and receiving SMS via MQTT in C++</h1>
 <a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
