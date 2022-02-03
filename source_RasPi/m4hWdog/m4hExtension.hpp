@@ -63,9 +63,12 @@ void f5Periodic(struct mosquitto *mosq)
 {
  bool bDoPeriodic=true;                // do "endles"
  int  iEnd=4;                          // reason for end
+ int  zsec=600;
  while(bDoPeriodic) //-----"endless"----------------------------
  { //...Do something...
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  if((--zsec)<1) zsec=600;
+  if(zsec%10==0) g_wdog.periodic(mosq);
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
  };
  terminate_program(iEnd);
 }
