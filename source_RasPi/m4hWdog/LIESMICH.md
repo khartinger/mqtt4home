@@ -1,4 +1,4 @@
-Letzte &auml;nderung: 3.2.2022 <a name="up"></a>   
+Letzte &Auml;nderung: 3.2.2022 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
 <h1>Raspberry Pi: Zeitliche &Uuml;berwachung von MQTT-Sensoren (Watchdog) in C++</h1>
 <a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
