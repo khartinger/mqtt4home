@@ -1,5 +1,5 @@
-Letzte &Auml;nderung: 26.12.2021 <a name="up"></a>   
-<table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>
+Letzte &Auml;nderung: 03.02.2022 <a name="up"></a>   
+<table><tr><td><img src="md/logo/mqtt4home_96.png"></img></td><td>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
 <a href="README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table>
@@ -46,24 +46,32 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 * Weitere ben&ouml;tigte Hilfsmittel, wie ZigBee-Stick, ZigBee-Sensoren, GSM-Modem oder Software etc., werden bei den jeweiligen Beispielen beschrieben.   
 
 ---   
+
 <a name="#inhalt"></a>   
+
 # Inhalt
 ## Bereich "Zentrale"
 * [Raspberry Pi installieren (2021-07-31)](md/m4h01_RasPiInstall.md)
 * [Raspberry Pi als Access-Point (2021-07-31)](md/m4h02_RasPiAccessPoint.md)
 * [Raspberry Pi als MQTT-Broker (2021-07-31)](md/m4h03_RasPiMQTTBroker.md)
 * [Raspberry Pi: Regelm&auml;&szlig;iges Senden von MQTT-Nachrichten (2021-10-12)](md/m4h104_RasPi_crontab.md)
+* [Vue-MQTT: Wie erstellt man ein CI-Symbol? (Beispiel: Lampe) (2021-12-23)](md/m4h520_Vue_ci_mqtt_lamp1.md)
+
 ---   
+
 ## Bereich "D1mini"
 * [D1mini: MQTT Relais mit PubSubClient (2021-07-31)](md/m4h201_D1mqttRelayD1.md)
 * [D1mini: Die Klasse SimpleMqtt (2021-07-31)](md/m4h202_D1SimpleMqtt.md)
 * [D1mini: Schalten eines Relais via MQTT - Version 2 (2021-11-08)](md/m4h203_D1smqttRelayD1.md)
+
 ---   
+
 ## Bereich "Hilfsprogramme"
 * [RasPi: Vorlage f&uuml;r MQTT-Programme in C++ (2021-08-21)](md/m4h07_RasPiCppBase.md)
 * [RasPi: Hilfreiche Einzel-Programme in C++ (2021-08-21)](md/m4h08_RasPiCppDemos.md)
 * [RasPi: Erstellen eigener Programme in C++ (2021-08-21)](md/m4h09_RasPiCppCreatingYourOwnProgs.md)
 * [RasPi: Senden und Empfangen von SMS &uuml;ber MQTT in C++ (2021-08-27)](md/m4h340_RasPiCppSms.md)
+* [RasPi: Zeitliche &Uuml;berwachung von MQTT-Sensoren (Watchdog) in C++ (2022-02-03)](md/m4h350_RasPiCppWatchdog.md)
 
 ## Bereich "ZigBee"
 * [Wie verbindet man Zigbee-Ger&auml;te mit MQTT? (2022-01-15)](md/m4h301_zbInstall.md)
@@ -80,4 +88,5 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 * [__Vue+VSC: Beispiele f&uuml;r Ci-Symbole (2022-01-20)__](md/m4h550_Vue_ci_mqtt_all.md)   
 * [Vue+VSC: Wie zeichnet man einen Hausplan? (CiWall-Elemente) (2022-01-04)](md/m4h560_Vue_ci_mqtt_wall1.md)   
 * [Vue+VSC: Wie zeichnet man Türen und Fenster in einem Hausplan? (CiDoor, CiWindow, CiBlind) (2022-01-08)](md/m4h565_Vue_ci_mqtt_door_etc.md)   
-[Zum Seitenanfang](#up)
+
+[Zum Seitenanfang](#up)   

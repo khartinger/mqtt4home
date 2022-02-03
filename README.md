@@ -1,11 +1,9 @@
-Last modified: 2021-12-26 <a name="up"></a>   
-<table><tr><td><img src="md/logo/mqtt4home_96.png"></td><td>
+Last modified: 2022-02-03 <a name="up"></a>   
+<table><tr><td><img src="md/logo/mqtt4home_96.png"></img></td><td>
 <h1>MQTT for domestic/home use :)</h1>
 <a href="LIESMICH.md">==> German version</a>&nbsp; &nbsp; &nbsp; 
 </td></tr></table>   
 <a href="#content1">Directly to the content overview</a>   
-
----   
 
 # Welcome to mqtt4home
 
@@ -58,6 +56,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [Raspberry Pi as MQTT broker (2021-07-31)](md/m4h03_RasPiMQTTBroker_e.md)
 * [Raspberry Pi: Sending MQTT messages regularly (2021-10-12)](md/m4h104_RasPi_crontab_e.md)
 * [Vue-MQTT: How to create a CI symbol? (Example: Lamp) (2021-12-23)](md/m4h520_Vue_ci_mqtt_lamp1_e.md)
+
 ---   
 
 ## Area "D1mini"
@@ -72,6 +71,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [RasPi: Helpful single programs in C++ (2021-08-21)](md/m4h08_RasPiCppDemos_e.md)
 * [RasPi: Create your own programs in C++ (2021-08-21)](md/m4h09_RasPiCppCreatingYourOwnProgs_e.md)
 * [RasPi: Sending and receiving SMS via MQTT in C++ (2021-08-27)](md/m4h340_RasPiCppSms_e.md)
+* [RasPi: Time monitoring of MQTT sensors (Watchdog) in C++ (2022-02-03)](md/m4h350_RasPiCppWatchdog_e.md)
 
 ## Area "Zigbee"
 * [How to connect Zigbee devices with MQTT? (2022-01-15)](md/m4h301_zbInstall_e.md)
