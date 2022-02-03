@@ -1,10 +1,10 @@
 Last modified: 2022-02-03 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
 <h1>Raspberry Pi: Time monitoring of MQTT sensors (Watchdog) in C++</h1>
-<a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
-<a href="./LIESMICH.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
+<a href="../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
+<a href="m4h350_RasPiCppWatchdog.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table>
-<hr>
+<a href="https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hWdog">==> Code @ GitHub</a><hr>
 
 # What is it about?
 Many sensors send measured values and then go into a sleep mode to save energy. Battery-powered sensors eventually run out of energy and can no longer send anything, or they lose the network connection.   
