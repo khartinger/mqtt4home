@@ -11,6 +11,7 @@
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2021-08-19 First release
+// 2022-02-10 add comments, zsec
 // Released into the public domain.
 
 #include "mosquitto.h"            // mosquitto_* functions
@@ -30,15 +31,18 @@ void f1PrintHelptext()
  fprintf(stdout, "Purpose: (1) Demo for m4hBase\n");
  fprintf(stdout, "         (2) Program shows all incomming messages.\n");
  fprintf(stdout, "Author : Karl Hartinger\n");
- fprintf(stdout, "Version: 2021-08-15");
+ fprintf(stdout, "Version: 2022-02-10");
  fprintf(stdout, "Needs  : sudo apt-get install libmosquitto-dev\n\n");
  fprintf(stdout, "Exit program by pressing <ctrl>c\n");
 }
 
 //_______init extension_________________________________________
 // pfConf...path and filename of config file
-void f2Init(std::string pfConf)
+bool f2Init(std::string pfConf)
 {
+ bool bRet=true;
+ //...Add "g_xxx.readConfig(pfConf);" lines here ;) ...
+ return bRet;
 }
 
 //_______react to further mqtt messages_________________________
@@ -47,11 +51,13 @@ void f3OnMessage(struct mosquitto *mosq,
 {
  //------print all received messages----------------------------
  std::cout<<topic<<" | "<<payload<<std::endl;
+ //...Add "g_xxx.onMessage(mosq, topic, payload);" lines here...
 }
 
 //_______Possibility for cleanup before end of program__________
 void f4OnExit(struct mosquitto *mosq, int reason)
 {
+ //...Add "g_xxx.onExit(mosq, reason);" lines here...
 }
 
 //_______for periodic actions (a parallel thread)_______________
@@ -59,9 +65,16 @@ void f5Periodic(struct mosquitto *mosq)
 {
  bool bDoPeriodic=true;                // do "endless"
  int  iEnd=4;                          // reason for end
- while(bDoPeriodic) //-----"endless"----------------------------
- { //...Do something...
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
- };
+ int  zsec=600;                        // 60 secs
+ //======"endless loop"=========================================
+ while(bDoPeriodic)
+ {
+  //...Add here the code that should be executed periodically...
+  //...Add "g_xxx.periodic(mosq);" lines here...
+  //
+  //=====wait for 0.1sec========================================
+  if((--zsec)<=0) zsec=600;
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+ }; // end of "endless loop"
  terminate_program(iEnd);
 }
