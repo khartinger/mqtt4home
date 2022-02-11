@@ -67,6 +67,7 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 ---   
 
 ## Bereich "Hilfsprogramme"
+* [RasPi: Welche C++ Hilfsprogramme gibt es und wie bekomme ich sie zum Laufen? (2022-02-11)](md/m4h310_RasPiCppDemos.md)   
 * [RasPi: Vorlage f&uuml;r MQTT-Programme in C++ (2021-08-21)](md/m4h07_RasPiCppBase.md)
 * [RasPi: Hilfreiche Einzel-Programme in C++ (2021-08-21)](md/m4h08_RasPiCppDemos.md)
 * [RasPi: Erstellen eigener Programme in C++ (2021-08-21)](md/m4h09_RasPiCppCreatingYourOwnProgs.md)
