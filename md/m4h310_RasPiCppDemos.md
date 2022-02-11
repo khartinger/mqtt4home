@@ -24,8 +24,9 @@ Weiteres ist es möglich, verschiedene Module zu einem Gesamtprogramm zusammenzu
 2. [Welche vorgefertigte Hilfsprogramme gibt es auf GitHub?](#a20)   
 3. [Wie erstelle ich ein ausführbares Hilfsprogramm?](#a30)   
 4. [Wie teste ich ein ausführbares Hilfsprogramm?](#a40)   
-5. [Aus welchen Dateien besteht das Basissystem?](#a90)   
-6. [Wenn man das Basissystem selbst erstellen will...](#a95)   
+5. [](#a50)   
+6. [Aus welchen Dateien besteht das Basissystem?](#a90)   
+
 
 <a name="a10"></a>[_Zum Seitenanfang_](#up)   
 # Welche Dinge benötige ich für das Erstellen eines ausführbaren Hilfsprogramms?
@@ -143,10 +144,10 @@ Den Quellcode der Dateien findet man unter [https://github.com/khartinger/mqtt4h
     1. Putty starten und mit dem RasPi verbinden   
     2. Ins Projektverzeichnis wechseln   
        `cd ~/m4hBrokertime`   
-    3. Eine Quellcode-Datei, zB `C_Brokertime.hpp`, auf GitHub anklicken, [Raw] dr&uuml;cken, Quellcode kopieren   
+    3. Eine Quellcode-Datei, zB `C_Brokertime.hpp`, auf GitHub anklicken, [Raw] dr&uuml;cken, Quellcode kopieren (zB &lt;strg&gt;a &lt;strg&gt;c)   
     4. Auf dem RasPi eine leere Datei für den Quellcode erzeugen:   
-    `nano ./m4hBrokertime.hpp`   
-    5. Den Quellcode mit der rechten Taste in `nano`einf&uuml;gen
+    `nano ./C_Brokertime.hpp`   
+    5. Den Quellcode mit der rechten Taste in `nano` einf&uuml;gen
     6. Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
     Die Vorgangsweise ab dem 3. Punkt f&uuml;r die Dateien `m4h.conf`, `m4hBase.cpp`, `m4hBase.h`, `m4hExtension.hpp` und `m4hMain.cpp` wiederholen.   
 
@@ -182,24 +183,35 @@ Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
 <a name="a40"></a>[_Zum Seitenanfang_](#up)   
 # Wie teste ich ein ausführbares Hilfsprogramm?   
 Das gerade erstellte Programm `m4hBrokertime` soll getestet werden.   
-Zum Testen des Programms ben&ouml;tigt man ein Putty-Fenster und ein PC-Eingabeaufforderungs-Fenster:
+Zum Testen des Programms benötigt man ein Putty-Fenster und ein PC-Eingabeaufforderungs-Fenster:
 1. Das neu erstellte Programm in der Konsole oder einem putty-Fenster starten:   
-```./m4hBase```  
+`cd ~/m4hBrokertime`   
+`./m4hBrokertime`   
 Ergebnis:   
 ```   
 Read config file ./m4h.conf: OK
------[base]---------------------------
+=====[base]===========================
 config file         | ./m4h.conf
-section name        | base
-version (in)        | -t m4hBase/get -m version
-version (out)       | -t m4hBase/ret/version -m 2021-08-15
-mqtt @ start (out,*)| -t info/start -m m4hBase -r
-mqtt @ end (out,*)  | -t info/end -m m4hBase -r
-progend by mqtt (in)| -t m4hBase/set -m ...end...
+all keys            | versionin|versionout|mqttstart|mqttend|progend|readconfin|readconfout|addtime
+version (in)        | -t m4hBrokertime/get -m version
+version (out)       | -t m4hBrokertime/ret/version -m 2021-08-15
+mqtt @ start (out,*)| -t info/start -m m4hBrokertime
+mqtt @ end (out,*)  | -t info/end__ -m m4hBrokertime
+progend by mqtt (in)| -t m4hBrokertime/set -m ...end...
+reload conf-file(in)| -t m4hbase/set/conf -m ./m4h.conf
+reload conf-fil(out)| -t m4hbase/ret/conf -m Read config:
          * add time | true
+-----requests for brokertime:-----
+getTime| ==> brokertime|%Y%m%d %H%M%S|1
+test/1/get|time ==> test/1/ret/time|%d.%m.%Y %H:%M:%S|1
+-----[brokertime]------------------------------
+config file         | ./m4h.conf
+all keys            | in|out|retain
+.....Answer messages...........................
+IN: -t getTime -m  ==> OUT: -t brokertime -m %Y%m%d %H%M%S -r
+IN: -t test/1/get -m time ==> OUT: -t test/1/ret/time -m %d.%m.%Y %H:%M:%S -r
 Try to connect to mosquitto...
 Connected: Waiting for topics...
-info/start | m4hBase (15.08.2021 19:29:10)
 ```   
 
 2. Am PC ein Kommando-Fenster ("Eingabeaufforderung") &ouml;ffnen:   
@@ -210,23 +222,34 @@ Ins richtige Laufwerk und Mosquitto-Verzeichnis wechseln:
 ```cd /programme/mosquitto```
 
 3. Nachricht vom PC-Eingabeaufforderungs-Fenster senden   
-```mosquitto_pub -h 10.1.1.1 -t Test1 -m "Hallo vom PC!"```   
+`mosquitto_pub -h 10.1.1.1 -t getTime -m ?`   
 Mit dem Schalter `-h` wird die IP-Adresse des Raspi angegeben.   
 
-4. In der Konsole oder dem putty-Fenster erscheint (eventuell nach kurzer Zeit) die entsprechende Nachricht:<br>
-```Test1 | Hallo vom PC```   
+4. In der Konsole oder dem putty-Fenster erscheinen die entsprechenden Nachrichten:   
+`getTime ?`   
+`brokertime 20220211 195554`   
 
 Beendet man das Programm mit &lt;ctrl&gt;c, so erh&auml;lt man folgende Meldungen:   
 ```
 ^C
 Exit program... MQTT end message sent.
-info/end | m4hBase (15.08.2021 19:32:19)
 
-Program terminated by <ctrl>c (15.08.2021 19:32:19)
+Program terminated by <ctrl>c (11.02.2022 19:52:23)
 Beendet
 ```
 
-
+<a name="a50"></a>[_Zum Seitenanfang_](#up)   
+# Was kann die Vorlage `m4hBase` leisten?
+1. Lesen von Einstellungen aus der Konfigurationsdatei m4h.conf.   
+2. M&ouml;glichkeit, eine andere Konfigurationsdatei anzugeben   
+   (beim Starten des Programms auf der Kommandozeile).   
+3. Beantwortung einer Anfrage nach der Programmversion.   
+   Vorgabe f&uuml;r die Anfrage: Topic "m4hBase/get", Payload "version"   
+   Vorgabe f&uuml;r die Antwort: Topic "m4hBase/ret/version", Payload "2021-08-15"   
+4. Senden (oder Nicht-Senden) einer MQTT-Nachricht beim Programmstart und/oder dem Programmende.   
+5. Bereitstellung der globalen Objekte `g_base`, `g_prt`, `g_mosq`   
+6. M&ouml;glichkeit, das Programm durch eine MQTT-Nachricht zu beenden, die in der Konfigurationsdatei definiert ist (Schl&uuml;ssel "progend" in der Konfigurationsdatei).   
+7. Beenden des Programms mit &lt;strg&gt;c.   
 
 <a name="a90"></a>[_Zum Seitenanfang_](#up)   
 # Aus welchen Dateien besteht das Basissystem?   
@@ -256,12 +279,96 @@ Weiters enthält sie Methoden zur Bearbeitung von MQTT-Belangen (Verbindung zum 
 
 ## m4hExtension.hpp
 Diese Datei stellt mit ihren fünf Funktionen die Verbindung zu den Funktionsmodulen dar:   
-* Die Funktion `f1PrintHelptext()` enthält die Programmbeschreibung, die man erhält, wenn man das Programm von der Kommandozeile aus mit dem Schalter `-h` startet.   
-* Die Funktion `f2Init()` ermöglicht das Initialisieren der einzelnen Module.
+* Die Funktion `void f1PrintHelptext() { }` enthält die Programmbeschreibung, die man erhält, wenn man das Programm von der Kommandozeile aus mit dem Schalter `-h` startet.   
+* Die Funktion `bool f2Init(std::string pfConf) { }` ermöglicht das Initialisieren der einzelnen Module.   
+* Die Funktion `void f3OnMessage(struct mosquitto *mosq, std::string topic, std::string payload) { }` enthält die Nachrichten-Empfangsmethoden aller Module (meist `onMessage()`).   
+* Die Funktion `void f4OnExit(struct mosquitto *mosq, int reason) { }` enthält abschließende Tätigkeiten aller Module.   
+* Die Funktion `void f5Periodic(struct mosquitto *mosq) { }` enthält Funktionen, die periodisch ausgeführt werden sollen.   
+Für das Beispiel `m4hBrokertime` sieht die Datei `m4hExtension.hpp` zB folgendermaßen aus:   
+```   
+//_____m4hExtension.hpp__________________________khartinger_____
+// g++ m4hMain.cpp m4hBase.cpp -o m4hBrokertime -lmosquitto -lpthread
+// *  This program uses m4hBase to do the following:
+//    1. If certain messages are received, a message with the 
+//       current date and time will be sent.
+//    2. all data of the messages must be defined in the 
+//       configuration file (default m4h.conf) in sections 
+//       with the following structure:
+//       [brokertime]
+//       in: topicIn payloadIn
+//       out: topicOut payloadOut
+//       retain: true
+//    3. The date/time format can be specified in the config file
+//       at payloadOut. Examples are
+//       %Y%m%d %H%M%S or %d.%m.%Y %H:%M:%S
+// *  All functions of m4hBase are also available.
+//    (For more information see file m4hMain.cpp.)
+// *  m4hMain.cpp must have a line "#include "m4hExtension.hpp"
+// *  m4hExtension.hpp must have a line "#include "C_Brokertime.hpp"
+// Hardware: (1) Raspberry Pi
+// Updates:
+// 2021-08-19 First release
+// Released into the public domain.
+
+#include "mosquitto.h"                 // mosquitto_* functions
+#include "m4hBase.h"                   // m4h basic functions
+#include "C_Brokertime.hpp"                   // additional code
+
+//-------global values------------------------------------------
+extern bool g_prt;                     //true=printf,false=quiet
+void terminate_program(int reason);
+
+//_______main: print this help text_____________________________
+void f1PrintHelptext()
+{
+ fprintf(stdout, "\nUsage  : m4hBrokertime [-h | -q | pf.conf]\n");
+ fprintf(stdout, "         -h ........ print this help text\n");
+ fprintf(stdout, "         -q ........ no output to stdout, stderr\n");
+ fprintf(stdout, "         pf.conf ... path+filename of config.file (default m4h.conf)\n");
+ fprintf(stdout, "Purpose: Send MQTT answer on specific incomming messages.\n");
+ fprintf(stdout, "Author : Karl Hartinger\n");
+ fprintf(stdout, "Version: 2021-08-19");
+ fprintf(stdout, "Needs  : sudo apt-get install libmosquitto-dev\n\n");
+ fprintf(stdout, "Exit program by pressing <ctrl>c\n");
+}
+
+//_______init extension_________________________________________
+// pfConf...path and filename of config file
+bool f2Init(std::string pfConf)
+{
+ g_brokertime.readConfig(pfConf);            // read conf data
+ if(g_prt) g_brokertime.show();              // show config values Brokertime
+ return true;
+}
+
+//_______react to further mqtt messages_________________________
+void f3OnMessage(struct mosquitto *mosq, 
+ std::string topic, std::string payload)
+{
+ //======Brokertime: respond to messages===============================
+ g_brokertime.onMessage(mosq, topic, payload);
+
+}
+
+//_______Possibility for cleanup before end of program__________
+void f4OnExit(struct mosquitto *mosq, int reason)
+{
+ //======Brokertime: cleanup before end of program=====================
+ g_brokertime.onExit(mosq, reason);
+}
 
 
-<a name="a95"></a>[_Zum Seitenanfang_](#up)   
-# Wenn man das Basissystem selbst erstellen will...
-
+//_______for periodic actions (a parallel thread)_______________
+void f5Periodic(struct mosquitto *mosq)
+{
+ bool bDoPeriodic=true;                // do "endles"
+ int  iEnd=4;                          // reason for end
+ while(bDoPeriodic) //-----"endless"----------------------------
+ { //...Do something...
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+ };
+ terminate_program(iEnd);
+}
+```   
 
 [Zum Seitenanfang](#up)
