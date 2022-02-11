@@ -1,7 +1,10 @@
-
-# RasPi: Searching the port name of a SIM module
-Program: m4hFindSimModule.cpp, Version 2021-08-27   
-[--> Deutsche Version](./LIESMICH.md "Deutsche Version")   
+Last modified: 2022-02-11 <a name="up"></a>   
+<table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
+<h1>RasPi: Searching the port name of a SIM module</h1>
+<a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
+<a href="./LIESMICH.md">==> German version</a> &nbsp; &nbsp; &nbsp; 
+</td></tr></table>
+<hr>
 
 This simple program tries to open various serial ports in sequence, send the command `ATE0` to them and wait for an answer `OK`.   
 The result of the sending is displayed on the console.   
