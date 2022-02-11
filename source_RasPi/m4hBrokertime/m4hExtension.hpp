@@ -46,10 +46,11 @@ void f1PrintHelptext()
 
 //_______init extension_________________________________________
 // pfConf...path and filename of config file
-void f2Init(std::string pfConf)
+bool f2Init(std::string pfConf)
 {
  g_brokertime.readConfig(pfConf);            // read conf data
  if(g_prt) g_brokertime.show();              // show config values Brokertime
+ return true;
 }
 
 //_______react to further mqtt messages_________________________
