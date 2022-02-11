@@ -14,7 +14,7 @@
 // 2021-08-19 First release
 // 2021-08-20 findKey(), findValue(): add check section []
 // 2021-08-29 split2pairs(): add long valLen=val.length(); if()
-// 2022-02-10 add reload conf file by mqtt command
+// 2022-02-11 add reload conf file by mqtt command
 // Released into the public domain.
 #include "m4hBase.h"
 
@@ -903,7 +903,9 @@ void M4hBase::setDefaults()
  msgMqttStart=Message();
  msgMqttEnd=Message();
  msgProgEnd=Message();
- timeShouldBeAdded=false;
+ msgReadConf=Message2(M4H_CONF_IN_T,  M4H_CONF_IN_P,
+                      M4H_CONF_OUT_T, M4H_CONF_OUT_P);
+  timeShouldBeAdded=false;
  keys=std::string(M4H_VERSION_KEY_IN);
  keys+="|"+std::string(M4H_VERSION_KEY_OUT),
  keys+="|"+std::string(M4H_MQTTSTART_KEY)+"|"+std::string(M4H_MQTTEND_KEY);
