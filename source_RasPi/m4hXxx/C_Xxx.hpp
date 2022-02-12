@@ -45,6 +45,7 @@ class Xxx
  void show();                          // show config values
  bool onMessage(struct mosquitto *mosq, std::string topic, std::string payload);
  void onExit(struct mosquitto *mosq, int reason);
+ bool periodic(struct mosquitto *mosq);
 
  //-----helper methods------------------------------------------
 };
@@ -124,14 +125,21 @@ void Xxx::show()
 //_______act on messages..._____________________________________
 bool Xxx::onMessage(struct mosquitto *mosq, std::string topic, std::string payload)
 {
+ bool bRet=true;
  // ..ToDo..
- return true;
+ return bRet;
 }
 
 //_______Possibility for cleanup before end of program__________
 void Xxx::onExit(struct mosquitto *mosq, int reason)
 {
  
+}
+
+//_______periodic action________________________________________
+bool Xxx::periodic(struct mosquitto *mosq)
+{
+ return true;
 }
 
 // *************************************************************
