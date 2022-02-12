@@ -24,7 +24,7 @@ Weiteres ist es möglich, verschiedene Module zu einem Gesamtprogramm zusammenzu
 2. [Welche vorgefertigte Hilfsprogramme gibt es auf GitHub?](#a20)   
 3. [Wie erstelle ich ein ausführbares Hilfsprogramm?](#a30)   
 4. [Wie teste ich ein ausführbares Hilfsprogramm?](#a40)   
-5. [ Was kann die Vorlage `m4hBase` leisten?](#a50)   
+5. [Was kann die Vorlage `m4hBase` leisten?](#a50)   
 6. [Aus welchen Dateien besteht das Basissystem?](#a90)   
 
 <a name="a10"></a>[_Zum Seitenanfang_](#up)   
@@ -73,7 +73,7 @@ Alterative: Das Programm `InDelayOut`.
 
 ## Demoprogramm   
 Name: [`m4hDemo1`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hDemo1)   
-Das fertige Demo-Programm, dessen Erstellung in [`RasPi: Create your own programs in C++`](https://github.com/khartinger/mqtt4home/blob/main/md/m4h09_RasPiCppCreatingYourOwnProgs_e.md) beschrieben wird.   
+Das fertige Demo-Programm, dessen Erstellung in [`RasPi: Create your own programs in C++`](https://github.com/khartinger/mqtt4home/blob/main/md/m4h09_RasPiCppCreatingYourOwnProgs.md) beschrieben wird.   
 
 ## Finden der Schnittstelle eines SIM-Moduls
 Name: [`m4hFindSimModule`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hFindSimModule)   
@@ -133,10 +133,10 @@ Ersetzt man in dieser (Visual-Studio-Code-)Vorlage den Dateinamen `m4hXxx.hpp` d
 Die Vorgangsweise zum Erstellen eines Programmes soll am Beispiel `m4hBrokertime` gezeigt werden. Die Arbeiten können direkt auf dem RasPi oder über `putty` durchgeführt werden.   
 
 1. Erstellen eines Verzeichnisses f&uuml;r den Programmcode auf dem RasPi:   
-```mkdir ~/m4hBrokertime```   
+`mkdir ~/m4hBrokertime`   
 
 2. Wechseln in dieses Verzeichnis:   
-```cd ~/m4hBrokertime```
+`cd ~/m4hBrokertime`   
 
 3. Herunterladen des Quellcodes bzw. der Projektdateien von GitHub   
 Den Quellcode der Dateien findet man unter [https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hBrokertime](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hBrokertime)   
@@ -150,17 +150,17 @@ Den Quellcode der Dateien findet man unter [https://github.com/khartinger/mqtt4h
     3. Eine Quellcode-Datei, zB `C_Brokertime.hpp`, auf GitHub anklicken, [Raw] dr&uuml;cken, Quellcode kopieren (zB &lt;strg&gt;a &lt;strg&gt;c)   
     4. Auf dem RasPi eine leere Datei für den Quellcode erzeugen:   
     `nano ./C_Brokertime.hpp`   
-    5. Den Quellcode mit der rechten Taste in `nano` einf&uuml;gen
+    5. Den Quellcode mit der rechten Taste in `nano` einf&uuml;gen   
     6. Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
-    Die Vorgangsweise ab dem 3. Punkt f&uuml;r die Dateien `m4h.conf`, `m4hBase.cpp`, `m4hBase.h`, `m4hExtension.hpp` und `m4hMain.cpp` wiederholen.   
+  Die Vorgangsweise ab dem 3. Punkt f&uuml;r die Dateien `m4h.conf`, `m4hBase.cpp`, `m4hBase.h`, `m4hExtension.hpp` und `m4hMain.cpp` wiederholen.   
 
     __Variante 2__: Herunterladen des gesamten Repository von GitHub.   
 
 4. Erstellen der ausführbaren Datei   
-```g++ m4hMain.cpp m4hBase.cpp -o m4hBrokertime -lmosquitto -lpthread```   
+`g++ m4hMain.cpp m4hBase.cpp -o m4hBrokertime -lmosquitto -lpthread`   
 
     _Anmerkung 1_: Damit das Kompilieren erfolgreich ist, muss die Mosquitto-Bibliothek installiert sein:   
-    ```sudo apt-get install libmosquitto-dev```   
+    `sudo apt-get install libmosquitto-dev`   
      (siehe auch [https://github.com/khartinger/mqtt4home/blob/main/m4h03_RasPiMQTTBroker.md](https://github.com/khartinger/mqtt4home/blob/main/m4h03_RasPiMQTTBroker.md) )   
 
     _Anmerkung 2_: Im Verzeichnis `~/m4hBrokertime` wurde die Datei `m4hBrokertime` erzeugt.   
@@ -221,11 +221,11 @@ Connected: Waiting for topics...
 ```   
 
 2. Am PC ein Kommando-Fenster ("Eingabeaufforderung") &ouml;ffnen:   
-```cmd.exe```
+`cmd.exe`   
 im Startmen&uuml; eingeben.   
 Ins richtige Laufwerk und Mosquitto-Verzeichnis wechseln:   
-```c:```   
-```cd /programme/mosquitto```
+`c:`   
+`cd /programme/mosquitto`   
 
 3. Nachricht vom PC-Eingabeaufforderungs-Fenster senden   
 `mosquitto_pub -h 10.1.1.1 -t getTime -m ?`   

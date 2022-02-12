@@ -22,9 +22,9 @@ Furthermore, it is possible to combine different modules to an overall program a
 ## This guide answers the following questions:   
 1.[What things do I need to build an executable utility](#a10).   
 2. [What pre-built utilities are available on GitHub?](#a20)   
-3. how do i create an executable utility](#a30)   
+3. [How do i create an executable utility](#a30)   
 4. [How do I test an executable utility?](#a40)   
-5. [ What can the template `m4hBase` do?](#a50)   
+5. [What can the template `m4hBase` do?](#a50)   
 6. [What files does the base system consist of?](#a90)   
 
 <a name="a10"></a>[_top of page_](#up)   
@@ -109,7 +109,7 @@ Default directory: `./data/`
 ## Payload key monitoring
 Name: [`m4hPayload`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hPayload)   
 The `m4hPayload` program sends an MQTT message when a certain key is found in the payload of a message.   
-_Example_: If the value of the key "`battery`" falls below __of any topic__ (!) falls below a certain value, a warning message is sent.   
+_Example_: If the value of the key "`battery`" __of any topic__ (!) falls below a certain value, a warning message is sent.   
 
 ## Send and receive SMS
 Name: [`m4hSms`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hSms)   
@@ -119,7 +119,7 @@ Application: Sending MQTT commands by SMS. SMS info when the program was started
 
 ## Monitoring of regularly recurring MQTT messages (Watchdog)  
 Name: [`m4hWdog`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hWdog)   
-The program `m4hWdog` ("Watchdog") checks if messages which should be sent regularly (e.g. from temperature sensors) are actually sent. If a sensor has not sent a message within a given time, `m4hWdog` will send a warning message.   
+The program `m4hWdog` ("Watchdog") checks if messages which should be sent periodicly (e.g. from temperature sensors) are actually sent. If a sensor has not sent a message within a given time, `m4hWdog` will send a warning message.   
 In the configuration file it is defined within which time span a message from a certain topic must arrive.   
 The module is very well suited to detect the failure of (e.g. battery powered) sensors.   
 
@@ -133,10 +133,10 @@ If you replace the file name `m4hXxx.hpp` in this (Visual Studio code) template 
 The procedure to create a program will be shown with the example `m4hBrokertime`. The work can be done directly on the RasPi or via `putty`.   
 
 1. create a directory for the program code on the RasPi:   
-``mkdir ~/m4hBrokertime``.   
+`mkdir ~/m4hBrokertime`   
 
 2. change to this directory:   
-```cd ~/m4hBrokertime``
+`cd ~/m4hBrokertime`   
 
 3. download the source code or the project files from GitHub   
 The source code of the files can be found at [https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hBrokertime](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hBrokertime)   
@@ -150,17 +150,17 @@ The source code of the files can be found at [https://github.com/khartinger/mqtt
     3. click a source file, e.g. `C_Brokertime.hpp`, on GitHub, press [Raw], copy source (e.g. &lt;ctrl&gt;a &lt;ctrl&gt;c)   
     4. create an empty file on the RasPi for the source code:   
     `nano ./C_Brokertime.hpp`.   
-    5. paste the source code with the right key into `nano
+    5. paste the source code with the right key into `nano`   
     6. save and exit by &lt;Ctrl&gt;o &lt;Enter&gt; &lt;Ctrl&gt; x   
-    Repeat the procedure from the 3rd point for the files `m4h.conf`, `m4hBase.cpp`, `m4hBase.h`, `m4hExtension.hpp` and `m4hMain.cpp`.   
+  Repeat the procedure from the 3rd point for the files `m4h.conf`, `m4hBase.cpp`, `m4hBase.h`, `m4hExtension.hpp` and `m4hMain.cpp`.   
 
     __Variant 2__: Download the entire repository from GitHub.   
 
 4. create the executable file   
-```g++ m4hMain.cpp m4hBase.cpp -o m4hBrokertime -lmosquitto -lpthread``   
+`g++ m4hMain.cpp m4hBase.cpp -o m4hBrokertime -lmosquitto -lpthread`   
 
     _Note 1_: For the compilation to succeed, the Mosquitto library must be installed:   
-    ```sudo apt-get install libmosquitto-dev``   
+    `sudo apt-get install libmosquitto-dev`   
      (see also [https://github.com/khartinger/mqtt4home/blob/main/m4h03_RasPiMQTTBroker.md](https://github.com/khartinger/mqtt4home/blob/main/m4h03_RasPiMQTTBroker.md) )   
 
     _Note 2_: In the directory `~/m4hBrokertime` the file `m4hBrokertime` was created.   
@@ -221,11 +221,11 @@ Connected: Waiting for topics...
 ```   
 
 2. open a command window ("command prompt") on the PC:   
-``cmd.exe``
+`cmd.exe`   
 in the start menu.   
 Change to the correct drive and Mosquitto directory:   
-```c:```   
-```cd /programs/mosquitto``
+`c:`   
+`cd /programs/mosquitto`   
 
 3. send message from PC prompt window   
 `mosquitto_pub -h 10.1.1.1 -t getTime -m ?`   
