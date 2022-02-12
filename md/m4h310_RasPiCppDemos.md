@@ -276,11 +276,12 @@ Diese Dateien stellen Basisfunktionen zur Verfügung, die innerhalb des gesamten
 * Klasse `Message`: Klasse zur Aufnahme einer MQTT-Nachricht (Topic, Payload, Retain-Flag)   
 * Klasse `Message2`: Klasse zur Aufnahme zweier MQTT-Nachrichten zB für die Empfangs- und Sende-Nachricht.   
 * Klasse `Config`: Sammlung von nützlichen Funktionen für das Einlesen der Konfigurationsdatei wie zB. das Einlesen einer bestimmten Sektion oder das Entfernen von führenden und nachfolgende Leerzeichen in einem String etc.   
-* Klasse `M4hBase`: Bearbeitung der Basisfunktionalitäten des Projektes wie der Beantwortung 
+* Klasse `M4hBase`: Klasse zum Einlesen und Merken der Basisdaten (Versions-, Start-/Stop-/End-Nachrichten etc.).   
 
 ## Hauptprogramm m4hMain.cpp
-Diese Datei stellt die globale Variable `g_prt` (print) zur Verfügung, die angibt, ob Informationen auf den Bildschirm ausgegeben werden sollen.   
-Weiters enthält sie Methoden zur Bearbeitung von MQTT-Belangen (Verbindung zum Broker, zyklische Abfrage von MQTT-Nachrichten etc.) und zum Beenden des Programms.   
+Diese Datei enthält das eigentliche C++ Konsolenprogramm.   
+Es überprüft, ob Parameter übergeben wurden (`-h` zur Anzeige der Hilfe, `-q` zur Vermeidung von Bildschirmausgaben oder der Name einer Konfigurationsdatei), startet die MQTT-Kommunikation, stellt in einem eigenen Thread eine Funktion zur zyklischen Durchführung von Arbeiten zur Verfügung (`f5Periodic`) und wartet auf MQTT-Nachrichten. Es prüft eingehende MQTT-Nachrichten auf Gültigkeit, bearbeitet bestimmte Nachrichten selbst (Abfrage der Programmversion, Nachladen der Konfigurationsdatei, Programmende) und gibt alle anderen Nachrichten an die Funktion `f3OnMessage` weiter.   
+Für andere Programmteile stellt es die globale Variable `g_prt` (print) zur Verfügung, die angibt, ob Informationen auf den Bildschirm ausgegeben werden sollen.   
 
 ## m4hExtension.hpp
 Diese Datei stellt mit ihren fünf Funktionen die Verbindung zu den Funktionsmodulen dar:   
