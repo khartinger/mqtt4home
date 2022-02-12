@@ -52,18 +52,19 @@ Name: [`m4hAdZigbee2mqtt`](https://github.com/khartinger/mqtt4home/tree/main/sou
 Das Programm sendet eine "Gesundheits"-Anfrage an das Programm `zigbee2mqtt` und wandelt die Antwort in eine leichter verarbeitbare Antwort um.   
 OUT zigbee2mqtt: `-t zb/bridge/request/health_check -m ""`   
 IN  zigbee2mqtt: `zb/bridge/response/health_check {"data":{"healthy":true},"status":"ok"}`   
-IN: `-t z2m/get -m health`   
+Abfrage IN: `-t z2m/get -m health`   
 OUT: `-t z2m/ret/health -m Zigbee2mqtt-health is perfect.`   
 
 ## C++ Basisprogramm
 Name: [`m4hBase`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hBase)   
 Das C++ Basisprogramm stellt die Verbindung zum MQTT Broker und zu verschiedenen Funktionsmodulen zur Verfügung.   
 Es ermöglicht das Neuladen der Konfigurationsdatei und bietet verschiedene Möglichkeiten zum Beenden des Programmes an (Tastenkombination &lt;strg&gt;c, MQTT-Nachricht, Ende nach periodischer Ausführung eines Vorgangs).   
-Details stehen auch [am Ende dieser Anleitung](#a90).   
+Details stehen auch [am Ende dieser Anleitung](#a50).   
 
 ## Abfrage der Brokerzeit   
 Name: [`m4hBrokertime`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hBrokertime)   
-Auf Anfrage sendet das Programm die aktuelle Brokerzeit zurück. Anwendung zB bei D1mini-Systemen, die keine Echtzeituhr (RTC) habe und trotzdem das aktuelle Datum bzw. die Uhrzeit anzeigen wollen.   
+Auf Anfrage sendet das Programm die aktuelle Brokerzeit zurück.   
+Anwendung zB bei D1mini-Systemen, die keine Echtzeituhr (RTC) haben und trotzdem das aktuelle Datum bzw. die Uhrzeit anzeigen wollen.   
 IN : `-t getTime -m ?`   
 OUT: `-t brokertime -m yyyymmdd HHMMSS`   
 Das Zeitformat `yyyymmdd HHMMSS` bedeutet yyyy=Jahr, mm=Monat, dd=Tag, HH=Stunde, MM=Minute, SS=Sekunde.   
@@ -94,12 +95,12 @@ Name: [`m4hLogM`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi
 bzw.: [`m4hLog2`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hLog2)   
 Das Programm `m4hLogM` schreibt alle MQTT-Nachrichten in Dateien. Für jede Nachricht wird jedes Monat eine neue Datei angelegt. Der Dateiname besteht aus dem Topic + Punkt + Jahr + Monat + ".log", wobei Leerzeichen in Topics durch Unterstriche und Schrägstriche durch das At-Zeichen ersetzt werden.   
 _Beispiel_:   
-Die Nachricht `-t z2m/ret/health -m Zigbee2mqtt-health is perfect.` wird folgendermaßen abgespeichert:   
+Die Nachricht `-t z2m/ret/health -m Zigbee2mqtt-health is perfect.` wird im Februar 2022 folgendermaßen abgespeichert:   
 Dateiname:   `z2m@ret@health.2202.log`   
 Dateiinhalt: `11.02.22 09:16:16 | z2m@ret@health |  Zigbee2mqtt-health is perfect.`   
 Standardverzeichnis: `./log/`   
 
-Verwendet man das Programm `m4hLog2`, wird zusätzlich die (jeweils letzte) Payload in einer eigenen Datei gespeichert (für eine schnellere Weiterverarbeitung durch andere Programme).
+Verwendet man das Programm `m4hLog2`, wird zusätzlich die (jeweils letzte) Payload in einer eigenen Datei gespeichert (zB. für eine schnellere Weiterverarbeitung durch andere Programme).   
 Dateiname:   `z2m@ret@health`   
 Dateiinhalt: ` Zigbee2mqtt-health is perfect. `   
 Standardverzeichnis: `./data/`   
