@@ -49,7 +49,7 @@
 #define  M4H_VERSION_P_IN    "version"
 #define  M4H_VERSION_KEY_OUT "versionout"
 #define  M4H_VERSION_T_OUT   "m4hbase/ret/version"
-#define  M4H_VERSION_P_OUT   "2021-08-15"
+#define  M4H_VERSION_P_OUT   "2022-02-12"
 #define  M4H_MQTTSTART_KEY   "mqttstart"
 #define  M4H_MQTTEND_KEY     "mqttend"
 #define  M4H_PROGEND_KEY     "progend"
