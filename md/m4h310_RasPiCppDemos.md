@@ -262,12 +262,14 @@ Das folgende Bild zeigt eine Übersicht über die Dateien des C++ Basissystems z
 _Bild 1: Dateien für C++ Hilfsprogramme_   
 
 Im Normalfall muss lediglich die Datei `m4hExtension.hpp` angepasst werden.   
-Die beiden Bibliotheken müssen beim Erstellen der ausführbaren Datei eingebunden werden.   
+Die beiden Bibliotheken `mosquitto` und `pthread` müssen beim Erstellen der ausführbaren Datei eingebunden werden (mit `-l`), zB   
+`g++ m4hMain.cpp m4hBase.cpp -o m4hBrokertime -lmosquitto -lpthread`   
 
 ## Bibliothek mosquitto   
 Sie stellt Funktionen zur Brokeranbindung und für MQTT-Nachrichten zur Verfügung.   
 ## Bibliothek pthread   
-Sie dient zur Erzeugung von Threads, damit Arbeiten parallel durchgeführt werden können. Beispiele: Die periodische Bearbeitung von Befehlen unabhängig vom Senden und Empfangen von MQTT-Nachrichten oder das Senden von SMS usw.   
+Sie dient zur Erzeugung von Threads, damit Arbeiten parallel durchgeführt werden können.   
+_Beispiele_: Die periodische Bearbeitung von Befehlen unabhängig vom Senden und Empfangen von MQTT-Nachrichten oder das Senden von SMS usw.   
 
 ## Dateien m4hBase (.h und .cpp)
 Diese Dateien stellen Basisfunktionen zur Verfügung, die innerhalb des gesamten Projektes genutzt werden können:   
