@@ -7,6 +7,7 @@
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2021-08-19 First release
+// 2022-02-12 Update Xxx::readConfig(...)
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
@@ -87,7 +88,23 @@ bool Xxx::readConfig(std::string pfConf)
  std::vector<std::string> v1;          // all lines of section
  conf.getSection(section, v1);         // get lines from conf file
  if(v1.size()<1) return false;         // no valid lines read
+ //------for every line in section------------------------------
+ for(int i=0; i<v1.size(); i++) {
+  //-----get key and value--------------------------------------
+  std::string sKey="", sVal="";
+  std::string s1=v1.at(i);
+  if(!conf.split2String(s1, sKey, sVal, ':')) continue;
+  conf.delExtBlank(sKey);
+  conf.delExtBlank(sVal);
+  conf.strToLower(sKey);
+  //-----search key---------------------------------------------
+  if(sKey==XXX_DEMO_KEY) {
+   _demo_=sVal;
+  }
+ 
  // ..ToDo..
+ 
+ } // end for every line in section
  return true;
 }
 
