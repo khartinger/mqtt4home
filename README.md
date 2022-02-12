@@ -67,6 +67,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 ---   
 
 ## Area "auxiliary programs"
+* [RasPi: What C++ utilities are there and how do I get them to work? (2022-02-11)](md/m4h310_RasPiCppDemos.md)   
 * [RasPi: Template for MQTT programs in C++ (2021-08-21)](md/m4h07_RasPiCppBase_e.md)
 * [RasPi: Helpful single programs in C++ (2021-08-21)](md/m4h08_RasPiCppDemos_e.md)
 * [RasPi: Create your own programs in C++ (2021-08-21)](md/m4h09_RasPiCppCreatingYourOwnProgs_e.md)
