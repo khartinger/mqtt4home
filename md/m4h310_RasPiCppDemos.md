@@ -100,27 +100,27 @@ Dateiname:   `z2m@ret@health.2202.log`
 Dateiinhalt: `11.02.22 09:16:16 | z2m@ret@health |  Zigbee2mqtt-health is perfect.`   
 Standardverzeichnis: `./log/`   
 
-Verwendet man das Programm `m4hLog2`, wird zusätzlich die (jeweils letzte) Payload in einer eigenen Datei gespeichert (zB. für eine schnellere Weiterverarbeitung durch andere Programme).   
+Verwendet man das Programm `m4hLog2`, wird zusätzlich die (jeweils letzte) Payload in einer eigenen Datei gespeichert (zB für eine schnellere Weiterverarbeitung durch andere Programme).   
 Dateiname:   `z2m@ret@health`   
 Dateiinhalt: ` Zigbee2mqtt-health is perfect. `   
 Standardverzeichnis: `./data/`   
 
-## Überwachung von Payload-Schlüssel
+## Überwachung von Payload-Schlüsseln
 Name: [`m4hPayload`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hPayload)   
-Das Programm `m4hPayload` sendet beim Finden eines bestimmten Schlüssels in der Payload einer Nachricht eine MQTT-Antwort-Nachricht.   
+Das Programm `m4hPayload` sendet beim Finden eines bestimmten Schlüssels in der Payload einer Nachricht eine MQTT-Nachricht.   
 _Beispiel_: Unterschreitet der Wert des Schlüssels "`battery`" __eines beliebigen Topics__ (!) einen bestimmten Wert, so wird eine Warnungs-Nachricht geschickt.   
 
 ## Senden und Empfangen von SMS
 Name: [`m4hSms`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hSms)   
-Mit Hilfe eines SIM-Moduls können SMS gesendet und empfangen und in MQTT-Nachrichten umbewandelt werden.   
+Mit Hilfe eines SIM-Moduls werden SMS gesendet und empfangen und in MQTT-Nachrichten umbewandelt.   
 Aus Sicherheitsgründen müssen in der Konfigurationsdatei alle Telefonnummern vermerkt sein, die die Berechtigung zum Senden und Empfangen von SMS haben.   
 Anwendung: Versenden von MQTT-Befehlen durch SMS. SMS-Info, wenn das Programm gestartet oder beendet wurde, ...   
 
-## Überwachung regelmäßiger MQTT-Nachrichten (Watchdog)  
+## Überwachung regelmäßig wiederkehrender MQTT-Nachrichten (Watchdog)  
 Name: [`m4hWdog`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hWdog)   
-Das Programm `m4hWdog` ("Watchdog") kontrolliert, ob regelmäßig zu erscheinende Nachrichten innerhalb einer vorgegebenen Zeit auch tatsächlich gesendet wurden. Es schickt eine MQTT-Nachricht, wenn ein Sensor innerhalb einer vorgegebenen Zeit keine Nachricht mehr gesendet hat.   
+Das Programm `m4hWdog` ("Watchdog") kontrolliert, ob Nachrichten, die regelmäßig verschickt werden sollten (zB von Temperatursensoren), auch tatsächlich gesendet werden. Wenn ein Sensor innerhalb einer vorgegebenen Zeit keine Nachricht mehr gesendet hat, wird von `m4hWdog` eine Warn-Nachricht gesendet.   
 In der Konfigurationsdatei wird festgelegt, innerhalb welcher Zeitspanne eine Nachricht von einem bestimmten Topic eintreffen muss.   
-Das Modul ist sehr gut dafür geeignet zu prüfen, ob (batteriebetriebene) Sensoren ausgefallen sind.   
+Das Modul ist sehr gut dafür geeignet, den Ausfall von (zB batteriebetriebenen) Sensoren zu erkennen.   
 
 ## Vorlage zur Erstellung eigener Module in C++  .
 Name: [`m4hXxx`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hXxx)   
