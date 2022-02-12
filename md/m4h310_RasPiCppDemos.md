@@ -169,9 +169,10 @@ Den Quellcode der Dateien findet man unter [https://github.com/khartinger/mqtt4h
 
 5. Bereitstellung der Datei für alle User   
 Wurde die Datei fehlerfrei übersetzt und getestet und soll sie von jedem User und aus jedem Verzeichnis heraus verwendet werden können, sind folgende Schritte erforderlich:   
-```sudo cp ~/m4hBrokertime/m4hBrokertime /usr/local/bin```   
-```sudo chown root /usr/local/bin/m4hBrokertime```   
-```sudo chmod 777 /usr/local/bin/m4hBrokertime```   
+`sudo cp ~/m4hBrokertime/m4hBrokertime /usr/local/bin`   
+`sudo chown root /usr/local/bin/m4hBrokertime`   
+`sudo chmod 777 /usr/local/bin/m4hBrokertime`   
+`sudo chmod u+s /usr/local/bin/m4hBrokertime`   
 
 6. Automatisches Starten der Datei beim RasPi-Start   
 * Datei /usr/local/bin/autostart.sh öffnen:   
@@ -244,13 +245,14 @@ Beendet
 1. Lesen von Einstellungen aus der Konfigurationsdatei m4h.conf.   
 2. M&ouml;glichkeit, eine andere Konfigurationsdatei anzugeben   
    (beim Starten des Programms auf der Kommandozeile).   
-3. Beantwortung einer Anfrage nach der Programmversion.   
+3. Neuladen einer Konfigurationsdatei durch MQTT-Nachricht.   
+4. Beantwortung einer Anfrage nach der Programmversion.   
    Vorgabe f&uuml;r die Anfrage: Topic "m4hBase/get", Payload "version"   
    Vorgabe f&uuml;r die Antwort: Topic "m4hBase/ret/version", Payload "2021-08-15"   
-4. Senden (oder Nicht-Senden) einer MQTT-Nachricht beim Programmstart und/oder dem Programmende.   
-5. Bereitstellung der globalen Objekte `g_base`, `g_prt`, `g_mosq`   
-6. M&ouml;glichkeit, das Programm durch eine MQTT-Nachricht zu beenden, die in der Konfigurationsdatei definiert ist (Schl&uuml;ssel "progend" in der Konfigurationsdatei).   
-7. Beenden des Programms mit &lt;strg&gt;c.   
+5. Senden (oder Nicht-Senden) einer MQTT-Nachricht beim Programmstart und/oder dem Programmende.   
+6. Bereitstellung der globalen Objekte `g_base`, `g_prt`, `g_mosq`   
+7. M&ouml;glichkeit, das Programm durch eine MQTT-Nachricht zu beenden, die in der Konfigurationsdatei definiert ist (Schl&uuml;ssel "progend" in der Konfigurationsdatei).   
+8. Beenden des Programms mit &lt;strg&gt;c.   
 
 <a name="a90"></a>[_Zum Seitenanfang_](#up)   
 # Aus welchen Dateien besteht das Basissystem?   
