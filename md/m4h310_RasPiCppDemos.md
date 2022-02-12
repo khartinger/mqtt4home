@@ -106,6 +106,8 @@ Dateiname:   `z2m@ret@health`
 Dateiinhalt: ` Zigbee2mqtt-health is perfect. `   
 Standardverzeichnis: `./data/`   
 
+Außerdem ist es mit einer MQTT-Nachricht möglich, das Datum abzufragen, wann eine Datei das letzte Mal geändert wurde. Damit weiß man auch, wann das Topic das letzte Mal gesendet wurde.   
+
 ## Überwachung von Payload-Schlüsseln
 Name: [`m4hPayload`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hPayload)   
 Das Programm `m4hPayload` sendet beim Finden eines bestimmten Schlüssels in der Payload einer Nachricht eine MQTT-Nachricht.   

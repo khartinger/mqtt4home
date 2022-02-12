@@ -106,6 +106,7 @@ File name: `z2m@ret@health`
 File content: ` Zigbee2mqtt-health is perfect. `   
 Default directory: `./data/`   
 
+In addition, it is possible with an MQTT message to query the date when a file was last changed. So you also know when the topic was sent the last time.   
 ## Payload key monitoring
 Name: [`m4hPayload`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hPayload)   
 The `m4hPayload` program sends an MQTT message when a certain key is found in the payload of a message.   
