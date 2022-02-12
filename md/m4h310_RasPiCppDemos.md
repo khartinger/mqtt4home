@@ -27,8 +27,8 @@ Weiteres ist es möglich, verschiedene Module zu einem Gesamtprogramm zusammenzu
 5. [ Was kann die Vorlage `m4hBase` leisten?](#a50)   
 6. [Aus welchen Dateien besteht das Basissystem?](#a90)   
 
-
 <a name="a10"></a>[_Zum Seitenanfang_](#up)   
+
 # Welche Dinge benötige ich für das Erstellen eines ausführbaren Hilfsprogramms?
 * Hardware: PC oder Laptop mit Internetzugang, Browser   
 * Hardware: Raspberry Pi als Access Point (WLAN Raspi11, PW 12345678) mit der IP 10.1.1.1, auf dem ein MQTT-Broker läuft (zB Mosquitto)   
@@ -38,6 +38,7 @@ Weiteres ist es möglich, verschiedene Module zu einem Gesamtprogramm zusammenzu
 * Software: Die MQTT-Klient-Programme `mosquitto_sub` und ` mosquitto_pub` (auf dem PC oder RasPi installiert)   
 
 <a name="a20"></a>[_Zum Seitenanfang_](#up)   
+
 # Welche vorgefertigte Hilfsprogramme gibt es auf GitHub?   
 * Die Hilfsprogramme findet man auf GitHub im Verzeichnis [mqtt4home/source_RasPi](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi).   
 * Genauere Informationen zu den Programmen gibt es in den jeweiligen Projekt-Verzeichnissen.   
@@ -127,6 +128,7 @@ Name: [`m4hXxx`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/
 Ersetzt man in dieser (Visual-Studio-Code-)Vorlage den Dateinamen `m4hXxx.hpp` durch den neuen Namen (zB `m4hDemo.hpp`) und die Platzhalter `Xxx`, `XXX` und `xxx` durch die entsprechenden neuen Modulnamen (zB `Demo`, `DEMO` und `demo`), so ist das Programmgerüst für ein eigenes Programm bereits fertig. Es muss jetzt "nur mehr" die Funktionalität (in der Datei `m4hDemo` und ev. in `m4hExtension.hpp`) programmiert werden.    
 
 <a name="a30"></a>[_Zum Seitenanfang_](#up)   
+
 # Wie erstelle ich ein ausführbares Hilfsprogramm?   
 Die Vorgangsweise zum Erstellen eines Programmes soll am Beispiel `m4hBrokertime` gezeigt werden. Die Arbeiten können direkt auf dem RasPi oder über `putty` durchgeführt werden.   
 
@@ -180,9 +182,10 @@ Wurde die Datei fehlerfrei übersetzt und getestet und soll sie von jedem User u
 * Zwischen den printf-Anweisungen einfügen:   
 `/usr/local/bin/m4hBrokertime &`   
 Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
-(siehe auch Abschnitt "Eigene Autostart-Datei `autostart.sh`" in [m4h01_RasPiInstall.md](https://github.com/khartinger/mqtt4home/blob/main/m4h01_RasPiInstall.md) )
+(siehe auch Abschnitt "Eigene Autostart-Datei `autostart.sh`" in [m4h01_RasPiInstall.md](https://github.com/khartinger/mqtt4home/blob/main/m4h01_RasPiInstall.md) )   
 
 <a name="a40"></a>[_Zum Seitenanfang_](#up)   
+
 # Wie teste ich ein ausführbares Hilfsprogramm?   
 Das gerade erstellte Programm `m4hBrokertime` soll getestet werden.   
 Zum Testen des Programms benötigt man ein Putty-Fenster und ein PC-Eingabeaufforderungs-Fenster:
@@ -190,6 +193,7 @@ Zum Testen des Programms benötigt man ein Putty-Fenster und ein PC-Eingabeauffo
 `cd ~/m4hBrokertime`   
 `./m4hBrokertime`   
 Ergebnis:   
+
 ```   
 Read config file ./m4h.conf: OK
 =====[base]===========================
@@ -241,6 +245,7 @@ Beendet
 ```
 
 <a name="a50"></a>[_Zum Seitenanfang_](#up)   
+
 # Was kann die Vorlage `m4hBase` leisten?
 1. Lesen von Einstellungen aus der Konfigurationsdatei m4h.conf.   
 2. M&ouml;glichkeit, eine andere Konfigurationsdatei anzugeben   
@@ -255,6 +260,7 @@ Beendet
 8. Beenden des Programms mit &lt;strg&gt;c.   
 
 <a name="a90"></a>[_Zum Seitenanfang_](#up)   
+
 # Aus welchen Dateien besteht das Basissystem?   
 Das folgende Bild zeigt eine Übersicht über die Dateien des C++ Basissystems zur Erstellung von Hilfsprogrammen (bzw. Modulen).
 
@@ -291,6 +297,7 @@ Diese Datei stellt mit ihren fünf Funktionen die Verbindung zu den Funktionsmod
 * Die Funktion `void f4OnExit(struct mosquitto *mosq, int reason) { }` enthält abschließende Tätigkeiten aller Module.   
 * Die Funktion `void f5Periodic(struct mosquitto *mosq) { }` enthält Funktionen, die periodisch ausgeführt werden sollen.   
 Für das Beispiel `m4hBrokertime` sieht die Datei `m4hExtension.hpp` zB folgendermaßen aus:   
+
 ```   
 //_____m4hExtension.hpp__________________________khartinger_____
 // g++ m4hMain.cpp m4hBase.cpp -o m4hBrokertime -lmosquitto -lpthread
