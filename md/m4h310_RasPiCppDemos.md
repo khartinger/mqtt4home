@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 11.2.2022 <a name="up"></a>   
+Letzte &Auml;nderung: 12.2.2022 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
 <h1>RasPi: Welche C++ Hilfsprogramme gibt es und wie bekomme ich sie zum Laufen?</h1>
 <a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -10,7 +10,7 @@ Letzte &Auml;nderung: 11.2.2022 <a name="up"></a>
 In der Heimautomation gibt es verschiedene Möglichkeiten, Abläufe zu steuern. 
 Oft verwendet man dabei vorgefertigte Systeme, die nur mehr parametrisiert werden müssen. Der Nachteil dabei ist, dass nur die Dinge möglich sind, die vom System vorgesehen sind.   
 
-Die hier vorgestellten Hilfsprogramme (bzw. auch selbst erstellte Module) gehen einen anderen Weg:   
+Die hier vorgestellten Hilfsprogramme (bzw. auch selbst erstellten Module) gehen einen anderen Weg:   
 * Alle Hilfsprogramme bestehen aus dem gleichen Basisprogramm und einem Funktionsmodul.   
 * Jedes Hilfsprogramm (bzw. der Funktionsmodul) löst (genau) eine Aufgabe.   
 * Die Ein- und Ausgabe jedes Programms erfolgt über MQTT Nachrichten.   
@@ -336,9 +336,10 @@ void f1PrintHelptext()
 // pfConf...path and filename of config file
 bool f2Init(std::string pfConf)
 {
- g_brokertime.readConfig(pfConf);            // read conf data
+ bool bRet;
+ bRet=g_brokertime.readConfig(pfConf);       // read conf data
  if(g_prt) g_brokertime.show();              // show config values Brokertime
- return true;
+ return bRet;
 }
 
 //_______react to further mqtt messages_________________________

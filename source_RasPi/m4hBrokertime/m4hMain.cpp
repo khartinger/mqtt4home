@@ -16,7 +16,7 @@
 // Other functionalities requested by the user must be 
 // implemented in the file m4hExtension.hpp using the functions
 // * void f1PrintHelptext();
-// * void f2Init(std::string pfConf);
+// * bool f2Init(std::string pfConf);
 // * void f3OnMessage(struct mosquitto *mosq, std::string topic, std::string payload);
 // * void f4OnExit(struct mosquitto *mosq, int reason)
 // * void f5Periodic(struct mosquitto *mosq);

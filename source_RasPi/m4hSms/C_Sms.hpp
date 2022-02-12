@@ -272,7 +272,7 @@ void Sms::show()
 // return: true = yes, false = no
 bool Sms::isModule()
 {
- bool bRet;
+ bool bRet=true;
  g_modemBusy=true;                     // modem busy
  Gsm gsm2=Gsm(device);                 // gsm object
  bRet=gsm2.isModule();                 // test module
@@ -345,7 +345,7 @@ void Sms::onExit(struct mosquitto *mosq, int reason)
 //         0=no sms, 1=sms received, 2=end sms received
 int Sms::lookForSmsIn(struct mosquitto *mosq)
 {
- bool bRet;                            // bool return
+ bool bRet=true;                            // bool return
  int  iRet;                            // int return
  bool bRetain;                         // true=retain message
  SSMS smsIn;                           // incomming SMS
@@ -676,7 +676,7 @@ void Sms::threadFunctionSendSms(std::string sPhone,
 {
  std::string s1;
  bool bRetain=false;
- bool bRet;
+ bool bRet=true;
  int  watchdog1=iTimeout;
  //-----------wait for modem to be ready or 120secs-------------
  while(g_modemBusy && watchdog1>0)

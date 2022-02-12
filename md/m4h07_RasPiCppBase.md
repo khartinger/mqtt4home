@@ -54,7 +54,7 @@ Bei vielen Programmen ist es au&szlig;erdem sinnvoll, weitere Funktionalit&auml;
 ## Bearbeitung der Erweiterungsdatei `m4hExtension.hpp`
 In der Datei `m4hExtension.hpp` m&uuml;ssen folgende f&uuml;nf Funktionen definiert werden:   
 * `void f1PrintHelptext() { }`   
-* `void f2Init(std::string pfConf) { }`   
+* `bool f2Init(std::string pfConf) { }`   
 * `void f3OnMessage(struct mosquitto *mosq, std::string topic, std::string payload) { }`   
 * `void f4OnExit(struct mosquitto *mosq, int reason) { }`   
 * `void f5Periodic(struct mosquitto *mosq) { }`   
@@ -87,8 +87,9 @@ void f1PrintHelptext()
 
 //_______init extension_________________________________________
 // pfConf...path and filename of config file
-void f2Init(std::string pfConf)
+bool f2Init(std::string pfConf)
 {
+ return true;
 }
 
 //_______react to further mqtt messages_________________________

@@ -12,6 +12,7 @@
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2021-08-19 First release
+// 2022-02-10 add reload conf file by mqtt command
 // Released into the public domain.
 
 #ifndef C_M4HBASE_H
@@ -52,6 +53,12 @@
 #define  M4H_MQTTSTART_KEY   "mqttstart"
 #define  M4H_MQTTEND_KEY     "mqttend"
 #define  M4H_PROGEND_KEY     "progend"
+#define  M4H_CONF_IN_KEY     "readconfin"
+#define  M4H_CONF_IN_T       "m4hbase/set/conf"
+#define  M4H_CONF_IN_P       _CONF_PFILE_
+#define  M4H_CONF_OUT_KEY    "readconfout"
+#define  M4H_CONF_OUT_T      "m4hbase/ret/conf"
+#define  M4H_CONF_OUT_P      "Read config: "
 #define  M4H_ADDTIME_KEY     "addtime"
 
 // *************************************************************
@@ -142,11 +149,16 @@ class M4hBase {
   Message  msgMqttStart;               // MQTT message at start
   Message  msgMqttEnd;                 // MQTT message at end
   Message  msgProgEnd;                 // prog end via MQTT
+  Message2 msgReadConf;                // reload config
   bool     timeShouldBeAdded;          // @ msg start, end, ....
+ protected:
+  std::string keys;                    // keys for [sms]
  public:
   //-----constructor & co---------------------------------------
   M4hBase();
+  void setDefaults();                  // set all default values
   //-----setter and getter methods------------------------------
+  std::string getKeys() {return keys;}  // keys in config file
   //-----working methods----------------------------------------
   //void printHelptext();                // print help text
   bool readConfig();                   // read config file

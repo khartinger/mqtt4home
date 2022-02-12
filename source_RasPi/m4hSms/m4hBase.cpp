@@ -13,6 +13,8 @@
 // Updates:
 // 2021-08-19 First release
 // 2021-08-20 findKey(), findValue(): add check section []
+// 2021-08-29 split2pairs(): add long valLen=val.length(); if()
+// 2022-02-11 add reload conf file by mqtt command
 // Released into the public domain.
 #include "m4hBase.h"
 
@@ -831,6 +833,10 @@ bool Conf::split2pairs(std::string s1, std::multimap<std::string, std::string>& 
   } while(doLoop);
   if(debug) std::cout << " iB=" << iB << " iE="<< iE;
   val=s1.substr(iB,iE-iB);
+  long valLen=val.length();
+  if(valLen>0) {
+   if(val.at(valLen-1)==',') val=val.substr(0,valLen-1);
+  }
   if(debug) std::cout << " val=|" << val << "|" << std::endl;
   if(key.length()>0) mm1.insert(std::make_pair(key,val));
  } while(i1<iLast);
@@ -883,8 +889,13 @@ bool Conf::split2String(std::string sIn,std::string &sPart1,
 // *************************************************************
 //       M4hBase: constructor & co
 // *************************************************************
-//_______constructor____________________________________________
-M4hBase::M4hBase() {
+
+//_______Default constructor____________________________________
+M4hBase::M4hBase() { setDefaults(); }
+
+//_______set all default properties_____________________________
+void M4hBase::setDefaults()
+{
  pfConfig = _CONF_PFILE_;              // path&name config file
  section  = M4H_SECTION;               // section name in config
  msgVersion=Message2(M4H_VERSION_T_IN,  M4H_VERSION_P_IN,
@@ -892,8 +903,17 @@ M4hBase::M4hBase() {
  msgMqttStart=Message();
  msgMqttEnd=Message();
  msgProgEnd=Message();
- timeShouldBeAdded=false;
+ msgReadConf=Message2(M4H_CONF_IN_T,  M4H_CONF_IN_P,
+                      M4H_CONF_OUT_T, M4H_CONF_OUT_P);
+  timeShouldBeAdded=false;
+ keys=std::string(M4H_VERSION_KEY_IN);
+ keys+="|"+std::string(M4H_VERSION_KEY_OUT),
+ keys+="|"+std::string(M4H_MQTTSTART_KEY)+"|"+std::string(M4H_MQTTEND_KEY);
+ keys+="|"+std::string(M4H_PROGEND_KEY);
+ keys+="|"+std::string(M4H_CONF_IN_KEY)+"|"+std::string(M4H_CONF_OUT_KEY);
+ keys+="|"+std::string(M4H_ADDTIME_KEY);
 }
+
 
 // *************************************************************
 //       M4hBase: Setter and Getter methods
@@ -984,6 +1004,31 @@ bool M4hBase::readConfig(std::string pfile_)
       msgProgEnd.payload=sP;
      }
     }
+        //--------read config file (message in)---------------------
+    if(s1==M4H_CONF_IN_KEY) {
+     std::string sT, sP;
+     if(conf.split2String(it2->second, sT, sP, ' '))
+     {
+      if(sP=="?") sP=M4H_CONF_IN_P;
+      if(sP.length()>2) {
+       msgReadConf.payloadIn=sP;
+       msgReadConf.topicIn=sT;
+      }
+     }
+    }
+    //--------after config file read: message out---------------
+    if(s1==M4H_CONF_OUT_KEY) {
+     std::string sT, sP;
+     if(conf.split2String(it2->second, sT, sP, ' '))
+     {
+      if(sP=="?") sP=M4H_CONF_OUT_P;
+      if(sP.length()>0) {
+       msgReadConf.payloadOut=sP;
+       msgReadConf.topicOut=sT;
+      }
+     }
+    }
+    //--------messages out: add time stamp?---------------------
     if(s1==M4H_ADDTIME_KEY) {
      if(it2->second=="true") this->timeShouldBeAdded=true;
      else this->timeShouldBeAdded=false;
@@ -1021,11 +1066,11 @@ std::string M4hBase::getDateTime(std::string sTimeformat)
 void M4hBase::show()
 {
  Conf conf=Conf(pfConfig);
- std::cout<<"-----["<<section<<"]---------------------------"<<std::endl;
+ std::cout<<"=====["<<section<<"]==========================="<<std::endl;
  std::cout << "config file         | " << pfConfig;
  if(!conf.isReady()) std::cout << " (file not found)";
  std::cout<<std::endl;
- std::cout << "section name        | " << section<<std::endl;
+ std::cout << "all keys            | "<<getKeys()<<std::endl;
  std::cout << "version (in)        | -t " << msgVersion.topicIn << " -m " << msgVersion.payloadIn<<std::endl;
  std::cout << "version (out)       | -t " << msgVersion.topicOut << " -m " << msgVersion.payloadOut;
  if(msgVersion.retainOut) std::cout << " -r";
@@ -1037,6 +1082,8 @@ void M4hBase::show()
  if(msgMqttEnd.retain) std::cout << " -r";
  std::cout<<std::endl;
  std::cout << "progend by mqtt (in)| -t " << msgProgEnd.topic << " -m " << msgProgEnd.payload<<std::endl;
+ std::cout << "reload conf-file(in)| -t " << msgReadConf.topicIn << " -m " << msgReadConf.payloadIn<<std::endl;
+ std::cout << "reload conf-fil(out)| -t " << msgReadConf.topicOut << " -m " << msgReadConf.payloadOut<<std::endl;
  std::cout << "         * add time | ";
  if(timeShouldBeAdded) std::cout<<"true"<<std::endl;
  else std::cout<<"false"<<std::endl;

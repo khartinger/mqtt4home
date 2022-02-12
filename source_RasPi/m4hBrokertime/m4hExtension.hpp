@@ -48,9 +48,10 @@ void f1PrintHelptext()
 // pfConf...path and filename of config file
 bool f2Init(std::string pfConf)
 {
- g_brokertime.readConfig(pfConf);            // read conf data
+ bool bRet=true;
+ bRet=g_brokertime.readConfig(pfConf);       // read conf data
  if(g_prt) g_brokertime.show();              // show config values Brokertime
- return true;
+ return bRet;
 }
 
 //_______react to further mqtt messages_________________________

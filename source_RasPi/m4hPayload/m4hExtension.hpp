@@ -38,10 +38,12 @@ void f1PrintHelptext()
 
 //_______init extension_________________________________________
 // pfConf...path and filename of config file
-void f2Init(std::string pfConf)
+bool f2Init(std::string pfConf)
 {
- g_payload.readConfig(pfConf);            // read conf data
+ bool bRet=true;
+ bRet=g_payload.readConfig(pfConf);       // read conf data
  if(g_prt) g_payload.show();              // show config values Payload
+ return bRet;
 }
 
 //_______react to further mqtt messages_________________________

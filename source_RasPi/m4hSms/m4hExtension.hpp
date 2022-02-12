@@ -37,7 +37,7 @@ void f1PrintHelptext()
 
 //_______init extension_________________________________________
 // pfConf...path and filename of config file
-void f2Init(std::string pfConf)
+bool f2Init(std::string pfConf)
 {
  g_sms.readConfig(pfConf);            // read conf data
  if(g_prt) g_sms.show();              // show config values Sms
@@ -47,6 +47,7 @@ void f2Init(std::string pfConf)
   if(!bRet) fprintf(stdout, "NOT ");
   fprintf(stdout, "found at %s!\n",g_sms.getDevice().c_str());
  }
+ return bRet;
 }
 
 //_______react to further mqtt messages_________________________

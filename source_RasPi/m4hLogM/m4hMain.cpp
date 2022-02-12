@@ -16,7 +16,7 @@
 // Other functionalities requested by the user must be 
 // implemented in the file m4hExtension.hpp using the functions
 // * void f1PrintHelptext();
-// * void f2Init(std::string pfConf);
+// * bool f2Init(std::string pfConf);
 // * void f3OnMessage(struct mosquitto *mosq, std::string topic, std::string payload);
 // * void f4OnExit(struct mosquitto *mosq, int reason)
 // * void f5Periodic(struct mosquitto *mosq);
@@ -28,6 +28,7 @@
 // Updates: 
 // 2021-08-19 First release
 // 2021-08-20 m4h_msg_callback(): add if(message->payload!=NULL)...
+// 2022-02-10 add reload conf file by mqtt command
 // Released into the public domain.
 
 #include "mosquitto.h"            // mosquitto_* functions 
@@ -200,6 +201,36 @@ void m4h_msg_callback(struct mosquitto *g_mosq, void *userdata,
    } catch(std::string& error) {
      fprintf(stderr,"Error while publishing answer: %s\n",error);
    }
+  }
+  return;
+ }
+  //------reload config file-------------------------------------
+ if(sTopic==g_base.msgReadConf.topicIn)
+ {
+  try
+  {
+   iRet=-1;
+   int lenP = sPayload.length();
+   if(lenP<1) return;
+   std::string pfConf1=g_base.msgReadConf.payloadIn;
+   if(sPayload!="?" && lenP>2) {
+    pfConf1=sPayload;
+    g_base.msgReadConf.payloadIn=sPayload;
+   }
+   std::string s1=g_base.msgReadConf.payloadOut;
+   bool bRet=g_base.readConfig(pfConf1);
+   if(g_prt) g_base.show();
+   bRet=bRet&&f2Init(pfConf1);
+   if(bRet) s1+=" OK";
+   else s1+=" ERROR";
+   s1+=" (file: "+pfConf1+")";
+   iRet=mosquitto_publish(g_mosq, NULL,g_base.msgReadConf.topicOut.c_str(),
+    s1.length(), s1.c_str(), 0, 0);
+   if(iRet!=0) {
+    if(g_prt) fprintf(stderr, "Could not send read config answer. MQTT error=%i\n",iRet);
+   }
+  } catch(std::string& error) {
+    fprintf(stderr,"Error while publishing answer: %s\n",error);
   }
   return;
  }
