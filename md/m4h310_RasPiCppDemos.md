@@ -51,8 +51,8 @@ Die folgende Aufz&auml;hlung ist alphabetisch geordnet (und daher nicht nach Wic
 ## Abfrage des Zustands (der "Gesundheit") des zigbee2mqtt-Programms
 Name: [`m4hAdZigbee2mqtt`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hAdZigbee2mqtt)   
 Das Programm sendet eine "Gesundheits"-Anfrage an das Programm `zigbee2mqtt` und wandelt die Antwort in eine leichter verarbeitbare Antwort um.   
-OUT zigbee2mqtt: `-t zb/bridge/request/health_check -m ""`   
-IN  zigbee2mqtt: `zb/bridge/response/health_check {"data":{"healthy":true},"status":"ok"}`   
+OUT zigbee2mqtt: `-t z2m/bridge/request/health_check -m ""`   
+IN  zigbee2mqtt: `z2m/bridge/response/health_check {"data":{"healthy":true},"status":"ok"}`   
 Abfrage IN: `-t z2m/get -m health`   
 OUT: `-t z2m/ret/health -m Zigbee2mqtt-health is perfect.`   
 

@@ -51,8 +51,8 @@ The following list is in alphabetical order (and therefore not in order of impor
 ## Query the state (the "health") of the zigbee2mqtt program.
 Name: [`m4hAdZigbee2mqtt`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hAdZigbee2mqtt)   
 The program sends a "health" request to the `zigbee2mqtt` program and converts the response to a more easily processed response.   
-OUT zigbee2mqtt: `-t zb/bridge/request/health_check -m ""`   
-IN zigbee2mqtt: `zb/bridge/response/health_check {"data":{"healthy":true}, "status": "ok"}`   
+OUT zigbee2mqtt: `-t z2m/bridge/request/health_check -m ""`   
+IN zigbee2mqtt: `z2m/bridge/response/health_check {"data":{"healthy":true}, "status": "ok"}`   
 query IN: `-t z2m/get -m health`   
 OUT: `-t z2m/ret/health -m Zigbee2mqtt-health is perfect.`   
 

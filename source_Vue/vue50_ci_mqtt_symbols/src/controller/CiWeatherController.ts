@@ -23,7 +23,7 @@ export class CiWeatherController extends CiBaseController {
         name: 'Weather1_zb',
         iWeatherState: -1,
         battery: '100%',
-        subTopic: 'zb/weather/1/ret',
+        subTopic: 'z2m/weather/1/ret',
         pubTopic: ''
       }
     ]

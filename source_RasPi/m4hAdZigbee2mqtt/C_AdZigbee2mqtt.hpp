@@ -17,8 +17,8 @@
 #define  Z2M_HEALTH_IN_KEY   "healthin"
 #define  Z2M_GET_HEALTH_KEY  "gethealth"
 #define  Z2M_RET_HEALTH_KEY  "rethealth"
-#define  Z2M_HEALTH_OUT      "zb/bridge/request/health_check"
-#define  Z2M_HEALTH_IN       "zb/bridge/response/health_check"
+#define  Z2M_HEALTH_OUT      "z2m/bridge/request/health_check"
+#define  Z2M_HEALTH_IN       "z2m/bridge/response/health_check"
 #define  Z2M_GET_HEALTH_PAY  "z2m/get"
 #define  Z2M_GET_HEALTH_TOP  "health"
 #define  Z2M_RET_HEALTH_TOP  "z2m/ret/health"
@@ -195,8 +195,8 @@ void Z2m::onExit(struct mosquitto *mosq, int reason)
 }
 
 //_______send health request to adzigbee2mqtt___________________
-// send to z2m: -t zb/bridge/request/health_check -n
-// receive: -t zb/bridge/response/health_check
+// send to z2m: -t z2m/bridge/request/health_check -n
+// receive: -t z2m/bridge/response/health_check
 //          -m {"data":{"healthy":true},"status":"ok"}
 // return: 1 = health OK, 2 = status OK, 3 = both ok
 //         0 = not OK, -1 result unknown, -2 publish error
