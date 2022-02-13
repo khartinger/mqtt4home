@@ -1,390 +1,307 @@
 Letzte &Auml;nderung: 12.2.2022 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
-<h1>RasPi: Welche C++ Hilfsprogramme gibt es und wie bekomme ich sie zum Laufen?</h1>
+<h1>RasPi: Wie erstelle ich ein eigenes C++ Hilfsprogramm?</h1>
 <a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="./README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table>
 <hr>
 
 # Worum geht es?
-In der Heimautomation gibt es verschiedene M&ouml;glichkeiten, Abl&auml;ufe zu steuern. 
-Oft verwendet man dabei vorgefertigte Systeme, die nur mehr parametrisiert werden m&uuml;ssen. Der Nachteil dabei ist, dass nur die Dinge m&ouml;glich sind, die vom System vorgesehen sind.   
+Diese Anleitung zeigt, wie man mit Hilfe der Vorlage `m4hXxx` eigene Module bzw. Hilfsprogramme erstellt.   
+Es wird ein Modul `C_Demo1.hpp` erstellt, das im Projekt `m4hDemo1` verwendet wird und zeigt, wie man Nachrichten empf&auml;ngt und sendet und parallel dazu periodische Aufgaben erledigt. Die [detaillierte Aufgabenstellung](#a20) steht weiter unten.   
 
-Die hier vorgestellten Hilfsprogramme (bzw. auch selbst erstellten Module) gehen einen anderen Weg:   
-* Alle Hilfsprogramme bestehen aus dem gleichen Basisprogramm und einem Funktionsmodul.   
-* Jedes Hilfsprogramm (bzw. der Funktionsmodul) l&ouml;st (genau) eine Aufgabe.   
-* Die Ein- und Ausgabe jedes Programms erfolgt &uuml;ber MQTT Nachrichten.   
-* Die Eigenschaften eines Hilfsprogramms werden &uuml;ber eine Konfigurationsdatei festgelegt.   
-
-Da jedes Hilfsprogramm eine ausf&uuml;hrbare Datei ist und &uuml;ber MQTT-Nachrichten gesteuert wird, kann es auch gemeinsam mit vorgefertigten Systemen verwendet werden.   
-Weiteres ist es m&ouml;glich, verschiedene Module zu einem Gesamtprogramm zusammenzufassen und so seine eigene Haussteuerung zu realisieren.   
+_Vorgangsweise_:   
+Das Programm wird am PC in Visual Studio Code erstellt, danach auf das RasPi &uuml;bertragen und dort kompiliert.   
+(Es w&auml;re auch m&ouml;glich, mit Visual Studio Code direkt am RasPi zu arbeiten.)   
 
 ## Diese Anleitung beantwortet folgende Fragen:   
 1. [Welche Dinge ben&ouml;tige ich f&uuml;r das Erstellen eines ausf&uuml;hrbaren Hilfsprogramms?](#a10)   
-2. [Welche vorgefertigte Hilfsprogramme gibt es auf GitHub?](#a20)   
-3. [Wie erstelle ich ein ausf&uuml;hrbares Hilfsprogramm?](#a30)   
-4. [Wie teste ich ein ausf&uuml;hrbares Hilfsprogramm?](#a40)   
-5. [Was kann die Vorlage `m4hBase` leisten?](#a50)   
-6. [Aus welchen Dateien besteht das Basissystem?](#a90)   
+2. [Was soll das Demoprogramm k&ouml;nnen?](#a20)   
+3. [Wie bereite ich die L&ouml;sung vor?](#a30)
+4. [Wie werden die Forderungen an das Demoprogramm erf&uuml;llt?](#a40)
+5. [Wie erstelle und teste ich das m4hDemo1-Programm?](#a50)
+6. [Wie stelle ich das Programm allen Usern zur Verf&uuml;gung?](#a60)
 
 <a name="a10"></a>[_Zum Seitenanfang_](#up)   
 
 # Welche Dinge ben&ouml;tige ich f&uuml;r das Erstellen eines ausf&uuml;hrbaren Hilfsprogramms?
 * Hardware: PC oder Laptop mit Internetzugang, Browser   
 * Hardware: Raspberry Pi als Access Point (WLAN Raspi11, PW 12345678) mit der IP 10.1.1.1, auf dem ein MQTT-Broker l&auml;uft (zB Mosquitto)   
-* Software: Visual Studio Code ("VSC"), das f&uuml;r C++-Anwendungen vorbereitet ist.   
+* Software: [Visual Studio Code ("VSC")](https://code.visualstudio.com/), das f&uuml;r C++-Anwendungen vorbereitet ist.   
 * Software: Terminal-Programm [__*putty*__](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) auf dem PC/Laptop   
 * Software: [__*WinSCP*__](https://winscp.net/eng/docs/lang:de) zur Daten&uuml;bertragung vom PC/Laptop zum RasPi   
 * Software: Die MQTT-Klient-Programme `mosquitto_sub` und ` mosquitto_pub` (auf dem PC oder RasPi installiert)   
 
 <a name="a20"></a>[_Zum Seitenanfang_](#up)   
 
-# Welche vorgefertigte Hilfsprogramme gibt es auf GitHub?   
-* Die Hilfsprogramme findet man auf GitHub im Verzeichnis [mqtt4home/source_RasPi](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi).   
-* Genauere Informationen zu den Programmen gibt es in den jeweiligen Projekt-Verzeichnissen.   
-* Zur einfachen Darstellung von Nachrichten wird die Syntax des Brokers "Mosquitto" verwendet:   
-   `-t topic -m payload`   
-* Viele Topics und Payloads k&ouml;nnen in der Konfigurationsdatei (zB `m4h.conf`) an eigene Bed&uuml;rfnisse angepasst werden.   
+# Was soll das Demoprogramm k&ouml;nnen?
+* {a} In der Konfigurationsdatei soll eine Sektion `[demo1]` definiert und ein "Startwert" (Schl&uuml;ssel `startvalue`) von `20` vorgegeben werden.   
 
-Die folgende Aufz&auml;hlung ist alphabetisch geordnet (und daher nicht nach Wichtigkeit).   
+* {b} Das Programm soll beim Start die Konfigurationsdaten einlesen   
+(Datei `m4h.conf`, Sektion `[demo1]`, Schl&uuml;ssel `startvalue`).   
 
-## Abfrage des Zustands (der "Gesundheit") des zigbee2mqtt-Programms
-Name: [`m4hAdZigbee2mqtt`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hAdZigbee2mqtt)   
-Das Programm sendet eine "Gesundheits"-Anfrage an das Programm `zigbee2mqtt` und wandelt die Antwort in eine leichter verarbeitbare Antwort um.   
-OUT zigbee2mqtt: `-t zb/bridge/request/health_check -m ""`   
-IN  zigbee2mqtt: `zb/bridge/response/health_check {"data":{"healthy":true},"status":"ok"}`   
-Abfrage IN: `-t z2m/get -m health`   
-OUT: `-t z2m/ret/health -m Zigbee2mqtt-health is perfect.`   
+* {c} Das Programm soll alle ankommenden Nachrichten anzeigen.   
 
-## C++ Basisprogramm
-Name: [`m4hBase`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hBase)   
-Das C++ Basisprogramm stellt die Verbindung zum MQTT Broker und zu verschiedenen Funktionsmodulen zur Verf&uuml;gung.   
-Es erm&ouml;glicht das Neuladen der Konfigurationsdatei und bietet verschiedene M&ouml;glichkeiten zum Beenden des Programmes an (Tastenkombination &lt;strg&gt;c, MQTT-Nachricht, Ende nach periodischer Ausf&uuml;hrung eines Vorgangs).   
-Details stehen auch [am Ende dieser Anleitung](#a50).   
+* {d} Das Programm soll auf die Nachricht `-t m4hDemo1/get -m keys` mit der Nachricht `-t m4hDemo1/ret/keys -m [keys]` antworten.   
+   `[keys]` sollen alle Keys sein.   
 
-## Abfrage der Brokerzeit   
-Name: [`m4hBrokertime`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hBrokertime)   
-Auf Anfrage sendet das Programm die aktuelle Brokerzeit zur&uuml;ck.   
-Anwendung zB bei D1mini-Systemen, die keine Echtzeituhr (RTC) haben und trotzdem das aktuelle Datum bzw. die Uhrzeit anzeigen wollen.   
-IN : `-t getTime -m ?`   
-OUT: `-t brokertime -m yyyymmdd HHMMSS`   
-Das Zeitformat `yyyymmdd HHMMSS` bedeutet yyyy=Jahr, mm=Monat, dd=Tag, HH=Stunde, MM=Minute, SS=Sekunde.   
-Alterative: Das Programm `InDelayOut`.   
+* {e} Das Programm soll ausgehend von einem Startwert (default 30) im Sekundentakt bis 0 herunterz&auml;hlen und dann das Programm beenden.   
 
-## Demoprogramm   
-Name: [`m4hDemo1`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hDemo1)   
-Das fertige Demo-Programm, dessen Erstellung in [`RasPi: Create your own programs in C++`](https://github.com/khartinger/mqtt4home/blob/main/md/m4h320_RasPiCppCreatingYourOwnProgs.md) beschrieben wird.   
-
-## Finden der Schnittstelle eines SIM-Moduls
-Name: [`m4hFindSimModule`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hFindSimModule)   
-Dieses Konsolenprogramm pr&uuml;ft vorgegebene RasPi-Schnittstellen, ob an ihnen ein SIM-Modul h&auml;ngt.   
-Das Programm hat keine MQTT-Anbindung.   
-
-## Empfangen und Senden von Nachrichten
-Name: [`m4hInDelayOut`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hInDelayOut)   
-Nach dem Empfang einer Nachricht wartet das Programm eine (in der Konfigurationsdatei) angegebene Zeit und sendet danach eine Antwort-Nachricht. Gibt man keine Wartezeit an, wird sofort die neue Nachricht gesendet.   
-Das Programm ist sehr flexibel und kann zB dazu verwendet werden, fix vorgegebene Nachrichten (zB von gekauften Sensoren) in selbst definierte Nachrichten "umzuwandeln".   
-Auch die Abfrage der Brokerzeit (wie beim Programm `m4hBrokertime`) ist m&ouml;glich. Daf&uuml;r lautet der Eintrag in der Konfigurationsdatei zB.   
-```   
-[indelayout]
-in:     getTime ?
-out:    brokertime <brokertime>
-```   
-
-## Schreiben von MQTT-Nachrichten in Dateien (Log-Files)
-Name: [`m4hLogM`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hLogM)   
-bzw.: [`m4hLog2`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hLog2)   
-Das Programm `m4hLogM` schreibt alle MQTT-Nachrichten in Dateien. F&uuml;r jede Nachricht wird jedes Monat eine neue Datei angelegt. Der Dateiname besteht aus dem Topic + Punkt + Jahr + Monat + ".log", wobei Leerzeichen in Topics durch Unterstriche und Schr&auml;gstriche durch das At-Zeichen ersetzt werden.   
-_Beispiel_:   
-Die Nachricht `-t z2m/ret/health -m Zigbee2mqtt-health is perfect.` wird im Februar 2022 folgenderma&szlig;en abgespeichert:   
-Dateiname:   `z2m@ret@health.2202.log`   
-Dateiinhalt: `11.02.22 09:16:16 | z2m@ret@health |  Zigbee2mqtt-health is perfect.`   
-Standardverzeichnis: `./log/`   
-
-Verwendet man das Programm `m4hLog2`, wird zus&auml;tzlich die (jeweils letzte) Payload in einer eigenen Datei gespeichert (zB f&uuml;r eine schnellere Weiterverarbeitung durch andere Programme).   
-Dateiname:   `z2m@ret@health`   
-Dateiinhalt: ` Zigbee2mqtt-health is perfect. `   
-Standardverzeichnis: `./data/`   
-
-Au&szlig;erdem ist es mit einer MQTT-Nachricht m&ouml;glich, das Datum abzufragen, wann eine Datei das letzte Mal ge&auml;ndert wurde. Damit wei&szlig; man auch, wann das Topic das letzte Mal gesendet wurde.   
-
-## &Uuml;berwachung von Payload-Schl&uuml;sseln
-Name: [`m4hPayload`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hPayload)   
-Das Programm `m4hPayload` sendet beim Finden eines bestimmten Schl&uuml;ssels in der Payload einer Nachricht eine MQTT-Nachricht.   
-_Beispiel_: Unterschreitet der Wert des Schl&uuml;ssels "`battery`" __eines beliebigen Topics__ (!) einen bestimmten Wert, so wird eine Warnungs-Nachricht geschickt.   
-
-## Senden und Empfangen von SMS
-Name: [`m4hSms`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hSms)   
-Mit Hilfe eines SIM-Moduls werden SMS gesendet und empfangen und in MQTT-Nachrichten umbewandelt.   
-Aus Sicherheitsgr&uuml;nden m&uuml;ssen in der Konfigurationsdatei alle Telefonnummern vermerkt sein, die die Berechtigung zum Senden und Empfangen von SMS haben.   
-Anwendung: Versenden von MQTT-Befehlen durch SMS. SMS-Info, wenn das Programm gestartet oder beendet wurde, ...   
-
-## &Uuml;berwachung regelm&auml;&szlig;ig wiederkehrender MQTT-Nachrichten (Watchdog)  
-Name: [`m4hWdog`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hWdog)   
-Das Programm `m4hWdog` ("Watchdog") kontrolliert, ob Nachrichten, die regelm&auml;&szlig;ig verschickt werden sollten (zB von Temperatursensoren), auch tats&auml;chlich gesendet werden. Wenn ein Sensor innerhalb einer vorgegebenen Zeit keine Nachricht mehr gesendet hat, wird von `m4hWdog` eine Warn-Nachricht gesendet.   
-In der Konfigurationsdatei wird festgelegt, innerhalb welcher Zeitspanne eine Nachricht von einem bestimmten Topic eintreffen muss.   
-Das Modul ist sehr gut daf&uuml;r geeignet, den Ausfall von (zB batteriebetriebenen) Sensoren zu erkennen.   
-
-## Vorlage zur Erstellung eigener Module in C++  .
-Name: [`m4hXxx`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hXxx)   
-Ersetzt man in dieser (Visual-Studio-Code-)Vorlage den Dateinamen `m4hXxx.hpp` durch den neuen Namen (zB `m4hDemo.hpp`) und die Platzhalter `Xxx`, `XXX` und `xxx` durch die entsprechenden neuen Modulnamen (zB `Demo`, `DEMO` und `demo`), so ist das Programmger&uuml;st f&uuml;r ein eigenes Programm bereits fertig. Es muss jetzt "nur mehr" die Funktionalit&auml;t (in der Datei `m4hDemo` und ev. in `m4hExtension.hpp`) programmiert werden.    
+* {f} Bei Ende des Programms soll die Meldung `Thank you for using m4hDemo1!` ausgegeben werden.   
 
 <a name="a30"></a>[_Zum Seitenanfang_](#up)   
 
-# Wie erstelle ich ein ausf&uuml;hrbares Hilfsprogramm?   
-Die Vorgangsweise zum Erstellen eines Programmes soll am Beispiel `m4hBrokertime` gezeigt werden. Die Arbeiten k&ouml;nnen direkt auf dem RasPi oder &uuml;ber `putty` durchgef&uuml;hrt werden.   
+# Wie bereite ich die L&ouml;sung vor?
+Die ersten Schritte auf dem RasPi k&ouml;nnen sowohl direkt - in einem Konsolenfenster - oder &uuml;ber `putty` durchgef&uuml;hrt werden. Es wird angenommen, dass die Vorlage `m4hXxx` auf dem RasPi vorhanden ist. Ist dies nicht der Fall, muss die Vorlage zuerst auf dem RasPi erstellt oder hinaufkopiert werden.   
 
-1. Erstellen eines Verzeichnisses f&uuml;r den Programmcode auf dem RasPi:   
-`mkdir ~/m4hBrokertime`   
+## Vorbereitung 1: Vorlage m4hXxx auf dem RasPi erstellen
+1. Mit dem Browser das Verzeichnis `m4hXxx` auf GitHub &ouml;ffnen:   
+Link: [https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hXxx](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hXxx)   
 
-2. Wechseln in dieses Verzeichnis:   
-`cd ~/m4hBrokertime`   
+2. Auf dem RasPi ein Konsolenfenster &ouml;ffnen (oder am PC mit `putty` eine Verbindung zum RasPi herstellen).   
 
-3. Herunterladen des Quellcodes bzw. der Projektdateien von GitHub   
-Den Quellcode der Dateien findet man unter [https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hBrokertime](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hBrokertime)   
-(Dateien: `C_Brokertime.hpp`, `m4h.conf`, `mh4Base.cpp`, `m4hBase.h`, `m4hExtension.hpp`, `m4hMain.cpp`)   
-  Zum Herunterladen der Dateien gibt es zwei M&ouml;glichkeiten.   
+3. Das Verzeichnis `m4hXxx` erstellen:   
+  `mkdir ~/m4hXxx`   
 
-    __Variante 1__: Dateien einzeln erzeugen:   
-    1. Putty starten und mit dem RasPi verbinden   
-    2. Ins Projektverzeichnis wechseln   
-       `cd ~/m4hBrokertime`   
-    3. Eine Quellcode-Datei, zB `C_Brokertime.hpp`, auf GitHub anklicken, [Raw] dr&uuml;cken, Quellcode kopieren (zB &lt;strg&gt;a &lt;strg&gt;c)   
-    4. Auf dem RasPi eine leere Datei f&uuml;r den Quellcode erzeugen:   
-    `nano ./C_Brokertime.hpp`   
-    5. Den Quellcode mit der rechten Taste in `nano` einf&uuml;gen   
-    6. Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
-  Die Vorgangsweise ab dem 3. Punkt f&uuml;r die Dateien `m4h.conf`, `m4hBase.cpp`, `m4hBase.h`, `m4hExtension.hpp` und `m4hMain.cpp` wiederholen.   
+4. In das Verzeichnis `m4hXxx` wechseln:   
+  `cd ~/m4hXxx`   
 
-    __Variante 2__: Herunterladen des gesamten Repository von GitHub.   
+5. Alle Quellcodes kopieren:   
+    1. Eine Quellcode-Datei, zB `C_Xxx.hpp`, auf GitHub anklicken, [Raw] dr&uuml;cken, Quellcode kopieren (zB &lt;strg&gt;a &lt;strg&gt;c)   
+    2. Auf dem RasPi eine leere Datei f&uuml;r den Quellcode erzeugen:   
+    `nano ./C_Xxx.hpp`   
+    3. Den Quellcode mit der rechten Taste in `nano` einf&uuml;gen   
+    4. Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
+  Diese Schritte f&uuml;r die Dateien `m4h.conf`, `m4hBase.cpp`, `m4hBase.h`, `m4hExtension.hpp` und `m4hMain.cpp` wiederholen.   
 
-4. Erstellen der ausf&uuml;hrbaren Datei   
-`g++ m4hMain.cpp m4hBase.cpp -o m4hBrokertime -lmosquitto -lpthread`   
+Eine andere M&ouml;glichkeit besteht darin, das gesamte Repository von GitHub herunterzuladen und die Dateien auf das RasPi &uuml;bertragen.   
 
-    _Anmerkung 1_: Damit das Kompilieren erfolgreich ist, muss die Mosquitto-Bibliothek installiert sein:   
-    `sudo apt-get install libmosquitto-dev`   
-     (siehe auch [https://github.com/khartinger/mqtt4home/blob/main/m4h03_RasPiMQTTBroker.md](https://github.com/khartinger/mqtt4home/blob/main/m4h03_RasPiMQTTBroker.md) )   
+## Vorbereitung 2: Projekt m4hDemo1 erstellen
+Das folgende Bild zeigt die Ausgangssituation vor dem Erstellen des m4hDemo1-Programms:
 
-    _Anmerkung 2_: Im Verzeichnis `~/m4hBrokertime` wurde die Datei `m4hBrokertime` erzeugt.   
+![m4hBase files](./images/rpi_m4hBase_files2.png "m4hBase files")   
+_Bild 1: Dateien zur Erstellung eines C++ Hilfsprogramme_   
 
-    _Anmerkung 3_: Die Befehlszeile, mit der die ausf&uuml;hrbare Datei erzeugt wird, steht immer in der Datei `m4hExtension.hpp` und `C_Xxx.hpp`   
+1. RasPi: Erstellen eines Projektverzeichnisses `m4hDemo1`:   
+`mkdir ~/m4hDemo1`   
+
+2. RasPi: Wechseln in dieses Verzeichnis:   
+`cd ~/m4hDemo1`   
+
+3. RasPi: Hineinkopieren der Vorlagedateien `m4hXxx` in dieses Verzeichnis:   
+`cp ~/m4hXxx/*.* ~/m4hDemo1`   
+
+4. RasPi: Umbenennen der Datei C_Xxx.hpp in Demo1.hpp   
+`mv C_Xxx.hpp C_Demo1.hpp`   
+
+5. PC: Herunterladen des Verzeichnisses `~/m4hDemo1` vom RasPi auf den PC mit Hilfe von WinSCP.   
+
+6. PC: Visual Studio Code starten und den Projektordner `m4hDemo1` __auf dem PC__ &ouml;ffnen:   
+  Men&uuml; Datei - Ordner &ouml;ffnen...   
+
+7. Umbenennen der Dummy-Bezeichnung Xxx   
+Beim Umbenennen der Dummy-Bezeichnung `Xxx` in `Demo1` MUSS in den Dateien `C_Cxx.hpp`, `m4hExtension.hpp` und `m4h.conf` die Gro&szlig;-/Kleinschreibung beachtet werden, dh.   
+das Umbenennen muss in drei Schritten erfolgen:   
+  Men&uuml; Bearbeiten - In Dateien ersetzen...   
+  __Wichtig__: Im Suchfeld __`Aa`__ aktivieren!   
+    1. Xxx durch Demo1 ersetzen (Klassenbezeichnung, ca. 33 Ersetzungen in 3 Dateien)   
+    2. xxx durch demo1 ersetzen (globale Variable, ca. 10 Ersetzungen in 3 Dateien)   
+    3. XXX durch DEMO1 ersetzen (Definitionen, ca. 8 Ersetzungen in 1 Datei)   
+
+8. Zeilen mit `DEMO1_DEMO`, `DEMO1_DEMO_KEY` und `_demo_` auskommentieren (oder l&ouml;schen).   
+    * Men&uuml; Bearbeiten - In Dateien suchen... `DEMO1_DEMO_KEY`   
+      4 Vorkommen auskommentieren, wobei in der Methode `Demo1::readConfig` der ganze if-Block auszukommentieren (oder l&ouml;schen) ist:   
+      ```  
+        //-----search key---------------------------------------------
+        //if(sKey==DEMO1_DEMO_KEY) {
+        // _demo_=sVal;
+        //}
+      ```   
+    * Men&uuml; Bearbeiten - In Dateien suchen... `_demo_`   
+      2 Vorkommen auskommentieren.   
+
+9. Testen der &Auml;nderungen   
+    * Kopieren der Dateien des Verzeichnisses `m4hDemo` vom PC zum RasPi (mit WinSCP).   
+    * Kompilieren der Datei durch Eingabe (in putty oder in der Konsole) von   
+      `g++ m4hMain.cpp m4hBase.cpp -o m4hDemo1 -lmosquitto -lpthread`   
+    Es sollten keine Fehler angezeigt werden und es sollte die Datei `m4hDemo` erstellt worden sein. (Kontrolle durch Eingabe von `ls -lh`)   
+    * L&auml;uft der Server bzw. Broker, kann das Programm auch gestartet werden:  
+      `./m4hDemo1`   
+      Beenden des Programms mit &lt;strg&gt;c.   
 
 ---   
 
-5. Bereitstellung der Datei f&uuml;r alle User   
-Wurde die Datei fehlerfrei &uuml;bersetzt und getestet und soll sie von jedem User und aus jedem Verzeichnis heraus verwendet werden k&ouml;nnen, sind folgende Schritte erforderlich:   
-`sudo cp ~/m4hBrokertime/m4hBrokertime /usr/local/bin`   
-`sudo chown root /usr/local/bin/m4hBrokertime`   
-`sudo chmod 777 /usr/local/bin/m4hBrokertime`   
-`sudo chmod u+s /usr/local/bin/m4hBrokertime`   
-
-6. Automatisches Starten der Datei beim RasPi-Start   
-* Datei /usr/local/bin/autostart.sh &ouml;ffnen:   
-`sudo nano /usr/local/bin/autostart.sh`   
-* Zwischen den printf-Anweisungen einf&uuml;gen:   
-`/usr/local/bin/m4hBrokertime &`   
-Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
-(siehe auch Abschnitt "Eigene Autostart-Datei `autostart.sh`" in [m4h01_RasPiInstall.md](https://github.com/khartinger/mqtt4home/blob/main/m4h01_RasPiInstall.md) )   
-
 <a name="a40"></a>[_Zum Seitenanfang_](#up)   
 
-# Wie teste ich ein ausf&uuml;hrbares Hilfsprogramm?   
-Das gerade erstellte Programm `m4hBrokertime` soll getestet werden.   
-Zum Testen des Programms ben&ouml;tigt man ein Putty-Fenster und ein PC-Eingabeaufforderungs-Fenster:
-1. Das neu erstellte Programm in der Konsole oder einem putty-Fenster starten:   
-`cd ~/m4hBrokertime`   
-`./m4hBrokertime`   
-Ergebnis:   
+# Wie werden die Forderungen an das Demoprogramm erf&uuml;llt?
+## 1. Forderung {a}: Konfigurationsdatei erg&auml;nzen   
+In VSC die Datei `m4h.conf` anklicken und folgendes eintragen:   
+   ```   
+   [demo1]
+   startvalue: 20
+   ```   
+
+## 2. Forderung {b}: Konfigurationsdaten einlesen   
+Das Einlesen der Konfigurationsdaten erfordert in VSC mehrere Arbeitsschritte:   
+
+* C_Demo1.hpp: Anlegen von Konstanten f&uuml;r den Startwert:   
+   ```   
+   #define DEMO1_STARTVALUE_KEY "startvalue"   
+   #define DEMO1_STARTVALUE     30
+   ```   
+
+* C_Demo1.hpp: Eigenschaft f&uuml;r den Startwert deklarieren.   
+  In der Klasse Demo1 unter "application specific properties" eintragen:   
+  `int startvalue;`   
+  und in der Methode `setDefaults()` initialisieren:   
+   `startvalue=DEMO1_STARTVALUE;`   
+   `keys=std::string(DEMO1_STARTVALUE_KEY);`   
+
+* C_Demo1.hpp: Methode zur R&uuml;ckgabe des Startwertes definieren.   
+  In der Klasse `Demo1` unter "setter and getter methods" eintragen:   
+  `int getStartvalue() { return startvalue; }`   
+
+* C_Demo1.hpp: Startwert aus der Konfigurationdatei einlesen (falls definiert).   
+  In der Methode `readConfig(std::string pfConf)` nach der Zeile   
+`//-----search key---------------------------------------------`   
+bei `  // ..ToDo..` folgendes einf&uuml;gen:   
+```   
+  //-----search key---------------------------------------------
+  if(sKey==DEMO1_STARTVALUE_KEY) {
+   try{ // string to int
+    int temp=std::stoi(sVal);
+    startvalue=temp;
+   } catch(std::invalid_argument) {};
+  }
+ } // end for every line in section
+ return true;
+}
+```   
+
+* C_Demo1.hpp: Startwert anzeigen.   
+In der Methode `show()` erg&auml;nzen:   
+    ```   
+    std::cout<<DEMO1_STARTVALUE_KEY<<"          | "<<startvalue<<std::endl;
+    ```   
+
+* m4hExtension.hpp: Einlesen der Konfigurationsdatei   
+In der Datei `m4hExtension.hpp` in der Funktion `f2Init()` sollten folgende Zeilen stehen (oder sonst erg&auml;nzen):   
+    ```
+     bRet&g_demo1.readConfig(pfConf);       // {a} read config data
+     if(g_prt) g_demo1.show();              // show config values Demo1
+    ```   
+   
+## 3. Forderung {c}: "Anzeige aller Nachrichten"   
+* C_Demo1.hpp: In der Methode `onMessage()` erg&auml;nzen:   
+   `std::cout<<" | -t "<<topic<<" -m "<<payload<<" | "<<std::endl;`   
+* m4hExtension.hpp - Kontrolle: In der Funktion `f3OnMessage()` muss folgende Zeile stehen:   
+  `g_demo1.onMessage(mosq, topic, payload);`   
+   
+## 4. Forderung {d}: "Reagieren auf eine Nachricht"   
+C_Demo1.hpp: In der Methode `onMessage()` erg&auml;nzen:   
+```   
+ bool bRet=true;
+ if(topic=="m4hDemo1/get" && payload=="keys") {
+  std::string sTopic="m4hDemo1/ret/keys";
+  std::string sPayload=getKeys();
+  int iRet=mosquitto_publish(mosq, NULL,sTopic.c_str(),
+   sPayload.length(), sPayload.c_str(), 0, false);
+  if(iRet!=0) {
+   if(g_prt) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",sTopic.c_str(),iRet);
+   bRet=false;
+ }
+ return bRet;
+}
+```   
+
+## 5. Forderung {e}: Herunterz&auml;hlen vom Startwert   
+In der Datei `C_Demo1.hpp` in der Funktion `periodic` erg&auml;nzen:   
+```   
+ char cSec[16];
+ static int iSec=g_demo1.getStartvalue();
+ sprintf(cSec," %d ",iSec);
+ fputs(cSec, stdout); fflush(stdout);
+ iSec--; if(iSec<0) return false;
+ return true;
+```   
+
+In der Datei `m4hExtension.hpp` in der Funktion `f5Periodic` in der while-Schleife erg&auml;nzen:   
 
 ```   
-Read config file ./m4h.conf: OK
-=====[base]===========================
-config file         | ./m4h.conf
-all keys            | versionin|versionout|mqttstart|mqttend|progend|readconfin|readconfout|addtime
-version (in)        | -t m4hBrokertime/get -m version
-version (out)       | -t m4hBrokertime/ret/version -m 2021-08-15
-mqtt @ start (out,*)| -t info/start -m m4hBrokertime
-mqtt @ end (out,*)  | -t info/end__ -m m4hBrokertime
-progend by mqtt (in)| -t m4hBrokertime/set -m ...end...
-reload conf-file(in)| -t m4hbase/set/conf -m ./m4h.conf
-reload conf-fil(out)| -t m4hbase/ret/conf -m Read config:
-         * add time | true
------requests for brokertime:-----
-getTime| ==> brokertime|%Y%m%d %H%M%S|1
-test/1/get|time ==> test/1/ret/time|%d.%m.%Y %H:%M:%S|1
------[brokertime]------------------------------
-config file         | ./m4h.conf
-all keys            | in|out|retain
-.....Answer messages...........................
-IN: -t getTime -m  ==> OUT: -t brokertime -m %Y%m%d %H%M%S -r
-IN: -t test/1/get -m time ==> OUT: -t test/1/ret/time -m %d.%m.%Y %H:%M:%S -r
-Try to connect to mosquitto...
-Connected: Waiting for topics...
+  if(zsec%10==0) bDoPeriodic=g_demo1.periodic(mosq);
 ```   
 
-2. Am PC ein Kommando-Fenster ("Eingabeaufforderung") &ouml;ffnen:   
+## 6. Forderung {f}: Ende-Meldung ausgeben   
+C_Demo1.hpp: In der Methode `onExit()` erg&auml;nzen:   
+`std::cout<<"Thank you for using m4hDemo1!"<<std::endl;`   
+   
+<a name="a50"></a>[_Zum Seitenanfang_](#up)   
+
+# Wie erstelle und teste ich das m4hDemo1-Programm?
+1. PC: Hinaufkopieren der Projekt-Dateien vom PC auf das RasPi mit WinSCP.   
+
+2. Erstellen der ausf&uuml;hrbaren Datei   
+`g++ m4hMain.cpp m4hBase.cpp -o m4hDemo1 -lmosquitto -lpthread`   
+_Anmerkung 1_: Im Verzeichnis `~/m4hDemo1` wurde die Datei `m4hDemo1` erzeugt.   
+_Anmerkung 2_: Die Befehlszeile, mit der die ausf&uuml;hrbare Datei erzeugt wird, steht immer in der Datei `m4hExtension.hpp` und `C_Xxx.hpp`   
+   
+
+3. Ausf&uuml;hren der Datei:   
+Eingabe von   
+`./m4hDemo1`   
+Der Z&auml;hler z&auml;hlt von 20 herunter bis 0 und das Programm wird beendet:   
+
+    ```   
+     20  
+     ...
+     19  18  17  16  15  14  13  12  11  10  9  8  7  6  5  4  3  2  1  0
+    Exit program... Thank you for using m4hDemo1!
+    MQTT end message sent.
+
+    Program terminated by application (12.02.2022 20:45:46)
+    Beendet
+    ```   
+
+4. Am PC ein Kommando-Fenster ("Eingabeaufforderung") &ouml;ffnen:   
 `cmd.exe`   
 im Startmen&uuml; eingeben.   
 Ins richtige Laufwerk und Mosquitto-Verzeichnis wechseln:   
 `c:`   
 `cd /programme/mosquitto`   
 
-3. Nachricht vom PC-Eingabeaufforderungs-Fenster senden   
-`mosquitto_pub -h 10.1.1.1 -t getTime -m ?`   
-Mit dem Schalter `-h` wird die IP-Adresse des Raspi angegeben.   
+5. Programm nochmals starten   
+  `./m4hDemo1`   
+  und w&auml;hrend des Z&auml;hlvorgangs im Kommando-Fenster folgendes eingeben:   
+  `mosquitto_pub -h 10.1.1.1 -t m4hDemo1/get -m keys`   
+  Im putty-Fenster erscheint folgende Meldung:   
 
-4. In der Konsole oder dem putty-Fenster erscheinen die entsprechenden Nachrichten:   
-`getTime ?`   
-`brokertime 20220211 195554`   
+    ```   
+    19  18  17  16  15  | -t m4hDemo1/get -m keys |   
+    | -t m4hDemo1/ret/keys -m startvalue |`
+    14  13  12  11  10  9  8  7  6  5  4  3  2  1  0
+    ```   
 
-Beendet man das Programm mit &lt;ctrl&gt;c, so erh&auml;lt man folgende Meldungen:   
-```
-^C
-Exit program... MQTT end message sent.
+---   
 
-Program terminated by <ctrl>c (11.02.2022 19:52:23)
-Beendet
-```
+# Wie stelle ich das Programm allen Usern zur Verf&uuml;gung?
 
-<a name="a50"></a>[_Zum Seitenanfang_](#up)   
+Soll die Datei von jedem User und aus jedem Verzeichnis heraus verwendet werden k&ouml;nnen, sind folgende Schritte erforderlich:   
+1. Kopieren der Datei in ein allgemein zug&auml;ngliches Verzeichnis:   
+`sudo cp ~/m4hDemo1/m4hDemo1 /usr/local/bin`   
 
-# Was kann die Vorlage `m4hBase` leisten?
-1. Lesen von Einstellungen aus der Konfigurationsdatei m4h.conf.   
-2. M&ouml;glichkeit, eine andere Konfigurationsdatei anzugeben   
-   (beim Starten des Programms auf der Kommandozeile).   
-3. Neuladen einer Konfigurationsdatei durch MQTT-Nachricht.   
-4. Beantwortung einer Anfrage nach der Programmversion.   
-   Vorgabe f&uuml;r die Anfrage: Topic "m4hBase/get", Payload "version"   
-   Vorgabe f&uuml;r die Antwort: Topic "m4hBase/ret/version", Payload "2021-08-15"   
-5. Senden (oder Nicht-Senden) einer MQTT-Nachricht beim Programmstart und/oder dem Programmende.   
-6. Bereitstellung der globalen Objekte `g_base`, `g_prt`, `g_mosq`   
-7. M&ouml;glichkeit, das Programm durch eine MQTT-Nachricht zu beenden, die in der Konfigurationsdatei definiert ist (Schl&uuml;ssel "progend" in der Konfigurationsdatei).   
-8. Beenden des Programms mit &lt;strg&gt;c.   
+2. Freigabe der Datei f&uuml;r alle User:   
+`sudo chown root /usr/local/bin/m4hDemo1`   
+`sudo chmod 777 /usr/local/bin/m4hDemo1`   
+`sudo chmod u+s /usr/local/bin/m4hDemo1`   
 
-<a name="a90"></a>[_Zum Seitenanfang_](#up)   
+3. Automatisches Starten der Datei beim RasPi-Start   
+* Datei `/usr/local/bin/autostart.sh` &ouml;ffnen:   
+`sudo nano /usr/local/bin/autostart.sh`   
+* Zwischen den printf-Anweisungen einf&uuml;gen:   
+`/usr/local/bin/m4hDemo1 &`   
+Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
 
-# Aus welchen Dateien besteht das Basissystem?   
-Das folgende Bild zeigt eine &Uuml;bersicht &uuml;ber die Dateien des C++ Basissystems zur Erstellung von Hilfsprogrammen (bzw. Modulen).
-
-![m4hBase files](./images/rpi_m4hBase_files1.png "m4hBase files")   
-_Bild 1: Dateien f&uuml;r C++ Hilfsprogramme_   
-
-Im Normalfall muss lediglich die Datei `m4hExtension.hpp` angepasst werden.   
-Die beiden Bibliotheken `mosquitto` und `pthread` m&uuml;ssen beim Erstellen der ausf&uuml;hrbaren Datei eingebunden werden (mit `-l`), zB   
-`g++ m4hMain.cpp m4hBase.cpp -o m4hBrokertime -lmosquitto -lpthread`   
-
-## Bibliothek mosquitto   
-Sie stellt Funktionen zur Brokeranbindung und f&uuml;r MQTT-Nachrichten zur Verf&uuml;gung.   
-## Bibliothek pthread   
-Sie dient zur Erzeugung von Threads, damit Arbeiten parallel durchgef&uuml;hrt werden k&ouml;nnen.   
-_Beispiele_: Die periodische Bearbeitung von Befehlen unabh&auml;ngig vom Senden und Empfangen von MQTT-Nachrichten oder das Senden von SMS usw.   
-
-## Dateien m4hBase (.h und .cpp)
-Diese Dateien stellen Basisfunktionen zur Verf&uuml;gung, die innerhalb des gesamten Projektes genutzt werden k&ouml;nnen:   
-* Klasse `Message`: Klasse zur Aufnahme einer MQTT-Nachricht (Topic, Payload, Retain-Flag)   
-* Klasse `Message2`: Klasse zur Aufnahme zweier MQTT-Nachrichten zB f&uuml;r die Empfangs- und Sende-Nachricht.   
-* Klasse `Config`: Sammlung von n&uuml;tzlichen Funktionen f&uuml;r das Einlesen der Konfigurationsdatei wie zB. das Einlesen einer bestimmten Sektion oder das Entfernen von f&uuml;hrenden und nachfolgende Leerzeichen in einem String etc.   
-* Klasse `M4hBase`: Klasse zum Einlesen und Merken der Basisdaten (Versions-, Start-/Stop-/End-Nachrichten etc.).   
-
-## Hauptprogramm m4hMain.cpp
-Diese Datei enth&auml;lt das eigentliche C++ Konsolenprogramm.   
-Es &uuml;berpr&uuml;ft, ob Parameter &uuml;bergeben wurden (`-h` zur Anzeige der Hilfe, `-q` zur Vermeidung von Bildschirmausgaben oder der Name einer Konfigurationsdatei), startet die MQTT-Kommunikation, stellt in einem eigenen Thread eine Funktion zur zyklischen Durchf&uuml;hrung von Arbeiten zur Verf&uuml;gung (`f5Periodic`) und wartet auf MQTT-Nachrichten. Es pr&uuml;ft eingehende MQTT-Nachrichten auf G&uuml;ltigkeit, bearbeitet bestimmte Nachrichten selbst (Abfrage der Programmversion, Nachladen der Konfigurationsdatei, Programmende) und gibt alle anderen Nachrichten an die Funktion `f3OnMessage` weiter.   
-F&uuml;r andere Programmteile stellt es die globale Variable `g_prt` (print) zur Verf&uuml;gung, die angibt, ob Informationen auf den Bildschirm ausgegeben werden sollen.   
-
-## m4hExtension.hpp
-Diese Datei stellt mit ihren f&uuml;nf Funktionen die Verbindung zu den Funktionsmodulen dar:   
-* Die Funktion `void f1PrintHelptext() { }` enth&auml;lt die Programmbeschreibung, die man erh&auml;lt, wenn man das Programm von der Kommandozeile aus mit dem Schalter `-h` startet.   
-* Die Funktion `bool f2Init(std::string pfConf) { }` erm&ouml;glicht das Initialisieren der einzelnen Module.   
-* Die Funktion `void f3OnMessage(struct mosquitto *mosq, std::string topic, std::string payload) { }` enth&auml;lt die Nachrichten-Empfangsmethoden aller Module (meist `onMessage()`).   
-* Die Funktion `void f4OnExit(struct mosquitto *mosq, int reason) { }` enth&auml;lt abschlie&szlig;ende T&auml;tigkeiten aller Module.   
-* Die Funktion `void f5Periodic(struct mosquitto *mosq) { }` enth&auml;lt Funktionen, die periodisch ausgef&uuml;hrt werden sollen.   
-F&uuml;r das Beispiel `m4hBrokertime` sieht die Datei `m4hExtension.hpp` zB folgenderma&szlig;en aus:   
-
-```   
-//_____m4hExtension.hpp__________________________khartinger_____
-// g++ m4hMain.cpp m4hBase.cpp -o m4hBrokertime -lmosquitto -lpthread
-// *  This program uses m4hBase to do the following:
-//    1. If certain messages are received, a message with the 
-//       current date and time will be sent.
-//    2. all data of the messages must be defined in the 
-//       configuration file (default m4h.conf) in sections 
-//       with the following structure:
-//       [brokertime]
-//       in: topicIn payloadIn
-//       out: topicOut payloadOut
-//       retain: true
-//    3. The date/time format can be specified in the config file
-//       at payloadOut. Examples are
-//       %Y%m%d %H%M%S or %d.%m.%Y %H:%M:%S
-// *  All functions of m4hBase are also available.
-//    (For more information see file m4hMain.cpp.)
-// *  m4hMain.cpp must have a line "#include "m4hExtension.hpp"
-// *  m4hExtension.hpp must have a line "#include "C_Brokertime.hpp"
-// Hardware: (1) Raspberry Pi
-// Updates:
-// 2021-08-19 First release
-// Released into the public domain.
-
-#include "mosquitto.h"                 // mosquitto_* functions
-#include "m4hBase.h"                   // m4h basic functions
-#include "C_Brokertime.hpp"                   // additional code
-
-//-------global values------------------------------------------
-extern bool g_prt;                     //true=printf,false=quiet
-void terminate_program(int reason);
-
-//_______main: print this help text_____________________________
-void f1PrintHelptext()
-{
- fprintf(stdout, "\nUsage  : m4hBrokertime [-h | -q | pf.conf]\n");
- fprintf(stdout, "         -h ........ print this help text\n");
- fprintf(stdout, "         -q ........ no output to stdout, stderr\n");
- fprintf(stdout, "         pf.conf ... path+filename of config.file (default m4h.conf)\n");
- fprintf(stdout, "Purpose: Send MQTT answer on specific incomming messages.\n");
- fprintf(stdout, "Author : Karl Hartinger\n");
- fprintf(stdout, "Version: 2021-08-19");
- fprintf(stdout, "Needs  : sudo apt-get install libmosquitto-dev\n\n");
- fprintf(stdout, "Exit program by pressing <ctrl>c\n");
-}
-
-//_______init extension_________________________________________
-// pfConf...path and filename of config file
-bool f2Init(std::string pfConf)
-{
- bool bRet;
- bRet=g_brokertime.readConfig(pfConf);       // read conf data
- if(g_prt) g_brokertime.show();              // show config values Brokertime
- return bRet;
-}
-
-//_______react to further mqtt messages_________________________
-void f3OnMessage(struct mosquitto *mosq, 
- std::string topic, std::string payload)
-{
- //======Brokertime: respond to messages===============================
- g_brokertime.onMessage(mosq, topic, payload);
-
-}
-
-//_______Possibility for cleanup before end of program__________
-void f4OnExit(struct mosquitto *mosq, int reason)
-{
- //======Brokertime: cleanup before end of program=====================
- g_brokertime.onExit(mosq, reason);
-}
-
-
-//_______for periodic actions (a parallel thread)_______________
-void f5Periodic(struct mosquitto *mosq)
-{
- bool bDoPeriodic=true;                // do "endles"
- int  iEnd=4;                          // reason for end
- while(bDoPeriodic) //-----"endless"----------------------------
- { //...Do something...
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
- };
- terminate_program(iEnd);
-}
-```   
+_Anmerkung_: Das "kaufm&auml;nnisches-und"-Zeichen (Ampersand) & am Ende der Zeile ist Absicht und bewirkt, dass die Startdatei nicht auf das Beenden des Programms warten muss.   
+(siehe auch Abschnitt "Eigene Autostart-Datei `autostart.sh`" in [m4h01_RasPiInstall.md](https://github.com/khartinger/mqtt4home/blob/main/m4h01_RasPiInstall.md) )   
 
 [Zum Seitenanfang](#up)
