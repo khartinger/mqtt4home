@@ -32,7 +32,7 @@ Load file:
 2. [How do I use this program?](#a20)   
 3. [What are the configuration options?](#a30)   
 4. [How do I compile and test the program?](#a40)   
-5 [How is the program coded?](#a90)   
+5. [How is the program coded?](#a90)   
 
 <a name="a10"></a>[_top of page_](#up)   
 
