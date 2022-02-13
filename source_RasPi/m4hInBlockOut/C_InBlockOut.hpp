@@ -25,8 +25,10 @@
 //------action values-------------------------------------------
 #define IBO_ACT_TEXT         "text"
 //-------block time limits--------------------------------------
-#define IBO_BLOCK_SEC_DEFAULT 86400         // 86400s = 1 day
-
+//#define IBO_BLOCK_SEC_DEFAULT 86400         // 86400s = 1 day
+#define IBO_BLOCK_SEC_DEFAULT 21600         // 21600s = 6h
+#define IBO_BLOCK_SEC_MIN     1             // 1s = 1s
+#define IBO_BLOCK_SEC_MAX     2592000       // 2592000 = 30d
 
 //-------global values------------------------------------------
 extern bool g_prt;                     //true=printf,false=quiet
@@ -39,8 +41,9 @@ class Message2b : public Message2
  public:
  //------properties---------------------------------------------
  time_t      secBlock;            // time to block outgoing msgs
+ time_t      secLast;             // last unix secs of sending
  //------constructor & co---------------------------------------
- Message2d() { secBlock=IBO_BLOCK_SEC_DEFAULT; }
+ Message2d() { secBlock=IBO_BLOCK_SEC_DEFAULT; secLast=0; }
 };
 
 
@@ -109,39 +112,92 @@ bool InBlockOut::readConfig() { return readConfig(pfConfig); }
 //_______read config data (log path) from file__________________
 // return: true if log path exist, false on error or not found
 bool InBlockOut::readConfig(std::string pfConf) 
-{ 
+{
+ //------check config file--------------------------------------
  if(pfConf.length()<1) return false;   // wrong file name
  pfConfig=pfConf;                      // remember file name
  Conf conf=Conf(pfConf);               // config object
  if(!conf.isReady()) return false;     // config file ready?
- //------read all lines of section from config file_____________
- std::vector<std::string> v1;          // all lines of section
- conf.getSection(section, v1);         // get lines from conf file
- if(v1.size()<1) return false;         // no valid lines read
- //------for every line in section------------------------------
- for(int i=0; i<v1.size(); i++) {
-  //-----get key and value--------------------------------------
-  std::string sKey="", sVal="";
-  std::string s1=v1.at(i);
-  if(!conf.split2String(s1, sKey, sVal, ':')) continue;
-  conf.delExtBlank(sKey);
-  conf.delExtBlank(sVal);
-  conf.strToLower(sKey);
-  //-----search key---------------------------------------------
-  // if(sKey==IBO_DEMO_KEY) {
-  //  _demo_=sVal;
-  // }
- 
- // ..ToDo..
- 
- } // end for every line in section
+ //------read sections. 1 section = 1 vector with map<key,value>
+ std::vector<std::map<std::string, std::string>> v1;
+ std::map<std::string, std::string> m1;
+ std::map<std::string, std::string>::iterator it1;
+
+ int iSec=conf.getSections(section, v1);
+ vM2b.clear();                         // new messages
+ //------for all map values in vector---------------------------
+ for(int i=0; i<iSec; i++)
+ {
+  //-----convert one map value to Message2 and add it to vBtMsg2
+  m1=v1.at(i);
+  Message2b m2=Message2b();
+  m2.retainOut=false;
+  int ok=0;                            // check for in and out
+  //-----analyse map parts--------------------------------------
+  for(it1=m1.begin(); it1!=m1.end(); it1++)
+  {
+   if(it1->first==IBO_IN_KEY)
+   {//---analyse values for incomming messages------------------
+    std::string sT="", sP="";
+    if(!conf.split2String(it1->second, sT, sP, ' ')) 
+    {//..delay time is in the incoming message (as payload).....
+      sT=it1->second;                 // topic only
+    }
+    m2.topicIn=sT;                    // topic
+    m2.payloadIn=sP;                  // payload, that has to fit
+    ok|=1;                            // in ok: set Bit 0
+   }
+   if(it1->first==IBO_OUT_KEY)
+   {//---analyse values for outgoing messages-------------------
+    std::string sT="", sP="";
+    if(!conf.split2String(it1->second, sT, sP, ' ')) sT=it1->second;
+    m2.topicOut=sT;
+    m2.payloadOut=sP;
+    ok|=2;                             // out ok: set Bit 1
+   }
+   if(it1->first==IBO_RETAIN_KEY)
+   {//---set retain flag for outgoing message?------------------
+    if(it1->second=="true") m2.retainOut=true;
+   }
+   if(it1->first==IBO_BLOCK_KEY)
+   {//---fixed default in config file for delay time------------
+    std::string sHMS="it1->second";
+    std::vector<std::string> vt;
+    vt.clear();
+    conf.splitString(sHMS, vt, ':');
+    if(vt.size()==3)
+    {
+     try {
+      time_t tH, tM, tS, tsec;
+      tH=std::stoul(vt.at(0));
+      tM=std::stoul(vt.at(1));
+      tS=std::stoul(vt.at(2));
+      tsec=tH*3600 + tM*60 + tS;
+      if(tsec<IBO_BLOCK_SEC_MIN) tsec=IBO_BLOCK_SEC_MIN;
+      if(tsec>IBO_BLOCK_SEC_MAX) tsec=IBO_BLOCK_SEC_MAX;
+      m2.secBlock=tsec;
+      ok|=4;                           // block time ok: set Bit 2
+     } catch(...) {}
+    }
+   }
+   if(it1->first==IBO_ACTION_KEY)
+   {//---action to do-------------------------------------------
+    std::string s1=it1->second;
+    conf.delExtBlank(s1);
+    m2.action=s1;
+   }
+  }
+  //-----keys for this section finished-------------------------
+  if(ok==7) vM2d.push_back(m2);
+ }
+ if(vM2b.size()<1) return false;
  return true;
 }
 
 //_______Show all properties____________________________________
 void InBlockOut::show()
 {
- std::cout<<"-----["<<section<<"]------------------------------"<<std::endl;
+ std::cout<<"=====["<<section<<"]=============================="<<std::endl;
  Conf conf=Conf(pfConfig);
  std::cout<<"config file         | "<<pfConfig;
  if(!conf.isReady()) std::cout << " (file not found)";

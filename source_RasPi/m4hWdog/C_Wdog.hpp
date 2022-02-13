@@ -189,7 +189,7 @@ bool Wdog::readConfig(std::string pfConf)
 //_______Show all properties____________________________________
 void Wdog::show()
 {
- std::cout<<"-----["<<section<<"]------------------------------"<<std::endl;
+ std::cout<<"=====["<<section<<"]=============================="<<std::endl;
  Conf conf=Conf(pfConfig);
  std::cout<<"config file         | "<<pfConfig;
  if(!conf.isReady()) std::cout << " (file not found)";
