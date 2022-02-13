@@ -77,6 +77,10 @@ Link: [https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hXxx](ht
 Another way is to download the whole repository from GitHub and transfer the files to the RasPi.   
 
 ## Preparation 2: Create project m4hDemo1
+The following picture shows the initial situation before creating the m4hDemo1 program:
+
+![m4hBase files](./images/rpi_m4hBase_files2.png "m4hBase files")   
+_Fig. 1: Files for the creation of a C++ helper program_.   
 
 1. RasPi: Create a project directory `m4hDemo1`:   
 `mkdir ~/m4hDemo1`   
