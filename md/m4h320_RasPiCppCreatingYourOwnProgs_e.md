@@ -121,7 +121,7 @@ renaming must be done in three steps:
       Comment out 2 occurrences.   
 
 9. testing the changes   
-    * Copy the files of the directory `m4hDemo` from the PC to the RasPi (with WinSCP).   
+    * Copy the files of the directory `m4hDemo1` from the PC to the RasPi (with WinSCP).   
     * Compile the file by typing (in putty or in the console)   
       `g++ m4hMain.cpp m4hBase.cpp -o m4hDemo1 -lmosquitto -lpthread`   
     No errors should be displayed and the file `m4hDemo` should have been created. (Check by typing `ls -lh`)   

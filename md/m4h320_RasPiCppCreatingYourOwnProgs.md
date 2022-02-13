@@ -121,7 +121,7 @@ das Umbenennen muss in drei Schritten erfolgen:
       2 Vorkommen auskommentieren.   
 
 9. Testen der &Auml;nderungen   
-    * Kopieren der Dateien des Verzeichnisses `m4hDemo` vom PC zum RasPi (mit WinSCP).   
+    * Kopieren der Dateien des Verzeichnisses `m4hDemo1` vom PC zum RasPi (mit WinSCP).   
     * Kompilieren der Datei durch Eingabe (in putty oder in der Konsole) von   
       `g++ m4hMain.cpp m4hBase.cpp -o m4hDemo1 -lmosquitto -lpthread`   
     Es sollten keine Fehler angezeigt werden und es sollte die Datei `m4hDemo` erstellt worden sein. (Kontrolle durch Eingabe von `ls -lh`)   
