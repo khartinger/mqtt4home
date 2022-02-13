@@ -7,13 +7,16 @@
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2021-08-19 First release
+// 2022-02-12 Update Demo1::readConfig(...)
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
 #include "m4hBase.h"                   // m4h basic functions
 
-#define DEMO1_SECTION        "demo1"
-#define DEMO1_STARTVALUE_KEY "startvalue"
+#define  DEMO1_SECTION         "demo1"
+//#define  DEMO1_DEMO_KEY        "demokey"
+//#define  DEMO1_DEMO            "demodefault"
+#define DEMO1_STARTVALUE_KEY "startvalue"   
 #define DEMO1_STARTVALUE     30
 
 //-------global values------------------------------------------
@@ -31,7 +34,8 @@ class Demo1
  protected:
  //------application specific properties------------------------
  std::string keys;                     // keys for [demo1]
- int startvalue;                       // start value
+ int startvalue;
+ //std::string _demo_;                   // demo value
  public:
  //------constructor & co---------------------------------------
  Demo1();                                // constructor
@@ -45,6 +49,7 @@ class Demo1
  void show();                          // show config values
  bool onMessage(struct mosquitto *mosq, std::string topic, std::string payload);
  void onExit(struct mosquitto *mosq, int reason);
+ bool periodic(struct mosquitto *mosq);
 
  //-----helper methods------------------------------------------
 };
@@ -61,8 +66,10 @@ void Demo1::setDefaults()
 {
  pfConfig = _CONF_PFILE_;              // path&name config file
  section  = DEMO1_SECTION;               // prog specifig info
+ startvalue=DEMO1_STARTVALUE;
  keys=std::string(DEMO1_STARTVALUE_KEY);
- startvalue=DEMO1_STARTVALUE; 
+ //_demo_   = DEMO1_DEMO;                  // demo default value
+ //keys=std::string(DEMO1_DEMO_KEY);       // all keys in section
 }
 
 // *************************************************************
@@ -89,7 +96,6 @@ bool Demo1::readConfig(std::string pfConf)
  conf.getSection(section, v1);         // get lines from conf file
  if(v1.size()<1) return false;         // no valid lines read
  //------for every line in section------------------------------
- bool bRet=false;
  for(int i=0; i<v1.size(); i++) {
   //-----get key and value--------------------------------------
   std::string sKey="", sVal="";
@@ -99,15 +105,17 @@ bool Demo1::readConfig(std::string pfConf)
   conf.delExtBlank(sVal);
   conf.strToLower(sKey);
   //-----search key---------------------------------------------
+  //if(sKey==DEMO1_DEMO_KEY) {
+  // _demo_=sVal;
+  //}
   if(sKey==DEMO1_STARTVALUE_KEY) {
    try{ // string to int
     int temp=std::stoi(sVal);
     startvalue=temp;
-    bRet=true;
    } catch(std::invalid_argument) {};
   }
- }
- return bRet;
+ } // end for every line in section
+ return true;
 }
 
 //_______Show all properties____________________________________
@@ -120,25 +128,43 @@ void Demo1::show()
  std::cout<<std::endl;
  std::cout<<"all keys            | "<<getKeys()<<std::endl;
  std::cout<<DEMO1_STARTVALUE_KEY<<"          | "<<startvalue<<std::endl;
+ //std::cout<<DEMO1_DEMO_KEY<<"             | "<<_demo_<<std::endl;
+ // ..ToDo..
 }
 
 //_______act on messages..._____________________________________
 bool Demo1::onMessage(struct mosquitto *mosq, std::string topic, std::string payload)
 {
  std::cout<<" | -t "<<topic<<" -m "<<payload<<" | "<<std::endl;
+ bool bRet=true;
  if(topic=="m4hDemo1/get" && payload=="keys") {
-  std::string sTop="m4hDemo1/ret/keys";
-  std::string sPay=getKeys();
-  bool retain=false;
-  mosquitto_publish(mosq, NULL, sTop.c_str(), sPay.length(), sPay.c_str(), 0, retain);
+  std::string sTopic="m4hDemo1/ret/keys";
+  std::string sPayload=getKeys();
+  int iRet=mosquitto_publish(mosq, NULL,sTopic.c_str(),
+   sPayload.length(), sPayload.c_str(), 0, false);
+  if(iRet!=0) {
+   if(g_prt) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",sTopic.c_str(),iRet);
+   bRet=false;
+  }
  }
- return true;
+ return bRet;
 }
 
 //_______Possibility for cleanup before end of program__________
 void Demo1::onExit(struct mosquitto *mosq, int reason)
 {
  std::cout<<"Thank you for using m4hDemo1!"<<std::endl;
+}
+
+//_______periodic action________________________________________
+bool Demo1::periodic(struct mosquitto *mosq)
+{
+ char cSec[16];
+ static int iSec=getStartvalue();
+ sprintf(cSec," %d ",iSec);
+ fputs(cSec, stdout); fflush(stdout);
+ iSec--; if(iSec<0) return false;
+ return true;
 }
 
 // *************************************************************

@@ -9,15 +9,16 @@
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2021-08-19 First release
+// 2022-02-10 add comments, zsec
 // Released into the public domain.
 
-#include "mosquitto.h"                 // mosquitto_* functions
-#include "m4hBase.h"                   // m4h basic functions
+#include "mosquitto.h"            // mosquitto_* functions
+#include "m4hBase.h"              // m4h basic functions
 #include "C_Demo1.hpp"                   // additional code
 
 //-------global values------------------------------------------
 extern bool g_prt;                     //true=printf,false=quiet
-void terminate_program(int reason);
+void terminate_program(int reason);    // myMqttPeriodicExec
 
 //_______main: print this help text_____________________________
 void f1PrintHelptext()
@@ -38,7 +39,8 @@ void f1PrintHelptext()
 bool f2Init(std::string pfConf)
 {
  bool bRet=true;
- bRet=g_demo1.readConfig(pfConf);       // {a} read config data
+ //...Add "g_demo1.readConfig(pfConf);" lines here ;) ...
+ bRet&=g_demo1.readConfig(pfConf);      // read conf data
  if(g_prt) g_demo1.show();              // show config values Demo1
  return bRet;
 }
@@ -49,32 +51,30 @@ void f3OnMessage(struct mosquitto *mosq,
 {
  //======Demo1: respond to messages===============================
  g_demo1.onMessage(mosq, topic, payload);
-
 }
 
 //_______Possibility for cleanup before end of program__________
 void f4OnExit(struct mosquitto *mosq, int reason)
 {
- //======Demo1: cleanup before end of program=====================
  g_demo1.onExit(mosq, reason);
 }
-
 
 //_______for periodic actions (a parallel thread)_______________
 void f5Periodic(struct mosquitto *mosq)
 {
- bool bDoPeriodic=true;                // do "endles"
+ bool bDoPeriodic=true;                // do "endless"
  int  iEnd=4;                          // reason for end
- int  iSec=g_demo1.getStartvalue();
- char cSec[16];
- //------count down iSec and exit program on 0------------------
- while(iSec>0) //-----"endless"---------------------------------
- { 
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  sprintf(cSec," %d ",iSec);
-  fputs(cSec, stdout); fflush(stdout);
-  iSec--;
- };
- printf(" 0 ");
+ int  zsec=600;                        // 60 secs
+ //======"endless loop"=========================================
+ while(bDoPeriodic)
+ {
+  if(zsec%10==0) bDoPeriodic=g_demo1.periodic(mosq);
+  //...Add here the code that should be executed periodically...
+  //...Add "g_demo1.periodic(mosq);" lines here...
+  //
+  //=====wait for 0.1sec========================================
+  if((--zsec)<=0) zsec=600;
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+ }; // end of "endless loop"
  terminate_program(iEnd);
 }
