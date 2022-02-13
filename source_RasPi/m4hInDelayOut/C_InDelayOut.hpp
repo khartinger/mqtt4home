@@ -159,11 +159,11 @@ bool InDelayOut::readConfig(std::string pfConf)
     std::string sT="", sP="";
     if(!conf.split2String(it1->second, sT, sP, ' ')) 
     {//..delay time is in the incoming message (as payload).....
-      sT=it1->second;                 // topic only
+      sT=it1->second;                  // topic only
     }
-    m2.topicIn=sT;                    // topic
-    m2.payloadIn=sP;                  // payload, that has to fit
-    ok|=1;                            // in ok: set Bit 0
+    m2.topicIn=sT;                     // topic
+    m2.payloadIn=sP;                   // payload, that has to fit
+    ok|=1;                             // in ok: set Bit 0
    }
    if(it1->first==IDO_OUT_KEY)
    {//---analyse values for outgoing messages-------------------
@@ -183,7 +183,7 @@ bool InDelayOut::readConfig(std::string pfConf)
      uint32_t temp;
      temp=std::stoul(it1->second);
      m2.delayms=temp;
-    } catch(std::string& error) {}     // no error handling
+    } catch(...) {}                    // no error handling
    }
    if(it1->first==IDO_ACTION_KEY)
    {//---action to do-------------------------------------------
