@@ -6,17 +6,43 @@
 // * m4hExtension.hpp must have a line "#include "C_InBlockOut.hpp"
 // Hardware: (1) Raspberry Pi
 // Updates:
-// 2021-08-19 First release
-// 2022-02-12 Update InBlockOut::readConfig(...)
+// 2022-02-13 First release
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
 #include "m4hBase.h"                   // m4h basic functions
 
-#define  IBO_SECTION         "inblockout"
+//------keys in section of config file--------------------------
+#define IBO_SECTION          "inblockout"
+#define IBO_IN_KEY           "in"
+#define IBO_BLOCK_KEY        "block"
+#define IBO_ACTION_KEY       "action"
+#define IBO_OUT_KEY          "out"
+#define IBO_RETAIN_KEY       "retain"
+//------placeholder---------------------------------------------
+#define IBO_PLAHO_TOPIC_IN   "<in>"
+#define IBO_PLAHO_TEXT_IN    "<text>"
+//------action values-------------------------------------------
+#define IBO_ACT_TEXT         "text"
+//-------block time limits--------------------------------------
+#define IBO_BLOCK_SEC_DEFAULT 86400         // 86400s = 1 day
+
 
 //-------global values------------------------------------------
 extern bool g_prt;                     //true=printf,false=quiet
+
+// *************************************************************
+//    class Message2b: extends class Message by the block time
+// *************************************************************
+class Message2b : public Message2
+{
+ public:
+ //------properties---------------------------------------------
+ time_t      secBlock;            // time to block outgoing msgs
+ //------constructor & co---------------------------------------
+ Message2d() { secBlock=IBO_BLOCK_SEC_DEFAULT; }
+};
+
 
 // *************************************************************
 //    class Log: add incomming messages to files
@@ -30,7 +56,7 @@ class InBlockOut
  protected:
  //------application specific properties------------------------
  std::string keys;                     // keys for [inblockout]
- std::string _demo_;                   // demo value
+ std::vector <Message2b> vM2b;         // messages for inblockout
  public:
  //------constructor & co---------------------------------------
  InBlockOut();                         // constructor
@@ -60,8 +86,13 @@ void InBlockOut::setDefaults()
 {
  pfConfig = _CONF_PFILE_;              // path&name config file
  section  = IBO_SECTION;               // prog specifig info
- //_demo_   = IBO_DEMO;                  // demo default value
- //keys=std::string(IBO_DEMO_KEY);       // all keys in section
+
+
+ keys=std::string(IBO_IN_KEY);         // all keys in section
+ keys+="|"+std::string(IBO_BLOCK_KEY);
+ keys+="|"+std::string(IBO_ACTION_KEY);
+ keys+="|"+std::string(IBO_OUT_KEY);
+ keys+="|"+std::string(IBO_RETAIN_KEY);
 }
 
 // *************************************************************
