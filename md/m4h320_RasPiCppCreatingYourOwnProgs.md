@@ -54,7 +54,7 @@ Das Programm wird am PC in Visual Studio Code erstellt, danach auf das RasPi &uu
 # Wie bereite ich die L&ouml;sung vor?
 Die ersten Schritte auf dem RasPi k&ouml;nnen sowohl direkt - in einem Konsolenfenster - oder &uuml;ber `putty` durchgef&uuml;hrt werden. Es wird angenommen, dass die Vorlage `m4hXxx` auf dem RasPi vorhanden ist. Ist dies nicht der Fall, muss die Vorlage zuerst auf dem RasPi erstellt oder hinaufkopiert werden.   
 
-## Vorbereitung 1: Vorlage m4hXxx auf dem RasPi erstellen
+## Falls die Vorlage m4hXxx NICHT auf dem RasPi vorhanden ist
 1. Mit dem Browser das Verzeichnis `m4hXxx` auf GitHub &ouml;ffnen:   
 Link: [https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hXxx](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hXxx)   
 
@@ -76,7 +76,7 @@ Link: [https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hXxx](ht
 
 Eine andere M&ouml;glichkeit besteht darin, das gesamte Repository von GitHub herunterzuladen und die Dateien auf das RasPi &uuml;bertragen.   
 
-## Vorbereitung 2: Projekt m4hDemo1 erstellen
+## Projekt m4hDemo1 erstellen
 Das folgende Bild zeigt die Ausgangssituation vor dem Erstellen des m4hDemo1-Programms:
 
 ![m4hBase files](./images/rpi_m4hBase_files2.png "m4hBase files")   

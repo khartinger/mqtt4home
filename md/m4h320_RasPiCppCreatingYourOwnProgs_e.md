@@ -54,7 +54,7 @@ The program is created on the PC in Visual Studio code, then transferred to the 
 # How do I prepare the solution?
 The first steps on the RasPi can be done directly - in a console window - or via `putty`. It is assumed that the template `m4hXxx` is present on the RasPi. If this is not the case, the template must first be created on the RasPi or copied up.   
 
-## Preparation 1: Create template m4hXxx on the RasPi
+## If the template m4hXxx is NOT present on the RasPi
 1. using the browser, open the `m4hXxx` directory on GitHub:   
 Link: [https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hXxx](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hXxx)   
 
@@ -76,7 +76,7 @@ Link: [https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hXxx](ht
 
 Another way is to download the whole repository from GitHub and transfer the files to the RasPi.   
 
-## Preparation 2: Create project m4hDemo1
+## Create project m4hDemo1
 The following picture shows the initial situation before creating the m4hDemo1 program:
 
 ![m4hBase files](./images/rpi_m4hBase_files2.png "m4hBase files")   
