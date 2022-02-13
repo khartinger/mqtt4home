@@ -49,7 +49,7 @@ Zur Verwendung des Programm muss lediglich eine ausf&uuml;hrbare Datei erzeugt u
 
 <a name="a30"></a>[_Zum Seitenanfang_](#up)   
 # Wie &uuml;bersetze und teste ich das Programm m4hWdog?
-Die Erstellung der ausf&uuml;hrbaren Datei erfolgt gleich wie es im Kapitel [Raspberry Pi: Hilfreiche Einzel-Programme in C++](m4h08_RasPiCppDemos.md) beispielhaft beschrieben wurde:   
+Die Erstellung der ausf&uuml;hrbaren Datei erfolgt gleich wie es im Kapitel [Raspberry Pi: Hilfreiche Einzel-Programme in C++](m4h310_RasPiCppDemos.md) beispielhaft beschrieben wurde:   
 1. Erstellen eines Projektverzeichnisses `mkdir ~/m4hWdog`   
 2. Wechseln in das Projektverzeichnis `cd ~/m4hWdog`   
 3. Kopieren der Projektdateien von GitHub in das Projektverzeichnis   

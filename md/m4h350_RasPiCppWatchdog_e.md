@@ -49,7 +49,7 @@ To use the program, just create an executable file and start it (see the followi
 
 <a name="a30"></a>[_Top of page_](#up)   
 # How do I compile and test the program m4hWdog?
-The creation of the executable file is the same as described in the chapter [Raspberry Pi: Helpful single programs in C++](m4h08_RasPiCppDemos.md) as an example:   
+The creation of the executable file is the same as described in the chapter [Raspberry Pi: Helpful single programs in C++](m4h310_RasPiCppDemos.md) as an example:   
 1. Create a project directory `mkdir ~/m4hWdog`   
 2. Change to the project directory `cd ~/m4hWdog`   
 3. Copy the project files from GitHub to the project directory   

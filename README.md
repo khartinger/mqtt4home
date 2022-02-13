@@ -70,8 +70,6 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [RasPi: What C++ utilities are there and how do I get them to work? (2022-02-11)](md/m4h310_RasPiCppDemos_e.md)   
 * [RasPi: How do I create my own C++ utility? (2022-02-12)](md/m4h320_RasPiCppCreatingYourOwnProgs_e.md)   
 * [RasPi: Template for MQTT programs in C++ (2021-08-21)](md/m4h07_RasPiCppBase_e.md)
-* [RasPi: Helpful single programs in C++ (2021-08-21)](md/m4h08_RasPiCppDemos_e.md)
-* [RasPi: Create your own programs in C++ (2021-08-21)](md/m4h09_RasPiCppCreatingYourOwnProgs_e.md)
 * [RasPi: Sending and receiving SMS via MQTT in C++ (2021-08-27)](md/m4h340_RasPiCppSms_e.md)
 * [RasPi: Time monitoring of MQTT sensors (Watchdog) in C++ (2022-02-03)](md/m4h350_RasPiCppWatchdog_e.md)
 
