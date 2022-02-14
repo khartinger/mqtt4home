@@ -7,11 +7,11 @@ Last modified: 2022-02-14 <a name="up"></a>
 <hr>
 
 # What is it about?
-This program to ensure that certain messages are not sent too often. If a registered message is received, it is checked whether within the last time this message was already received. Only if this is not the case, a given message is sent further.   
+This program ensures that certain messages are not sent too often. If a registered message is received, it is checked whether within the last time this message was already received. Only if this is not the case, a given message is sent further.   
 Thus the sending of the original message cannot be prevented, but the sending of the forwarded message.   
 
 _Example of a configuration file entry:_   
-Messages with the topic 'm4hInBlockOut/test3' are to be converted to messages with the topic 'm4hInBlockOut/test3/forwarded'. The original payload shall be appended with `(Block: <block> sec)`, where `<block>` stands for the blocking time. This should be one minute.   
+Messages with the topic `m4hInBlockOut/test3` are to be converted to messages with the topic `m4hInBlockOut/test3/forwarded`. The original payload shall be appended with `(Block: <block> sec)`, where `<block>` stands for the blocking time. This should be one minute.   
 Solution - entry in the configuration file:   
 
 ```   
@@ -87,6 +87,7 @@ End of program with &lt;ctrl&gt;c
 <a name="a30"></a>[_top of page_](#up)   
 
 # What configuration options are available?   
+For each message to be controlled, a separate `[inblockout]` section must be created in the configuration file (e.g. `m4h.conf`).   
 
 The following keys are possible:   
 `in|block|action|out|retain`   

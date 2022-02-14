@@ -87,6 +87,7 @@ Programmende mit &lt;strg&gt;c
 <a name="a30"></a>[_Zum Seitenanfang_](#up)   
 
 # Welche Konfigurationsm&ouml;glichkeiten gibt es?   
+Für jede zu kontrollierende Nachricht muss in der Konfigurationsdatei (zB `m4h.conf`) eine eigene `[inblockout]`-Sektion erstellt werden.   
 
 Folgende Schl&uuml;sselw&ouml;rter sind m&ouml;glich:   
 `in|block|action|out|retain`   
