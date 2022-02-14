@@ -80,6 +80,25 @@ Name: [`m4hFindSimModule`](https://github.com/khartinger/mqtt4home/tree/main/sou
 This console program checks given RasPi interfaces if there is a SIM module attached to them.   
 The program has no MQTT connection.   
 
+## Filtering or blocking of MQTT messages
+Name: [`m4hInBlockOut`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hInBlockOut)   
+This program to ensure that certain messages are not sent too often. If a registered message is received, it is checked whether within the last time this message was already received. Only if this is not the case, a given message is sent on.   
+This cannot prevent the original message from being sent, but it can prevent the forwarded message from being sent.   
+
+_Example of a configuration file entry:_   
+Messages with the topic `m4hInBlockOut/test3` shall be converted to messages with the topic `m4hInBlockOut/test3/forwarded`. The original payload shall be appended with `(Block: <block> sec)`, where `<block>` stands for the blocking time. This should be one minute.   
+Solution - entry in the configuration file:   
+
+```   
+[inblockout]
+in : m4hInBlockOut/test3
+block : 00:01:00
+out : <in>/forwarded <text> (Block: <block> sec)
+retain: false
+```   
+
+_Note_: The placeholders `<in>` for the incoming topic, `<text>` for the incoming payload and `<block>` for the blocking time (in seconds) are fixed by the program.   
+
 ## Receive and send messages
 Name: [`m4hInDelayOut`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hInDelayOut)   
 After receiving a message, the program waits for a time specified (in the configuration file) and then sends a response message. If you do not specify a waiting time, the new message is sent immediately.   

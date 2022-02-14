@@ -80,6 +80,25 @@ Name: [`m4hFindSimModule`](https://github.com/khartinger/mqtt4home/tree/main/sou
 Dieses Konsolenprogramm pr&uuml;ft vorgegebene RasPi-Schnittstellen, ob an ihnen ein SIM-Modul h&auml;ngt.   
 Das Programm hat keine MQTT-Anbindung.   
 
+## Filtern bzw. Blockieren von MQTT-Nachrichten
+Name: [`m4hInBlockOut`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hInBlockOut)   
+Dieses Programm dazu, dass bestimmte Nachrichten nicht zu oft versendet werden. Wird eine registrierte Nachricht empfangen, wird geprüft, ob innerhalb der letzten Zeit diese Nachricht bereits empfangen wurde. Nur wenn dies nicht der Fall ist, wird eine vorgegebene Nachricht weitergesendet.   
+Damit kann zwar nicht das Versenden der Originalnachricht verhindert werden, wohl aber das Senden der weitergeleiteten Nachricht.   
+
+_Beispiel für einen Konfigurationsdatei-Eintrag:_   
+Nachrichten mit dem Topic `m4hInBlockOut/test3` sollen in Nachrichten mit dem Topic `m4hInBlockOut/test3/forwarded` umgewandelt werden. Der Original-Payload soll der Zusatz `(Block: <block> sec)` angehängt werden, wobei `<block>` für die Blockierzeit steht. Diese soll eine Minute betragen.   
+Lösung - Eintrag in der Konfigurationsdatei:   
+
+```   
+[inblockout]
+in    : m4hInBlockOut/test3
+block : 00:01:00
+out   : <in>/forwarded <text> (Block: <block> sec)
+retain: false
+```   
+
+_Anmerkung_: Die Platzhalter `<in>` für das eingehende Topic, `<text>` für die eingehende Payload und `<block>` für die Blockierzeit (in Sekunden) sind fix vom Programm vorgegeben.   
+
 ## Empfangen und Senden von Nachrichten
 Name: [`m4hInDelayOut`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hInDelayOut)   
 Nach dem Empfang einer Nachricht wartet das Programm eine (in der Konfigurationsdatei) angegebene Zeit und sendet danach eine Antwort-Nachricht. Gibt man keine Wartezeit an, wird sofort die neue Nachricht gesendet.   
