@@ -72,6 +72,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [RasPi: Template for MQTT programs in C++ (2021-08-21)](md/m4h07_RasPiCppBase_e.md)
 * [RasPi: Sending and receiving SMS via MQTT in C++ (2021-08-27)](md/m4h340_RasPiCppSms_e.md)
 * [RasPi: Time monitoring of MQTT sensors (Watchdog) in C++ (2022-02-03)](md/m4h350_RasPiCppWatchdog_e.md)
+* [RasPi: Filtering or blocking of MQTT messages (2022-02-14)](md/m4h360_RasPiCppInBlockOut_e.md)   
 
 ## Area "Zigbee"
 * [How to connect Zigbee devices with MQTT? (2022-01-15)](md/m4h301_zbInstall_e.md)
