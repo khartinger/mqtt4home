@@ -179,7 +179,7 @@ bool InBlockOut::readConfig(std::string pfConf)
       if(tsec<IBO_BLOCK_SEC_MIN) tsec=IBO_BLOCK_SEC_MIN;
       if(tsec>IBO_BLOCK_SEC_MAX) tsec=IBO_BLOCK_SEC_MAX;
       m2.secBlock=tsec;
-      ok|=4;                           // block time ok: set Bit 2
+      //ok|=4;                           // block time ok: set Bit 2
      } catch(...) {}
     }
    }
@@ -191,7 +191,7 @@ bool InBlockOut::readConfig(std::string pfConf)
    }
   }
   //-----keys for this section finished-------------------------
-  if(ok==7) vM2b.push_back(m2);
+  if(ok==3) vM2b.push_back(m2);
  }
  if(vM2b.size()<1) return false;
  return true;

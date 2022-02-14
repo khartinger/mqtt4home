@@ -7,29 +7,22 @@ Letzte &Auml;nderung: 14.02.2022 <a name="up"></a>
 <hr>
 
 # Worum geht es?
+Dieses Programm dazu, dass bestimmte Nachrichten nicht zu oft versendet werden. Wird eine registrierte Nachricht empfangen, wird gepr&uuml;ft, ob innerhalb der letzten Zeit diese Nachricht bereits empfangen wurde. Nur wenn dies nicht der Fall ist, wird eine vorgegebene Nachricht weitergesendet.   
+Damit kann zwar nicht das Versenden der Originalnachricht verhindert werden, wohl aber das Senden der weitergeleiteten Nachricht.   
 
+_Beispiel f&uuml;r einen Konfigurationsdatei-Eintrag:_   
+Nachrichten mit dem Topic `m4hInBlockOut/test3` sollen in Nachrichten mit dem Topic `m4hInBlockOut/test3/forwarded` umgewandelt werden. Der Original-Payload soll der Zusatz `(Block: <block> sec)` angeh&auml;ngt werden, wobei `<block>` f&uuml;r die Blockierzeit steht. Diese soll eine Minute betragen.   
+L&ouml;sung - Eintrag in der Konfigurationsdatei:   
 
-Dieses Programm dazu, dass bestimmte Nachrichten nicht zu oft versendet werden. Wird eine registrierte Nachricht empfangen, wird geprüft, ob innerhalb der letzten Zeit diese Nachricht bereits empfangen wurde. Nur wenn dies nicht der Fall ist, wird eine vorgegebene Nachricht weitergesendet. 
+```   
+[inblockout]
+in    : m4hInBlockOut/test3
+block : 00:01:00
+out   : <in>/forwarded <text> (Block: <block> sec)
+retain: false
+```   
 
-Das Programm `m4hLog2` schreibt MQTT-Nachrichten in Dateien. Dabei werden in getrennten Verzeichnissen zwei Dateiarten angelegt:   
-1. Log-Datei: Diese Dateien werden f&uuml;r jedes Topic getrennt angelegt und monatlich neu erstellt.   
-  Sie dokumentieren, wann, wie oft und mit welcher Payload Nachrichten verschickt wurden.   
-2. Last-Datei: Hier wird pro Topic eine Datei angelegt, die nur das zuletzt empfangene Topic enth&auml;lt. &Uuml;ber das &Auml;nderungsdatum der Datei kann ermittelt werden, wann das Topic zuletzt gesendet wurde. Weiters ist ein einfacher Zugriff f&uuml;r andere Programme (zB PHP-Webseiten) m&ouml;glich.   
-
-Der Dateiname besteht bei Log-Dateien aus dem Topic + Punkt + Jahr + Monat + ".log", wobei Leerzeichen in Topics durch Unterstriche und Schr&auml;gstriche durch das At-Zeichen ersetzt werden. Last-Dateinamen bestehen nur aus dem Topic.   
-
-_Beispiel_:   
-Die im Februar 2022 versendete Nachricht `-t z2m/ret/health -m Zigbee2mqtt-health is perfect.` wird folgenderma&szlig;en abgespeichert:   
-
-Log-Datei:   
-* Dateiname:   `z2m@ret@health.2202.log`   
-* Dateiinhalt: `11.02.22 09:16:16 | z2m@ret@health |  Zigbee2mqtt-health is perfect.`   
-* Standardverzeichnis: `./log/`   
-
-Last-Datei:   
-* Dateiname:   `z2m@ret@health`   
-* Dateiinhalt: ` Zigbee2mqtt-health is perfect. `   
-* Standardverzeichnis: `./data/`   
+_Anmerkung_: Die Platzhalter `<in>` f&uuml;r das eingehende Topic, `<text>` f&uuml;r die eingehende Payload und `<block>` f&uuml;r die Blockierzeit (in Sekunden) sind fix vom Programm vorgegeben.   
 
 ## Diese Anleitung beantwortet folgende Fragen:   
 1. [Welche Hilfsmittel ben&ouml;tige ich f&uuml;r dieses Projekt?](#a10)   
@@ -55,9 +48,8 @@ Theoretisch k&ouml;nnten alle Arbeitsschritte auf dem RasPi durchgef&uuml;hrt we
 <a name="a20"></a>[_Zum Seitenanfang_](#up)   
 
 # Wie verwende ich dieses Programm?
-## Standardfunktion
-Liegt das Programm bereits kompiliert im Verzeichnis `~/m4hLog2` vor, muss es lediglich durch folgende Eingabe in putty oder einer RasPi-Konsole gestartet werden:   
-`~/m4hLog2/m4hLog2`   
+Liegt das Programm bereits kompiliert im Verzeichnis `~/m4hInBlockOut` vor, muss es lediglich durch folgende Eingabe in putty oder einer RasPi-Konsole gestartet werden:   
+`~/m4hInBlockOut/m4hInBlockOut`   
 _Anmerkung_: Zum Erzeugen der ausf&uuml;hrbaren Datei siehe Kapitel [Wie &uuml;bersetze und teste ich das Programm?](#a40).
 
 Nach dem Einlesen der Konfigurationsdatei (Vorgabe `./m4h.conf`) wird die Verbindung zum Broker hergestellt:   
@@ -67,106 +59,150 @@ Read config file ./m4h.conf: OK
 =====[base]===========================
 config file         | ./m4h.conf
 all keys            | versionin|versionout|mqttstart|mqttend|progend|readconfin|readconfout|addtime
-version (in)        | -t m4hLog2/get -m version
-version (out)       | -t m4hLog2/ret/version -m 2022-02-13
-mqtt @ start (out,*)| -t info/start -m m4hLog2
-mqtt @ end (out,*)  | -t info/end__ -m m4hLog2
-progend by mqtt (in)| -t m4hLog2/set -m ...end...
-reload conf-file(in)| -t m4hbase/set/conf -m ./m4h.conf
-reload conf-fil(out)| -t m4hbase/ret/conf -m Read config:
+version (in)        | -t m4hInBlockOut/get -m version
+version (out)       | -t m4hInBlockOut/ret/version -m 2022-02-14
+mqtt @ start (out,*)| -t info/start -m m4hInBlockOut
+mqtt @ end (out,*)  | -t info/end__ -m m4hInBlockOut
+progend by mqtt (in)| -t m4hInBlockOut/set/end -m ..true..
+reload conf-file(in)| -t m4hInBlockOut/set/conf -m ./m4h.conf
+reload conf-fil(out)| -t m4hInBlockOut/ret/conf -m Reload Config file:
          * add time | true
-=====[log2]==============================
+=====[inblockout]==============================
 config file         | ./m4h.conf
-all keys            | pathlog|pathlast|skiplog|timein|timeout
-pathlog             | ./log/
-pathlast            | ./last/
-timein              | m4hLog2/get/time
-timeout             | m4hLog2/ret/time
-file time format    | %Y%m%d %H%M%S
-.....log: topics to skip..............
-z2m/bridge/info,z2m/bridge/devices,z2m/bridge/logging
+all keys            | in|block|action|out|retain
+.....inblockout messages..............
+3 messages:
+ IN: -t m4hInBlockOut/test1 -m payload_must_fit | block 10s | OUT: -t <in>/ret -m New message to fixed payload :) | (no action)
+ IN: -t m4hInBlockOut/test2 -m  | block 10s | OUT: -t <in> -m <text> (sent by inblockout!) | (no action)
+ IN: -t m4hInBlockOut/test3 -m  | block 60s | OUT: -t m4hInBlockOut/ret/test3 -m <text> (Block: <block> sec) | (no action)
 Try to connect to mosquitto...
 Connected: Waiting for topics...
 ```   
 
-Das Programm schreibt ab jetzt empfangene Nachrichten in die oben beschriebenen Dateien.   
-Programmende mit &lt;strg&gt;c   
+Nachrichten mit dem Topic `m4hInBlockOut/test1` und der Payload `payload_must_fit` erzeugen jetzt nur mehr alle 10 Sekunden eine Nachricht mit dem Topic `m4hInBlockOut/test1/ret` und der Payload `New message to fixed payload :)`.   
+Entsprechendes gilt f&uuml;r die Nachrichten `m4hInBlockOut/test2` und `m4hInBlockOut/test3`, wobei hier der Inhalt der eingehenden Payload beliebig ist.   
 
-## Abfrage des letzten Datum+Uhrzeit-Wertes einer Nachricht
-1. Am PC ein Terminalfenster (`cmd.exe`) oder putty-Fenster oder am RasPi eine Konsole &ouml;ffnen in das Mosquitto-Verzeichnis wechseln und das Programm zum Anzeigen von MQTT-Nachrichten starten:   
-  `mosquitto_sub -h 10.1.1.1 -t "#" -v`   
-2. Am PC ein zweites Terminalfenster (`cmd.exe`) oder putty-Fenster oder am RasPi eine zweite Konsole &ouml;ffnen in das Mosquitto-Verzeichnis wechseln.   
-Zum Testen kann man zuerst eine MQTT-Nachricht versenden, zB Abfrage der Version des Programms:   
-`mosquitto_pub -h 10.1.1.1 -t m4hLog2/get -m version`   
-3. Im zweiten Konsolen-Fenster die Nachricht f&uuml;r die Abfrage des Datums und der Uhrzeit abschicken:   
-`mosquitto_pub -h 10.1.1.1 -t m4hLog2/get/time -m m4hLog2/get`   
-5. Im ersten Konsolen-Fenster sieht man folgende Nachrichten:   
-  `m4hLog2/get/time m4hLog2/get`   
-  `m4hLog2/ret/time 20220213 120500 | m4hLog2/get`   
-  Das bedeutet: Die Payload enth&auml;lt das Datum (`20220213`), die Uhrzeit (`120500`) und das Topic (`m4hLog2/get`), f&uuml;r das die Werte abgefragt wurden.   
+Programmende mit &lt;strg&gt;c   
 
 <a name="a30"></a>[_Zum Seitenanfang_](#up)   
 
 # Welche Konfigurationsm&ouml;glichkeiten gibt es?   
 
 Folgende Schl&uuml;sselw&ouml;rter sind m&ouml;glich:   
-`pathlog|pathlast|skiplog|timein|timeout`   
+`in|block|action|out|retain`   
+F&uuml;r jeden `[inblockout]`-Eintrag m&uuml;ssen mindestens die Schl&uuml;ssel `in:` und `out:` angegeben werden!   
 
-## pathlog
-Angabe des Verzeichnisses (Pfades) f&uuml;r die Log-Dateien (History-Dateien).   
-
-_Beispiel:_   
-`pathlog:  ./log/`   
-
-## pathlast
-Angabe des Verzeichnisses (Pfades) f&uuml;r die Last-Dateien.   
+## in
+Topic der zu &uuml;berwachenden Nachricht.   
+Falls eine Payload angegeben wird, so muss auch diese &uuml;bereinstimmen.   
 
 _Beispiel:_   
-`pathlast: ./last/`   
-
-## skiplog
-Angabe aller Topics, f&uuml;r die keine Log-Dateien (History) erstellt werden sollen. Die Topics werden durch Beistriche getrennt.   
-Die Last-Dateien werden f&uuml;r diese Topics trotzdem erstellt, da man sonst das letzte Datum nicht abfragen k&ouml;nnte.   
-
-_Beispiel:_   
-`skiplog: z2m/bridge/info,z2m/bridge/devices,z2m/bridge/logging`   
-
-## timein
-Topic f&uuml;r die Abfrage des letzten Datum+Zeit-Wertes einer Nachricht. Das Topic der abzufragenden Zeit muss in der Abfrage-Nachricht als Payload angegeben werden.   
-
-_Beispiel:_   
-`timeIn:   m4hLog2/get/time`   
-Abfrage-Nachricht insgesamt zB   
-`mosquitto_pub -h 10.1.1.1 -t m4hLog2/get/time -m info/start`   
-
-## timeout
-Topic zum Senden der Antwort zur letzten Datum+Zeit-Abfrage einer Nachricht. Als zus&auml;tzlicher Wert kann ein Zeitformat angegeben werden.   
-Wird kein Zeitformat angegeben, wird das Vorgabe-Format aus `C_Log2.hpp` verwendet:   
-`#define  LOG2_TIMEFORMAT     "%Y%m%d %H%M%S"`   
-
-_Beispiele:_   
-`timeOut:  m4hLog2/ret/time`   
+`in    : m4hInBlockOut/test1 payload_must_fit`   
 oder   
-`timeOut:  m4hLog2/ret/time %d.%m.%Y %H:%M:%S`   
+`in    : m4hInBlockOut/test2`   
+
+## block
+Angabe der Blockierzeit im Format `HH:MM:SS` (mit `HH`=Stunden, `MM`=Minuten und `SS`=Sekunden).   
+Folgende Grenzwerte sind im Programm vorgegeben:   
+Minimale Blockierzeit: 1 Sekunde   
+Maximale Blockierzeit: 30 Tage   
+Blockierzeit, wenn in der Konfigurationsdatei kein Wert vorgegeben wird: 6 Stunden   
+
+```   
+#define IBO_BLOCK_SEC_DEFAULT 21600         // 21600s = 6h
+#define IBO_BLOCK_SEC_MIN     1             // 1s = 1s
+#define IBO_BLOCK_SEC_MAX     2592000       // 2592000 = 30d
+```   
+
+_Beispiel f&uuml;r eine Zeit von 10 Sekunden:_  
+`block : 00:00:10`   
+
+## action
+Derzeit sind keine Aktionen definiert.   
+
+## out
+Topic und Payload f&uuml;r das Versenden einer Nachricht, wenn die eingehende Nachricht nicht blockiert wurde.   
+
+Beim Zusammenstellen des Topics kann der Platzhalter `<in>` verwendet werden, der f&uuml;r das eingehende Topic steht.   
+
+Beim Zusammenstellen der Payload k&ouml;nnen die Platzhalter `<in>`, `<text>` und `<block>` verwendet werden, wobei `<in>` f&uuml;r das eingehende Topic, `<text>` f&uuml;r die eingehende Payload und `<block>` f&uuml;r die Blockierzeit stehen.   
+
+Topic und Payload m&uuml;ssen durch ein Leerzeichen getrennt werden.   
+_Beispiel:_   
+`out   : <in>/ret New_payload`   
+
+## retain
+Angabe, ob f&uuml;r die ausgehende Nachricht das Retain-Flag gesetzt werden soll. Vorgabe ist nein.   
+M&ouml;gliche Werte f&uuml;r den Retainwert sind `true` und `false`.   
+
+_Beispiel:_   
+`retain: true`   
 
 <a name="a40"></a>[_Zum Seitenanfang_](#up)   
 
 # Wie &uuml;bersetze und teste ich das Programm?
-Befinden sich bereits alle Dateien des Projekts im Verzeichnis `~/m4hLog2`, muss lediglich die ausf&uuml;hrbare Datei durch folgende Eingabe in putty oder einer RasPi-Konsole erzeugt werden:   
-`g++ m4hMain.cpp m4hBase.cpp -o m4hLog2 -lmosquitto -lpthread -std=c++17`   
+Befinden sich bereits alle Dateien des Projekts im Verzeichnis `~/m4hInBlockOut`, muss lediglich die ausf&uuml;hrbare Datei durch folgende Eingabe in putty oder einer RasPi-Konsole erzeugt werden:   
+`g++ m4hMain.cpp m4hBase.cpp -o m4hInBlockOut -lmosquitto -lpthread -std=c++17`   
 
 Ist dies nicht der Fall, so erfolgt das &Uuml;bersetzen des C++ Hilfsprogramms wie in der Anleitung ["RasPi: Welche C++ Hilfsprogramme gibt es und wie bekomme ich sie zum Laufen?"](https://github.com/khartinger/mqtt4home/blob/main/md/m4h310_RasPiCppDemos.md/#a30) beschrieben.   
 Linkadresse: [https://github.com/khartinger/mqtt4home/blob/main/md/m4h310_RasPiCppDemos.md/#a30](https://github.com/khartinger/mqtt4home/blob/main/md/m4h310_RasPiCppDemos.md/#a30)   
 
-Zum Testen des Programms kann Punkt ["Wie verwende ich dieses Programm?"](#a20) dieser Anleitung verwendet werden.   
+## Wie teste ich dieses Programm?
+### Erster Test
+1. Am PC ein Terminalfenster (`cmd.exe`) oder putty-Fenster oder am RasPi eine Konsole &ouml;ffnen und das Programm zum Anzeigen von MQTT-Nachrichten starten:   
+  `mosquitto_sub -h 10.1.1.1 -t "#" -v`   
+
+2. Starten des Programms zB &uuml;ber ein Putty-Fenster   
+  `~/m4hInBlockOut/m4hInBlockOut`   
+
+3. Am PC ein zweites Terminalfenster (`cmd.exe`) oder putty-Fenster oder am RasPi eine zweite Konsole &ouml;ffnen und eine MQTT-Nachricht absenden:   
+  `mosquitto_pub -h 10.1.1.1 -t m4hInBlockOut/test1 -m payload_must_fit`   
+  Im ersten Terminalfenster erscheinen zwei Nachrichten:   
+  `m4hInBlockOut/test1 payload_must_fit`   
+  `m4hInBlockOut/test1/ret New message to fixed payload :)`   
+  Im Putty-Fenster steht folgende Nachricht:   
+  `IN: -t m4hInBlockOut/test1 -m payload_must_fit ==> NOT blocked => OUT: -t m4hInBlockOut/test1/ret -m New message to fixed payload :)`   
+
+4. Schickt man innerhalb von 10 Sekunden die Nachricht erneut (oder mehrmals), so   
+  erscheint im ersten Terminalfenster nur die erste Nachricht:   
+  `m4hInBlockOut/test1 payload_must_fit`   
+  Im Putty-Fenster steht folgende Nachricht:   
+  `Incoming message "m4hInBlockOut/test1" blocked!`   
+
+### Weitere Tests
+Das Senden der Nachricht   
+`mosquitto_pub -h 10.1.1.1 -t m4hInBlockOut/test2 -m ***Test2***`   
+erzeugt im putty-Fenster zwei Ausgaben:   
+* `IN: -t m4hInBlockOut/test2 -m ***Test2*** ==> NOT blocked => OUT: -t m4hInBlockOut/test2 -m ***Test2*** (sent by inblockout!)`   
+* `Incoming message "m4hInBlockOut/test2" blocked!`   
+
+und im ersten Terminalfenster:   
+`m4hInBlockOut/test2 ***Test2***`   
+`m4hInBlockOut/test2 ***Test2*** (sent by inblockout!)`   
+Der Grund f&uuml;r die Blockier-Meldung ist, dass das Ausgangs-Topic identisch mit dem Eingangs-Topic ist und die selbst geschickte Nachricht auch wieder empfangen wird ;)   
+
+---   
+
+Das dreimalige Senden der Nachricht   
+`mosquitto_pub -h 10.1.1.1 -t m4hInBlockOut/test3 -m ***Test3***`   
+erzeugt im putty-Fenster die Ausgabe:   
+`IN: -t m4hInBlockOut/test3 -m **test3*** ==> NOT blocked => OUT: -t m4hInBlockOut/ret/test3 -m **test3*** (Block: 60 sec)`   
+`Incoming message "m4hInBlockOut/test3" blocked!`   
+`Incoming message "m4hInBlockOut/test3" blocked!`   
+
+und im ersten Terminalfenster:   
+`m4hInBlockOut/test3 **test3***`   
+`m4hInBlockOut/ret/test3 **test3*** (Block: 60 sec)`   
+`m4hInBlockOut/test3 **test3***`   
+`m4hInBlockOut/test3 **test3***`   
 
 <a name="a90"></a>[_Zum Seitenanfang_](#up)   
 
 # Wie ist das Programm codiert?   
-Eine &Uuml;bersicht &uuml;ber die Dateien bietet das folgende Bild, wobei `Xxx` durch `Log2` zu ersetzen ist ;)   
+Eine &Uuml;bersicht &uuml;ber die Dateien bietet das folgende Bild, wobei `Xxx` durch `InBlockOut` zu ersetzen ist ;)   
 ![m4hBase files](./images/rpi_m4hBase_files2.png "m4hBase files")   
 _Bild 1: Dateien zur Erstellung eines C++ Hilfsprogramme_   
 
-F&uuml;r die Codierung der Datei `C_Log2.hpp` siehe [https://github.com/khartinger/mqtt4home/blob/main/source_RasPi/m4hLog2/C_Log2.hpp](https://github.com/khartinger/mqtt4home/blob/main/source_RasPi/m4hLog2/C_Log2.hpp)   
+F&uuml;r die Codierung der Datei `C_InBlockOut.hpp` siehe [https://github.com/khartinger/mqtt4home/blob/main/source_RasPi/m4hInBlockOut/C_InBlockOut.hpp](https://github.com/khartinger/mqtt4home/blob/main/source_RasPi/m4hInBlockOut/C_InBlockOut.hpp)   
 
 [_Zum Seitenanfang_](#up)   
