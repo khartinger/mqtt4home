@@ -1,12 +1,16 @@
-Letzte &Auml;nderung: 13.02.2022 <a name="up"></a>   
+Letzte &Auml;nderung: 14.02.2022 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
-<h1><i>RasPi m4hLog2</i>: Schreiben von MQTT-Nachrichten in Dateien (Log-Files)</h1>
+<h1><i>RasPi m4hInBlockOut</i>: Filtern bzw. Blockieren von MQTT-Nachrichten</h1>
 <a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="./README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table>
 <hr>
 
 # Worum geht es?
+
+
+Dieses Programm dazu, dass bestimmte Nachrichten nicht zu oft versendet werden. Wird eine registrierte Nachricht empfangen, wird geprüft, ob innerhalb der letzten Zeit diese Nachricht bereits empfangen wurde. Nur wenn dies nicht der Fall ist, wird eine vorgegebene Nachricht weitergesendet. 
+
 Das Programm `m4hLog2` schreibt MQTT-Nachrichten in Dateien. Dabei werden in getrennten Verzeichnissen zwei Dateiarten angelegt:   
 1. Log-Datei: Diese Dateien werden f&uuml;r jedes Topic getrennt angelegt und monatlich neu erstellt.   
   Sie dokumentieren, wann, wie oft und mit welcher Payload Nachrichten verschickt wurden.   
