@@ -6,7 +6,7 @@
 // * m4hExtension.hpp must have a line "#include "C_InBlockOut.hpp"
 // Hardware: (1) Raspberry Pi
 // Updates:
-// 2022-02-13 First release
+// 2022-02-14 First release
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
@@ -19,16 +19,18 @@
 #define IBO_ACTION_KEY       "action"
 #define IBO_OUT_KEY          "out"
 #define IBO_RETAIN_KEY       "retain"
-//------placeholder---------------------------------------------
-#define IBO_PLAHO_TOPIC_IN   "<in>"
-#define IBO_PLAHO_TEXT_IN    "<text>"
+//------predefined placeholderser-------------------------------
+#define IBO_PLAHO_TOPIC_IN   "<in>"         // current topic in
+#define IBO_PLAHO_TEXT_IN    "<text>"       // current payload in
+#define IBO_PLAHO_BLOCK      "<block>"      // secs to block
 //------action values-------------------------------------------
-#define IBO_ACT_TEXT         "text"
+//#define IBO_ACT_TEXT         "text"
 //-------block time limits--------------------------------------
-//#define IBO_BLOCK_SEC_DEFAULT 86400         // 86400s = 1 day
 #define IBO_BLOCK_SEC_DEFAULT 21600         // 21600s = 6h
 #define IBO_BLOCK_SEC_MIN     1             // 1s = 1s
 #define IBO_BLOCK_SEC_MAX     2592000       // 2592000 = 30d
+//------action values-------------------------------------------
+//#define IBO_ACT_TEXT         "text"
 
 //-------global values------------------------------------------
 extern bool g_prt;                     //true=printf,false=quiet
@@ -42,10 +44,11 @@ class Message2b : public Message2
  //------properties---------------------------------------------
  time_t      secBlock;            // time to block outgoing msgs
  time_t      secLast;             // last unix secs of sending
+ std::string action;              // how to interpret payload
  //------constructor & co---------------------------------------
- Message2d() { secBlock=IBO_BLOCK_SEC_DEFAULT; secLast=0; }
+ Message2b() { secBlock=IBO_BLOCK_SEC_DEFAULT; secLast=0; 
+  action=""; }
 };
-
 
 // *************************************************************
 //    class Log: add incomming messages to files
@@ -75,6 +78,7 @@ class InBlockOut
  bool periodic(struct mosquitto *mosq);
 
  //-----helper methods------------------------------------------
+ bool sendMessage(struct mosquitto *mosq, Message2b m2, std::string payload);
 };
 
 // *************************************************************
@@ -89,7 +93,6 @@ void InBlockOut::setDefaults()
 {
  pfConfig = _CONF_PFILE_;              // path&name config file
  section  = IBO_SECTION;               // prog specifig info
-
 
  keys=std::string(IBO_IN_KEY);         // all keys in section
  keys+="|"+std::string(IBO_BLOCK_KEY);
@@ -161,7 +164,7 @@ bool InBlockOut::readConfig(std::string pfConf)
    }
    if(it1->first==IBO_BLOCK_KEY)
    {//---fixed default in config file for delay time------------
-    std::string sHMS="it1->second";
+    std::string sHMS=it1->second;
     std::vector<std::string> vt;
     vt.clear();
     conf.splitString(sHMS, vt, ':');
@@ -188,7 +191,7 @@ bool InBlockOut::readConfig(std::string pfConf)
    }
   }
   //-----keys for this section finished-------------------------
-  if(ok==7) vM2d.push_back(m2);
+  if(ok==7) vM2b.push_back(m2);
  }
  if(vM2b.size()<1) return false;
  return true;
@@ -203,22 +206,58 @@ void InBlockOut::show()
  if(!conf.isReady()) std::cout << " (file not found)";
  std::cout<<std::endl;
  std::cout<<"all keys            | "<<getKeys()<<std::endl;
- //std::cout<<IBO_DEMO_KEY<<"             | "<<_demo_<<std::endl;
- // ..ToDo..
+
+ std::cout<<".....inblockout messages.............."<<std::endl;
+ int iLen=vM2b.size();
+ if(iLen<1) std::cout<<"(no messages)"<<std::endl;
+ else std::cout<<iLen<<" messages:"<<std::endl;
+ for(int i=0; i<iLen; i++)
+ {
+  Message2b m2b=vM2b.at(i);
+  std::cout<<" IN: -t "<<m2b.topicIn<<" -m "<<m2b.payloadIn<<" | block ";
+  std::cout<<m2b.secBlock<<"s";
+  std::cout<<" | OUT: -t "<<m2b.topicOut<<" -m "<<m2b.payloadOut;
+  if(m2b.retainOut) std::cout<<" -r";
+  if(m2b.action.length()<1) std::cout<<" | (no action)";
+  else std::cout<<" | action="<<m2b.action;
+  std::cout<<std::endl;
+ }
 }
 
 //_______act on messages..._____________________________________
 bool InBlockOut::onMessage(struct mosquitto *mosq, std::string topic, std::string payload)
 {
- bool bRet=true;
- // ..ToDo..
+ bool bRet=false;
+ //------check if the topic is included in the config data------
+ int iLen=vM2b.size();
+ for(int i=0; i<iLen; i++) 
+ {//-----compare topic with each topic in config file-----------
+  Message2b m2b=Message2b();           // message object for one
+  m2b=vM2b.at(i);                      // entry in config file
+  if(m2b.topicIn==topic)               // topics MUST match
+  {//====topic matches==========================================
+   //----check if a payload is given in config file-------------
+   if(m2b.payloadIn.length()>0)
+   {//...yes: payload in config file given: MUST fit............
+    if(m2b.payloadIn!=payload) continue;
+   } //..end payload in config file given: MUST fit
+   //----check if the message should be blocked-----------------
+   time_t now;                         // secs since 1.1.1970
+   time(&now);                         // get secs since 1.1.1970
+   if((now-m2b.secLast)<m2b.secBlock) {// check blocking
+    if(g_prt) std::cout<<"Incoming message \""<<topic<<"\" blocked!"<<std::endl;
+    return false; // dont send message
+   } //..check blocking
+   vM2b.at(i).secLast=now;             // send message
+   bRet|=sendMessage(mosq, m2b, payload);
+  } // end topic matches
+ } // end for
  return bRet;
 }
 
 //_______Possibility for cleanup before end of program__________
 void InBlockOut::onExit(struct mosquitto *mosq, int reason)
 {
- 
 }
 
 //_______periodic action________________________________________
@@ -230,6 +269,51 @@ bool InBlockOut::periodic(struct mosquitto *mosq)
 // *************************************************************
 //       InBlockOut: helper methods
 // *************************************************************
+
+//______forward message_________________________________________
+// m2b: message data from config file (topic in, out, ...)
+// cpay: current payload
+bool InBlockOut::sendMessage(struct mosquitto *mosq, 
+  Message2b m2b, std::string cpay)
+{
+ Conf conf=Conf();                     // useful methods
+ std::string s1;                       // help value
+ std::string sText=cpay;               // helper for cpay
+ //===========check if action is given==========================
+ if(m2b.action.length()>0)
+ {//----------action given: says how to interpret the payload---
+  //----------(try to) split action parameter-------------------
+  std::string actionKey="", actionVal="";
+  if(!conf.split2String(m2b.action, actionKey, actionVal, ' '))
+   actionKey=m2b.action;
+  //----------payloadIn is text---------------------------------
+  //if(actionKey==IBO_ACT_TEXT) sText=cpay;
+
+  //...ToDo: other actions...
+
+ } // end action given
+
+ //===========replace placeholder in topic out==================
+ conf.replaceAll(m2b.topicOut,IBO_PLAHO_TOPIC_IN,m2b.topicIn);
+ if(m2b.topicOut.length()<1) return false;
+ //===========replace placeholder in payload out================
+ conf.replaceAll(m2b.payloadOut,IBO_PLAHO_TOPIC_IN,m2b.topicIn);
+ conf.replaceAll(m2b.payloadOut,IBO_PLAHO_TEXT_IN,sText);
+ s1=std::to_string(m2b.secBlock);
+ conf.replaceAll(m2b.payloadOut,IBO_PLAHO_BLOCK,s1);
+ //===========publish answer message============================
+ int ret=mosquitto_publish(mosq, NULL,m2b.topicOut.c_str(),
+     m2b.payloadOut.length(), m2b.payloadOut.c_str(), 0, m2b.retainOut);
+ if(ret!=0) {
+  if(g_prt) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",m2b.topicOut.c_str(),ret);
+  return false;
+ } else {
+  if(g_prt) std::cout<<" IN: -t "<<m2b.topicIn<<" -m "<<cpay<<" ==> NOT blocked => OUT: -t "<<m2b.topicOut<<" -m "<<m2b.payloadOut;
+  if(g_prt && m2b.retainOut) std::cout<<" -r";
+  if(g_prt) std::cout<<std::endl;
+ }
+ return true;
+}
 
 //_______declare a global little helpers object ;)______________
 InBlockOut g_inblockout=InBlockOut();

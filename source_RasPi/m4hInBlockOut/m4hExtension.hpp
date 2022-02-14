@@ -27,9 +27,13 @@ void f1PrintHelptext()
  fprintf(stdout, "         -h ........ print this help text\n");
  fprintf(stdout, "         -q ........ no output to stdout, stderr\n");
  fprintf(stdout, "         pf.conf ... path+filename of config.file (default m4h.conf)\n");
- fprintf(stdout, "Purpose: ..ToDo..\n");
+ fprintf(stdout, "Purpose: \n");
+ fprintf(stdout, "This program to ensure that certain messages are not sent too often.\n");
+ fprintf(stdout, "If a registered message is received, it is checked \n");
+ fprintf(stdout, "whether within the last time this message was already received.\n");
+ fprintf(stdout, "Only if this is not the case, a given message is sent on.\n");
  fprintf(stdout, "Author : Karl Hartinger\n");
- fprintf(stdout, "Version: 2021-08-10");
+ fprintf(stdout, "Version: 2022-02-14");
  fprintf(stdout, "Needs  : sudo apt-get install libmosquitto-dev\n\n");
  fprintf(stdout, "Exit program by pressing <ctrl>c\n");
 }
