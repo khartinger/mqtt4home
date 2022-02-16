@@ -10,6 +10,7 @@ Letzte &Auml;nderung: 3.2.2022 <a name="up"></a>
 Viele Sensoren senden Messwerte und gehen dann in einen Sleep-Modus, um Energie zu sparen. Bei batteriebetriebenen Sensoren geht irgendwann die Energie zu Ende und sie k&ouml;nnen nichts mehr senden oder sie verlieren die Netzwerkverbindung.   
 Das Projekt `m4hWdog` ("Watchdog") hilft, diesen Fehlerfall zu erkennen. Es schickt eine MQTT-Nachricht, wenn ein Sensor innerhalb einer vorgegebenen Zeit keine Nachricht mehr gesendet hat.   
 In einer Konfigurationsdatei wird festgelegt, innerhalb welcher Zeitspanne eine Nachricht von einem bestimmten Topic eintreffen muss.   
+Weiters besteht die M&ouml;glichkeit, per MQTT-Nachricht abzufragen, welche Topics &uuml;berwacht werden und welche Topics wie lange &uuml;berf&auml;llig sind.   
 
 ## Diese Anleitung beantwortet folgende Fragen:   
 1. [Welche Dinge ben&ouml;tige ich f&uuml;r dieses Projekt?](#a10)   
@@ -28,14 +29,15 @@ In einer Konfigurationsdatei wird festgelegt, innerhalb welcher Zeitspanne eine 
 
 <a name="a20"></a>[_Zum Seitenanfang_](#up)   
 # Wie verwende ich dieses Programm?   
+## Standardverwendung
 Alle zu &uuml;berwachenden Sensoren m&uuml;ssen in die Konfigurationsdatei (zB. `m4h.conf`) im Abschnitt `[wdog]` eingetragen werden.   
 F&uuml;r jeden Sensor muss eine Zeile mit dem Key "`in:`" und dem Wert Topic + Leerzeichen + maximale Antwortzeit im Format `[HHHH]H:MM:SS` angelegt werden, wobei die Stundenzahl ein beliebiger Wert zwischen 0 und 63660 (= 10 * 365,25 * 24 = 10 Jahre) sein kann.   
 
 * _Beispiel_:   
-  Der Sensor `m4h/button_2` muss sp&auml;testens alle 10 Sekunden bet&auml;tigt werden.   
+  Der Sensor `test/t20` muss sp&auml;testens alle 20 Sekunden senden.   
   In der Konfigurationsdatei ist folgender Eintrag erforderlich:   
   `[wdog]`   
-  `in:         m4h/button_2 00:00:10`   
+  `in:         test/t20 00:00:20`   
 
 Mit dem Key `out` kann festgelegt werden, unter welchem Topic eine Warnung verschickt werden soll.   
 * _Beispiel_:   
@@ -46,6 +48,53 @@ Mit dem Key `out` kann festgelegt werden, unter welchem Topic eine Warnung versc
   Der Schl&uuml;ssel `out` gilt f&uuml;r alle `in`-Zeilen.   
 
 Zur Verwendung des Programm muss lediglich eine ausf&uuml;hrbare Datei erzeugt und diese gestartet werden (siehe folgendes Kapitel).   
+
+## MQTT-Abfrage aller überwachten Topics
+Sendet man die Nachricht   
+`mosquitto_pub -h 10.1.1.1 -t m4hWdog/get -m all`   
+so erhält man zB folgende Antwort-Nachricht:   
+`m4hWdog/ret/all All monitored topics: test/t20,test/t30,test/t3723,test/t259200`   
+
+## MQTT-Abfrage aller überfälligen Topics
+Sendet man die Nachricht   
+`mosquitto_pub -h 10.1.1.1 -t m4hWdog/get -m overdue`   
+und wartet man nach einem Programmstart zumindest eine halbe Minute, so erhält man zB folgende Antwort-Nachricht:   
+`info/start m4hWdog (16.02.2022 18:55:21)`   
+`m4hWdog/attention Sensor test/t20 missing!`   
+`m4hWdog/attention Sensor test/t30 missing!`   
+`m4hWdog/get overdue`   
+`m4hWdog/ret/overdue Overdue: test/t20 00:00:40,test/t30 00:00:40`   
+
+## Beispiel f&uuml;r eine Konfigurationsdatei
+```   
+#________m4h.conf________________________________khartinger_____
+# Configuration file for mqtt4home
+
+[base]
+versionIn:  m4hWdog/get version
+versionOut: m4hWdog/ret/version 2022-02-16
+mqttStart:  info/start m4hWdog
+mqttEnd:    info/end__ m4hWdog
+ProgEnd:    m4hWdog/set ...end...
+addTime:    true
+
+[wdog]
+demokey:    demovalue
+out:        m4hWdog/attention Sensor <in> missing!
+in:         test/t20 00:00:20
+in:         test/t30 00:00:30
+in:         test/t3723 1:2:03
+in:         test/t259200 72:0:0
+in:         test/notime
+in:         test/wrongtime 00:12
+in:         test/wrongtime2 00:A:00
+in:         test/wrongtime3 00::00
+#in:         test/t5 00:00:05
+allin:      m4hWdog/get all
+allout:     m4hWdog/ret/all All monitored topics: <list>
+overin:     m4hWdog/get overdue
+overout:    m4hWdog/ret/overdue Overdue: 
+```   
 
 <a name="a30"></a>[_Zum Seitenanfang_](#up)   
 # Wie &uuml;bersetze und teste ich das Programm m4hWdog?
@@ -67,17 +116,13 @@ Beenden des Programms zB mit der Tastenkombination &lt;Strg&gt;c
 2. Starten des Programms zB &uuml;ber ein Putty-Fenster   
   `~/m4hWdog/m4hWdog`   
 
-3. Tut man nichts, erscheint im Putty-Fenster alle 10 Sekunden folgende Ausgabe:   
-`ERROR! Watchdog timeout m4h/button_2`   
-Weiters wird im ersten Terminalfenster alle 10 Sekunden folgende MQTT-Nachricht angezeigt:   
-`m4hWdog/attention Sensor m4h/button_2 missing!`   
+3. Tut man nichts, erscheint im Putty-Fenster alle 20 Sekunden folgende Ausgabe:   
+`ATTENTION! Watchdog timeout test/t20`   
+Weiters wird im ersten Terminalfenster alle 20 Sekunden folgende MQTT-Nachricht angezeigt:   
+`m4hWdog/attention Sensor test/t20 missing!`   
 
-4. Dr&uuml;ckt man innerhalb der 10 Sekunden den Taster `m4h/button_2` so erscheint im Putty-Fenster die Meldung:   
-`Update secLast: m4h/button_2`   
-und im ersten Terminalfenster die Nachricht des Tasters.   
-
-5. Hat man keinen Taster zur Verf&uuml;gung, so kann man am PC ein zweites Terminalfenster (`cmd.exe`) oder putty-Fenster oder am RasPi eine zweite Konsole &ouml;ffnen und eine Taster-Nachricht simulieren:   
-`mosquitto_pub -h 10.1.1.1 -t m4h/button_2 -m anything`   
+4. Um eine Nachricht zu senen, öffnet man am PC ein zweites Terminalfenster (`cmd.exe`) oder putty-Fenster oder am RasPi eine zweite Konsole und gibt folgendes ein:   
+`mosquitto_pub -h 10.1.1.1 -t test/t20 -m anything`   
 Mit jeder Nachricht wird der Watchdog-Timer neu gestartet.   
 
 <a name="a90"></a>[_Zum Seitenanfang_](#up)   
@@ -130,7 +175,8 @@ Das Projekt kann bereits auf das RasPi &uuml;bertragen und dort gestestet werden
 Da f&uuml;r jeden zu &uuml;berwachenden Sensor   
 * ein Topic,   
 * die Watchdog-Zeitdauer und   
-* der Zeitpunkt des letzten Aufrufs    
+* der Zeitpunkt der letzten Sensor-Nachricht ODER der letzten Watchdog-Nachricht    
+* der Zeitpunkt der letzten Sensor-Nachricht   
 
 gespeichert werden muss, wird daf&uuml;r eine eigene Klasse `WdogIn1` definiert. Der Einfachheit halber werden alle Eigenschaften als `public` definiert.   
 
@@ -146,14 +192,13 @@ _WICHTIG:_ Keys d&uuml;rfen nur Kleinbuchstaben enthalten!
 
 In der Klasse `Wdog` werden die dazugeh&ouml;rigen Eigenschaften definiert:   
 ```   
- std::string wdog_out_key;             // topic out key
- std::string wdog_out_topic;           // topic out
- std::string wdog_out_payload;         // value out
- std::string wdog_in_key;              // topic in key
+ std::string wdogInKey;                // topic in key
+ std::string wdogOutKey;               // topic out key
+ Message  mWdogOut;                    // Out Messages
  std::vector<WdogIn1>vIn;              // topic in values
 ```   
 
-Zus&auml;tzlich werden noch Konstante f&uuml;r den Topic-In-Platzhalter ("`<in>`") sowie den Minimal- und Maximalwert f&uuml;r die Watchdog-Zeit definiert.   
+Zus&auml;tzlich werden noch Konstante f&uuml;r den Topic-In-Platzhalter ("`<in>`"), die Liste aller Topics oder aller überfälligen Topics ("`<list>`") sowie den Minimal- und Maximalwert f&uuml;r die Watchdog-Zeit definiert.   
 
 Im Allgemeinen werden die "Demo"-Eintr&auml;ge in der Datei `C_Wdog.hpp` nicht ben&ouml;tigt und k&ouml;nnen auskommentiert oder gel&ouml;scht werden.   
 

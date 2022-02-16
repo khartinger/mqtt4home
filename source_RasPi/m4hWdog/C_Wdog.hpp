@@ -7,23 +7,35 @@
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2022-02-02 First release
+// 2022-02-16 Add keys allin, allout, overin, overout
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
 #include "m4hBase.h"                   // m4h basic functions
 
-#define  WDOG_SECTION        "wdog"
-// #define  WDOG_DEMO_KEY       "demokey"
-// #define  WDOG_DEMO           "demodefault"
-#define  WDOG_OUT_KEY        "out"
-#define  WDOG_OUT_TOPIC      "m4hWdog/attention"
-#define  WDOG_OUT_PAYLOAD    "Sensor <in> missing!"
-#define  WDOG_IN_KEY         "in"
+#define WDOG_SECTION              "wdog"
+#define WDOG_OUT_KEY              "out"
+#define WDOG_OUT_TOPIC            "m4hWdog/attention"
+#define WDOG_OUT_PAYLOAD          "Sensor <in> missing!"
+#define WDOG_IN_KEY               "in"
 //-------placeholder--------------------------------------------
-#define  WDOG_PLAHO_TOPIC_IN "<in>"
+#define  WDOG_PLAHO_TOPIC_IN      "<in>"
+#define  WDOG_PLAHO_LIST          "<list>"
 //-------watchdog time limits-----------------------------------
-#define  WDOG_SEC_MIN        1
-#define  WDOG_SEC_MAX        315576000
+#define  WDOG_SEC_MIN             1
+#define  WDOG_SEC_MAX             315576000
+//-------query the monitored topics-----------------------------
+#define WDOG_DELIMITER1           ","
+#define WDOG_GET_ALL_IN_KEY       "allin"
+#define WDOG_GET_ALL_IN_T         "m4hWdog/get"
+#define WDOG_GET_ALL_IN_P         "all"
+#define WDOG_GET_ALL_OUT_KEY      "allout"
+#define WDOG_GET_ALL_OUT_T        "m4hWdog/ret/all"
+#define WDOG_GET_OVER_IN_KEY      "overin"
+#define WDOG_GET_OVER_IN_T        "m4hWdog/get"
+#define WDOG_GET_OVER_IN_P        "overdue"
+#define WDOG_GET_OVER_OUT_KEY     "overout"
+#define WDOG_GET_OVER_OUT_T       "m4hWdog/ret/overdue"
 
 //-------global values------------------------------------------
 extern bool g_prt;                     //true=printf,false=quiet
@@ -35,9 +47,10 @@ class WdogIn1
 {
  public:
  //------properties---------------------------------------------
- std::string topicIn;
- time_t secDiff;
- time_t secLast;
+ std::string topicIn;                  // topic to monitor
+ time_t secDiff;                       // max. watchdog delay
+ time_t secLast;                       // sensor OR overdue msg
+ time_t secLastSensor;                 // last time sensor secs
  public:
  //------constructor & co---------------------------------------
  WdogIn1() { init("", WDOG_SEC_MAX); }
@@ -53,6 +66,7 @@ void WdogIn1::init(std::string in_, unsigned long secDiff_)
  if(secDiff_ > WDOG_SEC_MAX) secDiff_ = WDOG_SEC_MAX;
  secDiff = secDiff_;
  time(&secLast);
+ time(&secLastSensor);
 }
 
 // *************************************************************
@@ -67,12 +81,16 @@ class Wdog
  protected:
  //------application specific properties------------------------
  std::string keys;                     // keys for [wdog]
- // std::string _demo_;                // demo value
- std::string wdog_out_key;             // topic out key
- std::string wdog_out_topic;           // topic out
- std::string wdog_out_payload;         // value out
- std::string wdog_in_key;              // topic in key
+ std::string wdogInKey;                // topic in key
+ std::string wdogOutKey;               // topic out key
+ Message  mWdogOut;                    // Out Messages
  std::vector<WdogIn1>vIn;              // topic in values
+ std::string wdogGetAllInKey;          // key to get all topics
+ std::string wdogGetAllOutKey;         // key to return all topics
+ Message2 mGetAll;                     // 
+ std::string wdogGetOverInKey;         // 
+ std::string wdogGetOverOutKey;        // 
+ Message2 mGetOver;                    // 
 
  public:
  //------constructor & co---------------------------------------
@@ -103,15 +121,30 @@ void Wdog::setDefaults()
 {
  pfConfig = _CONF_PFILE_;              // path&name config file
  section  = WDOG_SECTION;              // prog specifig info
- // _demo_   = WDOG_DEMO;              // demo default value
- wdog_out_key     = WDOG_OUT_KEY;      // topic out key
- wdog_out_topic   = WDOG_OUT_TOPIC;    // topic out value
- wdog_out_payload = WDOG_OUT_PAYLOAD;  // payload out
- wdog_in_key      = WDOG_IN_KEY;       // topic out
  vIn.clear();                          // topic in values
- // keys=std::string(WDOG_DEMO_KEY);   // all keys in section
- keys=std::string(WDOG_OUT_KEY);
- keys+="|"+std::string(WDOG_IN_KEY);
+ wdogInKey         = WDOG_IN_KEY;      // topic in key
+ wdogOutKey        = WDOG_OUT_KEY;     // topic out key
+ mWdogOut.topic    = WDOG_OUT_TOPIC;   // topic out value
+ mWdogOut.payload  = WDOG_OUT_PAYLOAD; // payload out
+
+ wdogGetAllInKey   = WDOG_GET_ALL_IN_KEY;   //key to get all topics
+ mGetAll.topicIn   = WDOG_GET_ALL_IN_T;     //topic to get all topics
+ mGetAll.payloadIn = WDOG_GET_ALL_IN_P;     //payload to get all topics
+ wdogGetAllOutKey  = WDOG_GET_ALL_OUT_KEY;  //key to get all topics
+ mGetAll.topicOut  = WDOG_GET_ALL_OUT_T;    //topic return all topics
+
+ wdogGetOverInKey  = WDOG_GET_OVER_IN_KEY;  //key get overdue topics
+ mGetOver.topicIn  = WDOG_GET_OVER_IN_T;    //topic get overdue topics
+ mGetOver.payloadIn= WDOG_GET_OVER_IN_P;    //payload get overdue topics
+ wdogGetOverOutKey = WDOG_GET_OVER_OUT_KEY; //
+ mGetOver.topicOut = WDOG_GET_OVER_OUT_T;   //topic return overdue topics
+
+ keys=std::string(WDOG_IN_KEY);
+ keys+="|"+std::string(WDOG_OUT_KEY);
+ keys+="|"+std::string(WDOG_GET_ALL_IN_KEY);
+ keys+="|"+std::string(WDOG_GET_ALL_OUT_KEY);
+ keys+="|"+std::string(WDOG_GET_OVER_IN_KEY);
+ keys+="|"+std::string(WDOG_GET_OVER_OUT_KEY);
 }
 
 // *************************************************************
@@ -147,19 +180,20 @@ bool Wdog::readConfig(std::string pfConf)
   conf.delExtBlank(sVal);
   conf.strToLower(sKey);
   //-----search key---------------------------------------------
-  if(sKey==wdog_out_key)
+  if(sKey==wdogOutKey)
   {//....message out (topic payload)............................
    std::string sT="", sP="";
    if(conf.split2String(sVal, sT, sP, ' ')) {
-    wdog_out_topic=sT;
-    wdog_out_payload=sP;
+    mWdogOut.topic=sT;
+    mWdogOut.payload=sP;
    } else {
-    wdog_out_topic=sT;
-    wdog_out_payload=WDOG_OUT_PAYLOAD;
+    mWdogOut.topic=sT;
+    mWdogOut.payload=WDOG_OUT_PAYLOAD;
    }
   } // end message out
-  if(sKey==wdog_in_key)
-  {//....message in (topic watchdog-time).......................
+  //-----message in (topic watchdog-time)-----------------------
+  if(sKey==wdogInKey)
+  {//....decompose the value into topic and payload.............
    std::string sT="", sHMS="";
    if(conf.split2String(sVal, sT, sHMS, ' '))
    {
@@ -182,6 +216,54 @@ bool Wdog::readConfig(std::string pfConf)
     }
    }
   } // end message in
+  //-----message in to get all registered topics----------------
+  if(sKey==wdogGetAllInKey)            // allin
+  {//....decompose the value into topic and payload.............
+   std::string sT="", sP="";
+   if(conf.split2String(sVal, sT, sP, ' ')) {
+    mGetAll.topicIn=sT;
+    mGetAll.payloadIn=sP;
+   } else {
+    mGetAll.topicIn=sVal;
+    mGetAll.payloadIn="";
+   }
+  }
+  //-----message out for all registered topics------------------
+  if(sKey==wdogGetAllOutKey)           // allout
+  {//....decompose the value into topic and payload.............
+   std::string sT="", sP="";
+   if(conf.split2String(sVal, sT, sP, ' ')) {
+    mGetAll.topicOut=sT;
+    mGetAll.payloadOut=sP;
+   } else {
+    mGetAll.topicOut=sVal;
+    mGetAll.payloadOut="";
+   }
+  }
+  //-----message in to get overdue topics-----------------------
+  if(sKey==wdogGetOverInKey)           // overin
+  {//....decompose the value into topic and payload.............
+   std::string sT="", sP="";
+   if(conf.split2String(sVal, sT, sP, ' ')) {
+    mGetOver.topicIn=sT;
+    mGetOver.payloadIn=sP;
+   } else {
+    mGetOver.topicIn=sVal;
+    mGetOver.payloadIn="";
+   }
+  }
+  //-----message out for all overdue topics---------------------
+  if(sKey==wdogGetOverOutKey)          // overout
+  {//....decompose the value into topic and payload.............
+   std::string sT="", sP="";
+   if(conf.split2String(sVal, sT, sP, ' ')) {
+    mGetOver.topicOut=sT;
+    mGetOver.payloadOut=sP;
+   } else {
+    mGetOver.topicOut=sVal;
+    mGetOver.payloadOut="";
+   }
+  }
  } // end for every line in section
  return true;
 }
@@ -195,8 +277,12 @@ void Wdog::show()
  if(!conf.isReady()) std::cout << " (file not found)";
  std::cout<<std::endl;
  std::cout<<"all keys            | "<<getKeys()<<std::endl;
- //std::cout<<WDOG_DEMO_KEY<<"             | "<<_demo_<<std::endl;
- std::cout<<wdog_out_key<<"                 | -t "<<wdog_out_topic<<" -m "<<wdog_out_payload<<std::endl;
+ std::cout<<wdogOutKey<<"                 | -t "<<mWdogOut.topic<<" -m "<<mWdogOut.payload<<std::endl;
+ std::cout<<wdogGetAllInKey<<"               | -t "<<mGetAll.topicIn<<" -m "<<mGetAll.payloadIn<<std::endl;
+ std::cout<<wdogGetAllOutKey<<"              | -t "<<mGetAll.topicOut<<" -m "<<mGetAll.payloadOut<<std::endl;
+ std::cout<<wdogGetOverInKey<<"              | -t "<<mGetOver.topicIn<<" -m "<<mGetOver.payloadIn<<std::endl;
+ std::cout<<wdogGetOverOutKey<<"             | -t "<<mGetOver.topicOut<<" -m "<<mGetOver.payloadOut<<std::endl;
+ 
  std::cout<<"-----in----------------------------------"<<std::endl;
  for(int i=0; i<vIn.size(); i++) {
   std::cout<<vIn.at(i).topicIn<<": "<<vIn.at(i).secDiff<<"sec | ";
@@ -207,19 +293,90 @@ void Wdog::show()
 //_______act on messages..._____________________________________
 bool Wdog::onMessage(struct mosquitto *mosq, std::string topic, std::string payload)
 {
- int num=vIn.size();
+ bool bRet=true;
+ std::string sPay;                     // help value
+ Conf conf=Conf();                     // useful methods
+ int num=vIn.size();                   // number of topics to watch
  time_t now;
  time(&now);                           // get sec since 1.1.1970
- //------for all sensors----------------------------------------
+ 
+ //======is the message a query of all registered topics?=======
+ if(topic==mGetAll.topicIn && payload==mGetAll.payloadIn)
+ {//.....get all topics.........................................
+  std::string s1="";
+  for(int i=0; i<num; i++){
+   if(i>0) s1+=WDOG_DELIMITER1;
+   s1+=vIn.at(i).topicIn;
+  }
+  //.....prepare output.........................................
+  if(s1.length()<1) s1="(NO topics to be monitored)";
+  sPay=mGetAll.payloadOut;
+  if(sPay.find(WDOG_PLAHO_LIST)!=std::string::npos)
+   conf.replaceAll(sPay, WDOG_PLAHO_LIST, s1);
+  else {
+   if(sPay.length()<1) sPay=s1; else sPay+=" "+s1;
+  }
+  //....topics available: send message.........................
+  int iRet=mosquitto_publish(mosq,NULL,mGetAll.topicOut.c_str(),
+  sPay.length(), sPay.c_str(), 0, mGetAll.retainOut);
+  if(iRet!=0) {
+   if(g_prt) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",mGetAll.topicOut.c_str(),iRet);
+   bRet=false;
+  }
+ }
+ 
+ //======is the message a query of all overdue topics?==========
+ if(topic==mGetOver.topicIn && payload==mGetOver.payloadIn)
+ {//.....get overdue topics.....................................
+  std::string s1="";
+  for(int i=0; i<num; i++){
+   WdogIn1 vIn1_=vIn.at(i);             // current sensor
+   time_t tdiff=now-vIn1_.secLastSensor;
+   if(tdiff>vIn1_.secDiff)
+   {//---watchdog timeout---------------------------------------
+    if(s1.length()>0) s1+=WDOG_DELIMITER1;
+    s1+=vIn.at(i).topicIn;
+    s1+=" ";
+    s1+=conf.sec2HMS(tdiff);
+   }
+  }
+  //.....prepare output.........................................
+  if(s1.length()<1) s1="(No overdue topics)";
+  sPay=mGetOver.payloadOut;
+  if(sPay.find(WDOG_PLAHO_LIST)!=std::string::npos)
+   conf.replaceAll(sPay, WDOG_PLAHO_LIST, s1);
+  else {
+   if(sPay.length()<1) sPay=s1; else sPay+=" "+s1;
+  }
+
+  /*
+  if(s1.length()>0)
+  {//....topics available: replace <list>.......................
+   sPay=mGetOver.payloadOut;
+   if(sPay.length()<1) sPay=s1;
+   else conf.replaceAll(sPay, WDOG_PLAHO_LIST, s1);
+  }
+  else sPay="(No overdue topics)";
+  */
+  //....topics available: send message.........................
+  int iRet=mosquitto_publish(mosq,NULL,mGetOver.topicOut.c_str(),
+  sPay.length(), sPay.c_str(), 0, mGetOver.retainOut);
+  if(iRet!=0) {
+   if(g_prt) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",mGetOver.topicOut.c_str(),iRet);
+   bRet=false;
+  }
+ }
+ //======for all sensors========================================
  for(int i=0; i<num; i++){
   if(topic==vIn.at(i).topicIn) 
   {//----topic for watchdog found-------------------------------
-   vIn.at(i).secLast=now;              // update sensor
+   vIn.at(i).secLast=now;              // sensor OR overdue msg
+   vIn.at(i).secLastSensor=now;        // last time sensor secs
    if(g_prt) std::cout<<"Update secLast: "<<vIn.at(i).topicIn<<std::endl;
    return true;
   }
  }
- return false;
+ return bRet;
 }
 
 //_______Possibility for cleanup before end of program__________
@@ -238,22 +395,22 @@ void Wdog::periodic(struct mosquitto *mosq)
  //------for all sensors----------------------------------------
  for(int i=0; i<num; i++){
   WdogIn1 vIn1_=vIn.at(i);             // current sensor
-  if((now-vIn1_.secLast)>=vIn1_.secDiff)
+  if((now-vIn1_.secLast)>vIn1_.secDiff)
   {//----watchdog timeout---------------------------------------
-   vIn.at(i).secLast=now;              // update time last message
+   vIn.at(i).secLast=now;              // time sensor OR overdue msg
    //....replace <in> by topicIn................................
-   std::string sPay=wdog_out_payload;
+   std::string sPay=mWdogOut.payload;
    std::string sOld=WDOG_PLAHO_TOPIC_IN;
    std::string sNew=vIn1_.topicIn;
    conf.replaceAll(sPay, sOld, sNew);  // replace <in>
    //....publish attention message..............................
-   int iRet=mosquitto_publish(mosq, NULL, wdog_out_topic.c_str(),
+   int iRet=mosquitto_publish(mosq, NULL, mWdogOut.topic.c_str(),
     sPay.length(), sPay.c_str(), 0, true);
    if(iRet!=0) {
     if(g_prt) fprintf(stderr, "Error %d: NOT published -t %s -m %s.\n",
-      iRet, wdog_out_topic.c_str(), sPay.c_str());
+      iRet, mWdogOut.topic.c_str(), sPay.c_str());
    } else {
-    if(g_prt) std::cout<<"ERROR! Watchdog timeout "<<vIn1_.topicIn<<std::endl;
+    if(g_prt) std::cout<<"ATTENTION! Watchdog timeout "<<vIn1_.topicIn<<std::endl;
    }
   }
  }

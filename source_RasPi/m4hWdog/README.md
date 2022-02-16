@@ -10,6 +10,7 @@ Last modified: 2022-02-03 <a name="up"></a>
 Many sensors send measured values and then go into a sleep mode to save energy. Battery-powered sensors eventually run out of energy and can no longer send anything, or they lose the network connection.   
 The `m4hWdog` ("Watchdog") project helps to detect this failure mode. It sends a MQTT message when a sensor has stopped sending a message within a given time.   
 In a configuration file it is defined within which time span a message from a certain topic has to arrive.   
+Furthermore, it is possible to query via MQTT message which topics are monitored and which topics are overdue and for how long.   
 
 ## This guide answers the following questions:   
 1. [What things do I need for this project?](#a10)   
@@ -28,14 +29,15 @@ In a configuration file it is defined within which time span a message from a ce
 
 <a name="a20"></a>[_Top of page_](#up)   
 # How do I use this program?   
+## Standard use
 All sensors to be monitored must be entered in the configuration file (e.g. `m4h.conf`) in the section `[wdog]`.   
 For each sensor a line must be created with the key "`in:`" and the value Topic + space + maximum response time in the format `[HHHH]H:MM:SS`, where the number of hours can be any value between 0 and 63660 (= 10 * 365,25 * 24 = 10 years).   
 
 * _Example_:   
-  The sensor `m4h/button_2` must be pressed at least every 10 seconds.   
+  The sensor `test/t20` must send at least every 20 seconds.   
   The following entry is required in the configuration file:   
   `[wdog]`   
-  `in: m4h/button_2 00:00:10`   
+  `in:         test/t20 00:00:20`   
 
 The key `out` can be used to specify under which topic a warning should be sent.   
 * _Example_:   
@@ -46,6 +48,53 @@ The key `out` can be used to specify under which topic a warning should be sent.
   The key `out` applies to all `in` lines.   
 
 To use the program, just create an executable file and start it (see the following chapter).   
+
+## MQTT query of all monitored topics
+Send the message   
+`mosquitto_pub -h 10.1.1.1 -t m4hWdog/get -m all`   
+you will get e.g. the following response message:   
+`m4hWdog/ret/all All monitored topics: test/t20,test/t30,test/t3723,test/t259200`   
+
+## MQTT query of all overdue topics
+Send the message   
+`mosquitto_pub -h 10.1.1.1 -t m4hWdog/get -m overdue`   
+and wait at least half a minute after a program start, you will get e.g. the following response message:   
+`info/start m4hWdog (16.02.2022 18:55:21)`   
+`m4hWdog/attention Sensor test/t20 missing!`   
+`m4hWdog/attention Sensor test/t30 missing!`   
+`m4hWdog/get overdue`   
+`m4hWdog/ret/overdue Overdue: test/t20 00:00:40,test/t30 00:00:40`   
+
+## Example of a configuration file
+```   
+#________m4h.conf________________________________khartinger_____
+# Configuration file for mqtt4home
+
+[base]
+versionIn:  m4hWdog/get version
+versionOut: m4hWdog/ret/version 2022-02-16
+mqttStart:  info/start m4hWdog
+mqttEnd:    info/end__ m4hWdog
+ProgEnd:    m4hWdog/set ...end...
+addTime:    true
+
+[wdog]
+demokey:    demovalue
+out:        m4hWdog/attention Sensor <in> missing!
+in:         test/t20 00:00:20
+in:         test/t30 00:00:30
+in:         test/t3723 1:2:03
+in:         test/t259200 72:0:0
+in:         test/notime
+in:         test/wrongtime 00:12
+in:         test/wrongtime2 00:A:00
+in:         test/wrongtime3 00::00
+#in:         test/t5 00:00:05
+allin:      m4hWdog/get all
+allout:     m4hWdog/ret/all All monitored topics: <list>
+overin:     m4hWdog/get overdue
+overout:    m4hWdog/ret/overdue Overdue: 
+```   
 
 <a name="a30"></a>[_Top of page_](#up)   
 # How do I compile and test the program m4hWdog?
@@ -67,17 +116,13 @@ Exit the program e.g. with the key combination &lt;Ctrl&gt;c
 2. Start the program e.g. from a putty window   
   `~/m4hWdog/m4hWdog`   
 
-3. If you do nothing, the following output appears in the putty window every 10 seconds:   
-`ERROR! Watchdog timeout m4h/button_2`.   
-Furthermore, the following MQTT message is displayed in the first terminal window every 10 seconds:   
-`m4hWdog/attention sensor m4h/button_2 missing!`   
+3. if you do nothing, the following output appears in the Putty window every 20 seconds:   
+`ATTENTION! Watchdog timeout test/t20`.   
+Furthermore, the following MQTT message is displayed in the first terminal window every 20 seconds:   
+`m4hWdog/attention sensor test/t20 missing!`   
 
-4. If you press the button `m4h/button_2` within the 10 seconds, the message appears in the Putty window:   
-`Update secLast: m4h/button_2`   
-and in the first terminal window the message of the button.   
-
-5. If you don't have a button available, you can open a second terminal window (`cmd.exe`) or putty window on the PC or a second console on the RasPi and simulate a button message:   
-`mosquitto_pub -h 10.1.1.1 -t m4h/button_2 -m anything`.   
+4. to send a message, open a second terminal window (`cmd.exe`) or putty window on the PC or a second console on the RasPi and enter the following:   
+`mosquitto_pub -h 10.1.1.1 -t test/t20 -m anything`.   
 With each message the watchdog timer is restarted.   
 
 <a name="a90"></a>[_Top of page_](#up)   
@@ -130,7 +175,8 @@ The project can already be transferred to the RasPi and tested there:
 Since for each sensor to be monitored   
 * a topic,   
 * the watchdog duration and   
-* the time of the last call    
+* the time of the last sensor message OR the last watchdog message.    
+* the time of the last sensor message   
 
 must be stored, a separate class `WdogIn1` is defined for this. For simplicity all properties are defined as `public`.   
 
@@ -146,10 +192,9 @@ _IMPORTANT:_ Keys may only contain lower case letters!
 
 In the class `Wdog` the associated properties are defined:   
 ```   
- std::string wdog_out_key;             // topic out key
- std::string wdog_out_topic;           // topic out
- std::string wdog_out_payload;         // value out
- std::string wdog_in_key;              // topic in key
+ std::string wdogInKey;                // topic in key
+ std::string wdogOutKey;               // topic out key
+ Message  mWdogOut;                    // Out Messages
  std::vector<WdogIn1>vIn;              // topic in values
 ```   
 
