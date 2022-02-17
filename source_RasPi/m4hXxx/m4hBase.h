@@ -33,7 +33,7 @@
 #include <vector>                      // vector
 #include <map>                         // (multi)map
 #include <fstream>                     // ifstream, ofstream
-#include <sstream>                // ostringstream, istringstream
+#include <sstream>                     // ostringstream, istringstream
 
 //-------broker values------------------------------------------
 #define  M4H_HOST            "127.0.0.1"
