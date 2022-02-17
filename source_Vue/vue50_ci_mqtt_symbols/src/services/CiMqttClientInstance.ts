@@ -12,6 +12,7 @@ import { ciSmsOutController } from '@/controller/CiSmsOutController'
 import { ciSocketController } from '@/controller/CiSocketController'
 import { ciText5Controller } from '@/controller/CiText5Controller'
 import { ciText5LController } from '@/controller/CiText5LController'
+import { ciTimeDateController } from '@/controller/CiTimeDateController'
 import { ciWeatherController } from '@/controller/CiWeatherController'
 import { ciWindowController } from '@/controller/CiWindowController'
 
@@ -28,5 +29,6 @@ ciMqttClientInstance.registerController(ciSmsOutController)
 ciMqttClientInstance.registerController(ciSocketController)
 ciMqttClientInstance.registerController(ciText5Controller)
 ciMqttClientInstance.registerController(ciText5LController)
+ciMqttClientInstance.registerController(ciTimeDateController)
 ciMqttClientInstance.registerController(ciWeatherController)
 ciMqttClientInstance.registerController(ciWindowController)

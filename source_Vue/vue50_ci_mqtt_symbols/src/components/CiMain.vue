@@ -33,6 +33,8 @@
   <CiWall :x="1*dx" :y="5.3*dy" sid="w" type="7" text5="example: children's room" :fx="3" :border="0"></CiWall>
   <CiWall :x="3*dx" :y="5.3*dy" sid="w" type="21" :border="0"></CiWall>
   <CiWall :x="4*dx" :y="5.3*dy" sid="w" type="0x10C" :border="0"></CiWall>
+
+  <CiTimeDate :x="5*dx" :y="5.3*dy" sid="timeDate_1" :border="2"></CiTimeDate>
 </svg>
 </template>
 
@@ -51,6 +53,7 @@ import CiSmsOut from './CiSmsOut.vue'
 import CiSocket from './CiSocket.vue'
 import CiText5 from './CiText5.vue'
 import CiText5L from './CiText5L.vue'
+import CiTimeDate from './CiTimeDate.vue'
 import CiWeather from './CiWeather.vue'
 import CiWall from './CiWall.vue'
 import CiWindow from './CiWindow.vue'
@@ -70,6 +73,7 @@ export default defineComponent({
     CiSocket,
     CiText5,
     CiText5L,
+    CiTimeDate,
     CiWeather,
     CiWall,
     CiWindow
