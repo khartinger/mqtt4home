@@ -14,6 +14,9 @@
 // 2021-08-19 First release
 // 2021-08-20 findKey(), findValue(): add check section []
 // 2021-08-29 split2pairs(): add long valLen=val.length(); if()
+// 2022-02-11 add reload conf file by mqtt command
+// 2022-02-15 Add class Conf: DHMS2sec(), sec2DHMS(), sec2HMS()
+// 2022-02-17 Add class Conf: fits()
 // Released into the public domain.
 #include "m4hBase.h"
 
@@ -885,11 +888,153 @@ bool Conf::split2String(std::string sIn,std::string &sPart1,
  return false;
 }
 
+//_______Does the topic match the pattern?______________________
+// MQTT placeholder: + Single-Level-Wildcard e.g. door/+/state
+//                   # Multi-Level-Wildcard  e.g. door/#
+// return true: yes, topic fits pattern; false: no
+bool Conf::fits(std::string topic, std::string pattern)
+{
+ int it=0, ip=0;
+ int lent=topic.length();
+ int lenp=pattern.length();
+ //------check plausbility, special cases-----------------------
+ if(lenp<1) return false;
+ //------pass through pattern-----------------------------------
+ for(ip=0; ip<lenp; ip++)
+ {
+  if(pattern[ip]=='#') return true;
+  if(pattern[ip]=='+')
+  {//....+ found: next char must be slash or end of pattern.....
+   if((++ip)==lenp) { // + is last char of pattern
+    //...last char = +, topic: not allowed to have a next slash.
+    while(topic[it]!='/')
+    {
+     it++;
+     if(it>=lent) return true;
+    }
+    return false;
+   } //end of last char = +
+   if(pattern[ip]!='/') return false;
+   //....topic: find next slash.................................
+   while(topic[it]!='/')
+   {
+    it++;
+    if(it>=lent) return false;
+   }
+  }
+  //.....no special case: check characters......................
+  if(it>=lent) return false;
+  if(pattern[ip]!=topic[it++]) return false;
+ }
+ if(it==lent) return true;
+ return false;
+}
+
+//_______convert d HMS string to sec____________________________
+// return: number of seconds or -1 on error
+time_t Conf::DHMS2sec(std::string sDHMS)
+{
+ time_t sec_=0;
+ time_t tmp_=0;
+ std::string s1=sDHMS;
+ std::string sTmp="";
+ int len=s1.length();
+ int i=0;
+ if(len<5) return -1;
+ try {
+  //-----remove leading blanks----------------------------------
+  while(i<len) {
+   if(s1.at(i)==' ') i++; else break;
+  }
+  if(i>0) s1.erase(0,i);
+  if(s1.length()<5) return -1;
+  //-----remove trailing blanks---------------------------------
+  bool goon=true;
+  i=s1.length()-1;
+  if(i<0) return -1;
+  while((i>=0)&&goon)
+  {
+   if(s1.at(i)==' ') i--;
+   else goon=false;
+  }
+  s1.erase(i+1, std::string::npos);
+  //-----split in days and HMS----------------------------------
+  int iBlank=s1.find_first_of(' ');         // search for...
+  if(iBlank!=std::string::npos)             // ...delimiter
+  {//----days found---------------------------------------------
+   sTmp=s1.substr(0,iBlank);                // days string
+   s1=s1.substr(iBlank+1);                  // HH:MM:SS
+   if(s1.length()<5) return -1;             // too short for H:M:S
+   tmp_=std::stoul(sTmp);                   // days to number
+   sec_=3600*24*tmp_;                       // seconds of day
+  }
+  //-----convert HH of s1=HH:MM:SS to sec-----------------------
+  int idp=s1.find_first_of(':');            // search for...
+  if(idp==std::string::npos) return -1;     // ...delimiter
+  sTmp=s1.substr(0,idp);                    // HH string
+  s1=s1.substr(idp+1);                      // MM:SS string
+  if(s1.length()<3) return -1;              // too short for M:S
+  tmp_=std::stoul(sTmp);                    // hours to number
+  sec_+=tmp_*3600;                          // add secs of hours
+  //-----convert s1= MM:SS to sec-------------------------------
+  idp=s1.find_first_of(':');                // search for...
+  if(idp==std::string::npos) return -1;     // ...delimiter
+  sTmp=s1.substr(0,idp);                    // MM string
+  s1=s1.substr(idp+1);                      // SS string
+  tmp_=std::stoul(sTmp);                    // MM to number
+  sec_+=tmp_*60;                            // add secs of mins
+  tmp_=std::stoul(s1);                      // SS to number
+  sec_+=tmp_;                               // add secs of mins
+ }
+ catch(...) { return -2; }
+ return sec_;
+}
+
+//_______convert time to d HMS string___________________________
+// if time 1 day ore more:  format D HH:MM:SS
+// if time less then 1 day: format HH:MM:SS
+std::string Conf::sec2DHMS(time_t tsec)
+{
+ time_t min_ = tsec / 60;
+ time_t sec_ = tsec - 60*min_;
+ time_t h_ = min_ / 60;
+ min_ = min_ - 60*h_;
+ time_t d_ = h_ / 24;
+ h_ = h_ - 24*d_;
+ char ca[32];
+ if(d_>0) sprintf(ca, "%ld %02ld:%02ld:%02d", d_, h_, min_, sec_);
+     else sprintf(ca, "%02ld:%02ld:%02d", h_, min_, sec_);
+ std::string s1 = ca;
+ return s1;
+}
+
+//_______convert time to HMS string_____________________________
+std::string Conf::sec2HMS(time_t tsec)
+{
+ if(tsec==-1) return "";
+ if(tsec<0) return "";
+ time_t min_ = tsec / 60;
+ time_t sec_ = tsec - 60*min_;
+ time_t h_ = min_ / 60;
+ min_ = min_ - 60*h_;
+ char ca[32];
+ sprintf(ca, "%02ld:%02ld:%02d", h_, min_, sec_);
+ std::string s1 = ca;
+ return s1;
+}
+
+// =============================================================
+
 // *************************************************************
 //       M4hBase: constructor & co
 // *************************************************************
-//_______constructor____________________________________________
-M4hBase::M4hBase() {
+
+//_______Default constructor____________________________________
+M4hBase::M4hBase() { setDefaults(); }
+
+//_______set all default properties_____________________________
+void M4hBase::setDefaults()
+{
  pfConfig = _CONF_PFILE_;              // path&name config file
  section  = M4H_SECTION;               // section name in config
  msgVersion=Message2(M4H_VERSION_T_IN,  M4H_VERSION_P_IN,
@@ -897,7 +1042,15 @@ M4hBase::M4hBase() {
  msgMqttStart=Message();
  msgMqttEnd=Message();
  msgProgEnd=Message();
- timeShouldBeAdded=false;
+ msgReadConf=Message2(M4H_CONF_IN_T,  M4H_CONF_IN_P,
+                      M4H_CONF_OUT_T, M4H_CONF_OUT_P);
+  timeShouldBeAdded=false;
+ keys=std::string(M4H_VERSION_KEY_IN);
+ keys+="|"+std::string(M4H_VERSION_KEY_OUT),
+ keys+="|"+std::string(M4H_MQTTSTART_KEY)+"|"+std::string(M4H_MQTTEND_KEY);
+ keys+="|"+std::string(M4H_PROGEND_KEY);
+ keys+="|"+std::string(M4H_CONF_IN_KEY)+"|"+std::string(M4H_CONF_OUT_KEY);
+ keys+="|"+std::string(M4H_ADDTIME_KEY);
 }
 
 // *************************************************************
@@ -989,6 +1142,31 @@ bool M4hBase::readConfig(std::string pfile_)
       msgProgEnd.payload=sP;
      }
     }
+        //--------read config file (message in)---------------------
+    if(s1==M4H_CONF_IN_KEY) {
+     std::string sT, sP;
+     if(conf.split2String(it2->second, sT, sP, ' '))
+     {
+      if(sP=="?") sP=M4H_CONF_IN_P;
+      if(sP.length()>2) {
+       msgReadConf.payloadIn=sP;
+       msgReadConf.topicIn=sT;
+      }
+     }
+    }
+    //--------after config file read: message out---------------
+    if(s1==M4H_CONF_OUT_KEY) {
+     std::string sT, sP;
+     if(conf.split2String(it2->second, sT, sP, ' '))
+     {
+      if(sP=="?") sP=M4H_CONF_OUT_P;
+      if(sP.length()>0) {
+       msgReadConf.payloadOut=sP;
+       msgReadConf.topicOut=sT;
+      }
+     }
+    }
+    //--------messages out: add time stamp?---------------------
     if(s1==M4H_ADDTIME_KEY) {
      if(it2->second=="true") this->timeShouldBeAdded=true;
      else this->timeShouldBeAdded=false;
@@ -1030,7 +1208,7 @@ void M4hBase::show()
  std::cout << "config file         | " << pfConfig;
  if(!conf.isReady()) std::cout << " (file not found)";
  std::cout<<std::endl;
- std::cout << "section name        | " << section<<std::endl;
+ std::cout << "all keys            | "<<getKeys()<<std::endl;
  std::cout << "version (in)        | -t " << msgVersion.topicIn << " -m " << msgVersion.payloadIn<<std::endl;
  std::cout << "version (out)       | -t " << msgVersion.topicOut << " -m " << msgVersion.payloadOut;
  if(msgVersion.retainOut) std::cout << " -r";
@@ -1042,6 +1220,8 @@ void M4hBase::show()
  if(msgMqttEnd.retain) std::cout << " -r";
  std::cout<<std::endl;
  std::cout << "progend by mqtt (in)| -t " << msgProgEnd.topic << " -m " << msgProgEnd.payload<<std::endl;
+ std::cout << "reload conf-file(in)| -t " << msgReadConf.topicIn << " -m " << msgReadConf.payloadIn<<std::endl;
+ std::cout << "reload conf-fil(out)| -t " << msgReadConf.topicOut << " -m " << msgReadConf.payloadOut<<std::endl;
  std::cout << "         * add time | ";
  if(timeShouldBeAdded) std::cout<<"true"<<std::endl;
  else std::cout<<"false"<<std::endl;

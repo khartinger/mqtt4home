@@ -16,6 +16,7 @@
 // 2021-08-29 split2pairs(): add long valLen=val.length(); if()
 // 2022-02-11 add reload conf file by mqtt command
 // 2022-02-15 Add class Conf: DHMS2sec(), sec2DHMS(), sec2HMS()
+// 2022-02-17 Add class Conf: fits()
 // Released into the public domain.
 #include "m4hBase.h"
 
@@ -884,6 +885,48 @@ bool Conf::split2String(std::string sIn,std::string &sPart1,
    return true;
   } // end split OK
  } // end delimiter found
+ return false;
+}
+
+//_______Does the topic match the pattern?______________________
+// MQTT placeholder: + Single-Level-Wildcard e.g. door/+/state
+//                   # Multi-Level-Wildcard  e.g. door/#
+// return true: yes, topic fits pattern; false: no
+bool Conf::fits(std::string topic, std::string pattern)
+{
+ int it=0, ip=0;
+ int lent=topic.length();
+ int lenp=pattern.length();
+ //------check plausbility, special cases-----------------------
+ if(lenp<1) return false;
+ //------pass through pattern-----------------------------------
+ for(ip=0; ip<lenp; ip++)
+ {
+  if(pattern[ip]=='#') return true;
+  if(pattern[ip]=='+')
+  {//....+ found: next char must be slash or end of pattern.....
+   if((++ip)==lenp) { // + is last char of pattern
+    //...last char = +, topic: not allowed to have a next slash.
+    while(topic[it]!='/')
+    {
+     it++;
+     if(it>=lent) return true;
+    }
+    return false;
+   } //end of last char = +
+   if(pattern[ip]!='/') return false;
+   //....topic: find next slash.................................
+   while(topic[it]!='/')
+   {
+    it++;
+    if(it>=lent) return false;
+   }
+  }
+  //.....no special case: check characters......................
+  if(it>=lent) return false;
+  if(pattern[ip]!=topic[it++]) return false;
+ }
+ if(it==lent) return true;
  return false;
 }
 

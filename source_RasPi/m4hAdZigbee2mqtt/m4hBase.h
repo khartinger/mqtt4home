@@ -12,6 +12,9 @@
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2021-08-19 First release
+// 2022-02-10 add reload conf file by mqtt command
+// 2022-02-15 Add class Conf: DHMS2sec(), sec2DHMS(), sec2HMS()
+// 2022-02-17 Add class Conf: fits()
 // Released into the public domain.
 
 #ifndef C_M4HBASE_H
@@ -30,6 +33,7 @@
 #include <vector>                      // vector
 #include <map>                         // (multi)map
 #include <fstream>                     // ifstream, ofstream
+#include <sstream>                // ostringstream, istringstream
 
 //-------broker values------------------------------------------
 #define  M4H_HOST            "127.0.0.1"
@@ -38,6 +42,7 @@
 #define  M4H_SUBSCRIBE       "#"
 //-------values for config data---------------------------------
 #define  _CONF_PATH_         "./"
+//#define  _CONF_PATH_         "/usr/local/bin/"
 #define  _CONF_FILE_         "m4h.conf"
 #define  _CONF_PFILE_        _CONF_PATH_ _CONF_FILE_
 #define  M4H_SECTION         "base"
@@ -48,10 +53,16 @@
 #define  M4H_VERSION_P_IN    "version"
 #define  M4H_VERSION_KEY_OUT "versionout"
 #define  M4H_VERSION_T_OUT   "m4hbase/ret/version"
-#define  M4H_VERSION_P_OUT   "2021-08-15"
+#define  M4H_VERSION_P_OUT   "2022-02-12"
 #define  M4H_MQTTSTART_KEY   "mqttstart"
 #define  M4H_MQTTEND_KEY     "mqttend"
 #define  M4H_PROGEND_KEY     "progend"
+#define  M4H_CONF_IN_KEY     "readconfin"
+#define  M4H_CONF_IN_T       "m4hbase/set/conf"
+#define  M4H_CONF_IN_P       _CONF_PFILE_
+#define  M4H_CONF_OUT_KEY    "readconfout"
+#define  M4H_CONF_OUT_T      "m4hbase/ret/conf"
+#define  M4H_CONF_OUT_P      "Read config: "
 #define  M4H_ADDTIME_KEY     "addtime"
 
 // *************************************************************
@@ -95,6 +106,24 @@ class Message2
 
 //_______class for config file__________________________________
 class Conf {
+ //------convert to and from string-----------------------------
+ public:
+ template <typename Typ>
+ std::string toString(Typ val) {
+  std::ostringstream strout;           // helper output stream
+  std::string str;                     // string object
+  strout << val;                       // value to stream
+  str = strout.str();                  // stream to string
+  return str;                          // return string
+ }
+
+ template <typename Typ>
+ void stringTo(std::string str, Typ &val) {
+  std::istringstream strin;            // helper input stream
+  strin.str(str);                      // string to stream
+  strin >> val;                        // stream to value
+ }
+
  protected:
  //------properties---------------------------------------------
   std::string fname;
@@ -127,6 +156,10 @@ class Conf {
   bool   split2pairs(std::string s1, std::multimap<std::string, std::string>& mm1);
   void   splitString(std::string sIn, std::vector<std::string>&vOut, char delimiter);
   bool   split2String(std::string sIn,std::string& sPart1,std::string& sPart2,char delimiter);
+  bool   fits(std::string topic, std::string pattern);
+  time_t DHMS2sec(std::string sDHMS);
+  std::string sec2DHMS(time_t tsec);
+  std::string sec2HMS(time_t tsec);
 };
 
 // *************************************************************
@@ -142,11 +175,16 @@ class M4hBase {
   Message  msgMqttStart;               // MQTT message at start
   Message  msgMqttEnd;                 // MQTT message at end
   Message  msgProgEnd;                 // prog end via MQTT
+  Message2 msgReadConf;                // reload config
   bool     timeShouldBeAdded;          // @ msg start, end, ....
+ protected:
+  std::string keys;                    // keys for [sms]
  public:
   //-----constructor & co---------------------------------------
   M4hBase();
+  void setDefaults();                  // set all default values
   //-----setter and getter methods------------------------------
+  std::string getKeys() {return keys;}  // keys in config file
   //-----working methods----------------------------------------
   //void printHelptext();                // print help text
   bool readConfig();                   // read config file

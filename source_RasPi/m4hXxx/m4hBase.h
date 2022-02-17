@@ -14,6 +14,7 @@
 // 2021-08-19 First release
 // 2022-02-10 add reload conf file by mqtt command
 // 2022-02-15 Add class Conf: DHMS2sec(), sec2DHMS(), sec2HMS()
+// 2022-02-17 Add class Conf: fits()
 // Released into the public domain.
 
 #ifndef C_M4HBASE_H
@@ -155,6 +156,7 @@ class Conf {
   bool   split2pairs(std::string s1, std::multimap<std::string, std::string>& mm1);
   void   splitString(std::string sIn, std::vector<std::string>&vOut, char delimiter);
   bool   split2String(std::string sIn,std::string& sPart1,std::string& sPart2,char delimiter);
+  bool   fits(std::string topic, std::string pattern);
   time_t DHMS2sec(std::string sDHMS);
   std::string sec2DHMS(time_t tsec);
   std::string sec2HMS(time_t tsec);
