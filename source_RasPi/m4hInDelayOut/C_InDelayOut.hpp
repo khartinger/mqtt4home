@@ -8,6 +8,7 @@
 // Updates:
 // 2021-08-23 First release
 // 2021-09-06 Rename from m4hSubPub to m4hInDelayOut
+// 2022-02-18 Use of wildcards (+, #) in topic in config-file
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
@@ -92,7 +93,7 @@ class InDelayOut
 
  //-----helper methods------------------------------------------
  static void threadFunctionDelay(struct mosquitto *mosq, 
-   Message2d m2, std::string payload);
+   Message2d m2, std::string currTopic, std::string currPayload);
 };
 
 // *************************************************************
@@ -233,13 +234,15 @@ void InDelayOut::show()
 bool InDelayOut::onMessage(struct mosquitto *mosq, 
   std::string topic, std::string payload)
 {
+ Conf conf=Conf();
  //------check if the topic is included in the config data------
  int iLen=vM2d.size();
  for(int i=0; i<iLen; i++) 
  {//-----compare topic with each topic in config file-----------
   Message2d m2d=Message2d();           // message object for one
   m2d=vM2d.at(i);                      // entry in config file
-  if(m2d.topicIn==topic)               // topics MUST match
+  //if(m2d.topicIn==topic)               // topics MUST match
+  if(conf.fits(topic, m2d.topicIn))
   {//====topic matches==========================================
    if(m2d.payloadIn.length()>0)
    {//---payload in config file given: MUST fit-----------------
@@ -250,7 +253,7 @@ bool InDelayOut::onMessage(struct mosquitto *mosq,
     if(topic==g_topicOutLast && payload==g_payloadOutLast) return false;
    }
    //---start delay thread-------------------------------------
-   std::thread mythreadDelay(threadFunctionDelay, mosq, m2d, payload);
+   std::thread mythreadDelay(threadFunctionDelay, mosq, m2d, topic, payload);
    mythreadDelay.detach();
    return true;
   } // end topic matches
@@ -271,7 +274,7 @@ void InDelayOut::onExit(struct mosquitto *mosq, int reason)
 // m2d: message data from config file (topic in, out, ...)
 // cpay: current payload
 void InDelayOut::threadFunctionDelay(struct mosquitto *mosq, 
-   Message2d m2d, std::string cpay)
+   Message2d m2d, std::string currTop, std::string currPay)
 {
  Conf conf=Conf();                     // useful methods
  std::string s1;                       // help value
@@ -283,12 +286,12 @@ void InDelayOut::threadFunctionDelay(struct mosquitto *mosq,
   if(!conf.split2String(m2d.action, actionKey, actionVal, ' '))
    actionKey=m2d.action;
   //----------payloadIn is text---------------------------------
-  if(actionKey==IDO_ACT_TEXT) m2d.sText=cpay;
+  if(actionKey==IDO_ACT_TEXT) m2d.sText=currPay;
   
   if(actionKey==IDO_ACT_DELAY)
   {//----------convert delay value------------------------------
    try{
-    uint32_t temp=std::stoul(cpay);    // help value
+    uint32_t temp=std::stoul(currPay); // help value
     m2d.delayms=temp;                  // conversion ok
    } catch(std::string& error) { return; }
   } // end convert delay value
@@ -296,7 +299,7 @@ void InDelayOut::threadFunctionDelay(struct mosquitto *mosq,
   if(actionKey==IDO_ACT_DELAYTEXT) 
   {//---------cpay=delay text-----------------------------------
    std::string sDelay="", sText="";
-   if(!conf.split2String(cpay, sDelay, sText,' ')) return;
+   if(!conf.split2String(currPay, sDelay, sText,' ')) return;
    m2d.sText=sText;
    try{
     uint32_t temp=std::stoul(sDelay);  // help value
@@ -311,21 +314,23 @@ void InDelayOut::threadFunctionDelay(struct mosquitto *mosq,
   {//---------invert payloadIn----------------------------------
    std::string sInv1="", sInv2="";
    if(!conf.split2String(actionVal, sInv1, sInv2,' ')) return;
-   if(cpay==sInv1) m2d.sInvert=sInv2;
-   if(cpay==sInv2) m2d.sInvert=sInv1;
+   if(currPay==sInv1) m2d.sInvert=sInv2;
+   if(currPay==sInv2) m2d.sInvert=sInv1;
    if(m2d.sInvert.length()<1) return;
   }
  } // end action given
 
  //===========replace placeholder in topic out==================
- conf.replaceAll(m2d.topicOut,IDO_PLAHO_TOPIC_IN,m2d.topicIn);
+ //conf.replaceAll(m2d.topicOut,IDO_PLAHO_TOPIC_IN,m2d.topicIn);
+ conf.replaceAll(m2d.topicOut,IDO_PLAHO_TOPIC_IN,currTop);
  if(m2d.topicOut.length()<1) return;
 
  //===========wait until the response is to be sent=============
  std::this_thread::sleep_for(std::chrono::milliseconds(m2d.delayms));
 
  //===========replace placeholder in payload out================
- conf.replaceAll(m2d.payloadOut,IDO_PLAHO_TOPIC_IN,m2d.topicIn);
+ //conf.replaceAll(m2d.payloadOut,IDO_PLAHO_TOPIC_IN,m2d.topicIn);
+ conf.replaceAll(m2d.payloadOut,IDO_PLAHO_TOPIC_IN,currTop);
  conf.replaceAll(m2d.payloadOut,IDO_PLAHO_TEXT_IN,m2d.sText);
  s1=std::to_string(m2d.delayms);
  conf.replaceAll(m2d.payloadOut,IDO_PLAHO_DELAY,s1);
@@ -346,7 +351,7 @@ void InDelayOut::threadFunctionDelay(struct mosquitto *mosq,
  if(ret!=0) {
   if(g_prt) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",m2d.topicOut.c_str(),ret);
  } else {
-  if(g_prt) std::cout<<" IN: -t "<<m2d.topicIn<<" -m "<<cpay<<" ===> delay "<<m2d.delayms<<"ms ==> OUT: -t "<<m2d.topicOut<<" -m "<<m2d.payloadOut;
+  if(g_prt) std::cout<<" IN: -t "<<currTop<<" -m "<<currPay<<" ===> delay "<<m2d.delayms<<"ms ==> OUT: -t "<<m2d.topicOut<<" -m "<<m2d.payloadOut;
   if(g_prt && m2d.retainOut) std::cout<<" -r";
   if(g_prt) std::cout<<std::endl;
  }
