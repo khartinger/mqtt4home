@@ -1,18 +1,17 @@
-<!-- CiSeg7.vue -----------------------------2022-01-01----- -->
+<!-- CiSeg7.vue -----------------------------2022-02-23----- -->
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border"></CiBase>
-
-  <path :d="segA" :fill="colorSegA" stroke="black" :stroke-width="strokew" class="cursor" />
-  <path :d="segB" :fill="colorSegB" stroke="black" :stroke-width="strokew" class="cursor" />
-  <path :d="segC" :fill="colorSegC" stroke="black" :stroke-width="strokew" class="cursor" />
-  <path :d="segD" :fill="colorSegD" stroke="black" :stroke-width="strokew" class="cursor" />
-  <path :d="segE" :fill="colorSegE" stroke="black" :stroke-width="strokew" class="cursor" />
-  <path :d="segF" :fill="colorSegF" stroke="black" :stroke-width="strokew" class="cursor" />
-  <path :d="segG" :fill="colorSegG" stroke="black" :stroke-width="strokew" class="cursor" />
-  <circle v-if="dp1" :cx="cx1" :cy="cy1" :r="cr" :fill="colorSegP" stroke="black" :stroke-width="strokew" class="cursor"/>
-  <circle v-if="dp2" :cx="cx2" :cy="cy2" :r="cr" :fill="colorSegP2" stroke="black" :stroke-width="strokew" class="cursor"/>
-  <circle v-if="dp2" :cx="cx3" :cy="cy3" :r="cr" :fill="colorSegP2" stroke="black" :stroke-width="strokew" class="cursor"/>
+  <path :d="segA" :fill="colorSegA" :stroke="strokec" :stroke-width="strokew" class="cursor" />
+  <path :d="segB" :fill="colorSegB" :stroke="strokec" :stroke-width="strokew" class="cursor" />
+  <path :d="segC" :fill="colorSegC" :stroke="strokec" :stroke-width="strokew" class="cursor" />
+  <path :d="segD" :fill="colorSegD" :stroke="strokec" :stroke-width="strokew" class="cursor" />
+  <path :d="segE" :fill="colorSegE" :stroke="strokec" :stroke-width="strokew" class="cursor" />
+  <path :d="segF" :fill="colorSegF" :stroke="strokec" :stroke-width="strokew" class="cursor" />
+  <path :d="segG" :fill="colorSegG" :stroke="strokec" :stroke-width="strokew" class="cursor" />
+  <circle v-if="dp1" :cx="cx1" :cy="cy1" :r="cr" :fill="colorSegP"  :stroke="strokec" :stroke-width="strokew" class="cursor"/>
+  <circle v-if="dp2" :cx="cx2" :cy="cy2" :r="cr" :fill="colorSegP2" :stroke="strokec" :stroke-width="strokew" class="cursor"/>
+  <circle v-if="dp2" :cx="cx3" :cy="cy3" :r="cr" :fill="colorSegP2" :stroke="strokec" :stroke-width="strokew" class="cursor"/>
   <!--write text-------------------------------------------- -->
   <text v-if="iLines>0" :x="geo.xt()" :y="geo.yt(1)" class="ciFont1">{{title}}</text>
   <text v-if="iLines>1" :x="geo.xt()" :y="geo.yt(5)" class="ciFont1">{{line5}}</text>
@@ -22,11 +21,11 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
-// import { slotFlagsText } from '@vue/shared'
 import { Seg7, ciSeg7Controller } from '../controller/CiSeg7Controller'
 import CiBase, { Geo } from './CiBase.vue'
 
-const VALUE2SEGS = [63, 6, 91, 79, 102, 109, 125, 7, 127, 111, 119, 124, 88, 94, 121, 113]
+//                   0, 1,  2,  3,   4,   5,   6, 7,   8,   9,   A,   b,  c,  d,   E,   F,  -,  =
+const VALUE2SEGS = [63, 6, 91, 79, 102, 109, 125, 7, 127, 111, 119, 124, 88, 94, 121, 113, 64, 72]
 
 export default defineComponent({
   name: 'CiSeg7',
@@ -35,7 +34,8 @@ export default defineComponent({
   },
   data () {
     return {
-      height0: 20.32
+      height0: 20.32,
+      strokec: '#cccccc'
     }
   },
   props: {
@@ -55,7 +55,7 @@ export default defineComponent({
     sid: {
       type: String,
       required: false,
-      default: 'CiSeg7'
+      default: ''
     },
     value: {
       type: String,
@@ -75,8 +75,8 @@ export default defineComponent({
     colorOff: {
       type: String,
       required: false,
-      default: 'transparent'
-      // default: '#777777'
+      default: 'rgba(255,0,0,0.05)'
+      // default: 'transparent' // '#777777'
     },
     lines: {
       type: String,
@@ -155,8 +155,6 @@ export default defineComponent({
       if (this.value.search(',') > 0) return true
       if (this.val2seg(this.value) & 0x80) return true
       return false
-    // if (this.value.search(':') > 0) return false
-    // return true
     },
     dp2: function (): boolean {
       if (this.value.search(':') > 0) return true
@@ -166,8 +164,7 @@ export default defineComponent({
     // -------circle parameters: center, radius-----------------
     cx1: function (): number {
       const f = this.height / this.height0
-      // return (this.x + 9.12 * f)
-      return (this.x + 9.12 * f)
+      return (this.x + 8.5 * f)
     },
     cy1: function (): number {
       const f = this.height / this.height0
@@ -175,7 +172,7 @@ export default defineComponent({
     },
     cx2: function (): number {
       const f = this.height / this.height0
-      return (this.cx1 + (1.672 - 0.703) * f)
+      return (this.cx1 + (1.6 - 0.7) * f)
     },
     cy2: function (): number {
       const f = this.height / this.height0
@@ -183,7 +180,7 @@ export default defineComponent({
     },
     cx3: function (): number {
       const f = this.height / this.height0
-      return (this.cx1 + (1.672 + 0.703) * f)
+      return (this.cx1 + (1.6 + 0.7) * f)
     },
     cy3: function (): number {
       const f = this.height / this.height0
@@ -259,6 +256,8 @@ export default defineComponent({
         }
       }
       const value1 = value.substring(0, 1)
+      if (value1 === '-') { return retSeg + VALUE2SEGS[16] }
+      if (value1 === '=') { return retSeg + VALUE2SEGS[17] }
       const num = Number.parseInt(value1, 16)
       if (!Number.isNaN(num)) {
         if ((num >= 0) && (num < 16)) retSeg += VALUE2SEGS[num]
