@@ -1,31 +1,31 @@
-<!-- CiSeg7.vue -----------------------------2022-02-23----- -->
+<!-- ---------CiSeg7.vue --------------------2022-03-04----- -->
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border"></CiBase>
-  <path :d="segA" :fill="colorSegA" :stroke="strokec" :stroke-width="strokew" class="cursor" />
-  <path :d="segB" :fill="colorSegB" :stroke="strokec" :stroke-width="strokew" class="cursor" />
-  <path :d="segC" :fill="colorSegC" :stroke="strokec" :stroke-width="strokew" class="cursor" />
-  <path :d="segD" :fill="colorSegD" :stroke="strokec" :stroke-width="strokew" class="cursor" />
-  <path :d="segE" :fill="colorSegE" :stroke="strokec" :stroke-width="strokew" class="cursor" />
-  <path :d="segF" :fill="colorSegF" :stroke="strokec" :stroke-width="strokew" class="cursor" />
-  <path :d="segG" :fill="colorSegG" :stroke="strokec" :stroke-width="strokew" class="cursor" />
-  <circle v-if="dp1" :cx="cx1" :cy="cy1" :r="cr" :fill="colorSegP"  :stroke="strokec" :stroke-width="strokew" class="cursor"/>
-  <circle v-if="dp2" :cx="cx2" :cy="cy2" :r="cr" :fill="colorSegP2" :stroke="strokec" :stroke-width="strokew" class="cursor"/>
-  <circle v-if="dp2" :cx="cx3" :cy="cy3" :r="cr" :fill="colorSegP2" :stroke="strokec" :stroke-width="strokew" class="cursor"/>
+  <!-- -------draw segments--------------------------------- -->
+  <template v-for="i in 8" :key="i">
+    <path :d="pathSeg(i)" :fill="colorSeg(i)" :stroke="strokecolor" :stroke-width="strokewidth" class="cursor" />
+  </template>
+  <!-- -------draw points----------------------------------- -->
+  <circle v-if="isDp1" :cx="cx1" :cy="cy1" :r="cr" :fill="colorSegP"  :stroke="strokecolor" :stroke-width="strokewidth" class="cursor"/>
+  <circle v-if="isDp2" :cx="cx2" :cy="cy2" :r="cr" :fill="colorSegP2" :stroke="strokecolor" :stroke-width="strokewidth" class="cursor"/>
+  <circle v-if="isDp2" :cx="cx3" :cy="cy3" :r="cr" :fill="colorSegP2" :stroke="strokecolor" :stroke-width="strokewidth" class="cursor"/>
   <!--write text-------------------------------------------- -->
   <text v-if="iLines>0" :x="geo.xt()" :y="geo.yt(1)" class="ciFont1">{{title}}</text>
   <text v-if="iLines>1" :x="geo.xt()" :y="geo.yt(5)" class="ciFont1">{{line5}}</text>
+
   <!--define click area------------------------------------- -->
   <rect @click="onClk()" class="ciClick" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
+  <rect @click="onClick_()" :x="x0click" :y="y0click" :width="wclick" :height="hclick" fill-opacity="0.0" :stroke-width="strokewidth"/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
-import { Seg7, ciSeg7Controller } from '../controller/CiSeg7Controller'
+import { CiSeg7, ciSeg7Controller } from '../controller/CiSeg7Controller'
 import CiBase, { Geo } from './CiBase.vue'
 
 //                   0, 1,  2,  3,   4,   5,   6, 7,   8,   9,   A,   b,  c,  d,   E,   F,  -,  =
-const VALUE2SEGS = [63, 6, 91, 79, 102, 109, 125, 7, 127, 111, 119, 124, 88, 94, 121, 113, 64, 72]
+const DIGIT2SEGS = [63, 6, 91, 79, 102, 109, 125, 7, 127, 111, 119, 124, 88, 94, 121, 113, 64, 72]
 
 export default defineComponent({
   name: 'CiSeg7',
@@ -34,8 +34,8 @@ export default defineComponent({
   },
   data () {
     return {
-      height0: 20.32,
-      strokec: '#cccccc'
+      height0: 26.2,
+      strokecolor: '#cccccc'
     }
   },
   props: {
@@ -50,22 +50,27 @@ export default defineComponent({
     border: {
       type: Number,
       required: false,
-      default: 2
+      default: 0
     },
     sid: {
       type: String,
       required: false,
       default: ''
     },
+    lines: {
+      type: String,
+      required: false,
+      default: '0'
+    },
     value: {
       type: String,
       required: false,
-      default: '8'
+      default: '8:.'
     },
     height: {
       type: Number,
       required: false,
-      default: 20.32
+      default: 26.2
     },
     colorOn: {
       type: String,
@@ -77,19 +82,14 @@ export default defineComponent({
       required: false,
       default: 'rgba(255,0,0,0.05)'
       // default: 'transparent' // '#777777'
-    },
-    lines: {
-      type: String,
-      required: false,
-      default: '1'
     }
   },
   computed: {
-    seg7: function (): Seg7 | undefined {
-      return ciSeg7Controller.seg7s.find(seg7 => seg7.id === this.sid)
+    ciSeg7: function (): CiSeg7 | undefined {
+      return ciSeg7Controller.ciSeg7s.find(ciSeg7 => ciSeg7.id === this.sid)
     },
     iSeg7State: function (): number {
-      return this.seg7?.iSeg7State ?? -1
+      return this.ciSeg7?.iSeg7State ?? -1
     },
     // -------provide geometric data----------------------------
     geo: function (): Geo {
@@ -99,66 +99,22 @@ export default defineComponent({
     iLines: function (): number {
       return parseInt(this.lines)
     },
-    // -------SevenSegment--------------------------------------
-    // ' m' + (-2.900 * f) + ',' + (-10.850 * f) + ' l' + (8.750 * f) + ',' + (0.000 * f) + ' l' + (1.870 * f) + ',' + (-1.530 * f) + ' l' + (-0.770 * f) + ',' + (-0.720 * f) + ' l' + (-10.170 * f) + ',' + (0.000 * f) + ' l' + (-1.180 * f) + ',' + (0.850 * f) + ' z'
-    // ' m' + (5.110 * f) + ',' + (-1.450 * f) + ' l' + (1.040 * f) + ',' + (1.100 * f) + ' l' + (1.250 * f) + ',' + (-0.900 * f) + ' l' + (1.320 * f) + ',' + (-9.950 * f) + ' l' + (-0.720 * f) + ',' + (-0.850 *f) + ' l' + (-1.600 * f) + ',' + (1.360 * f) + ' z'
-    // ' m' + (3.470 * f) + ',' + (10.590 * f) + ' l' + (1.230 * f) + ',' + (1.360 * f) + ' l' + (1.000 * f) + ',' + (-0.700 * f) + ' l' + (1.300 * f) + ',' + (-10.000 * f) + ' l' + (-1.000 * f) + ',' + (-1.030 *f) + ' l' + (-1.250 * f) + ',' + (1.010 * f) + ' z'
-    // ' m' + (-6.900 * f) + ',' + (13.100 * f) + ' l' + (10.120 * f) + ',' + (0.000 * f) + ' l' + (1.180 * f) + ',' + (-0.850 * f) + ' l' + (-1.250 * f) + ',' + (-1.400 * f) + ' l' + (-9.020 * f) + ',' + (0.000 *f) + ' l' + (-1.810 * f) + ',' + (1.400 * f) + ' z'
-    // ' m' + (-8.650 * f) + ',' + (11.150 * f) + ' l' + (0.750 * f) + ',' + (0.800 * f) + ' l' + (1.600 * f) + ',' + (-1.250 * f) + ' l' + (1.340 * f) + ',' + (-9.370 * f) + ' l' + (-1.040 * f) + ',' + (-1.110 *f) + ' l' + (-1.300 * f) + ',' + (1.060 * f) + ' z'
-    // ' m' + (-6.950 * f) + ',' + (-1.400 * f) + ' l' + (0.990 * f) + ',' + (1.050 * f) + ' l' + (1.360 * f) + ',' + (-1.000 * f) + ' l' + (1.300 * f) + ',' + (-9.280 * f) + ' l' + (-1.350 * f) + ',' + (-1.420 *f) + ' l' + (-0.950 * f) + ',' + (0.770 * f) + ' z'
-    // ' m' + (-4.700 * f) + ',' + (1.050 * f) + ' l' + (8.900 * f) + ',' + (0.000 * f) + ' l' + (1.560 * f) + ',' + (-1.100 * f) + ' l' + (-1.010 * f) + ',' + (-1.150 * f) + ' l' + (-8.880 * f) + ',' + (0.000 *f) + ' l' + (-1.570 * f) + ',' + (1.150 * f) + ' z'
-
-    segA: function (): string {
-      const f = this.height / this.height0
-      let s1 = 'M' + this.x + ',' + this.y
-      s1 += ' m' + (-2.900 * f) + ',' + (-10.850 * f) + ' l' + (8.750 * f) + ',' + (0.000 * f) + ' l' + (1.870 * f) + ',' + (-1.530 * f) + ' l' + (-0.770 * f) + ',' + (-0.720 * f) + ' l' + (-10.170 * f) + ',' + (0.000 * f) + ' l' + (-1.180 * f) + ',' + (0.850 * f) + ' z'
-      return s1
+    // -------value to be displayed (on error '----')-----------
+    value7: function (): string {
+      if (this.ciSeg7?.value7) return this.ciSeg7.value7
+      if (this.value) return this.value
+      return '+64'
     },
-    segB: function (): string {
-      const f = this.height / this.height0
-      let s1 = 'M' + this.x + ',' + this.y
-      s1 += ' m' + (5.110 * f) + ',' + (-1.450 * f) + ' l' + (1.040 * f) + ',' + (1.100 * f) + ' l' + (1.250 * f) + ',' + (-0.900 * f) + ' l' + (1.320 * f) + ',' + (-9.950 * f) + ' l' + (-0.720 * f) + ',' + (-0.750 * f) + ' l' + (-1.600 * f) + ',' + (1.260 * f) + ' z'
-      return s1
-    },
-    segC: function (): string {
-      const f = this.height / this.height0
-      let s1 = 'M' + this.x + ',' + this.y
-      s1 += ' m' + (3.470 * f) + ',' + (10.590 * f) + ' l' + (1.230 * f) + ',' + (1.360 * f) + ' l' + (1.000 * f) + ',' + (-0.700 * f) + ' l' + (1.300 * f) + ',' + (-10.000 * f) + ' l' + (-1.000 * f) + ',' + (-1.030 * f) + ' l' + (-1.250 * f) + ',' + (1.010 * f) + ' z'
-      return s1
-    },
-    segD: function (): string {
-      const f = this.height / this.height0
-      let s1 = 'M' + this.x + ',' + this.y
-      s1 += ' m' + (-6.900 * f) + ',' + (13.100 * f) + ' l' + (10.120 * f) + ',' + (0.000 * f) + ' l' + (1.180 * f) + ',' + (-0.850 * f) + ' l' + (-1.250 * f) + ',' + (-1.400 * f) + ' l' + (-9.020 * f) + ',' + (0.000 * f) + ' l' + (-1.810 * f) + ',' + (1.400 * f) + ' z'
-      return s1
-    },
-    segE: function (): string {
-      const f = this.height / this.height0
-      let s1 = 'M' + this.x + ',' + this.y
-      s1 += ' m' + (-8.650 * f) + ',' + (11.150 * f) + ' l' + (0.750 * f) + ',' + (0.800 * f) + ' l' + (1.600 * f) + ',' + (-1.250 * f) + ' l' + (1.340 * f) + ',' + (-9.370 * f) + ' l' + (-1.040 * f) + ',' + (-1.110 * f) + ' l' + (-1.300 * f) + ',' + (1.060 * f) + ' z'
-      return s1
-    },
-    segF: function (): string {
-      const f = this.height / this.height0
-      let s1 = 'M' + this.x + ',' + this.y
-      s1 += ' m' + (-6.950 * f) + ',' + (-1.400 * f) + ' l' + (0.990 * f) + ',' + (1.050 * f) + ' l' + (1.360 * f) + ',' + (-1.000 * f) + ' l' + (1.300 * f) + ',' + (-9.280 * f) + ' l' + (-1.350 * f) + ',' + (-1.420 * f) + ' l' + (-0.950 * f) + ',' + (0.770 * f) + ' z'
-      return s1
-    },
-    segG: function (): string {
-      const f = this.height / this.height0
-      let s1 = 'M' + this.x + ',' + this.y
-      s1 += ' m' + (-4.700 * f) + ',' + (1.050 * f) + ' l' + (8.900 * f) + ',' + (0.000 * f) + ' l' + (1.560 * f) + ',' + (-1.100 * f) + ' l' + (-1.010 * f) + ',' + (-1.150 * f) + ' l' + (-8.880 * f) + ',' + (0.000 * f) + ' l' + (-1.570 * f) + ',' + (1.150 * f) + ' z'
-      return s1
-    },
-    dp1: function (): boolean {
-      if (this.value.search('.') > 0) return true
-      if (this.value.search(',') > 0) return true
-      if (this.val2seg(this.value) & 0x80) return true
+    // -------should the dot or the colon be displayed?---------
+    isDp1: function (): boolean {
+      if (this.value7.search('.') > 0) return true
+      if (this.value7.search(',') > 0) return true
+      if (this.digit2seg(this.value7) & 0x80) return true
       return false
     },
-    dp2: function (): boolean {
-      if (this.value.search(':') > 0) return true
-      if (this.val2seg(this.value) & 0x100) return true
+    isDp2: function (): boolean {
+      if (this.value7.search(':') > 0) return true
+      if (this.digit2seg(this.value7) & 0x100) return true
       return false
     },
     // -------circle parameters: center, radius-----------------
@@ -190,92 +146,105 @@ export default defineComponent({
       const f = this.height / this.height0
       return (1.45 * f)
     },
-    colorSegA: function (): string {
-      if ((this.val2seg(this.value) & 0x01) > 0) return this.colorOn
-      else return this.colorOff
-    },
-    colorSegB: function (): string {
-      if ((this.val2seg(this.value) & 0x02) > 0) return this.colorOn
-      else return this.colorOff
-    },
-    colorSegC: function (): string {
-      if ((this.val2seg(this.value) & 0x04) > 0) return this.colorOn
-      else return this.colorOff
-    },
-    colorSegD: function (): string {
-      if ((this.val2seg(this.value) & 0x08) > 0) return this.colorOn
-      else return this.colorOff
-    },
-    colorSegE: function (): string {
-      if ((this.val2seg(this.value) & 0x10) > 0) return this.colorOn
-      else return this.colorOff
-    },
-    colorSegF: function (): string {
-      if ((this.val2seg(this.value) & 0x20) > 0) return this.colorOn
-      else return this.colorOff
-    },
-    colorSegG: function (): string {
-      if ((this.val2seg(this.value) & 0x40) > 0) return this.colorOn
-      else return this.colorOff
-    },
+    // -------circle parameters: color--------------------------
     colorSegP: function (): string {
-      if ((this.val2seg(this.value) & 0x80) > 0) return this.colorOn
+      if ((this.digit2seg(this.value7) & 0x80) > 0) return this.colorOn
       else return this.colorOff
     },
     colorSegP2: function (): string {
-      if ((this.val2seg(this.value) & 0x100) > 0) return this.colorOn
+      if ((this.digit2seg(this.value7) & 0x100) > 0) return this.colorOn
       else return this.colorOff
     },
-    strokew: function (): number {
+    // -------Width of segment margin depending on size of display
+    strokewidth: function (): number {
       if (this.height < this.height0) return 0
       if (this.height > 5 * this.height0) return 1
       return 0.25 * (this.height / this.height0 - 1)
     },
+    // -------click area: start point, extension----------------
+    x0click: function (): number { return this.x - this.height * 0.35 },
+    y0click: function (): number { return this.y - this.height * 0.5 },
+    wclick: function (): number { return 0.84 * this.height },
+    hclick: function (): number { return this.height },
     // -------text in line 1 and 5------------------------------
     title: function (): string {
-      if (this.seg7?.name) return this.geo.center(this.seg7.name)
+      if (this.ciSeg7?.name) return this.geo.center(this.ciSeg7.name)
       return this.geo.center(this.sid)
     },
     line5: function (): string {
-      if (this.seg7?.text5) return this.geo.center(this.seg7.text5)
-      if (this.seg7?.battery) return this.geo.center(this.seg7.battery)
+      if (this.ciSeg7?.text5) return this.geo.center(this.ciSeg7.text5)
+      // if (this.ciSeg7?.battery) return this.geo.center(this.ciSeg7.battery)
       return this.geo.center(this.sid)
     }
   },
+  // =========special methods===================================
   methods: {
-    val2seg: function (value: string): number {
+    // -------convert digit to segments (value 0...511)---------
+    digit2seg: function (value: string): number {
       let retSeg = 0
       if (value.length < 1) return retSeg
-      if (value.length > 1) {
-        if (value.at(1) === '.') retSeg = 128
-        if (value.at(1) === ':') retSeg = 256
-        if (value.at(0) === '+') {
-          const numx = Number.parseInt(value, 10)
-          if (Number.isNaN(numx)) return 0
-          return numx
-        }
+      if (value.indexOf('.') >= 0) retSeg += 128
+      if (value.indexOf(':') >= 0) retSeg += 256
+      if (value.at(0) === '+') {
+        const numx = Number.parseInt(value, 10)
+        if (Number.isNaN(numx)) return 0
+        return numx
       }
       const value1 = value.substring(0, 1)
-      if (value1 === '-') { return retSeg + VALUE2SEGS[16] }
-      if (value1 === '=') { return retSeg + VALUE2SEGS[17] }
+      if (value1 === '-') { return retSeg + DIGIT2SEGS[16] }
+      if (value1 === '=') { return retSeg + DIGIT2SEGS[17] }
       const num = Number.parseInt(value1, 16)
       if (!Number.isNaN(num)) {
-        if ((num >= 0) && (num < 16)) retSeg += VALUE2SEGS[num]
+        if ((num >= 0) && (num < 16)) retSeg += DIGIT2SEGS[num]
       }
       return retSeg
     },
-    onClk: function (): void {
-      console.log(this.sid, 'Seg7-Click')
-      const topic = 'error/seg7'
-      let payload = '-1'
-      if (!this.seg7) ciSeg7Controller.publishCi(topic, payload)
-      if (this.seg7?.pubTopic) {
-        const aPubTopic = this.seg7.pubTopic.split(' ')
-        aPubTopic.forEach(topic => {
-          if (this.seg7?.pubPayload) payload = this.seg7.pubPayload
-          ciSeg7Controller.publishCi(topic, payload)
-        })
+    // -------draw segment 1=a to 7=g (path d value)------------
+    pathSeg: function (iSeg: number): string {
+      if (iSeg < 1 && iSeg > 7) return ''
+      const f = this.height / this.height0
+      let s1 = 'M' + this.x + ',' + this.y
+      switch (iSeg) {
+        case 1: // segA
+          s1 += ' m' + (-2.900 * f) + ',' + (-10.850 * f) + ' l' + (8.750 * f) + ',' + (0.000 * f) + ' l' + (1.870 * f) + ',' + (-1.530 * f) + ' l' + (-0.770 * f) + ',' + (-0.720 * f) + ' l' + (-10.170 * f) + ',' + (0.000 * f) + ' l' + (-1.180 * f) + ',' + (0.850 * f) + ' z'
+          break
+        case 2: // segB
+          s1 += ' m' + (5.110 * f) + ',' + (-1.450 * f) + ' l' + (1.040 * f) + ',' + (1.100 * f) + ' l' + (1.250 * f) + ',' + (-0.900 * f) + ' l' + (1.320 * f) + ',' + (-9.950 * f) + ' l' + (-0.720 * f) + ',' + (-0.850 * f) + ' l' + (-1.600 * f) + ',' + (1.360 * f) + ' z'
+          break
+        case 3: // segC
+          s1 += ' m' + (3.470 * f) + ',' + (10.590 * f) + ' l' + (1.230 * f) + ',' + (1.360 * f) + ' l' + (1.000 * f) + ',' + (-0.700 * f) + ' l' + (1.300 * f) + ',' + (-10.000 * f) + ' l' + (-1.000 * f) + ',' + (-1.030 * f) + ' l' + (-1.250 * f) + ',' + (1.010 * f) + ' z'
+          break
+        case 4: // seg D
+          s1 += ' m' + (-6.900 * f) + ',' + (13.100 * f) + ' l' + (10.120 * f) + ',' + (0.000 * f) + ' l' + (1.180 * f) + ',' + (-0.850 * f) + ' l' + (-1.250 * f) + ',' + (-1.400 * f) + ' l' + (-9.020 * f) + ',' + (0.000 * f) + ' l' + (-1.810 * f) + ',' + (1.400 * f) + ' z'
+          break
+        case 5: // seg E
+          s1 += ' m' + (-8.650 * f) + ',' + (11.150 * f) + ' l' + (0.750 * f) + ',' + (0.800 * f) + ' l' + (1.600 * f) + ',' + (-1.250 * f) + ' l' + (1.340 * f) + ',' + (-9.370 * f) + ' l' + (-1.040 * f) + ',' + (-1.110 * f) + ' l' + (-1.300 * f) + ',' + (1.060 * f) + ' z'
+          break
+        case 6: // seg F
+          s1 += ' m' + (-6.950 * f) + ',' + (-1.400 * f) + ' l' + (0.990 * f) + ',' + (1.050 * f) + ' l' + (1.360 * f) + ',' + (-1.000 * f) + ' l' + (1.300 * f) + ',' + (-9.280 * f) + ' l' + (-1.350 * f) + ',' + (-1.420 * f) + ' l' + (-0.950 * f) + ',' + (0.770 * f) + ' z'
+          break
+        case 7: // seg G
+          s1 += ' m' + (-4.700 * f) + ',' + (1.050 * f) + ' l' + (8.900 * f) + ',' + (0.000 * f) + ' l' + (1.560 * f) + ',' + (-1.100 * f) + ' l' + (-1.010 * f) + ',' + (-1.150 * f) + ' l' + (-8.880 * f) + ',' + (0.000 * f) + ' l' + (-1.570 * f) + ',' + (1.150 * f) + ' z'
+          break
+        default: break
       }
+      return s1
+    },
+    // -------color of segment 1=a to 7=g-----------------------
+    colorSeg: function (iSeg: number): string {
+      const mask = 1 << (iSeg - 1)
+      if ((this.digit2seg(this.value7) & mask) > 0) return this.colorOn
+      else return this.colorOff
+    },
+    // -------Seg7: react on mouse click------------------------
+    onClick_: function (): void {
+      console.log(this.sid, 'click on 7-segment digit!')
+      const topic = this.ciSeg7?.pubTopic ?? 'ci/ciSeg7/ret/error'
+      ciSeg7Controller.publishCi(topic, this.value7)
+    },
+    // -------Base area: react on mouse click-------------------
+    onClk: function (): void {
+      console.log(this.sid, 'Click on base area!')
     }
   }
 })

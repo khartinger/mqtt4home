@@ -3,39 +3,53 @@ import { reactive } from 'vue'
 import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
 
-export interface Seg7x extends IBase {
+export interface CiSeg7x extends IBase {
   iSeg7xState: number;
-  battery: string;
   text5?: string;
+  value7x?: string;
 }
 
 export class CiSeg7xController extends CiBaseController {
-  public seg7xs: Array<Seg7x> = reactive(
+  public ciSeg7xs: Array<CiSeg7x> = reactive(
     [
       {
-        id: 'seg7x_1',
+        id: 'ciSeg7x_1',
+        name: '',
+        iSeg7xState: -1,
+        text5: 'line 5 text...',
+        subTopic: 'ci/seg7x/1/set/value',
+        pubTopic: 'ci/seg7x/1/ret/value'
+        // pubPayload: '?'
+      },
+      {
+        id: 'ciSeg7x_2',
         name: ' ',
         iSeg7xState: -1,
-        battery: '-',
         text5: 'text5',
-        subTopic: 'ci/seg7x/1/set/seg7',
-        pubTopic: 'ci/seg7x/1/set/seg7',
-        pubPayload: '-1'
+        subTopic: 'ci/seg7x/2/set/value',
+        pubTopic: 'ci/seg7x/2/ret/value'
+        // pubPayload: '?'
+      },
+      {
+        id: 'ciSeg7x_3',
+        name: ' ',
+        iSeg7xState: -1,
+        text5: 'text5',
+        subTopic: 'ci/seg7x/3/set/value',
+        pubTopic: 'ci/seg7x/3/ret/value'
+        // pubPayload: '?'
       }
+
     ]
   );
 
   public onMessage (message: Message): void {
-    this.seg7xs.forEach(seg7x => {
-      const aSubTopic = seg7x.subTopic.split(' ')
+    this.ciSeg7xs.forEach(ciSeg7x => {
+      const aSubTopic = ciSeg7x.subTopic.split(' ')
       if (aSubTopic.includes(message.topic)) {
-        // ---seg7 found ---------------------------------
-        if ((message.payload === '1') || (message.payload === 'on')) seg7x.iSeg7xState = 1
-        else {
-          if ((message.payload === '0') || (message.payload === 'off')) seg7x.iSeg7xState = 0
-          else { seg7x.iSeg7xState = -1 }
-        }
-        // console.log('CiSeg7xController:onMessage: message.payload=', message.payload)
+        // ---seg7x found---------------------------------
+        ciSeg7x.value7x = message.payload
+        console.log('CiSeg7xController:onMessage: message.payload=', message.payload)
       }
     })
   }

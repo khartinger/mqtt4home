@@ -3,39 +3,36 @@ import { reactive } from 'vue'
 import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
 
-export interface Seg7 extends IBase {
+export interface CiSeg7 extends IBase {
   iSeg7State: number;
-  battery: string;
+  value7?: string;
   text5?: string;
 }
 
 export class CiSeg7Controller extends CiBaseController {
-  public seg7s: Array<Seg7> = reactive(
+  public ciSeg7s: Array<CiSeg7> = reactive(
     [
       {
-        id: 'seg7_1',
-        name: ' ',
+        id: 'ciSeg7_1',
+        name: 'CiSeg7',
         iSeg7State: -1,
-        battery: '-',
-        text5: 'text5',
-        subTopic: 'ci/seg7/1/set/seg7',
-        pubTopic: 'ci/seg7/1/set/seg7',
+        value7: '8:.',
+        text5: 'one digit',
+        subTopic: 'ci/seg7/1/set/value',
+        pubTopic: 'ci/seg7/1/ret/value',
         pubPayload: '-1'
       }
     ]
   );
 
   public onMessage (message: Message): void {
-    this.seg7s.forEach(seg7 => {
-      const aSubTopic = seg7.subTopic.split(' ')
+    this.ciSeg7s.forEach(ciSeg7 => {
+      const aSubTopic = ciSeg7.subTopic.split(' ')
       if (aSubTopic.includes(message.topic)) {
-        // ---seg7 found ---------------------------------
-        if ((message.payload === '1') || (message.payload === 'on')) seg7.iSeg7State = 1
-        else {
-          if ((message.payload === '0') || (message.payload === 'off')) seg7.iSeg7State = 0
-          else { seg7.iSeg7State = -1 }
-        }
-        // console.log('CiSeg7Controller:onMessage: message.payload=', message.payload)
+        // ---ciSeg7 found ---------------------------------
+        ciSeg7.value7 = message.payload
+        ciSeg7.iSeg7State = 1
+        console.log('CiSeg7Controller:onMessage: message.payload=', message.payload)
       }
     })
   }
