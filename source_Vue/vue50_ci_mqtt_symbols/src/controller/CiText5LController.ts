@@ -90,7 +90,7 @@ export class CiText5LController extends CiBaseController {
         }
         // ---convert payload lines into display lines----------
         let aHelp: string[] = []
-        for (let i1 = iLine; i1 < maxLines; i1++) {
+        for (let i1 = iPay; i1 < numPay; i1++) {
           if (!aPay[iPay]) break
           aHelp = this.splitToArray(aPay[iPay++], maxCharPerLine)
           // console.log('aHelp: ', aHelp)
@@ -100,7 +100,7 @@ export class CiText5LController extends CiBaseController {
             text5L.lines[iLine++] = aHelp[i2]
             if (iLine > maxLines) { // finished. End for loops
               i2 = lenHelp
-              i1 = maxLines
+              i1 = numPay
             }
           }
         }
