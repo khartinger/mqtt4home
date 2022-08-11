@@ -1,5 +1,5 @@
 <!--CiText5L.vue-->
-<!--2022-08-09 khartinger-->
+<!--2022-08-11 khartinger-->
 <template>
   <!--draw border: : outer and inner rectangle-------------- -->
   <rect v-if="border0" class="ciOut" :x="geo.x0()" :y="geo.y0()" :width="2*geo.dxo" :height="geo.dyo" />
@@ -64,22 +64,6 @@ export default defineComponent({
       return false
     },
     // -------text in line ...----------------------------------
-    /*
-    line1: function (): string {
-      if (this.text5L) {
-        if (this.iText5LState === 1) {
-          if (this.text5L.name) return this.checkLenL(this.text5L.name)
-        }
-        if (this.iText5LState === 2) {
-          return this.checkLenL(this.sid)
-        }
-        if (this.iText5LState === 4) {
-          if (this.text5L.lines.length > 0) return this.checkLenL(this.text5L.lines[0])
-        }
-      }
-      return ''
-    },
-    */
     lineX: function (): Array<string> {
       const lineValues = []
       if (this.text5L) {
