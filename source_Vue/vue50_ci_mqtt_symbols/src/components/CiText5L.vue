@@ -1,4 +1,5 @@
 <!--CiText5L.vue-->
+<!--2022-08-09 khartinger-->
 <template>
   <!--draw border: : outer and inner rectangle-------------- -->
   <rect v-if="border0" class="ciOut" :x="geo.x0()" :y="geo.y0()" :width="2*geo.dxo" :height="geo.dyo" />
@@ -6,7 +7,7 @@
   <!--Draw rectangle 1, if line 1 is a title---------------- -->
   <rect v-if="isRect1" class="ciRect" :x="geo.x1()" :y="geo.yr(1)" :width="2*geo.dxo-2*geo.dxm" :height="geo.dyl" />
   <!--write text-------------------------------------------- -->
-  <text class="ciFont1" :x="geo.xt()" :y="geo.yt(1)">{{line1}}</text>
+  <text class="ciFont1" :x="geo.xt()" :y="geo.yt(1)">{{lineX[1]}}</text>
   <text class="ciFont1" :x="geo.xt()" :y="geo.yt(2)">{{lineX[2]}}</text>
   <text class="ciFont1" :x="geo.xt()" :y="geo.yt(3)">{{lineX[3]}}</text>
   <text class="ciFont1" :x="geo.xt()" :y="geo.yt(4)">{{lineX[4]}}</text>
@@ -59,17 +60,26 @@ export default defineComponent({
       return geo1
     },
     isRect1: function (): boolean {
-      if (this.iText5LState === 1) return false
-      return true
+      if (this.iText5LState > 0) return true
+      return false
     },
     // -------text in line ...----------------------------------
+    /*
     line1: function (): string {
       if (this.text5L) {
-        if (this.text5L.lines.length > 0) return this.checkLenL(this.text5L.lines[0])
-        if (this.text5L.name) return this.checkLenL(this.text5L.name)
+        if (this.iText5LState === 1) {
+          if (this.text5L.name) return this.checkLenL(this.text5L.name)
+        }
+        if (this.iText5LState === 2) {
+          return this.checkLenL(this.sid)
+        }
+        if (this.iText5LState === 4) {
+          if (this.text5L.lines.length > 0) return this.checkLenL(this.text5L.lines[0])
+        }
       }
-      return this.checkLenL(this.sid)
+      return ''
     },
+    */
     lineX: function (): Array<string> {
       const lineValues = []
       if (this.text5L) {
