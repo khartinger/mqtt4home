@@ -108,14 +108,14 @@ export default defineComponent({
         // ---should line 1 be a title?-------------------------
         let iLine = 0 //               index of lines to display
         if (this.textarea.iTextareaState === 1) { // title = name
-          if (this.textarea.name) aLines[iLine++] = this.textarea.name
+          if (this.textarea.name) aLines[iLine++] = this._checkLen(this.textarea.name)
           else aLines[iLine++] = ''
         }
         if (this.textarea.iTextareaState === 2) { // title = id
-          aLines[iLine++] = this.textarea.id
+          aLines[iLine++] = this._checkLen(this.textarea.id)
         }
         if (this.textarea.iTextareaState === 4) { // title = payload line 0
-          aLines[iLine++] = aPay[iPay++]
+          aLines[iLine++] = this._checkLen(aPay[iPay++])
         }
         // ---convert payload lines into display lines----------
         let aHelp: string[] = []
@@ -134,6 +134,7 @@ export default defineComponent({
           }
         }
       }
+      console.log('aLines=', aLines)
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       gLines = aLines
       // return aLines
@@ -162,7 +163,7 @@ export default defineComponent({
     // -------text in line ...----------------------------------
     lineY: function (linenumber: number): string {
       if (linenumber < 1 || linenumber > this.maxLine) return ''
-      return gLines[linenumber]
+      return gLines[linenumber - 1]
     },
 
     // -------check text length---------------------------------

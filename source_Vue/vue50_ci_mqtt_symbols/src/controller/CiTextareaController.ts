@@ -8,9 +8,7 @@ import { geo0 } from '@/components/CiBase.vue'
 
 export interface Textarea extends IBase {
   iTextareaState: number; // 0=no title, 1=name, 2=id, 4=message
-  lines: string[];
   payload: string;
-  newPayload: boolean;
 }
 
 export class CiTextareaController extends CiBaseController {
@@ -18,11 +16,9 @@ export class CiTextareaController extends CiBaseController {
     [
       {
         id: 'textarea_1',
-        name: 'Infotext',
-        iTextareaState: 1,
-        lines: ['--Textarea--', '(No info)', '', '', ''],
+        name: 'textarea',
+        iTextareaState: 4,
         payload: '***Textarea***\nThis is Line2\nLine3: ÄqÖpÜg---6789|\n123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|',
-        newPayload: true,
         subTopic: 'ci/textarea/set',
         pubTopic: '',
         pubPayload: ''
@@ -79,15 +75,8 @@ export class CiTextareaController extends CiBaseController {
       const aSubTopic = textarea.subTopic.split(' ')
       if (aSubTopic.includes(message.topic)) {
         // ---textarea topic found -----------------------------
-        // const maxCharPerLine = CiTextarea._maxCharPerLine
-        const maxCharPerLine = 2 * geo0.tmax
-        const maxLines = 5 // maximum of display lines
-        for (let iL = 0; iL < maxLines; iL++) textarea.lines[iL] = ' '
-        // ...split payload into parts ("payload lines")........
-
         textarea.payload = message.payload
-        textarea.newPayload = true
-
+        /*
         let s1 = message.payload
         s1 = s1.replaceAll('\\n', '^~') // replace "text" \n
         let aPay: string[] = []
@@ -128,6 +117,7 @@ export class CiTextareaController extends CiBaseController {
             }
           }
         }
+      */
       } // END textarea topic found
     })
   }
