@@ -1,9 +1,11 @@
-<!-- CiBase.vue -----------------------------2022-01-08----- -->
+<!-- CiBase.vue -----------------------------khartinger----- -->
+<!-- 2022-01-08 New                                          -->
+<!-- 2022-08-14 Add fx, fy, calctmax                         -->
 <template>
   <!--border: outer and inner rectangle--------------------- -->
-  <rect v-if="border1" class="ciOut0" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
-  <rect v-if="border2" class="ciOut" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
-  <rect v-if="border3" class="ciIn"  :x="geo.x1()" :y="geo.y1()" :width="geo.dxi" :height="geo.dyi" />
+  <rect v-if="border1" class="ciOut0" :x="geo.x0()" :y="geo.y0()" :width="fx*geo.dxo" :height="fy*geo.dyo" />
+  <rect v-if="border2" class="ciOut" :x="geo.x0()" :y="geo.y0()" :width="fx*geo.dxo" :height="fy*geo.dyo" />
+  <rect v-if="border3" class="ciIn"  :x="geo.x1()" :y="geo.y1()" :width="fx*geo.dxo-2*geo.dxm" :height="fy*geo.dyo-2*geo.dym" />
 </template>
 
 <script lang="ts">
@@ -26,6 +28,16 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 2
+    },
+    fx: {
+      type: Number,
+      required: false,
+      default: 1
+    },
+    fy: {
+      type: Number,
+      required: false,
+      default: 1
     }
   },
   emits: ['onClk'],
@@ -61,9 +73,9 @@ export default defineComponent({
 })
 
 // -----------font data-----------------------------------------
-// examples: fh_=11, tmax_=14 or 16/13, ...
+// examples: fh_=11, tmax_=10 or 16/13, ...
 const fh_ = 11 //            font height [pixel]
-const tmax_ = 10 //          max number character per line
+const tmax_ = 10 //        max number character per line
 // -----------y direction---------------------------------------
 const dyl_ = Math.round(0.5 + 22 * fh_ / 14) //  line hight
 const dyi_ = 5 * dyl_ //                         inner hight
@@ -101,9 +113,9 @@ export class Geo {
   public noTime = '--:--:--'
   public batteryMin = 15
   // ---------texts in different languages----------------------
-  public textOpen = 'OPEN' // 'AUF' //    OPEN
-  public textClose = 'CLOSE' // 'ZU' //    CLOSE
-  public textLock = 'LOCK' // 'SPERRE' // LOCK
+  public textOpen = 'AUF' // 'AUF' //    OPEN
+  public textClose = 'ZU' // 'ZU' //    CLOSE
+  public textLock = 'SPERRE' // 'SPERRE' // LOCK
 
   // =========relative geometric values=========================
   // ---------font data-----------------------------------------
@@ -185,6 +197,12 @@ export class Geo {
     const s1 = text.padStart(numBlank + len, ' ')
     return s1
   }
+
+  // ---------calculate chars per line depending on fx----------
+  public calctmax (fx_: number): number {
+    return Math.trunc(11.9 * fx_ - 1.7)
+  }
+
 }
 export const geo0 = new Geo(0, 0)
 </script>

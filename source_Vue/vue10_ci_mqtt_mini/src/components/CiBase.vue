@@ -1,9 +1,11 @@
-<!--CiBase.vue----------------------------------- 2021-12-28 -->
+<!-- CiBase.vue -----------------------------khartinger----- -->
+<!-- 2022-01-08 New                                          -->
+<!-- 2022-08-14 Add fx, fy, calctmax                         -->
 <template>
   <!--border: outer and inner rectangle--------------------- -->
-  <rect v-if="border1" class="ciOut0" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
-  <rect v-if="border2" class="ciOut" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
-  <rect v-if="border3" class="ciIn"  :x="geo.x1()" :y="geo.y1()" :width="geo.dxi" :height="geo.dyi" />
+  <rect v-if="border1" class="ciOut0" :x="geo.x0()" :y="geo.y0()" :width="fx*geo.dxo" :height="fy*geo.dyo" />
+  <rect v-if="border2" class="ciOut" :x="geo.x0()" :y="geo.y0()" :width="fx*geo.dxo" :height="fy*geo.dyo" />
+  <rect v-if="border3" class="ciIn"  :x="geo.x1()" :y="geo.y1()" :width="fx*geo.dxo-2*geo.dxm" :height="fy*geo.dyo-2*geo.dym" />
 </template>
 
 <script lang="ts">
@@ -26,6 +28,16 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 2
+    },
+    fx: {
+      type: Number,
+      required: false,
+      default: 1
+    },
+    fy: {
+      type: Number,
+      required: false,
+      default: 1
     }
   },
   emits: ['onClk'],
@@ -61,9 +73,9 @@ export default defineComponent({
 })
 
 // -----------font data-----------------------------------------
-// examples: fh_=11, tmax_=14 or 16/13, ...
+// examples: fh_=11, tmax_=10 or 16/13, ...
 const fh_ = 11 //            font height [pixel]
-const tmax_ = 14 //          max number character per line
+const tmax_ = 10 //        max number character per line
 // -----------y direction---------------------------------------
 const dyl_ = Math.round(0.5 + 22 * fh_ / 14) //  line hight
 const dyi_ = 5 * dyl_ //                         inner hight
@@ -79,19 +91,31 @@ const dxm_ = dym_ //                             left margin
 const dxi_ = dxo_ - 2 * dxm_ //                  inner width
 const dxi2_ = dxo2_ - dxm_ //                    half dxi_
 const dxt_ = Math.round(0.5 + fh_ / 14 + 18 / 14) // text-border
+const dw2_ = Math.round(dyl_ / 2) //             half wall thickness
 
 export class Geo {
   // =========special values====================================
-  public colorOk = '#CCFFCC' //         light green
+  public colorOk = '#CCFFCC' //         light green 2
   public colorNotOk = '#FFCCCC' //      light red
-  public colorError = '#FF0000' //      red
+  public colorError = '#FF3333' //      red
+  public colorAlarm = '#FF3333' //      red
   public colorOn = '#FFFF66' //         yellow
-  public colorOff = '#AAAAAA' //        light grey
-  public colorUnknown = '#9999FF' //    light blue
-  public colorBackground = '#DDFFDD' // light green
+  public colorOn2 = '#FFD700' //        gold
+  public colorOff = '#D0D0D0' //        light grey
+  public colorOff2 = '#505050' //        dark grey
+  public colorUnknown = '#add8e6' //    light blue
+  public colorBackground = '#DDFFDD' // very light green
+  public colorOpen = '#90ee90' //       light green
+  public colorClose = '#FF6666' //      light red
+  public colorLock = '#C00000' //       red
+  public colorWall = '#600000' //       dark red 6
   public noDate = '--.--.----'
   public noTime = '--:--:--'
   public batteryMin = 15
+  // ---------texts in different languages----------------------
+  public textOpen = 'AUF' // 'AUF' //    OPEN
+  public textClose = 'ZU' // 'ZU' //    CLOSE
+  public textLock = 'SPERRE' // 'SPERRE' // LOCK
 
   // =========relative geometric values=========================
   // ---------font data-----------------------------------------
@@ -112,6 +136,8 @@ export class Geo {
   public dxi = dxi_ //            inner width
   public dxi2 = dxi2_ //          half inner width
   public dxt = dxt_ //            text start in x direction
+  // ---------other dimensions----------------------------------
+  public dw2 = dw2_ //            half wall thickness
 
   // =========absolute geometric values=========================
   // ---------center of symbol----------------------------------
@@ -155,7 +181,7 @@ export class Geo {
   // ---------trim text to line length--------------------------
   public checkLen (text: string): string {
     if (text) {
-      if (text.length > this.tmax) return text.substr(0, this.tmax)
+      if (text.length > this.tmax) return text.substring(0, this.tmax)
       return text
     }
     return ''
@@ -164,18 +190,26 @@ export class Geo {
   // ---------center text (or trim text to line length)---------
   public center (text: string): string {
     const len = text.length
-    if (len >= this.tmax) return text.substr(0, this.tmax)
-    const numBlank = Math.round((this.tmax - len) / 2)
-    // const numBlank = Math.round((this.tmax - len) / 2 - 1)
+    if (len < 1) return ''
+    if (len >= this.tmax) return text.substring(0, this.tmax)
+    const numBlank = Math.round((this.tmax - len - 1) / 2)
+    // console.log('center: text=', '|' + text + '| numBlank=' + numBlank)
     const s1 = text.padStart(numBlank + len, ' ')
     return s1
   }
+
+  // ---------calculate chars per line depending on fx----------
+  public calctmax (fx_: number): number {
+    return Math.trunc(11.9 * fx_ - 1.7)
+  }
+
 }
 export const geo0 = new Geo(0, 0)
 </script>
 
 <style>
-  .ciFont1   { font-size: 11px; font-weight: bold; font-family: monospace; color: black; white-space: pre; }
+  .ciFont1   { font-size: 14px; font-weight: bold; font-family: "DejaVu Sans Mono","monospace"; color: black; white-space: pre; }
+  .ciFont2   { font-size: 28px; font-weight: bold; font-family: "DejaVu Sans Mono","monospace"; color: black; white-space: pre; }
   .fontOK    { font-weight: bold; color: lightgreen; }
   .fontNOK   { font-weight: bold; color: red; }
   .cursor    { cursor: pointer; }
