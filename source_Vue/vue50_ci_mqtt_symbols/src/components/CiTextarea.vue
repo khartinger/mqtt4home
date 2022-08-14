@@ -10,7 +10,7 @@
   <!--show lines-------------------------------------------- -->
   <text v-for="index in maxLine" :key="index" class="ciFont1" :x="geo.xt()" :y="_yt(index)">{{lineY(index)}}</text>
   <!--define click area------------------------------------- -->
-  <rect @click="onClk()" class="ciClick" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo" :height="geo.dyo" />
+  <rect @click="onClk()" class="ciClick" :x="geo.x0()" :y="geo.y0()" :width="fx*geo.dxo" :height="fy*geo.dyo" />
 </template>
 
 <script lang="ts">
