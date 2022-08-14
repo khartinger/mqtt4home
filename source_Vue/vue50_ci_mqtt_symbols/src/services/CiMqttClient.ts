@@ -96,12 +96,13 @@ export class CiMqttClient {
     console.log('MqttClient-Constructor: privateMqttState.connectOnStart = ', this.privateMqttState.connectOnStart)
     if (this.privateMqttState.connectOnStart) {
       console.log('MqttClient-Constructor: connecting to ' + this.connectUrl())
-      this.connect_()
-      this.subTopic = this.privateMqttSubscription.topic
-      this.subQos = this.privateMqttSubscription.qos
-      console.log('MqttClient-Constructor: subscribe ' + this.privateMqttSubscription.topic)
-      this.subscribe_()
-      console.log('MqttClient-Constructor: finished')
+      this.connect_().then(() => {
+        this.subTopic = this.privateMqttSubscription.topic
+        this.subQos = this.privateMqttSubscription.qos
+        console.log('MqttClient-Constructor: subscribe ' + this.privateMqttSubscription.topic)
+        this.subscribe_().catch((e) => { console.error('MqttClient-constructor: Subcribe ERROR:', e) })
+      }).catch((e) => { console.error('MqttClient-constructor: Connect ERROR:', e) })
+      console.log('MqttClient-constructor: finished')
     }
   }
 
@@ -121,7 +122,7 @@ export class CiMqttClient {
   // _________private variant: connect to server (broker)_______
   private connect_ (): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.client) this.disconnect()
+      if (this.client) this.disconnect().catch((e) => { console.error('MqttClient-connect_: ERROR while disconnecting:', e) })
       this.privateMqttState.iConnMqttState = 2
       const options_ = {
         clean: this.mqttConnection.clean,
@@ -217,7 +218,7 @@ export class CiMqttClient {
         // console.log('CiMqttClient:subscribe: failed - not connected! ' + this.privateMqttSubscription.topic)
         return reject(new Error('subscribe: Not Connected'))
       }
-      this.unsubscribe()
+      this.unsubscribe().catch((e) => { console.error('MqttClient-subscribe_: ERROR:', e) })
       this.client.subscribe(this.subTopic, { qos: this.subQos }, (err) => {
         if (err) {
           // console.log('CiMqttClient:subscribe: failed! ' + this.subTopic)
@@ -282,12 +283,12 @@ export class CiMqttClient {
   }
 
   // _________connect to a broker and subscribe a topic_________
-  public hostSubscribe (host: string, topicSubscribe: string): boolean {
+  public async hostSubscribe (host: string, topicSubscribe: string): Promise<boolean> {
     this.privateMqttConnection.host = host
     this.privateMqttSubscription.topic = topicSubscribe
     try {
-      this.connect_()
-      this.subscribe_()
+      await this.connect_()
+      await this.subscribe_()
     } catch (err) {
       console.error('CiMqttClient.hostSubscribe: Error ' + err)
       return false
@@ -302,10 +303,10 @@ export class CiMqttClient {
   }
 
   // _________reconnect to broker with default values___________
-  public reconnectBroker (): boolean {
+  public async reconnectBroker (): Promise<boolean> {
     try {
-      this.connect_()
-      this.subscribe_()
+      await this.connect_()
+      await this.subscribe_()
     } catch (err) {
       console.error('CiMqttClient.reconnectBroker: Error ' + err)
       return false
