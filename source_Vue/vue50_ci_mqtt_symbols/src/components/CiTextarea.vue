@@ -27,7 +27,6 @@ export default defineComponent({
   },
   data () {
     return {
-      colorTextarea: 'yellow'
     }
   },
   props: {
