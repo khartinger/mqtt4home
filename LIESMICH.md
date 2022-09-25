@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 03.02.2022 <a name="up"></a>   
+Letzte &Auml;nderung: 25.09.2022 <a name="up"></a>   
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></img></td><td>
 <h1>MQTT f&uuml;r den Hausgebrauch :)</h1>
 <a href="README.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
@@ -54,8 +54,7 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 * [Raspberry Pi installieren (2021-07-31)](md/m4h01_RasPiInstall.md)
 * [Raspberry Pi als Access-Point (2021-07-31)](md/m4h02_RasPiAccessPoint.md)
 * [Raspberry Pi als MQTT-Broker (2021-07-31)](md/m4h03_RasPiMQTTBroker.md)
-* [Raspberry Pi: Regelm&auml;&szlig;iges Senden von MQTT-Nachrichten (2021-10-12)](md/m4h104_RasPi_crontab.md)
-* [Vue-MQTT: Wie erstellt man ein CI-Symbol? (Beispiel: Lampe) (2021-12-23)](md/m4h520_Vue_ci_mqtt_lamp1.md)
+* [Raspberry Pi: Regelm&auml;&szlig;iges Senden von MQTT-Nachrichten mittels crontab (2021-10-12)](md/m4h104_RasPi_crontab.md)
 
 ---   
 
@@ -85,6 +84,7 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 * [MQTT-Vue-Komponenten zum Verbinden, Ver&ouml;ffentlichen, Abonnieren und Anzeigen (2021-12-19)](md/m4h515_Vue_ci_mqtt_conpubsublast.md)
 * [Vue-MQTT: Wie erstellt man ein CI-Symbol? (Beispiel: CiLamp) (2021-12-23)](md/m4h520_Vue_ci_mqtt_lamp1.md)
 * [Vue+VSC: Schalten von Lampen mit MQTT (2021-12-25)](md/m4h525_Vue_ci_mqtt_lamp_button1.md)
+* [Vue+VSC: Schalten einer Lampe mit Steckdosen-Symbol (2022-09-25)](md/m4h527_Vue_ci_mqtt_lamp_socket2.md)
 * [Vue+VSC: Wie erstellt man ein Vue Projekt mit mehreren Web-Seiten? (2021-12-26)](md/m4h535_Vue_ci_mqtt_multipage1.md)   
 * [__Vue+VSC: Beispiele f&uuml;r Ci-Symbole (2022-01-20)__](md/m4h550_Vue_ci_mqtt_all.md)   
 * [Vue+VSC: Wie zeichnet man einen Hausplan? (CiWall-Elemente) (2022-01-04)](md/m4h560_Vue_ci_mqtt_wall1.md)   

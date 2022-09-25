@@ -1,4 +1,4 @@
-Last modified: 2022-02-03 <a name="up"></a>   
+Last modified: 2022-09-25 <a name="up"></a>   
 <table><tr><td><img src="md/logo/mqtt4home_96.png"></img></td><td>
 <h1>MQTT for domestic/home use :)</h1>
 <a href="LIESMICH.md">==> German version</a>&nbsp; &nbsp; &nbsp; 
@@ -54,8 +54,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [Install Raspberry Pi (2021-07-31)](md/m4h01_RasPiInstall_e.md)
 * [Raspberry Pi as access point (2021-07-31)](md/m4h02_RasPiAccessPoint_e.md)
 * [Raspberry Pi as MQTT broker (2021-07-31)](md/m4h03_RasPiMQTTBroker_e.md)
-* [Raspberry Pi: Sending MQTT messages regularly (2021-10-12)](md/m4h104_RasPi_crontab_e.md)
-* [Vue-MQTT: How to create a CI symbol? (Example: Lamp) (2021-12-23)](md/m4h520_Vue_ci_mqtt_lamp1_e.md)
+* [Raspberry Pi: Sending MQTT messages regularly using crontab (2021-10-12)](md/m4h104_RasPi_crontab_e.md)
 
 ---   
 
@@ -85,6 +84,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [MQTT Vue components for connecting, publishing, subscribing, and viewing (2021-12-19)](md/m4h515_Vue_ci_mqtt_conpubsublast_e.md)
 * [Vue-MQTT: How to create a CI symbol? (Example: CiLamp) (2021-12-23)](md/m4h520_Vue_ci_mqtt_lamp1_e.md)
 * [Vue+VSC: Switching lamps with MQTT (2021-12-25)](md/m4h525_Vue_ci_mqtt_lamp_button1_e.md)
+* [Vue+VSC: Switching a lamp with socket symbol (2022-09-25)](md/m4h527_Vue_ci_mqtt_lamp_socket2.md)
 * [Vue+VSC: How to create a Vue project with multiple web pages? (2021-12-26)](md/m4h535_Vue_ci_mqtt_multipage1_e.md)   
 * [__Vue+VSC: Examples of Ci symbols (2022-01-20)__](md/m4h550_Vue_ci_mqtt_all_e.md)   
 * [Vue+VSC: How to draw a house plan? (CiWall elements) (2022-01-04)](md/m4h560_Vue_ci_mqtt_wall1_e.md)   
