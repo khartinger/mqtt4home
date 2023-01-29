@@ -4,8 +4,8 @@
 <template>
   <!--draw border------------------------------------------- -->
   <CiBase :x="x" :y="y" :border="border" :fx="fx" :fy="fy"></CiBase>
-  <!--draw symbol------------------------------------------- -->
-  <rect :x="Rx0" :y="Ry0" :rx="Rrx" :ry="Rry" :width="Rw" :height="Rh" :fill="colorButton" stroke="black" stroke-width="2" class="cursor" />
+  <!--draw shape-------------------------------------------- -->
+  <rect :x="Sx0" :y="Sy0" :rx="Srx" :ry="Sry" :width="Sw" :height="Sh" :fill="colorButton" stroke="black" stroke-width="2" class="cursor" />
   <!--draw extra symbol (shape)----------------------------- -->
   <path v-if="isPath" :d="drawPath" fill="none" stroke="black" stroke-width="1"/>
   <!--write center text------------------------------------- -->
@@ -15,7 +15,7 @@
   <text v-if="iLines>1" :x="geof.xt()" :y="geof.ytFooter()" class="ciFont1">{{lineFooter}}</text>
 
   <!--define click area------------------------------------- -->
-  <rect @click="onClk()" class="ciClick" :x="geof.x0()" :y="geof.y0()" :width="geof.dxo()" :height="fy*geof.dyo()" />
+  <rect @click="onClk()" class="ciClick" :x="geof.x0()" :y="geof.y0()" :width="geof.dxo()" :height="geof.dyo()" />
 </template>
 
 <script lang="ts">
@@ -107,41 +107,41 @@ export default defineComponent({
       if (crx_ < cry_) return crx_
       return cry_
     },
-    // -------rectangle parameters: up left corner--------------
-    Rx0: function (): number {
+    // -------shape parameters: up left corner------------------
+    Sx0: function (): number {
       if (this.iShape > 4) { // circle, square
         return (this.geof.xc() - this.cr)
       }
       return this.geof.x1() // round, rect
     },
-    // -------rectangle parameters: up left corner--------------
-    Ry0: function (): number {
+    // -------shape parameters: up left corner------------------
+    Sy0: function (): number {
       if (this.iShape > 4) { // circle, square
         return (this.geof.yc(this.iLines) - this.cr)
       }
       if (this.iLines > 0) return this.geof.y1() + this.geof.dyl
       return this.geof.y1()
     },
-    // -------rectangle: corner rounding------------------------
-    Rrx: function (): number {
+    // -------shape: corner rounding----------------------------
+    Srx: function (): number {
       const i1 = 0 + this.iShape
       if ((i1 & 1) === 1) { //        square, rect
         return (this.cr / 10)
       }
       return (this.cr)
     },
-    Rry: function (): number {
-      return this.Rrx
+    Sry: function (): number {
+      return this.Srx
     },
-    // -------rectangle width-----------------------------------
-    Rw: function (): number {
+    // -------shape width---------------------------------------
+    Sw: function (): number {
       if (this.iShape > 4) { // circle, square
         return 2 * this.cr
       }
       return this.geof.dxi() // round, rect
     },
-    // -------rectangle height----------------------------------
-    Rh: function (): number {
+    // -------shape height--------------------------------------
+    Sh: function (): number {
       if (this.iShape > 4) { // circle, square
         return 2 * this.cr
       }
@@ -149,11 +149,6 @@ export default defineComponent({
       if (this.iLines === 1) dyL_ = this.geof.dyl
       if (this.iLines === 2) dyL_ = 2 * this.geof.dyl
       return this.geof.dyi() - dyL_
-    },
-    // -------center text position depending on number of lines_
-    dy: function (): number {
-      if (this.iLines === 1) return this.geof.dyl / 2
-      return 0
     },
     // -------button representation-------------------------------
     colorButton: function (): string {

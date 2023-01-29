@@ -56,7 +56,7 @@ _Anmerkung_:
 Restlicher Platz unten: 150 - 10 - 100 = 40 Einheiten   
 Restlicher Platz rechts: 300 - 100 = 200 Einheiten   
 
-## Randes eines Symbols
+## Rand eines Symbols
 Alle CI-Symbole sind im Normalfall au&szlig;en 100x100 Einheiten gro&szlig; und haben nach innen einen fixen Rand von 5 Einheiten. Die individuelle "Arbeitsfl&auml;che" eines Symbols ist also 90 x 90 Einheiten gro&szlig;.   
 Durch den Rand ist es m&ouml;glich, Symbole direkt nebeneinander in einem 100er-Raster anzuordnen, ohne dass sich die Symbol-Zeichnungen optisch ber&uuml;hren.   
 Will man den Rand eines CI-Symbols darstellen, so gibt es dazu vier M&ouml;glichkeiten, die &uuml;ber das Attribut `:border=` eingestellt werden:   
@@ -128,8 +128,7 @@ _Beispiele_:
 ## Farbe des Buttons
 Mit Hilfe des Attributs `color=` kann die Farbe eines CiButton1 gew&auml;hlt werden. Der Wert kann entweder ein RGB-Wert (rot-gr&uuml;n-blau-Wert), wie zB `#ffee00` oder eine Textangabe wie `red`, `green` etc. sein.   
 Wird kein Wert angegeben, ist die Farbe hellblau (entsprechend der Konstanten `colorUnknown` aus der Datei `Geo.ts`).   
-Die CiButton1-Farbe kann auch &uuml;ber empfangene MQTT-Nachrichten ver&auml;ndert werden, 
-was &uuml;ber die Variable `iButtonState` gesteuert werden kann. Dazu muss die Codierung der Methoden `onMessage` (in der Datei `CiButton1Controller.ts`) und `colorButton` (in der Datei `CiButton1.vue`) angepasst werden.   
+Die CiButton1-Farbe kann auch &uuml;ber empfangene MQTT-Nachrichten ver&auml;ndert werden, was &uuml;ber die Variable `iButtonState` gesteuert werden kann. Dazu muss die Codierung der Methoden `onMessage` (in der Datei `CiButton1Controller.ts`) und `colorButton` (in der Datei `CiButton1.vue`) angepasst werden.   
 
 # Nicht-grafische Eigenschaften
 ## Im Basis-Controller definierte Attribute
@@ -152,7 +151,7 @@ Folgende Attribute sind optional:
 Folgende Attribute sind zwingend anzugeben:   
 | Eigenschaft    | Bedeutung                            |   
 | -------------- | ------------------------------------ |   
-| `iButtonState` | Status des Buttons. Als Vorgabe f&uuml;r den Start zB -99 verwenden. |   
+| `iButton1State` | Status des Buttons. Als Vorgabe f&uuml;r den Start zB -99 verwenden. |   
 
 Folgende Attribute sind optional und k&ouml;nnen verwendet werden:   
 | Eigenschaft  | Bedeutung                            |   
