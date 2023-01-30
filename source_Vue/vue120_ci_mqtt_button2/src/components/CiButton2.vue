@@ -199,13 +199,6 @@ export default defineComponent({
     ytLower: function (): number {
       return this.geof.yc(this.iLines) + this.Sh * 0.20 - this.geof.dyl / 2 + this.geof.dyt
     },
-    /*
-    // -------center text position depending on number of lines_
-    dy: function (): number {
-      if (this.iLines === 1) return this.geof.dyl / 2
-      return 0
-    },
-    */
     // -------button representation-------------------------------
     colorUpper: function (): string {
       if (this.color1 !== '-') return this.color1
@@ -385,21 +378,6 @@ export default defineComponent({
         })
       }
     }
-    /*
-    onClk: function (): void {
-      console.log(this.sid, 'Button-Click')
-      const topic = 'ci/error/button'
-      let payload = '-1'
-      if (!this.button2) ciButton2Controller.publishCi(topic, payload)
-      if (this.button2?.pubTopic) {
-        const aPubTopic = this.button2.pubTopic.split(' ')
-        aPubTopic.forEach(topic => {
-          if (this.button2?.pubPayload) payload = this.button2.pubPayload
-          ciButton2Controller.publishCi(topic, payload)
-        })
-      }
-    }
-    */
   }
 })
 </script>
