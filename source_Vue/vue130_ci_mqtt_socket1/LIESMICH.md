@@ -133,12 +133,13 @@ Folgende Attribute sind zwingend anzugeben:
 | Eigenschaft    | Bedeutung                            |   
 | -------------- | ------------------------------------ |   
 | `iSocket1State` | Status des socket1-Symbols. Als Vorgabe f&uuml;r den Start zB -99 verwenden. |   
+| `type`          | Typ des socket2-Elements. Je nach Hardware-Type kann auf empfangene MQTT-Nachrichten entsprechend reagiert werden.  |   
 
 Folgende Attribute sind optional und k&ouml;nnen verwendet werden:   
 | Eigenschaft  | Bedeutung                            |   
 | ------------ | ------------------------------------ |   
 | `battery`      | Empfang des Ladezustands, falls ein socket1 symbol mit Batterie betrieben wird. Kann in der Fu&szlig;zeile angezeigt werden. |   
-| `textCenter`   | Text in der Mitte des Symbols, zB "auf", "ab", "links", "rechts" usw. |   
+| `textCenter`   | Text in der Mitte des Symbols. |   
 | `textFooter`   | Angabe eines fixen Textes in der Fu&szlig;zeile. |   
 
 ## Beispiel: Codierung des `CiSocket1Controller.ts`   

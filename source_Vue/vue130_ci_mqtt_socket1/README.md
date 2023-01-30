@@ -133,12 +133,13 @@ The following attributes are mandatory:
 | Property        | Meaning |   
 | --------------- | ------------------------------------ |   
 | `iSocket1State` | Status of the socket1 symbol. Use e.g. -99 as default for the start. |   
+| `type`          | Type of the socket2 element. Depending on the hardware type, received MQTT messages can be responded to accordingly. |   
 
 The following attributes are optional and can be used:   
 | Property     | Meaning |   
 | ------------ | ------------------------------------ |   
 | `battery`    | Receive the state of charge if a socket1 symbol is operated with battery. Can be displayed in the footer. |   
-| `textCenter` | Text in the center of the symbol, e.g. "up", "down", "left", "right" etc. |   
+| `textCenter` | Text in the center of the symbol. |   
 | `textFooter` | Specify a fixed text in the footer. |   
 
 ## Example: Coding of the `CiSocket1Controller.ts`.   
