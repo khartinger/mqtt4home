@@ -3,6 +3,7 @@
 <!-- 2022-08-14 Add fx, fy, calctmax                         -->
 <!-- 2023-01-02 Class Geo moved to a separate file Geo.ts    -->
 <!-- 2023-01-25 new rectangle drawing (area no filled)       -->
+<!-- 2023-01-31 update drawBorderFill                        -->
 <template>
   <!-- filled border between out and in line---------------- -->
   <path v-if="borderFill" :d="drawBorderFill" class="ciOut"/>
@@ -71,13 +72,17 @@ export default defineComponent({
     // -------draw yellow border--------------------------------
     drawBorderFill: function (): string {
       // let s1 = 'M' + this.x + ',' + this.y
+      const dxof_ = this.geo.dxo() * this.fx
+      const dyof_ = this.geo.dyo() * this.fy
+      const dxif_ = dxof_ - 2 * this.geo.dxm
+      const dyif_ = dyof_ - 2 * this.geo.dym
       let s1 = 'M' + this.geo.x + ',' + this.geo.y
       s1 += ' m-' + this.geo.dxo2() + ',-' + this.geo.dyo2()
-      s1 += ' v' + this.geo.dyo() + ' h' + this.geo.dxo()
-      s1 += ' v-' + this.geo.dyo() + ' h-' + (this.geo.dxo() - this.geo.dxm - 1)
-      s1 += ' v' + this.geo.dym + ' h' + (this.geo.dxi() - 1)
-      s1 += ' v' + this.geo.dxi() + ' h-' + this.geo.dxi()
-      s1 += ' v-' + (this.geo.dyi() + this.geo.dym) + ' z'
+      s1 += ' v' + dyof_ + ' h' + dxof_
+      s1 += ' v-' + dyof_ + ' h-' + (dxof_ - this.geo.dxm - 1)
+      s1 += ' v' + this.geo.dym + ' h' + (dxif_ - 1)
+      s1 += ' v' + dyif_ + ' h-' + (dxif_ - 1)
+      s1 += ' v-' + (dyif_ + this.geo.dym) + ' z'
       return s1
     }
   },
