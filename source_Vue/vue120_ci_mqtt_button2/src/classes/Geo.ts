@@ -1,6 +1,7 @@
 // ______Geo.ts__________________________________khartinger_____
 // 2023-01-02: new
 // 2023-01-25: add class Geof (factor to resize), colorUnknown
+// 2023-01-31: update y2()
 
 // -----------font data-----------------------------------------
 // examples: fh_=11, tmax_=10 or 16/13, ...
@@ -113,7 +114,9 @@ export class Geo {
 
   // ---------calculate y start value of rectangle 1...(5)------
   public yr (linenum: number): number {
+    // if (linenum < 1 || linenum > 5) linenum = 1
     if (linenum < 1) linenum = 1
+    // ??return ((this.y - this.dyi2()) + (linenum - 1) * this.dyl)
     return (this.y1() + (linenum - 1) * this.dyl)
   }
 
@@ -123,6 +126,7 @@ export class Geo {
 
   // ---------calculate y start value of text 1...(5)-----------
   public yt (linenum: number): number {
+    // if (linenum < 1 || linenum > 5) linenum = 1
     if (linenum < 1) linenum = 1
     return (this.y - dyi2_ + dyt_ + (linenum - 1) * this.dyl)
   }
@@ -159,8 +163,8 @@ export class Geo {
     if (len < 1) return ''
     const tmax_ = this.calctmax(fx_)
     if (len >= tmax_) return text.substring(0, tmax_)
-    // const numBlank = Math.round((tmax_ - len - 1) / 2)
     const numBlank = Math.round((tmax_ - len - 1) / 2)
+    // console.log('center: text=', '|' + text + '| numBlank=' + numBlank)
     const s1 = text.padStart(numBlank + len, ' ')
     return s1
   }
@@ -228,7 +232,7 @@ export class Geof extends Geo {
 
   // ---------coordinates of lower right corners----------------
   public x2 (): number { return (this.x - super.dxo2() + this.dxo() - this.dxm) }
-  public y2 (): number { return (this.x - super.dxo2() + this.dxo() - this.dym) }
+  public y2 (): number { return (this.y - super.dyo2() + this.dyo() - this.dym) }
   public x3 (): number { return (this.x - super.dxo2() + this.dxo()) }
   public y3 (): number { return (this.y - super.dyo2() + this.dyo()) }
 

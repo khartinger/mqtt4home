@@ -1,6 +1,7 @@
 // ______Geo.ts__________________________________khartinger_____
 // 2023-01-02: new
 // 2023-01-25: add class Geof (factor to resize), colorUnknown
+// 2023-01-31: update y2()
 
 // -----------font data-----------------------------------------
 // examples: fh_=11, tmax_=10 or 16/13, ...
@@ -231,7 +232,7 @@ export class Geof extends Geo {
 
   // ---------coordinates of lower right corners----------------
   public x2 (): number { return (this.x - super.dxo2() + this.dxo() - this.dxm) }
-  public y2 (): number { return (this.x - super.dxo2() + this.dxo() - this.dym) }
+  public y2 (): number { return (this.y - super.dyo2() + this.dyo() - this.dym) }
   public x3 (): number { return (this.x - super.dxo2() + this.dxo()) }
   public y3 (): number { return (this.y - super.dyo2() + this.dyo()) }
 
