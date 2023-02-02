@@ -2,6 +2,7 @@
 // 2023-01-02: new
 // 2023-01-25: add class Geof (factor to resize), colorUnknown
 // 2023-01-31: update y2()
+// 2023-02-02: update calcLinemax()
 
 // -----------font data-----------------------------------------
 // examples: fh_=11, tmax_=10 or 16/13, ...
@@ -176,7 +177,7 @@ export class Geo {
 
   // ---------calculate number of lines depending on fy---------
   public calcLinemax (fy_ = 1): number {
-    return Math.trunc((fy_ * this.dyo() - 2 * this.dym) / this.dyl)
+    return Math.trunc((fy_ * dyo_ - 2 * this.dym) / this.dyl)
   }
 }
 
