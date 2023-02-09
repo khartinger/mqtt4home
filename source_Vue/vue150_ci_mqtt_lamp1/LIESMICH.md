@@ -56,7 +56,7 @@ _Anmerkung_:
 Restlicher Platz unten: 220 - 20 - 100 = 100 Einheiten   
 Restlicher Platz rechts: 500 - 100 = 400 Einheiten   
 
-## Randes eines Symbols
+## Rand eines Symbols
 Alle CI-Symbole sind im Normalfall au&szlig;en 100x100 Einheiten gro&szlig; und haben nach innen einen fixen Rand von 5 Einheiten. Die individuelle "Arbeitsfl&auml;che" eines Symbols ist also 90 x 90 Einheiten gro&szlig;.   
 Durch den Rand ist es m&ouml;glich, Symbole direkt nebeneinander in einem 100er-Raster anzuordnen, ohne dass sich die Symbol-Zeichnungen optisch ber&uuml;hren.   
 Will man den Rand eines CI-Symbols darstellen, so gibt es dazu vier M&ouml;glichkeiten, die &uuml;ber das Attribut `:border=` eingestellt werden:   
