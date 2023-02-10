@@ -16,13 +16,9 @@
   <line v-if="isFooter" :x1="geof.x1()" :y1="geof.y2()-geof.dyl" :x2="geof.x2()" :y2="geof.y2()-geof.dyl" stroke="blue" stroke-width="1"></line>
   <!--show lines-------------------------------------------- -->
   <text v-for="index in maxLine" :key="index" class="ciFont1" :x="geof.xt()" :y="_yt(index)">{{_yLine(index)}}</text>
-  <!--
-  <text v-for="index=1 in maxLine" :key="index" class="ciFont1" :x="geof.xt()" :y="_yt(index)">{{lineY(index)}}</text>
-  -->
   <!--write text-------------------------------------------- -->
   <text v-if="isHeader" :x="geof.xt()" :y="geof.ytHeader()" class="ciFont1">{{lineHeader}}</text>
   <text v-if="isFooter" :x="geof.xt()" :y="geof.ytFooter()" class="ciFont1">{{lineFooter}}</text>
-
   <!--define click area------------------------------------- -->
   <rect @click="onClk()" class="ciClick" :x="geof.x0()" :y="geof.y0()" :width="geof.dxo()" :height="geof.dyo()" />
 </template>
