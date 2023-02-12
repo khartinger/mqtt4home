@@ -35,7 +35,7 @@ Note: A detailed description of individual steps can be found in other chapters 
 ## General
 The coding of the graphical representation of a CI symbol `CiXxx` is done in a file with a name like `CiXxx.vue`. These files are then used by the actual project file (e.g. `CiMain.vue`) to display the web page.   
 The following image shows the output of this Vue application with the different `CiLamp1` representations. Which attributes cause which representation is described afterwards.     
-![Lamp1 variants](./images/vue150_all_CiLamp1.png "Lamp1 variants")   
+![Lamp1 variants](./images/vue150_all_lamp1.png "Lamp1 variants")   
 _Fig. 1: Examples for different CiLamp1 representations_.   
 
 ## Lamp1 call
@@ -49,7 +49,7 @@ _Example_:
 Normally CI symbols are 100x100 units in size and the center point (50/50) is used to indicate the position (placement point). If the drawing area is defined e.g. by   
 `<svg width="100%" viewBox="0 0 500 220">`   
 then the location specification `:x="50" :y="70"` causes the CiLamp1 to border the left edge and be 20 units away from the top edge:   
-![location of a CiLamp1](./images/vue150_CiLamp1_location1.png "location of a CiLamp1")   
+![location of a CiLamp1](./images/vue150_lamp1_location1.png "location of a CiLamp1")   
 _Fig. 2: Location of a CiLamp1 symbol_   
 
 _Note_:   
@@ -95,7 +95,7 @@ The text in the center of the CiLamp1 symbol is a special case. The display of t
 ## Stretching of a symbol
 By default, all symbols are 100x100 units in size. However, it is possible to stretch the symbols in x and in y direction. The placement point remains the same.   
 Stretching is done by specifying the parameters `fx` and `fy`, as the following example shows:   
-![Stretched Lamp1](./images/vue150_CiLamp1_stretch1.png "Stretched Lamp1")   
+![Stretched Lamp1](./images/vue150_lamp1_stretch1.png "Stretched Lamp1")   
 _Fig. 3: Stretched CiLamp1 symbol_   
 
 The left two CiLamp1 symbols are stretched by the factor fx=2 (results in 2*100 = 200 units), the third symbol is stretched by the factor fy=2 and the right symbol is stretched by fx=2 and fy=2, i.e. it is twice as large as the original with a size of 200x200.   
