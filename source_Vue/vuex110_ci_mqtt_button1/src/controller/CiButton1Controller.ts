@@ -1,6 +1,8 @@
-// ______CiButtonController.ts___________________khartinger_____
+// ______CiButton1Controller.ts__________________khartinger_____
 // 2022-09-14: add .catch((e) ..) to this.publish
 // 2023-01-25: add textCenter, textFooter | remove shape, color
+// 2023-01-30: change at CiBase (add Geo.ts)
+
 import { reactive } from 'vue'
 import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
