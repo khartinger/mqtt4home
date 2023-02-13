@@ -90,7 +90,7 @@ export default defineComponent({
     },
     // _______get iButton2State_________________________________
     iButton2State: function (): number {
-      return this.button2?.iButtonState ?? -1
+      return this.button2?.iButton2State ?? -1
     },
     // _______provide geometric data____________________________
     geof: function (): Geof {

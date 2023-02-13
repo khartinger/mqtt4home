@@ -5,7 +5,8 @@ import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
 
 export interface Button2 extends IBase {
-  iButtonState: number;
+  iButton2State: number;
+  type?: string;
   battery?: string;
   textUpper?: string;
   textLower?: string;
@@ -20,7 +21,7 @@ export class CiButton2Controller extends CiBaseController {
       {
         id: 'button1',
         name: 'Button2_1',
-        iButtonState: -99,
+        iButton2State: -99,
         // textUpper: 'ON',
         // textLower: 'OFF',
         textFooter: '--Footer1--',
@@ -32,7 +33,7 @@ export class CiButton2Controller extends CiBaseController {
       {
         id: 'button2',
         name: 'Button2_2',
-        iButtonState: -99,
+        iButton2State: -99,
         textUpper: 'ON',
         textLower: 'OFF',
         textFooter: '==Footer2==',
@@ -51,8 +52,8 @@ export class CiButton2Controller extends CiBaseController {
         // ---button found ---------------------------------
         // console.log('CiButton1Controller.onMessage payload=', message.payload)
         if (message.topic.includes('ci/lamp/2/set/lamp')) {
-          if (message.payload === '0') button2.iButtonState = -2
-          if (message.payload === '1') button2.iButtonState = -1
+          if (message.payload === '0') button2.iButton2State = -2
+          if (message.payload === '1') button2.iButton2State = -1
         }
         if (message.topic.includes('voltage')) {
           button2.battery = `${message.payload}` + '%'
