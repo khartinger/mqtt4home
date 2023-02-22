@@ -1,25 +1,25 @@
 <!-- CiBlind1.vue ---------------------------khartinger----- -->
 <!-- 2022-01-08: new                                         -->
-<!-- 2022-02-20: change at CiBase (add Geo.ts)               -->
+<!-- 2023-02-20: change at CiBase (add Geo.ts)               -->
+<!-- 2023-02-22: add <template v-if..                        -->
 <template>
   <!--draw border------------------------------------------- -->
-  <!--
-  <CiBase :x="x" :y="y" :border="border" :fx="fx" :fy="fy"></CiBase>
-  -->
   <CiBase :x="x" :y="y" :border="border" :fx="1" :fy="1"></CiBase>
   <g id="blindgroup" :transform="rotateGroup">
     <!--draw symbol and color rectangles-------------------- -->
     <path :d="drawMotor" :fill="colorMotor_" stroke="black" stroke-width="1"/>
     <path :d="drawRect" :fill="colorBlind_" :stroke="colorBlindline" :stroke-width="1"/>
-    <rect v-if="iLines>0" :fill="colorH_" :x="rx_" :y="geo.y1()" :width="rw_" :height="geo.dyl" stroke="colorH_"/>
-    <rect v-if="iLines>0 && !isLine4" :fill="color4_" :x="rx_" :y="geo.yr(2)" :width="rw_" :height="geo.dyl" stroke="color4_"/>
-    <rect v-if="iLines>0 && isLine4"  :fill="color4_" :x="rx_" :y="geo.yr(4)" :width="rw_" :height="geo.dyl" stroke="color4_"/>
-    <rect v-if="iLines>1" :x="rx_"  :y="geo.yr(5)" :width="rw_" :height="geo.dyl" :fill="colorF_"/>
-    <!--write text------------------------------------------ -->
-    <text v-if="iLines>0" :x="xt_" :y="geo.ytHeader()" class="ciFont1">{{lineHeader}}</text>
-    <text v-if="iLines>0 && !isLine4" :x="xt_" :y="geo.yt(2)" class="ciFont1">{{line4}}</text>
-    <text v-if="iLines>0 && isLine4"  :x="xt_" :y="geo.yt(4)" class="ciFont1">{{line4}}</text>
-    <text v-if="iLines>1" :x="xt_" :y="geo.ytFooter()" class="ciFont1">{{lineFooter}}</text>
+    <template v-if="sid.length > 0">
+      <rect v-if="iLines>0" :fill="colorH_" :x="rx_" :y="geo.y1()" :width="rw_" :height="geo.dyl" stroke="colorH_"/>
+      <rect v-if="iLines>0 && !isLine4" :fill="color4_" :x="rx_" :y="geo.yr(2)" :width="rw_" :height="geo.dyl" stroke="color4_"/>
+      <rect v-if="iLines>0 && isLine4"  :fill="color4_" :x="rx_" :y="geo.yr(4)" :width="rw_" :height="geo.dyl" stroke="color4_"/>
+      <rect v-if="iLines>1" :x="rx_"  :y="geo.yr(5)" :width="rw_" :height="geo.dyl" :fill="colorF_"/>
+      <!--write text---------------------------------------- -->
+      <text v-if="iLines>0" :x="xt_" :y="geo.ytHeader()" class="ciFont1">{{lineHeader}}</text>
+      <text v-if="iLines>0 && !isLine4" :x="xt_" :y="geo.yt(2)" class="ciFont1">{{line4}}</text>
+      <text v-if="iLines>0 && isLine4"  :x="xt_" :y="geo.yt(4)" class="ciFont1">{{line4}}</text>
+      <text v-if="iLines>1" :x="xt_" :y="geo.ytFooter()" class="ciFont1">{{lineFooter}}</text>
+    </template>
   </g>
   <!--define click area------------------------------------- -->
   <rect @click="onClk()" class="ciClick" :x="geo.x0()" :y="geo.y0()" :width="geo.dxo()" :height="geo.dyo()" />
