@@ -60,7 +60,8 @@ Remaining space at the bottom: 220 - 20 - 100 = 100 units.
 Remaining space right: 500 - 100 = 400 units   
 
 ## ID of a symbol (sid)
-The symbol ID (sid) represents the connection of the graphical representation to the controller (see property [id](#id) in chapter "[Attributes defined in the base controller](#id)").
+The symbol ID (sid) represents the connection of the graphical representation to the controller (see property [id](#id) in chapter "[Attributes defined in the base controller](#id)").   
+If `sid=""` is set, no texts and backgrounds will be displayed.   
 
 ## Border of a symbol (:border)
 Normally CI symbols are 100x100 units in size outside and have a fixed border of 5 units inside. With the CiWall1 symbol this is different:   
