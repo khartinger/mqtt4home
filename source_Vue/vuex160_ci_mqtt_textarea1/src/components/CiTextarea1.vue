@@ -1,6 +1,7 @@
 <!--CiTextarea.vue---------------------------khartinger----- -->
 <!--2022-08-14: New                                          -->
 <!--2023-02-05: change at CiBase (add Geo.ts)                -->
+<!--2023-02-23: replace .at() by []                          -->
 
 <template>
   <!--draw border------------------------------------------- -->
@@ -263,11 +264,13 @@ export default defineComponent({
       if (num_ < 1 || num_ > 3) return false
       const len_ = s1_.length
       if (iEnd_ >= len_) return false
-      if (s1_.at(iEnd_) === ' ') return false
+      // if (s1_.at(iEnd_) === ' ') return false
+      if (s1_[iEnd_] === ' ') return false
       const iEnd1_ = iEnd_ + num_
       if (iEnd1_ === len_) return true
       if (iEnd1_ < len_) {
-        if (s1_.at(iEnd1_) === ' ') return true
+        // if (s1_.at(iEnd1_) === ' ') return true
+        if (s1_[iEnd1_] === ' ') return true
       }
       return false
     },
@@ -277,8 +280,10 @@ export default defineComponent({
       if (num_ < 1 || num_ > 3) return false
       const iEnd1_ = iEnd_ - num_
       if (iEnd1_ < 1) return false
-      if (s1_.at(iEnd_ - 1) === ' ') return false
-      if (s1_.at(iEnd1_ - 1) === ' ') return true
+      // if (s1_.at(iEnd_ - 1) === ' ') return false
+      if (s1_[iEnd_ - 1] === ' ') return false
+      // if (s1_.at(iEnd1_ - 1) === ' ') return true
+      if (s1_[iEnd1_ - 1] === ' ') return true
       return false
     },
 
@@ -307,7 +312,8 @@ export default defineComponent({
       let s1len = s1.length
       do {
         if (s1len < 1) return a1
-        if (s1.at(s1len - 1) === ' ') s1len--
+        // if (s1.at(s1len - 1) === ' ') s1len--
+        if (s1[s1len - 1] === ' ') s1len--
         else doloop = false
       }
       while (doloop)
