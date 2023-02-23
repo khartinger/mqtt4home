@@ -1,6 +1,7 @@
 <!-- CiWall1.vue ----------------------------khartinger----- -->
 <!-- 2022-01-08: new                                         -->
 <!-- 2023-02-12: change at CiBase (add Geo.ts)               -->
+<!-- 2023-02-23: replace .at() by []                         -->
 
 <template>
   <!--draw border------------------------------------------- -->
@@ -113,7 +114,8 @@ export default defineComponent({
       for (let i = 0; i < len_; i++) {
         // --------search for a dir command---------------------
         let iDir = -1
-        const c = s0.at(i)
+        // const c = s0.at(i)
+        const c = s0[i]
         switch (c) {
           case 'h': case 'H': iDir = 0; break
           case 'd': case 'D': iDir = 1; break
