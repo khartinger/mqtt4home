@@ -139,13 +139,13 @@ export default defineComponent({
         if (i1 === 2) return 2
         if (i1 === 3) return 3
         return 1
-      } catch(error) {return 1}
+      } catch (error) { return 1 }
     },
     textfontA_: function (): string {
-      if (this.iTextsize === 1.5) return "ciFont1_5"
-      if (this.iTextsize === 2) return "ciFont2"
-      if (this.iTextsize === 3) return "ciFont3"
-      return "ciFont1"
+      if (this.iTextsize === 1.5) return 'ciFont1_5'
+      if (this.iTextsize === 2) return 'ciFont2'
+      if (this.iTextsize === 3) return 'ciFont3'
+      return 'ciFont1'
     },
     // =======background colors=================================
     // _______color textarea1 depending on iTextarea1State______

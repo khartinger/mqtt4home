@@ -6,9 +6,11 @@ import { Message } from '@/services/CiMqttClient'
 import { CiBaseController, IBase } from './CiBaseController'
 
 export interface Textarea1 extends IBase {
+  // ---------mandatory-----------------------------------------
   iTextarea1State: number; // 0=no title, 1=name, 2=id, 4=message
   subPayload: string; //      text displayed in textarea
   clkWhenMounted: boolean; // text request on mounting?
+  // ---------optional------------------------------------------
   useRawText?: boolean; //    do not wrap text
   textFooter?: string; //     footer text
 }
