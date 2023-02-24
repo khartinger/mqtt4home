@@ -1,7 +1,8 @@
 <!--CiTextarea.vue---------------------------khartinger----- -->
-<!--2022-08-14: New                                          -->
-<!--2023-02-05: change at CiBase (add Geo.ts)                -->
-<!--2023-02-23: replace .at() by []                          -->
+<!--2022-08-14 New                                           -->
+<!--2023-02-05 change at CiBase (add Geo.ts)                 -->
+<!--2023-02-23 replace .at() by []                           -->
+<!--2023-02-24 add textsize                                  -->
 
 <template>
   <!--draw border------------------------------------------- -->
@@ -16,7 +17,7 @@
   <line v-if="isHeader" :x1="geof.x1()" :y1="geof.y1()+geof.dyl" :x2="geof.x2()" :y2="geof.y1()+geof.dyl" stroke="blue" stroke-width="1"></line>
   <line v-if="isFooter" :x1="geof.x1()" :y1="geof.y2()-geof.dyl" :x2="geof.x2()" :y2="geof.y2()-geof.dyl" stroke="blue" stroke-width="1"></line>
   <!--show lines-------------------------------------------- -->
-  <text v-for="index in maxLine" :key="index" class="ciFont1" :x="geof.xt()" :y="_yt(index)">{{_yLine(index)}}</text>
+  <text v-for="index in maxLine" :key="index" :class="textfontA_" :x="geof.xt()" :y="_yt(index)">{{_yLine(index)}}</text>
   <!--write text-------------------------------------------- -->
   <text v-if="isHeader" :x="geof.xt()" :y="geof.ytHeader()" class="ciFont1">{{lineHeader}}</text>
   <text v-if="isFooter" :x="geof.xt()" :y="geof.ytFooter()" class="ciFont1">{{lineFooter}}</text>
@@ -91,6 +92,11 @@ export default defineComponent({
       type: String,
       required: false,
       default: 'none'
+    },
+    textsize: {
+      type: Number,
+      required: false,
+      default: 1
     }
   },
   computed: {
@@ -115,11 +121,31 @@ export default defineComponent({
     // =======other methods=====================================
     // _______max number of lines for text area_________________
     maxLine: function (): number {
-      return this.geof.calcLinemax() - this.iLines
+      const iTemp = Math.trunc((this.geof.calcLinemax() - this.iLines) / this.iTextsize)
+      // const iTemp = ((this.geof.calcLinemax() - this.iLines) / this.iTextsize)
+      return iTemp
     },
     // _______maximal number of characters per line_____________
     maxCharPerLine: function (): number {
-      return this.geof.calctmax()
+      const iTemp = Math.trunc(this.geof.calctmax() / this.iTextsize)
+      // const iTemp = (this.geof.calctmax() / this.iTextsize)
+      return iTemp
+    },
+    // _______textsize (1 = default or 2)_______________________
+    iTextsize: function (): number {
+      try {
+        const i1 = this.textsize // parseInt(this.textsize)
+        if (i1 === 1.5) return 1.5
+        if (i1 === 2) return 2
+        if (i1 === 3) return 3
+        return 1
+      } catch(error) {return 1}
+    },
+    textfontA_: function (): string {
+      if (this.iTextsize === 1.5) return "ciFont1_5"
+      if (this.iTextsize === 2) return "ciFont2"
+      if (this.iTextsize === 3) return "ciFont3"
+      return "ciFont1"
     },
     // =======background colors=================================
     // _______color textarea1 depending on iTextarea1State______
@@ -248,10 +274,11 @@ export default defineComponent({
     }
   },
   methods: {
-    // _______y position of textarea line "index"_______________
+    // _______y position of textarea line "index" 1...__________
     _yt: function (index: number): number {
-      if (this.iLines > 0) return this.geof.yt(1 + index)
-      return this.geof.yt(index)
+      const dy = (this.iTextsize - 1) * (this.geof.dyl * (index - 0.2))
+      if (this.iLines > 0) return this.geof.yt(1 + index) + dy
+      return this.geof.yt(index) + dy
     },
     // _______get text for line number ...______________________
     _yLine: function (linenumber: number): string {

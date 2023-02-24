@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 5.2.2023 <a name="up"></a>   
+Letzte &Auml;nderung: 24.2.2023 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
 <h1>Vue: Verwendung des CiTextarea1-Symbols</h1>
 <a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -120,6 +120,18 @@ __Codierungsbeispiel__:
 Mit Hilfe des Attributs `color=` kann die Hintergrundfarbe eines CiTextarea1-Symbols gew&auml;hlt werden. Der Wert kann entweder ein RGB-Wert (rot-gr&uuml;n-blau-Wert), wie zB `#eedd00` oder eine Textangabe wie `red`, `white` etc. sein.   
 Wird kein Wert angegeben, so ist das Symbol transparent, das hei&szlig;t, es hat die Hintergrundfarbe.   
 Weiters kann mit Hilfe des Attributs `colorH=` die Hintergrundfarbe der Kopfzeile ("header") bzw. mit `colorF=` die Hintergrundfarbe der Fu&szlig;zeile ("footer") festgelegt werden.   
+
+## Textgr&ouml;&szlig;e (:textsize)
+Die Standard-Schriftgr&ouml;&szlig;e ist so gew&auml;hlt, dass im 100x100 gro&szlig;en Standardsymbol f&uuml;nf Zeilen Platz haben [Zeilenh&ouml;he = (100 - 2x5 Rand) / 5 = 18 Einheiten). Mit dem Parameter `textsize` kann die Schriftgr&ouml;&szlig;e ver&auml;ndert werden:   
+| Parameter           | Bedeutung                                |   
+| ------------------- | ---------------------------------------- |   
+| `:textsize="1.5"`   | Schrifth&ouml;he ist 1,5 Zeilen hoch. Das ergibt z.B. zwei Zeilen im Zeichenbereich bei `lines="2"`   |   
+| `:textsize="2"`   | Schrifth&ouml;he ist 2 Zeilen hoch. Das ergibt z.B. zwei Zeilen bei `lines="1"`   |   
+| `:textsize="3"`   | Schrifth&ouml;he ist 3 Zeilen hoch. Das ergibt z.B. eine Zeile bei `lines="2"`   |   
+
+![Schriftgr&ouml;&szlig;en](./images/vuex160_textarea1_textsize1.png "Schriftgr&ouml;&szlig;en")   
+_Bild 4: Verschiedene Schriftgr&ouml;&szlig;en im Zeichenbereich_   
+
 
 <a name="id"></a>   
 # Nicht-grafische Eigenschaften

@@ -1,4 +1,4 @@
-Last modified: 2023-02-05 <a name="up"></a>   
+Last modified: 2023-02-24 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></td><td>
 <h1>Vue: Using the CiTextarea1 symbol</h1>
 <a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
@@ -120,6 +120,18 @@ __Coding example__:
 With the help of the attribute `color=` the background color of a CiTextarea1 symbol can be chosen. The value can either be an RGB value (red-green-blue value) like `#eedd00` or a text value like `red`, `white` etc..   
 If no value is specified, the symbol is transparent, i.e. it has the background color.   
 Furthermore, the `colorH=` attribute can be used to specify the background color of the header and `colorF=` to specify the background color of the footer.
+
+## Text size (:textsize)
+The default font size is such that there is room for five lines in the 100x100 standard symbol [line height = (100 - 2x5 margin) / 5 = 18 units). The `textsize` parameter can be used to change the font size:   
+| parameter | meaning |   
+| ------------------- | ---------------------------------------- |   
+| `:textsize="1.5"` | font size is 1.5 lines high. This results e.g. in two lines in the character area with `lines="2"` |   
+| `:textsize="2"` | font height is 2 lines high. This results e.g. in two lines with `lines="1"` |   
+| `:textsize="3"` | font height is 3 lines high. This results in e.g. one line with `lines="2"` |   
+
+![font sizes](./images/vuex160_textarea1_textsize1.png "font-sizes")   
+_Fig. 4: Different font sizes in the character area_
+
 
 <a name="id"></a>   
 # Non-graphical attributes

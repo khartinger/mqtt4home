@@ -1,6 +1,6 @@
 <!-- CiMain.vue (vuex160_ci_mqtt_textarea1)-------khartinger -->
-<!-- 2023-02-05: new                                         -->
-
+<!-- 2023-02-05 new                                          -->
+<!-- 2023-02-24 add textsize                                 -->
 <template>
 <!--
   <svg width="100%" viewBox="0 0 500 220">
@@ -17,6 +17,30 @@
   <CiTextarea1 :x="250" :y="70" sid="textarea1" :fx="1" :fy="2"></CiTextarea1>
   <CiTextarea1 :x="350" :y="70" sid="textarea2" :fx="2" :fy="2"></CiTextarea1>
 -->
+<!--
+<svg width="100%" viewBox="0 0 1500 550">
+  <rect class="ciBackground" x="0" y="0" width="1500" height="550" />
+  <text x="0" y="15" class="ciFont1">viewbox 1500x550</text>
+  <text x="35" y="230" class="ciFont1">:textsize="1.5"</text>
+  <CiTextarea1 :x="50"  :y="70"  sid="textarea1" :border="3" lines="2" :fx="1" :fy="1" :textsize="1.5"></CiTextarea1>
+  <CiTextarea1 :x="50"  :y="170" sid="textarea1" :border="3" lines="2" :fx="2" :fy="1" :textsize="1.5"></CiTextarea1>
+  <CiTextarea1 :x="250" :y="70"  sid="textarea1" :border="3" lines="2" :fx="1" :fy="2.3" :textsize="1.5"></CiTextarea1>
+  <CiTextarea1 :x="350" :y="70"  sid="textarea1" :border="3" lines="2" :fx="2" :fy="2" :textsize="1.5"></CiTextarea1>
+  <CiTextarea1 :x="50"  :y="300" sid="textarea1" :border="3" lines="2" :fx="15" :fy="1" :textsize="1.5"></CiTextarea1>
+  <text x="535" y="230" class="ciFont1">:textsize="2"</text>
+  <CiTextarea1 :x="550" :y="70"  sid="textarea1" :border="3" lines="2" :fx="1" :fy="1" :textsize="2"></CiTextarea1>
+  <CiTextarea1 :x="550" :y="170" sid="textarea1" :border="3" lines="2" :fx="2" :fy="1" :textsize="2"></CiTextarea1>
+  <CiTextarea1 :x="750" :y="70"  sid="textarea1" :border="3" lines="2" :fx="1" :fy="2.3" :textsize="2"></CiTextarea1>
+  <CiTextarea1 :x="850" :y="70"  sid="textarea1" :border="3" lines="2" :fx="2" :fy="2" :textsize="2"></CiTextarea1>
+  <CiTextarea1 :x="50"  :y="400" sid="textarea1" :border="3" lines="2" :fx="15" :fy="1" :textsize="2"></CiTextarea1>
+  <text x="1035" y="230" class="ciFont1">:textsize="3"</text>
+  <CiTextarea1 :x="1050" :y="70"  sid="textarea1" :border="3" lines="2" :fx="1"  :fy="1"   :textsize="3"></CiTextarea1>
+  <CiTextarea1 :x="1050" :y="170" sid="textarea1" :border="3" lines="2" :fx="2"  :fy="1"   :textsize="3"></CiTextarea1>
+  <CiTextarea1 :x="1250" :y="70"  sid="textarea1" :border="3" lines="2" :fx="1"  :fy="2.3" :textsize="3"></CiTextarea1>
+  <CiTextarea1 :x="1350" :y="70"  sid="textarea1" :border="3" lines="2" :fx="2"  :fy="2"   :textsize="3"></CiTextarea1>
+  <CiTextarea1 :x="50"  :y="500"  sid="textarea1" :border="3" lines="2" :fx="15" :fy="1"   :textsize="3"></CiTextarea1>
+-->
+
 <svg width="100%" viewBox="-10 -10 670 1520">
   <rect class="ciBackground" x="-10" y="-10" width="670" height="1520" />
   <text x=0 y=10 class="ciFont1">&lt;CiTextarea1 :x="0" :y="0" sid="textarea1" :border="0" lines="0"/&gt;</text>

@@ -23,7 +23,7 @@ export class CiTextarea1Controller extends CiBaseController {
         clkWhenMounted: false,
         useRawText: false,
         subTopic: 'ci/textarea1/1/set ci/textarea1/2/get',
-        subPayload: 'click: publish a text by textarea1 - this is just to make the text longer and longer 1234567890 and once more longer...',
+        subPayload: 'Click: publish a text by textarea1 - this is just to make the text longer and longer 1234567890 and once more longer... (END OF TEXT :)',
         pubTopic: 'ci/textarea1/1/get ci/textarea1/2/set',
         pubPayload: 'standard text published by textarea1 :)',
         textFooter: '==Footer=='
