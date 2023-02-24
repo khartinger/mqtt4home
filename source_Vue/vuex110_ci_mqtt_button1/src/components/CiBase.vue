@@ -4,6 +4,7 @@
 <!-- 2023-01-02 Class Geo moved to a separate file Geo.ts    -->
 <!-- 2023-01-25 new rectangle drawing (area no filled)       -->
 <!-- 2023-01-31 update drawBorderFill                        -->
+<!-- 2023-02-24 add .ciFont1_5, .ciFont3                     -->
 <template>
   <!-- filled border between out and in line---------------- -->
   <path v-if="borderFill" :d="drawBorderFill" class="ciOut"/>
@@ -96,7 +97,9 @@ export default defineComponent({
 
 <style>
   .ciFont1   { font-size: 14px; fill: black; font-weight: bold; font-family: "DejaVu Sans Mono","monospace"; white-space: pre; }
+  .ciFont1_5 { font-size: 21px; fill: red; font-weight: bold; font-family: "DejaVu Sans Mono","monospace"; white-space: pre; }
   .ciFont2   { font-size: 28px; fill: black; font-weight: bold; font-family: "DejaVu Sans Mono","monospace"; white-space: pre; }
+  .ciFont3   { font-size: 42px; fill: black; font-weight: bold; font-family: "DejaVu Sans Mono","monospace"; white-space: pre; }
   .ciFontRoom { font-size: 28px; fill: green; font-weight: bold; font-family: "DejaVu Sans Mono","monospace"; white-space: pre; }
   .fontOK    { font-weight: bold; color: lightgreen; }
   .fontNOK   { font-weight: bold; color: red; }
