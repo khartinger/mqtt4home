@@ -17,30 +17,56 @@
   <CiTextarea1 :x="250" :y="70" sid="textarea1" :fx="1" :fy="2"></CiTextarea1>
   <CiTextarea1 :x="350" :y="70" sid="textarea2" :fx="2" :fy="2"></CiTextarea1>
 -->
-<!--
-<svg width="100%" viewBox="0 0 1500 550">
-  <rect class="ciBackground" x="0" y="0" width="1500" height="550" />
-  <text x="0" y="15" class="ciFont1">viewbox 1500x550</text>
-  <text x="35" y="230" class="ciFont1">:textsize="1.5"</text>
+
+<svg width="100%" viewBox="0 0 1500 1290">
+  <rect class="ciBackground" x="0" y="0" width="1500" height="1290" />
+  <text x="0" y="15" class="ciFont1">viewbox 1500x1290</text>
+  <text x="35" y="235" class="ciFont1">:textsize="1.5"</text>
   <CiTextarea1 :x="50"  :y="70"  sid="textarea1" :border="3" lines="2" :fx="1" :fy="1" :textsize="1.5"></CiTextarea1>
   <CiTextarea1 :x="50"  :y="170" sid="textarea1" :border="3" lines="2" :fx="2" :fy="1" :textsize="1.5"></CiTextarea1>
   <CiTextarea1 :x="250" :y="70"  sid="textarea1" :border="3" lines="2" :fx="1" :fy="2.3" :textsize="1.5"></CiTextarea1>
   <CiTextarea1 :x="350" :y="70"  sid="textarea1" :border="3" lines="2" :fx="2" :fy="2" :textsize="1.5"></CiTextarea1>
-  <CiTextarea1 :x="50"  :y="300" sid="textarea1" :border="3" lines="2" :fx="15" :fy="1" :textsize="1.5"></CiTextarea1>
-  <text x="535" y="230" class="ciFont1">:textsize="2"</text>
-  <CiTextarea1 :x="550" :y="70"  sid="textarea1" :border="3" lines="2" :fx="1" :fy="1" :textsize="2"></CiTextarea1>
-  <CiTextarea1 :x="550" :y="170" sid="textarea1" :border="3" lines="2" :fx="2" :fy="1" :textsize="2"></CiTextarea1>
-  <CiTextarea1 :x="750" :y="70"  sid="textarea1" :border="3" lines="2" :fx="1" :fy="2.3" :textsize="2"></CiTextarea1>
-  <CiTextarea1 :x="850" :y="70"  sid="textarea1" :border="3" lines="2" :fx="2" :fy="2" :textsize="2"></CiTextarea1>
-  <CiTextarea1 :x="50"  :y="400" sid="textarea1" :border="3" lines="2" :fx="15" :fy="1" :textsize="2"></CiTextarea1>
-  <text x="1035" y="230" class="ciFont1">:textsize="3"</text>
-  <CiTextarea1 :x="1050" :y="70"  sid="textarea1" :border="3" lines="2" :fx="1"  :fy="1"   :textsize="3"></CiTextarea1>
-  <CiTextarea1 :x="1050" :y="170" sid="textarea1" :border="3" lines="2" :fx="2"  :fy="1"   :textsize="3"></CiTextarea1>
-  <CiTextarea1 :x="1250" :y="70"  sid="textarea1" :border="3" lines="2" :fx="1"  :fy="2.3" :textsize="3"></CiTextarea1>
-  <CiTextarea1 :x="1350" :y="70"  sid="textarea1" :border="3" lines="2" :fx="2"  :fy="2"   :textsize="3"></CiTextarea1>
-  <CiTextarea1 :x="50"  :y="500"  sid="textarea1" :border="3" lines="2" :fx="15" :fy="1"   :textsize="3"></CiTextarea1>
--->
+  <text x="535" y="235" class="ciFont1">:textsize="2"</text>
+  <CiTextarea1 :x="550" :y="70"  sid="textarea1" :border="3" lines="1" :fx="1" :fy="1" :textsize="2"></CiTextarea1>
+  <CiTextarea1 :x="550" :y="170" sid="textarea1" :border="3" lines="1" :fx="2" :fy="1" :textsize="2"></CiTextarea1>
+  <CiTextarea1 :x="750" :y="70"  sid="textarea1" :border="3" lines="1" :fx="1" :fy="2.3" :textsize="2"></CiTextarea1>
+  <CiTextarea1 :x="850" :y="70"  sid="textarea1" :border="3" lines="1" :fx="2" :fy="2" :textsize="2"></CiTextarea1>
+  <text x="1035" y="235" class="ciFont1">:textsize="2.5"</text>
+  <CiTextarea1 :x="1050" :y="70"  sid="textarea1" :border="3" lines="0" :fx="1"  :fy="1"   :textsize="2.5"></CiTextarea1>
+  <CiTextarea1 :x="1050" :y="170" sid="textarea1" :border="3" lines="0" :fx="2"  :fy="1"   :textsize="2.5"></CiTextarea1>
+  <CiTextarea1 :x="1250" :y="70"  sid="textarea1" :border="3" lines="0" :fx="1"  :fy="2.3" :textsize="2.5"></CiTextarea1>
+  <CiTextarea1 :x="1350" :y="70"  sid="textarea1" :border="3" lines="0" :fx="2"  :fy="2"   :textsize="2.5"></CiTextarea1>
 
+  <text x="35" y="485" class="ciFont1">:textsize="3"</text>
+  <CiTextarea1 :x="50"  :y="320" sid="textarea1" :border="3" lines="2" :fx="1"  :fy="1"   :textsize="3"></CiTextarea1>
+  <CiTextarea1 :x="50"  :y="420" sid="textarea1" :border="3" lines="2" :fx="2"  :fy="1"   :textsize="3"></CiTextarea1>
+  <CiTextarea1 :x="250" :y="320" sid="textarea1" :border="3" lines="2" :fx="1"  :fy="2.3" :textsize="3"></CiTextarea1>
+  <CiTextarea1 :x="350" :y="320" sid="textarea1" :border="3" lines="2" :fx="2"  :fy="2"   :textsize="3"></CiTextarea1>
+
+  <text x="535" y="485" class="ciFont1">:textsize="4"</text>
+  <CiTextarea1 :x="550" :y="320" sid="textarea1" :border="3" lines="1" :fx="1"  :fy="1"   :textsize="4"></CiTextarea1>
+  <CiTextarea1 :x="550" :y="420" sid="textarea1" :border="3" lines="1" :fx="2"  :fy="1"   :textsize="4"></CiTextarea1>
+  <CiTextarea1 :x="750" :y="320" sid="textarea1" :border="3" lines="1" :fx="1"  :fy="2.3" :textsize="4"></CiTextarea1>
+  <CiTextarea1 :x="850" :y="320" sid="textarea1" :border="3" lines="1" :fx="2"  :fy="2"   :textsize="4"></CiTextarea1>
+  <text x="1035" y="485" class="ciFont1">:textsize="5"</text>
+  <CiTextarea1 :x="1050" :y="320" sid="textarea1" :border="3" lines="0" :fx="1"  :fy="1"   :textsize="5"></CiTextarea1>
+  <CiTextarea1 :x="1050" :y="420" sid="textarea1" :border="3" lines="0" :fx="2"  :fy="1"   :textsize="5"></CiTextarea1>
+  <CiTextarea1 :x="1250" :y="320" sid="textarea1" :border="3" lines="0" :fx="1"  :fy="2.3" :textsize="5"></CiTextarea1>
+  <CiTextarea1 :x="1350" :y="320" sid="textarea1" :border="3" lines="0" :fx="2"  :fy="2"   :textsize="5"></CiTextarea1>
+
+  <text x="0" y="525"  class="ciFont1k">:textsize="1.5"</text>
+  <CiTextarea1 :x="50" :y="580" sid="textarea1" :border="3" lines="2" :fx="15" :fy="1" :textsize="1.5"></CiTextarea1>
+  <text x="0" y="655"  class="ciFont1k">:textsize="2"</text>
+  <CiTextarea1 :x="50" :y="710" sid="textarea1" :border="3" lines="1" :fx="15" :fy="1" :textsize="2"></CiTextarea1>
+  <text x="0" y="785"  class="ciFont1k">:textsize="2.5"</text>
+  <CiTextarea1 :x="50" :y="840" sid="textarea1" :border="3" lines="0" :fx="15" :fy="1"   :textsize="2.5"></CiTextarea1>
+  <text x="0" y="915"  class="ciFont1k">:textsize="3"</text>
+  <CiTextarea1 :x="50" :y="970" sid="textarea1" :border="3" lines="2" :fx="15" :fy="1"   :textsize="3"></CiTextarea1>
+  <text x="0" y="1045" class="ciFont1k">:textsize="4"</text>
+  <CiTextarea1 :x="50" :y="1100" sid="textarea1" :border="3" lines="1" :fx="15" :fy="1"   :textsize="4"></CiTextarea1>
+  <text x="0" y="1175" class="ciFont1k">:textsize="5"</text>
+  <CiTextarea1 :x="50" :y="1230" sid="textarea1" :border="3" lines="0" :fx="15" :fy="1"   :textsize="5"></CiTextarea1>
+  <!--
 <svg width="100%" viewBox="-10 -10 670 1520">
   <rect class="ciBackground" x="-10" y="-10" width="670" height="1520" />
   <text x=0 y=10 class="ciFont1">&lt;CiTextarea1 :x="0" :y="0" sid="textarea1" :border="0" lines="0"/&gt;</text>
@@ -66,7 +92,7 @@
   <text x="225" y="325" class="ciFont1">lines="2"</text>
 
   <text x=0 y=365 class="ciFont2">Stretch factor fx, fy</text>
-  <text x=0 y=385 class="ciFont1">:border="2" lines="0"</text>
+  <text x=0 y=385 class="ciFont1k">:border="2" lines="0"</text>
   <CiTextarea1 :x="50"  :y="440" sid="textarea1" :fx=2  lines="0" :border="2"></CiTextarea1>
   <CiTextarea1 :x="270" :y="440" sid="textarea1" :fy=0.5  lines="0" :border="2"></CiTextarea1>
   <CiTextarea1 :x="380" :y="440" sid="textarea1" :fx=1.5 :fy=0.7 lines="0" :border="2"></CiTextarea1>
@@ -77,7 +103,7 @@
   <text x="335" y="470" class="ciFont1">:fx=1.5 :fy=0.7</text>
   <text x="495" y="540" class="ciFont1">:fx=1.6 :fy=1.4</text>
 
-  <text x=0 y=555 class="ciFont1">:border="3" lines="1"</text>
+  <text x=0 y=555 class="ciFont1k">:border="3" lines="1"</text>
   <CiTextarea1 :x="50"  :y="610" sid="textarea1" :fx=2  lines="1" :border="3"></CiTextarea1>
   <CiTextarea1 :x="270" :y="610" sid="textarea1" :fy=0.5  lines="1" :border="3"></CiTextarea1>
   <CiTextarea1 :x="380" :y="610" sid="textarea1" :fx=1.5 :fy=0.7 lines="1" :border="3"></CiTextarea1>
@@ -88,7 +114,7 @@
   <text x="335" y="640" class="ciFont1">:fx=1.5 :fy=0.7</text>
   <text x="495" y="710" class="ciFont1">:fx=1.6 :fy=1.4</text>
 
-  <text x=0 y=725 class="ciFont1">:border="3" lines="2"</text>
+  <text x=0 y=725 class="ciFont1k">:border="3" lines="2"</text>
   <CiTextarea1 :x="50"  :y="780" sid="textarea1" :fx=2  lines="2" :border="3"></CiTextarea1>
   <CiTextarea1 :x="270" :y="780" sid="textarea1" :fy=0.5  lines="2" :border="3"></CiTextarea1>
   <CiTextarea1 :x="380" :y="780" sid="textarea1" :fx=1.5 :fy=0.7 lines="2" :border="3"></CiTextarea1>
@@ -112,7 +138,7 @@
   <text x="355" y="1060" class="ciFont1">colorF="lightgreen"</text>
 
   <line x1="0" y1="1070" x2="670" y2="1070" stroke="black" stroke-width="2"/>
-  <text x="0" y="1090" class="ciFont1">Define this in CiTextarea1Controller.ts:</text>
+  <text x="0" y="1090" class="ciFont1k">Define this in CiTextarea1Controller.ts:</text>
   <text x=0 y=1120 class="ciFont2">clkWhenMouted</text>
 
   <CiTextarea1 :x="50"  :y="1180" sid="textarea1" lines="2" :fx="2"></CiTextarea1>
@@ -130,7 +156,7 @@
   <text x="330" y="1340" class="ciFont1">Send text to this textareas by MQTT:</text>
   <text x="330" y="1360" class="ciFont1">mosquitto_pub -h 10.1.1.1</text>
   <text x="350" y="1380" class="ciFont1">-t ci/textarea1/3/set -m text</text>
-
+-->
 </svg>
 </template>
 

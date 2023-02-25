@@ -131,20 +131,25 @@ export default defineComponent({
       // const iTemp = (this.geof.calctmax() / this.iTextsize)
       return iTemp
     },
-    // _______textsize (1 = default or 2)_______________________
+    // _______textsize (1 = default or 1.5 | 2 | 3)_____________
     iTextsize: function (): number {
       try {
         const i1 = this.textsize // parseInt(this.textsize)
-        if (i1 === 1.5) return 1.5
-        if (i1 === 2) return 2
-        if (i1 === 3) return 3
+        if (i1 === 1) return 1
+        if (i1 === 1.5 || i1 === 2 || i1 === 2.5 ||
+          i1 === 3 || i1 === 4 || i1 === 5) return i1
         return 1
       } catch (error) { return 1 }
     },
+    // _______textfont (textsize), defined in CiBase.vue________
     textfontA_: function (): string {
+      if (this.iTextsize === 1) return 'ciFont1'
       if (this.iTextsize === 1.5) return 'ciFont1_5'
       if (this.iTextsize === 2) return 'ciFont2'
+      if (this.iTextsize === 2.5) return 'ciFont2_5'
       if (this.iTextsize === 3) return 'ciFont3'
+      if (this.iTextsize === 4) return 'ciFont4'
+      if (this.iTextsize === 5) return 'ciFont5'
       return 'ciFont1'
     },
     // =======background colors=================================
@@ -155,10 +160,12 @@ export default defineComponent({
     },
     // _______color textarea1 header____________________________
     colorH_: function (): string {
+      if (this.iLines < 1) return this.colorA_
       return this.colorH
     },
     // _______color textarea1 footer____________________________
     colorF_: function (): string {
+      if (this.iLines < 2) return this.colorA_
       return this.colorF
     },
     // =======text in line first and last line==================

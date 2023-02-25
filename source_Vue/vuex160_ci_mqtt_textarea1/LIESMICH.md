@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 24.2.2023 <a name="up"></a>   
+Letzte &Auml;nderung: 25.2.2023 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
 <h1>Vue: Verwendung des CiTextarea1-Symbols</h1>
 <a href="../../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -14,7 +14,7 @@ Allgemein gilt:
 
 # Kurzanleitung
 * Verzeichnis `vuex160_ci_mqtt_textarea1` herunterladen.   
-* Visual Studio Code (VSC) starten und den Ordner dieser Vue-Anwendung &ouml;ffnen.   
+* Visual Studio Code (VSC) mit installierter TypeScript-Unterst&uuml;tzung starten und den Ordner dieser Vue-Anwendung &ouml;ffnen.   
 * In VSC das Terminal &ouml;ffnen und folgendes eingeben:   
 `npm run serve`   
 * Den Browser (zB Google Chrome) starten und die Seite `localhost:8080` aufrufen.   
@@ -46,7 +46,7 @@ _Beispiel_:
 <CiTextarea1 :x="50" :y="80" sid="textarea1" :border="3" lines="0" :fx="2" :fy="1.5" color="white"></CiTextarea1>
 ```   
 
-## Positionierung eines Symbols (x, y)
+## Positionierung eines Symbols (:x, :y)
 Im Normalfall sind CI-Symbole 100x100 Einheiten gro&szlig; und der Mittelpunkt (50/50) dient zur Positionsangabe (Platzierungspunkt). Ist der Zeichenbereich zB durch   
 `<svg width="100%" viewBox="0 0 500 220">`   
 definiert, so bewirkt die Ortsangabe `:x="50" :y="70"`, dass das CiTextarea1-Symbol an den linken Rand grenzt und 20 Einheiten vom oberen Rand entfernt ist:   
@@ -60,7 +60,7 @@ Restlicher Platz rechts: 500 - 100 = 400 Einheiten
 ## ID eines Symbols (sid)
 Die Symbol-ID (sid) stellt die Verbindung zwischen der grafischen Darstellung und dem Controller dar (siehe Eigenschaft [id](#id) im Kapitel "[Im Basis-Controller definierte Attribute](#id)")
 
-## Rand eines Symbols (border)
+## Rand eines Symbols (:border)
 Alle CI-Symbole sind im Normalfall au&szlig;en 100x100 Einheiten gro&szlig; und haben nach innen einen fixen Rand von 5 Einheiten. Die individuelle "Arbeitsfl&auml;che" eines Symbols ist also 90 x 90 Einheiten gro&szlig;.   
 Durch den Rand ist es m&ouml;glich, Symbole direkt nebeneinander in einem 100er-Raster anzuordnen, ohne dass sich die Symbol-Zeichnungen optisch ber&uuml;hren.   
 Will man den Rand eines CI-Symbols darstellen, so gibt es dazu vier M&ouml;glichkeiten, die &uuml;ber das Attribut `:border=` eingestellt werden:   
@@ -94,7 +94,7 @@ Je nach Anzahl angezeigter Zeilen ver&auml;ndert sich die Gr&ouml;&szlig;e des Z
 * `lines="1"`: Zeichenbereich 90x72 Einheiten   
 * `lines="2"`: Zeichenbereich 90x54 Einheiten   
 
-## Strecken eines Symbols (fx, fy)
+## Strecken eines Symbols (:fx, :fy)
 Standardm&auml;&szlig;ig sind alle Symbole 100x100 Einheiten gro&szlig;. Es ist jedoch m&ouml;glich, die Symbole in x- und in y-Richtung zu strecken. Der Platzierungspunkt bleibt dabei gleich.   
 Das Strecken erfolgt durch Angabe der Parameter `fx` und `fy`, wie das folgende Bild zeigt:   
 ![Gestrecktes CiTextarea1-Symbol](./images/vuex160_textarea1_stretch1.png "Gestrecktes CiTextarea1-Symbol")   
@@ -127,7 +127,10 @@ Die Standard-Schriftgr&ouml;&szlig;e ist so gew&auml;hlt, dass im 100x100 gro&sz
 | ------------------- | ---------------------------------------- |   
 | `:textsize="1.5"`   | Schrifth&ouml;he ist 1,5 Zeilen hoch. Das ergibt z.B. zwei Zeilen im Zeichenbereich bei `lines="2"`   |   
 | `:textsize="2"`   | Schrifth&ouml;he ist 2 Zeilen hoch. Das ergibt z.B. zwei Zeilen bei `lines="1"`   |   
+| `:textsize="2.5"`   | Schrifth&ouml;he ist 2,5 Zeilen hoch. Das ergibt z.B. zwei Zeilen im Zeichenbereich bei `lines="0"`   |   
 | `:textsize="3"`   | Schrifth&ouml;he ist 3 Zeilen hoch. Das ergibt z.B. eine Zeile bei `lines="2"`   |   
+| `:textsize="4"`   | Schrifth&ouml;he ist 4 Zeilen hoch. Das ergibt z.B. eine Zeile bei `lines="1"`   |   
+| `:textsize="5"`   | Schrifth&ouml;he ist 5 Zeilen hoch. Das ergibt z.B. eine Zeile bei `lines="0"`   |   
 
 ![Schriftgr&ouml;&szlig;en](./images/vuex160_textarea1_textsize1.png "Schriftgr&ouml;&szlig;en")   
 _Bild 4: Verschiedene Schriftgr&ouml;&szlig;en im Zeichenbereich_   

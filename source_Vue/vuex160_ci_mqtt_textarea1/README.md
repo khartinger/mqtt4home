@@ -1,4 +1,4 @@
-Last modified: 2023-02-24 <a name="up"></a>   
+Last modified: 2023-02-25 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></td><td>
 <h1>Vue: Using the CiTextarea1 symbol</h1>
 <a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
@@ -14,7 +14,7 @@ In general:
 
 # Quick Reference
 * Download directory `vue150_ci_mqtt_CiTextarea1`.   
-* Start Visual Studio Code (VSC) and open the folder of this Vue application.   
+* Start Visual Studio Code (VSC) with TypeScript support installed and open the folder of this Vue application.   
 * In VSC open the terminal and type the following:   
 `npm run serve`   
 * Start the browser (e.g. Google Chrome) and call the page `localhost:8080`.   
@@ -46,7 +46,7 @@ _Example_:
 <CiTextarea1 :x="50" :y="80" sid="textarea1" :border="3" lines="0" :fx="2" :fy="1.5" color="white"></CiTextarea1>
 ```   
 
-## Positioning of a symbol (x, y)
+## Positioning of a symbol (:x, :y)
 Normally CI symbols are 100x100 units in size and the center point (50/50) is used to indicate the position (placement point). If the drawing area is defined e.g. by   
 `<svg width="100%" viewBox="0 0 500 220">`   
 then the location specification `:x="50" :y="70"` causes the CiTextarea1 to border the left edge and be 20 units away from the top edge:   
@@ -60,7 +60,7 @@ Remaining space right: 500 - 100 = 400 units
 ## ID of a symbol (sid)
 The symbol ID (sid) represents the connection of the graphical representation to the controller (see property [id](#id) in chapter "[Attributes defined in the base controller](#id)").
 
-## Border of a symbol (border)
+## Border of a symbol (:border)
 All CI symbols are normally 100x100 units on the outside and have a fixed margin of 5 units on the inside. So the individual "workspace" of a symbol is 90x90 units.   
 The margin makes it possible to arrange symbols directly next to each other in a 100-unit grid without the symbol drawings visually touching each other.   
 If you want to display the border of a CI symbol, there are four possibilities for this, which are set via the attribute `:border=`:   
@@ -94,10 +94,10 @@ Depending on the number of displayed lines, the size of the drawing area for the
 * `lines="1"`: drawing area 90x72 units   
 * `lines="2"`: drawing area 90x54 units   
 
-## Stretching of a symbol (fx, fy)
+## Stretching of a symbol (:fx, :fy)
 By default, all symbols are 100x100 units in size. However, it is possible to stretch the symbols in x and in y direction. The placement point remains the same.   
 Stretching is done by specifying the parameters `fx` and `fy`, as the following example shows:   
-![Stretched CiTextarea1](./images/vuex160_CiTextarea1_stretch1.png "Stretched CiTextarea1")   
+![Stretched CiTextarea1](./images/vuex160_textarea1_stretch1.png "Stretched CiTextarea1")   
 _Fig. 3: Stretched CiTextarea1 symbol_   
 
 The left two CiTextarea1 symbols are stretched by the factor fx=2 (results in 2*100 = 200 units), the third symbol is stretched by the factor fy=2 and the right symbol is stretched by fx=2 and fy=2, i.e. it is twice as large as the original with a size of 200x200.   
@@ -127,7 +127,10 @@ The default font size is such that there is room for five lines in the 100x100 s
 | ------------------- | ---------------------------------------- |   
 | `:textsize="1.5"` | font size is 1.5 lines high. This results e.g. in two lines in the character area with `lines="2"` |   
 | `:textsize="2"` | font height is 2 lines high. This results e.g. in two lines with `lines="1"` |   
+| `:textsize="2.5"` | font size is 2.5 lines high. This results e.g. in two lines in the character area with `lines="0"` |   
 | `:textsize="3"` | font height is 3 lines high. This results in e.g. one line with `lines="2"` |   
+| `:textsize="4"` | Font size is 4 lines high. This results e.g. in one line with `lines="1"` |   
+| `:textsize="5"` | Font size is 5 lines high. This results e.g. in one line with `lines="0"` |   
 
 ![font sizes](./images/vuex160_textarea1_textsize1.png "font-sizes")   
 _Fig. 4: Different font sizes in the character area_
