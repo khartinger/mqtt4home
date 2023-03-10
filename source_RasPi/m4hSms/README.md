@@ -1,4 +1,4 @@
-Last modified: 2022-01-24 <a name="up"></a>   
+Last modified: 2023-03-10 <a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Raspberry Pi: Sending and receiving SMS via MQTT in C++</h1>
 <a href="../../README.md">==> Home page</a> &nbsp; &nbsp; &nbsp; 
@@ -24,11 +24,16 @@ If you want to receive an SMS in certain situations in home automation or contro
 <a name="a10"></a>[Top of page](#up)   
 
 # How are SMS and MQTT messages converted into each other?
-The following scheme outlines the conversion from MQTT to SMS and vice versa. The MQTT topics for sending (at `sub:`), for replying (`subret:`) and for receiving SMS (at `pub:`) can be freely chosen and are in the configuration file `m4h.conf`.   
+## Overview   
+The following scheme outlines the conversion from MQTT to SMS and vice versa:   
+* The MQTT message is received by the `m4hSms` program, translated into AT commands for the GSM modem and sent by the modem using a SIM card.   
+* An incoming SMS is stored by the modem. The program `m4hSms` checks regularly (every second) if an SMS has arrived. If so, it is read out, deleted and published as MQTT message.   
+   
+The MQTT topics for sending (specified at `sub:` in the following picture), for replying (`subret:`) and for receiving SMS (at `pub:`) can be chosen freely and are in the configuration file `m4h.conf`.
 
 ![m4hSms1](./images/m4hSms_mqtt-sms.png "m4hSms function")   
-_Fig. 1: Function diagram of `m4hSms`_   
-
+_Fig. 1: Function scheme for sending and receiving SMS_.
+   
 ## Sending an MQTT message as SMS
 * The __topic__ to send an SMS is defined in the configuration file `m4h.conf`, section `[sms]`, key `sub:` (e.g. `sub: sms/send`).   
 * The __payload__ to send an SMS must consist of the phone number (without spaces!), a following space (as separator) and the SMS text.   
@@ -43,14 +48,52 @@ Under the topic `subret:` comes a reply message if the sending was successful (p
 ## Convert an SMS into an MQTT message
 * A __plain SMS text__ is sent as a message under the topic specified in the configuration file `m4h.conf`, section `[sms]`, key `pub:` (e.g. `pub: sms/received`).   
 The `pubNum: true` entry is used to specify that the phone number and date+time of the SMS are also sent in the payload.   
+_Example:_   
+A received SMS with the message "Hello" results in the MQTT message (assumption `pubNum: true`):   
+`sms/received +43XXXXXXXXXX\n09.03.2023 09:15:30\nHallo`   
 
 * __MQTT formatted SMS text__ contains the abbreviations `-t` (for Topic), `-m` (for message) and optionally `-r` (for retain) and is published as a corresponding message.   
 _Example_:   
+An SMS with the text   
 `-t info/test -m SMS test message`   
-results in a message with the topic `info/test` and the payload `SMS test message`.   
+results in a MQTT-message with the topic `info/test` and the payload `SMS test message`.   
 Note: The SMS must come from a number enabled in `m4h.conf` (under `from:`).
 
-* Possible __commands__ must be listed in the `m4h.conf` configuration file in the `[sms]` section. They consist of the key (e.g. `cmdversion:`) and the SMS text for the command (e.g. `-version-`). That means: If you send an SMS with the text `-version-` to the program `m4hSms`, you will get a reply SMS with the version number.   
+* Possible __commands__ must be listed in the `m4h.conf` configuration file in the `[sms]` section. They consist of the key (e.g. `cmdversion:`) and the SMS text for the command (e.g. `-version-`).   
+_Example_:   
+If you send an SMS with the text `-version-` to the program `m4hSms`, you will get a reply SMS with the version number.   
+
+## MQTT commands
+In addition to sending SMS messages, information about the status of the modem and the SIM card can also be requested from the GSM modem via MQTT.   
+The topic consists of a "base" topic and the addition `/get`or `/set/...`. The base topic can be selected in the configuration file under the key `sub2`, e.g:   
+`sub2: sms/cmd`   
+_Example: Help is displayed with the following MQTT message:   
+`mosquitto_pub -h 10.1.1.1 -t sms/cmd/get -m ?`   
+Result: Possibilities for get and set commands:   
+`sms/cmd/ret/? {"get":"?|help|version|module|sim|credit","set":"at"}`   
+
+![m4hSms1cmdmqtt](./images/m4hSms_cmd_mqtt.png "m4hSms function2")   
+_Fig. 2: Functional diagram for sending and receiving messages from the GSM module_.
+
+## SMS commands
+Besides MQTT messages, predefined commands can be triggered by SMS, e.g.   
+* Display of the program version   
+* Inquiry of the SIM card balance   
+* Reloading the configuration   
+* Exit the control program   
+Which text the SMS must contain for these functions can be defined in the configuration file.   
+_Example_:   
+```   
+cmdversion: -version-
+cmdcredit: -credit-
+cmdreload:  -reload-
+cmdend: -end-
+```   
+
+![m4hSms1cmdsms](./images/m4hSms_cmd_sms.png "m4hSms function3")   
+_Fig. 3: Function scheme for sending and receiving SMS commands_.
+
+&nbsp;
 
 <a name="a20"></a>[Top of page](#up)   
 
@@ -85,20 +128,21 @@ To send and receive SMS, at least one SIM module and one SIM card is required. T
 The connection via a USB-Serial-Adapter is more expensive (because of the costs for the adapter), but easier.   
 
 ![Module SIM808 with USB-Serial-Adapter](./images/210825_SIM808_480b.png "Module SIM808 with USB-Serial-Adapter")   
-_Fig. 2: USB-Serial-Adapter SH-U09C, module SIM808 and GSM antenna (from left to right)_   
+_Fig. 4: USB-Serial-Adapter SH-U09C, module SIM808 and GSM antenna (from left to right)_   
    
 The jumper on the USB-Serial-Adapter must be set to 5V, because the supply voltage of the SIM module must be between 5 and 18V. (3.3V is too low).  
 
 When connecting the SIM module to the USB-Serial-Adapter or RasPi, make sure that the pins TxD are connected to RxD and RxD to TxD ("cross out" the data lines).   
 
 ![USB-SIM-connection](./images/m4hSms_connect.png "USB-SIM-connection")   
-_Fig. 3: Connection between USB-Serial-Adapter and SIM-Module_   
+_Fig. 5: Connection between USB-Serial-Adapter and SIM-Module_   
 
 __Do not forget__: A SIM card is required to send and receive SMS, although a prepaid card is sufficient for many applications, where no fixed costs are incurred. The SIM card is inserted into the SIM module (see Fig. 1, bottom left of the module).   
 
 <a name="a40"></a>[Top of page](#up)   
 
 # How to determine on which port the SIM module is connected?   
+## Program to "find modem"   
 If several USB devices are connected to the RasPi, it is not always clear to which logical port (`/dev/ttyS0`, `/dev/ttyACM0`, `/dev/ttyUSB0`, `/dev/ttyUSB1` etc.) the SIM module is connected. This can be done with the help of the program [`
 m4hFindSimModule`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hFindSimModule) to determine this:   
 
@@ -125,9 +169,28 @@ Searching for modem...
 /dev/ttyUSB1: Could not open device (Error 2: No such file or directory)
 ```   
 In this example the device name is `/dev/ttyUSB0`.   
+__Note__: After a restart of the system, the assignment may be different again!   
 
 &nbsp;   
+---   
+## Fixed assignment of a USB interface   
+The problem of randomly assigning an interface for the modem can be solved with __udev rules__.   
+udev rules are text files that contain unique information about a device and assign a fixed, symbolic name to that device. They are stored in the directory `/etc/udev/rules.d/`.   
+The properties of a device connected to e.g. port `ttyUSB0` can be displayed with the program `udevadm`:   
+`udevadm info -a -n /dev/ttyUSB0`.   
+A long list of device properties will be displayed.   
+From this list you select (as high as possible) as many properties of the device that are __uniquely identifiable__, e.g. the identification of the device manufacturer `ATTRS{idVendor}` (e.g. "0403") and that of the product `ATTRS{idProduct}` (e.g. "6001"). Furthermore you have to look in which `SUBSYSTEM` the properties are located.   
+With this information you create the udev file:   
+`sudo nano /etc/udev/rules.d/98-usb.rules`.   
+Content of the file e.g:   
+```   
+KERNEL=="ttyUSB?", KERNELS=="1-1.2", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="ttyUSB_Zigbee"
+KERNEL=="ttyUSB?", KERNELS=="1-1.1", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="ttyUSB_Modem"
+```   
+The file contains two symbolic links (symbolic names), one for the Zigbee USB dongle ("`ttyUSB_Zigbee`") and one for the GSM modem ("`ttyUSB_Modem`").   
+
 <a name="a50"></a>[Top of page](#up)   
+
 
 # How to create the program m4hSms?
 The creation of the executable file is the same as described in the chapter [Raspberry Pi: Helpful single programs in C++](m4h08_RasPiCppDemos.md) as an example:   
@@ -150,8 +213,8 @@ The configuration of the program m4hSms is done with the help of the configurati
 
 In the section `[sms]` the following entries are required:   
 
-* `device:` Interface to which the SIM module is connected.   
-  Possible values are `ttyS0` for the serial interface or `ttyACM0`, `ttyUSB0`, `ttyUSB1` etc. for the USB interface.   
+* `devices: ` List of interfaces on which to search for a modem during startup. Separate the individual interfaces with spaces, e.g.   
+`/dev/ttyUSB_Modem /dev/ttyUSB0 /dev/ttyS0 /dev/ttyACM0 /dev/ttyUSB1`   
 
 * `from: ` List of phone numbers from which SMS may be received.   
    (phone numbers separated by commas, numbers start with +...).
@@ -172,6 +235,11 @@ The following entries are optional:
 * `pubNum: ` Specifies whether the phone number and date+time should be specified in the payload for a received SMS in addition to the SMS text.   
   Default: `false` (i.e. use only SMS text as payload).
 
+* `sub2: ` Base topic for commands to the GSM modem or SIM card. The total topic results from the base topic and the extension `/get` or `/set`, e.g. query of the program version:   
+`mosquitto_pub -h 10.1.1.1 -t sms/cmd/get -m version`   
+
+* `sub2ret: ` Topic for a response message after sending a command.   
+
 * `smsStart: ` Send an SMS to the specified phone number when the program `m4hSms` has been started, e.g.   
   `smsStart: +43..... program m4hSms started!`   
   For each phone number a separate line must be used.   
@@ -190,6 +258,11 @@ The following entries are optional:
 
 * `cmdcredit:` defines an SMS text that causes the credit to be queried from the provider and the amount (in Euro) to be sent back as a reply SMS.   
    
+---   
+__*Deprecated*__:   
+* `device:` Interface to which the SIM module is connected.   
+  Possible values are `ttyS0` for the serial interface or `ttyACM0`, `ttyUSB0`, `ttyUSB1` etc. for the USB interface.   
+
 _Note_: All keys like `device`, `from`, `to` etc. are defined in the source code of the file `C_Sms.hpp` with   
 `#define SMS_..._KEY ...`   
 and can easily be adapted to your own needs.   
@@ -197,43 +270,62 @@ and can easily be adapted to your own needs.
 ### Example of a configuration file:   
 
 ```   
-________m4h.conf________________________________khartinger_____
-# Configuration file for mqtt4home
-# 2021-08-27
+#________m4h.conf________________________________khartinger_____
+# Configuration file for C_Sms.hpp (mqtt4home)
+# 2023-03-09
 
 [base]
 versionIn:  m4hSms/get version
-versionOut: m4hSms/ret/version 2021-08-27
+versionOut: m4hSms/ret/version m4h.conf_2023-03-09
 mqttStart:  info/start m4hSms
 mqttEnd:    info/end__ m4hSms
 ProgEnd:    m4hSms/set -end-
 addTime:    true
 
 [sms]
-# (serial) interface for sim module (ttyS0, ttyUSB0, ttyUSB1)
-#device: /dev/ttyS0
-device: /dev/ttyUSB0
-# authorisized phone numbers
-from: 6700,+43.....
-to: 6700,+43.....
-# mqtt base topics for sending and receiving
-# sub-topic with payload num txt --> sms
-# --> sms send result published under "subret:"
-# sms (cmd, plain)          --> publish with topic pub
-# sms (-t topic -m payload) --> publish topic payload
+# [1] serial interface for sim module (ttyS0, ttyUSB0, ttyUSB1)
+# device: /dev/ttyUSB0
+devices: /dev/ttyUSB_Modem /dev/ttyUSB0 /dev/ttyS0 /dev/ttyACM0 /dev/ttyUSB1
+
+# [2] authorisized phone numbers
+from: 6700,+43..........
+to: 6700,+43..........
+
+# [3] mqtt topic to send an SMS
+#     payload: phonenumber sms message
 sub: sms/send
+
+# [4] mqtt topic for the answer if the sending was successful
 subret: sms/send/ret
+
+# [5] publish incomming SMS
+# Incoming SMS can have two different formats:
+# * Plain text: MQTT message with pub-topic and text as payload.
+# * -t topic -m payload: the payload will be sent under the specified topic.
 pub: sms/received
-# payload for received sms with phonenumber date+time sms-text
+
+# [5] Components of an MQTT message for a received SMS
+#     true:  payload contains phone number of sender, date+time and SMS text
+#     false: payload is only the SMS text
 pubNum: true
 
-smsStart: +43..... program m4hSms started!
-smsEnd:   +43..... program m4hSms finished!
-# sms or mqtt commands to which the program responds
+# [6] base topic to send a command to GSM module or SIM card
+sub2: sms/cmd
+
+# [7] base topic for the answer of an ommand to GSM module or SIM card
+sub2ret: sms/cmd/ret
+
+# [8] Send start and end SMS (one line per recipient)
+smsStart: +43.......... program m4hSms started!
+smsEnd:   +43.......... program m4hSms finished!
+
+# [9] sms or mqtt commands to which the program responds
 cmdversion: -version-
 cmdend:     -end-
 cmdreload:  -reload-
 cmdcredit:  -credit-
+
+# [10] Provider data to query the credit
 #netid:      T-Mobile A
 #netphone:   6700
 #nettext:    GUTHABEN
@@ -249,7 +341,7 @@ _Note_: Lines starting with # are comment lines and will be ignored.
 * Connect SIM module with valid SIM card to RasPi ([see above](#30)).   
 * Broker running on the Raspi with IP '10.1.1.1'.   
 ### Software
-* Before starting the program, at least the interface (`device:`) and the phone numbers authorized to send (`to:`) and receive (`from:`) SMS must be entered in the `m4h.conf` configuration file in the `[sms]` section (see also the [configuration notes](#a60) above).   
+* Before starting the program, at least the interface(s) (`devices:`) and the phone numbers authorized to send (`to:`) and receive (`from:`) SMS must be entered in the `m4h.conf` configuration file in the `[sms]` section (see also the [configuration notes](#a60) above).   
 * Start program:   
   `~/m4hSms/m4hSms`   
 * Start `mosquitto_sub` in a first terminal window to follow all messages:   

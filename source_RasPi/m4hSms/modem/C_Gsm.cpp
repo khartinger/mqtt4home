@@ -123,7 +123,7 @@ String Gsm::getsCmd() {return sCmd; }
 String Gsm::getsResult() { return sResult; }
 
 //_____result of last modem request_____________________________
-// if replace_=true: replace \r by ^ and \n by ~
+// if raw_=false: replace \r by ^ and \n by ~
 String Gsm::getsResult(bool raw_) {
  if(raw_) return sResult;
  String s1=sResult;

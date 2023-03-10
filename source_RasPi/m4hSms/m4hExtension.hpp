@@ -11,6 +11,7 @@
 //           (3) USB-Serial-Adapter
 // Updates:
 // 2021-08-25 First release
+// 2023-03-07 update f2Init
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
@@ -30,7 +31,7 @@ void f1PrintHelptext()
  fprintf(stdout, "         pf.conf ... path+filename of config.file (default m4h.conf)\n");
  fprintf(stdout, "Purpose: Send and receive SMS and convert to MQTT.\n");
  fprintf(stdout, "Author : Karl Hartinger\n");
- fprintf(stdout, "Version: 2021-08-25");
+ fprintf(stdout, "Version: 2021-08-25/2023-03-07");
  fprintf(stdout, "Needs  : sudo apt-get install libmosquitto-dev\n\n");
  fprintf(stdout, "Exit program by pressing <ctrl>c\n");
 }
@@ -41,13 +42,13 @@ bool f2Init(std::string pfConf)
 {
  g_sms.readConfig(pfConf);            // read conf data
  if(g_prt) g_sms.show();              // show config values Sms
- bool bRet=g_sms.isModule();
+ std::string s1=g_sms.findSmsModule();
  if(g_prt) {
-  fprintf(stdout, "GSM module ");
-  if(!bRet) fprintf(stdout, "NOT ");
-  fprintf(stdout, "found at %s!\n",g_sms.getDevice().c_str());
+  if(s1=="") fprintf(stdout, "GSM module NOT found!");
+  else fprintf(stdout, "GSM module found at %s!\n",s1.c_str());
  }
- return bRet;
+ if(s1=="") return false;
+ return true;
 }
 
 //_______react to further mqtt messages_________________________

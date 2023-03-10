@@ -8,26 +8,39 @@
 // Updates:
 // 2021-08-25 First release
 // 2022-01-23 Add pubNum, formatSmsDate
-// 2022-01-27 Add init()
+// 2023-02-27 Add devices, topicsub2
+// 2023-03-08 Update threads for modem access
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
 #include "m4hBase.h"                   // m4h basic functions
 #include "./modem/C_Gsm.h"             // modem and serial
+#include <algorithm>                   // str.erase
 
+#define  SMS_VERSION         "C_Sms-Version 2023-03-08"
 #define  SMS_SECTION         "sms"
 #define  SMS_DEVICE_KEY      "device"
-#define  SMS_DEVICE          "/dev/ttyS0"
+#define  SMS_DEVICE          ""
+#define  SMS_DEVICE_DEFAULT  "/dev/ttyS0"
+#define  SMS_DEVICES_KEY     "devices"
 #define  SMS_FROM_KEY        "from"
 #define  SMS_TO_KEY          "to"
+
 #define  SMS_TOPICSUB_KEY    "sub"
 #define  SMS_TOPICSUB        "m4hSms/send"
 #define  SMS_TOPICSUBRET_KEY "subret"
 #define  SMS_TOPICSUBRET     "m4hSms/send/ret"
+
 #define  SMS_TOPICPUB_KEY    "pub"
 #define  SMS_TOPICPUB        "m4hSms/received"
 #define  SMS_PUB_NUM_KEY     "pubnum"
 #define  SMS_PUB_NUM         false
+
+#define  SMS_TOPICSUB2_KEY   "sub2"
+#define  SMS_TOPICSUB2       "m4hSms/cmd"
+#define  SMS_TOPICSUB2RET_KEY "sub2ret"
+#define  SMS_TOPICSUB2RET    "m4hSms/cmd/ret"
+
 #define  SMS_CMD_VERSION_KEY "cmdversion"
 #define  SMS_CMD_VERSION     "cmd_version"
 #define  SMS_CMD_END_KEY     "cmdend"
@@ -35,19 +48,19 @@
 #define  SMS_CMD_RELOAD_KEY  "cmdreload"
 #define  SMS_CMD_RELOAD      "cmd_reload"
 #define  SMS_CMD_CREDIT_KEY  "cmdcredit"
-#define  SMS_CMD_CREDIT      "..credit.."
+#define  SMS_CMD_CREDIT      "cmd_credit"
 #define  SMS_NET_ID_KEY      "netid"
-#define  SMS_NET_ID          GSM_NET_ID2
+#define  SMS_NET_ID          GSM_NET_ID2   // defined in C_Gsm.h
 #define  SMS_NET_TEL_KEY     "netphone"
-#define  SMS_NET_TEL         GSM_NET_TEL2
+#define  SMS_NET_TEL         GSM_NET_TEL2  // defined in C_Gsm.h
 #define  SMS_NET_TXT_KEY     "nettext"
-#define  SMS_NET_TXT         GSM_NET_TXT2
+#define  SMS_NET_TXT         GSM_NET_TXT2  // defined in C_Gsm.h
 #define  SMS_SEND_MAX_SEC    60
 #define  SMS_SMS_START_KEY   "smsstart"
 #define  SMS_SMS_END_KEY     "smsend"
 
-#define  SMS_TXT_SENT        "SMS sent"
-#define  SMS_TXT_NOT_SENT    "SMS NOT sent"
+#define  SMS_TXT_SENT        "SMS sent! "
+#define  SMS_TXT_NOT_SENT    "SMS NOT sent! "
 
 //-------global values------------------------------------------
 extern bool g_prt;                     //true=printf,false=quiet
@@ -62,15 +75,19 @@ class Sms
  //------properties---------------------------------------------
  std::string pfConfig;                 // path&name config file
  std::string section;                  // one session msg data
+ bool testDeviceOnStart;               // send msg on error
  protected:
  //------application specific properties------------------------
  std::string keys;                     // keys for [sms]
- bool testDeviceOnStart;               // send msg on error
+ std::string testDeviceText2;          // additional text
  std::string device;                   // serial interface
+ std::vector<std::string> vDevices;    // possible interfaces
  std::vector<std::string> vFrom;       // authorizised SMS from
  std::vector<std::string> vTo;         // authorizised SMS to
  std::string topicSub;                 // topic base subscribe
  std::string topicSubRet;              // topic subscribe answer
+ std::string topicSub2;                // topic base subscribe
+ std::string topicSub2Ret;             // topic subscribe answer
  std::string topicPub;                 // topic base publish
  bool retainOut;                       // retain publish
  bool pubNum;                          // publish phone number
@@ -93,27 +110,37 @@ class Sms
  std::string getKeys() {return keys;}  // keys in config file
  std::string getDevice() {return device; } // module interface
  void setTimeout(int sec) { sendTimeout=sec; };
+ void setTestDeviceText2(std::string txt) {testDeviceText2=txt;}
  //------working methods----------------------------------------
  bool readConfig();                    // read config file
  bool readConfig(std::string pfConf);  // read config file
  void show();                          // show config values
- bool isModule();                      // check for SIM module
- bool init();                          // send start sms
+ bool sendStartSms(Gsm gsm3, struct mosquitto *mosq);
  bool onMessage(struct mosquitto *mosq, std::string topic, std::string payload);
  void onExit(struct mosquitto *mosq, int reason);
  int  lookForSmsIn(struct mosquitto *mosq);
  bool isAuthSmsFrom(std::string phoneNumber);
  bool isAuthSmsTo(std::string phoneNumber);
- bool sendSms(std::string phone, std::string text, struct mosquitto *mosq);
+ bool sendCmd(std::string sCmd, std::string& sResult);
  bool publish(struct mosquitto *mosq, std::string topic, std::string payload, bool retain);
-
+ // -----methods that use threads-------------------------------
+ bool sendSms(std::string phone, std::string text, struct mosquitto *mosq);
+ bool getCredit(struct mosquitto *mosq);
+ // ----thread methods------------------------------------------
+ static void threadFunctionSendSms(std::string phone, std::string text, std::string device_, struct mosquitto *mosq, std::string sTopic, int iTimeout);
+ static void threadFunctionIsModule(std::string device_, std::string topicSub2Ret_, struct mosquitto *mosq_);
+ static void threadFunctionIsSim(std::string device_, std::string topicSub2Ret_, struct mosquitto *mosq_);
+ static void threadFunctionSendCmd(std::string device_, std::string sCmd, std::string topicSub2Ret_, struct mosquitto *mosq_);
  //-----helper methods------------------------------------------
  std::string getsHotEuro(std::string text); // hot credit
  double getHotEuro(std::string text);  // hot credit
+ std::vector<std::string> string2vector(const std::string& data, const std::string& delimiters);
  bool split2phone(std::string sIn, std::vector<std::string>&vOut);
  int  parseSmsIn( std::string smsText, std::string& topicIn, std::string& payloadIn, bool& retainIn);
  std::string formatSmsDate(std::string smsDate, int format_);
- static void threadFunctionSendSms(std::string phone, std::string text, std::string device_, struct mosquitto *mosq, std::string sTopic, int iTimeout);
+ std::string findSmsModule();
+ static std::string removeLFCR(std::string s1);
+ static std::string replaceChar(std::string s1, char cOld, char cNew);
 };
 
 // *************************************************************
@@ -130,10 +157,14 @@ void Sms::setDefaults()
  section  = SMS_SECTION;               // prog specifig info
  device     = SMS_DEVICE;              // serial interface
  testDeviceOnStart = true;             // test device
+ testDeviceText2="";                   // additional text
+ vDevices.clear();                     // possible interfaces
  vFrom.clear();                        // authorizised SMS from
  vTo.clear();                          // authorizised SMS to
  topicSub   = SMS_TOPICSUB;            // topic base subscribe
  topicSubRet= SMS_TOPICSUBRET;         // topic subscribe answer
+ topicSub2  = SMS_TOPICSUB2;           // topic base subscribe
+ topicSub2Ret= SMS_TOPICSUB2RET;       // topic subscribe answer
  topicPub   = SMS_TOPICPUB;            // topic base publish
  pubNum     = SMS_PUB_NUM;             // publish phone number
  retainOut  = false;                   // retain publish msg
@@ -151,6 +182,7 @@ void Sms::setDefaults()
  keys=std::string(SMS_DEVICE_KEY);
  keys+="|"+std::string(SMS_FROM_KEY)+"|"+std::string(SMS_TO_KEY);
  keys+="|"+std::string(SMS_TOPICSUB_KEY)+"|"+std::string(SMS_TOPICSUBRET_KEY);
+ keys+="|"+std::string(SMS_TOPICSUB2_KEY)+"|"+std::string(SMS_TOPICSUB2RET_KEY);
  keys+="|"+std::string(SMS_TOPICPUB_KEY)+"|"+std::string(SMS_PUB_NUM_KEY);
  keys+="|"+std::string(SMS_SMS_START_KEY)+"|"+std::string(SMS_SMS_END_KEY);
  keys+="|"+std::string(SMS_CMD_VERSION_KEY)+"|"+std::string(SMS_CMD_END_KEY);
@@ -200,13 +232,19 @@ bool Sms::readConfig(std::string pfConf)
    }
   }
   //.....from - authorisized phone numbers......................
+  if(sKey==SMS_DEVICES_KEY) vDevices=string2vector(sVal, ", ");
+  //.....from - authorisized phone numbers......................
   if(sKey==SMS_FROM_KEY) split2phone(sVal, vFrom);
   //.....to - authorisized phone numbers........................
   if(sKey==SMS_TO_KEY) split2phone(sVal, vTo);
   //.....subscribe topic -> to send sms.........................
   if(sKey==SMS_TOPICSUB_KEY) topicSub=sVal;
-  //.....anser topic after sending sms..........................
+  //.....answer topic after sending sms.........................
   if(sKey==SMS_TOPICSUBRET_KEY) topicSubRet=sVal;
+  //.....subscribe topic -> to send commands to modem...........
+  if(sKey==SMS_TOPICSUB2_KEY) topicSub2=sVal;
+  //.....answer topic after receiving a command.................
+  if(sKey==SMS_TOPICSUB2RET_KEY) topicSub2Ret=sVal;
   //.....publish topic, if a sms was received...................
   if(sKey==SMS_TOPICPUB_KEY) topicPub=sVal;
   //.....publish topic, if a sms was received...................
@@ -230,6 +268,12 @@ bool Sms::readConfig(std::string pfConf)
   //.....send sms on program end................................
   if(sKey==SMS_SMS_END_KEY) { vSmsEnd.push_back(sVal); }
  } // end for every line in section
+ //------if device not defined: search interface----------------
+ if(device.length()==0) {
+  std::cout<<"try to find SMS module..."<<std::endl;
+  device = findSmsModule();
+  if(device.length()==0) device=SMS_DEVICE_DEFAULT;
+ }
  return true;
 }
 
@@ -238,11 +282,15 @@ void Sms::show()
 {
  std::cout<<"=====["<<section<<"]=============================="<<std::endl;
  Conf conf=Conf(pfConfig);
+ std::cout<<"C_Sms-Version       | "<<SMS_VERSION<<std::endl;
  std::cout<<"config file         | "<<pfConfig;
  if(!conf.isReady()) std::cout << " (file not found)";
  std::cout<<std::endl;
  std::cout<<"all keys            | "<<getKeys()<<std::endl;
  std::cout<<"device              | "<<device<<std::endl;
+ std::cout<<"-----possible interfaces---------------"<<std::endl;
+ for(int i=0; i<vDevices.size(); i++) std::cout<<vDevices.at(i)<<" | ";
+ std::cout<<std::endl;
  std::cout<<"-----authorizised SMS from-------------"<<std::endl;
  for(int i=0; i<vFrom.size(); i++) std::cout<<vFrom.at(i)<<" | ";
  std::cout<<std::endl;
@@ -251,6 +299,8 @@ void Sms::show()
  std::cout<<std::endl;
  std::cout<<"topicSub (send SMS) | "<<topicSub<<std::endl;
  std::cout<<"topicSubRet (answer)| "<<topicSubRet<<std::endl;
+ std::cout<<"topicSub2 (send SMS)| "<<topicSub2<<std::endl;
+ std::cout<<"topicSub2Ret (answer)| "<<topicSub2Ret<<std::endl;
  std::cout<<"topicPub (SMS in)   | "<<topicPub<<std::endl;
  std::cout<<"publish phone number| ";
  if(pubNum) std::cout<<"true"<<std::endl; else std::cout<<"false"<<std::endl;
@@ -268,56 +318,122 @@ void Sms::show()
  std::cout<<"sendTimeout (sec)   | "<<sendTimeout<<std::endl;
 }
 
-//_______is a GSM module available?_____________________________
-// return: true = yes, false = no
-bool Sms::isModule()
+//_______test device, send MQTT message on error________________
+// return true: device OK
+bool Sms::sendStartSms(Gsm gsm3, struct mosquitto *mosq)
 {
- bool bRet=true;
+ Conf conf=Conf();                     // helper: split2String
  g_modemBusy=true;                     // modem busy
- Gsm gsm2=Gsm(device);                 // gsm object
- bRet=gsm2.isModule();                 // test module
+ //===========test if device is ready, send mqtt on error=======
+ if(!gsm3.isModule())
+ {//----------no device found-----------------------------------
+  g_modemBusy=false;                   // modem not busy
+  std::string sPay="Modem "+device+" not found.";
+  publish(mosq, topicPub, sPay, retainOut);
+  return false;
+ } // end no device found
+ //-----------device found--------------------------------------
+ if(!gsm3.begin()) 
+ {//---------could not begin modem-----------------------------
+  g_modemBusy=false;                   // modem not busy
+  std::string sPay="Modem "+device+": begin() error";
+  publish(mosq, topicPub, sPay, retainOut);
+  return false;
+ } // end could not begin modem
+ //-----------begin modem OK------------------------------------
  g_modemBusy=false;                    // modem not busy
- return bRet;
-}
-
-//_______Init program: send start sms___________________________
-bool Sms::init()
-{
- //------check for module---------------------------------------
- bool bRet=isModule();
- if(g_prt) {
-  fprintf(stdout, "GSM module ");
-  if(!bRet) fprintf(stdout, "NOT ");
-  fprintf(stdout, "found at %s!\n",getDevice().c_str());
+ std::string sPay="Modem "+device+" found :)";
+ int iRet=-1;                          // publish error
+ if(publish(mosq, topicPub, sPay, retainOut)) {
+  iRet=0;                             // publish ok
+  if(g_prt) std::cout<<sPay<<std::endl;
  }
- return bRet;
-/*
- //------send start sms-----------------------------------------
- Conf conf=Conf();
- if(g_prt) std::cout<<"send start sms..."<<std::endl;
- for(int i=0; i<vSmsStart.size(); i++)
- {
+ //-----------send start sms to all listed user-----------------
+ bool ok=true;
+ for(int i=0; i<vSmsStart.size(); i++) {
   std::string phone, text;
-  std::string s1=vSmsStart.at(i);
-  conf.split2String(s1, phone, text, ' ');
-  if(!isAuthSmsTo(phone)) continue;
-  std::thread mythreadSendSms(threadFunctionSendSms, phone, text, device, mosq, topicPub, 30);
-  mythreadSendSms.join();
+  std::string s2=vSmsStart.at(i);
+  conf.split2String(s2, phone, text, ' ');
+  ok|=sendSms(phone,text+testDeviceText2,mosq);
  }
-*/
+ if(ok && iRet==0) return true;
+ return false;
 }
 
 //_______act on messages..._____________________________________
 bool Sms::onMessage(struct mosquitto *mosq, std::string topic, std::string payload)
 {
  if(topic==topicSub)
- {//-----incoming message matches a stored message--------------
+ { //====incoming message matches stored topic 1================
   std::string phone, text;
   Conf conf=Conf();
   conf.split2String(payload, phone, text, ' ');
   if(!sendSms(phone, text, mosq)) return false;
   return true;
- } // topic matches
+ } // END OF incoming message matches stored topic 1============
+ int pos1 = topic.find(topicSub2);
+ if(pos1==0)
+ { //=====incoming message matches first part of stored topic 2=
+  std::string topicpart=topic.substr(topicSub2.length());
+  if(topicpart=="/get") 
+  { //=-=its a /get topic! =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+   for(auto& c : payload) { c = tolower(c); }; // string to lower
+   if(payload=="?" || payload=="help")
+   { //--payload 1----------------------------------------------
+    std::string sTop=topicSub2Ret+"/"+payload;
+    std::string sPay="{\"get\":\"?|help|version|module|sim|credit\",\"set\":\"at\"}";
+    int ret=mosquitto_publish(mosq, NULL,sTop.c_str(), sPay.length(), sPay.c_str(), 0, false);
+    if(g_prt) {
+     if(ret!=0) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",sTop.c_str(),ret);
+    }
+   }
+   if(payload=="version")
+   { //--payload 2----------------------------------------------
+    std::string sTop=topicSub2Ret+"/"+payload;
+    std::string sPay=SMS_VERSION;
+    int ret=mosquitto_publish(mosq, NULL,sTop.c_str(), sPay.length(), sPay.c_str(), 0, false);
+    if(g_prt) {
+     if(ret!=0) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",sTop.c_str(),ret);
+    }
+   }
+   if(payload=="module")
+   { //--payload 3----------------------------------------------
+    std::thread mythreadIsModule(threadFunctionIsModule, device, topicSub2Ret, mosq);
+    mythreadIsModule.detach();
+    return true;
+   }
+   if(payload=="sim")
+   { //--payload 4----------------------------------------------
+    std::thread mythreadIsSim(threadFunctionIsSim, device, topicSub2Ret, mosq);
+    mythreadIsSim.detach();
+    return true;
+   }
+   if(payload=="credit")
+   { //--payload 5----------------------------------------------
+    return getCredit(mosq);
+   }
+   if(payload=="...")
+   { //--payload X----------------------------------------------
+    // ...add your code here...
+   }
+  } // END OF ist a /get topic! =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  int pos1 = topicpart.find("/set");
+  if(pos1==0)
+  { // =-its a /set topic !=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+   std::string topicpart2 = topicpart.substr(4);
+   if(topicpart2 == "/at")
+   { // -set 1: send a (AT) command to GSM modem----------------
+    std::thread mythreadSendCmd(threadFunctionSendCmd, device, payload, topicSub2Ret, mosq);
+    mythreadSendCmd.detach();
+   }
+   if(topicpart2 == "/...")
+   { //--set 2--------------------------------------------------
+    // ...add your code here...
+   }
+  } // =-END OF its a /set topic !=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+ } // END OF incoming message matches first part of topic 2=====
  return false;
 }
 
@@ -353,44 +469,12 @@ int Sms::lookForSmsIn(struct mosquitto *mosq)
  Conf conf=Conf();                     // helper: 
  g_modemBusy=true;                     // modem busy
  Gsm gsm2=Gsm(device);                 // gsm object
+ //-----------test if device is ready, send mqtt on error-------
  if(testDeviceOnStart)
- {//==========test if device is ready, send mqtt on error=======
-  testDeviceOnStart = false;           // test done
-  if(!gsm2.isModule())
-  {//---------no device found-----------------------------------
-   g_modemBusy=false;                  // modem not busy
-   std::string sPay="Modem "+device+" not found.";
-   publish(mosq, topicPub, sPay, retainOut);
-   return -1;
-  } // end no device found
-  //----------device found--------------------------------------
-  if(!gsm2.begin()) 
-  {//---------could not begin modem-----------------------------
-   g_modemBusy=false;                  // modem not busy
-   std::string sPay="Modem "+device+": begin() error";
-   publish(mosq, topicPub, sPay, retainOut);
-   return -1;
-  } // end could not begin modem
-  //----------begin modem OK------------------------------------
-  g_modemBusy=false;                  // modem not busy
-  std::string sPay="Modem "+device+" found :)";
-  int iRet=-1;                         // publish error
-  if(publish(mosq, topicPub, sPay, retainOut)) {
-   iRet=0;                             // publish ok
-   if(g_prt) std::cout<<sPay<<std::endl;
-  }
-  //-----send start sms-----------------------------------------
-  bool ok=true;
-  for(int i=0; i<vSmsStart.size(); i++) {
-   std::string phone, text;
-   std::string s2=vSmsStart.at(i);
-   conf.split2String(s2, phone, text, ' ');
-   ok|=sendSms(phone,text,mosq);
-  }
-  if(ok && iRet==0) return 0;
-  return -1;
- } // end test if device is ready
- 
+ {
+  sendStartSms(gsm2, mosq);
+  testDeviceOnStart = false;
+ }
  //===========check for incomming sms===========================
  // uses g_modemBusy: true if modem is used to send/receive
  g_modemBusy=true;                     // use modem to read sms
@@ -404,19 +488,30 @@ int Sms::lookForSmsIn(struct mosquitto *mosq)
  //-----------read sms 1: success-------------------------------
  if(g_prt) std::cout<<"SMS in: "<<smsIn.text<<std::endl;
  if(!isAuthSmsFrom(smsIn.phone)) return -4; // wrong sender
- //-----------SMS comes from an authorized sender---------------
+ //===========SMS comes from an authorized sender===============
  //-----------credit request answer?----------------------------
- if(smsIn.phone==netTel) {             // 
+ if(smsIn.phone==netTel) {
+  // yes: credit request answer
   std::string sEuro=getsHotEuro(smsIn.text);
-  if(creditAnswerToPhone.length()>0) {
+  if(creditAnswerToPhone.length()>0) 
+  { // -------send credit info to phone-------------------------
    sEuro=sEuro+" Euro";
    bRet=sendSms(creditAnswerToPhone, sEuro, mosq);
    creditAnswerToPhone="";
    if(!bRet) return -1;
    return 1;
+  } else 
+  { // -------send credit info as MQTT message------------------
+   std::string sTopic=topicSub2+"/ret/credit";
+   int pos2=sEuro.find(",");
+   if(pos2!=String::npos) sEuro.replace(pos2,1,".");
+   std::string sPayload="{\"euro\":"+sEuro+"}";
+   bool sRetain=false;
+   if(!publish(mosq, sTopic, sPayload, sRetain)) return -1;
+   return 1;
   }
  }
- //-----------analyse incoming sms test-------------------------
+ //===========analyse incoming sms test=========================
  // iret <0: error (IN values unchanged), 1: only plain text
  //      2: correct MQTT message (-t -m [-r]) IN values changed
  std::string smsTopic, smsPayload;
@@ -426,7 +521,8 @@ int Sms::lookForSmsIn(struct mosquitto *mosq)
  {//----------SMS is plain text (command or credit answer)------
   if(smsIn.text==cmdEnd) return 2;     // sms cmd end
   if(smsIn.text==cmdVersion) {
-   if(!sendSms(smsIn.phone,g_base.msgVersion.payloadOut,mosq)) return -1;
+  // if(!sendSms(smsIn.phone,g_base.msgVersion.payloadOut,mosq)) return -1;
+  if(!sendSms(smsIn.phone,g_base.msgVersion.payloadOut + "\r\n"+ SMS_VERSION,mosq)) return -1;
    return 1;
   }
   if(smsIn.text==cmdReload) { readConfig(); return 1; }
@@ -470,27 +566,21 @@ bool Sms::isAuthSmsTo(std::string phoneNumber)
  return false;
 }
 
-//_______send SMS_______________________________________________
-// uses threadFunctionSendSms()
-// return: true=sms sending started, false: not started
-bool Sms::sendSms(std::string phone, std::string text, struct mosquitto *mosq)
-{
- if(!isAuthSmsTo(phone)) {
-   std::string payload_ = SMS_TXT_NOT_SENT;
-   payload_ += " #6 not allowed ("+phone+": "+text+")";
-   bool retain_ = false;
-   int iRet=mosquitto_publish(mosq, NULL, topicSubRet.c_str(),
-    payload_.length(), payload_.c_str(), 0, retain_);
-   if(iRet!=0) {
-    if(g_prt) fprintf(stderr, "Error %d: NOT published -t %s -m %s.\n",
-     iRet, topicSubRet.c_str(), payload_.c_str());
-    return false; 
-   }
-   return false;
+//_______send an AT commant to module___________________________
+bool Sms::sendCmd(std::string sCmd, std::string& sResult) {
+ bool bRet=true;
+ g_modemBusy=true;                     // modem busy
+ Gsm gsm2=Gsm(device);                 // gsm object
+ bRet=gsm2.begin();                    // test module
+ if(!bRet) {
+  sResult = gsm2.getsResult(false);    // text with \r=^ \n=~
+  g_modemBusy=false;                   // modem busy
+  return bRet;                         // error
  }
- std::thread mythreadSendSms(threadFunctionSendSms, phone, text, device, mosq, topicSubRet, sendTimeout);
- mythreadSendSms.detach();
- return true;
+ bRet=gsm2.sendCmd(sCmd);
+ sResult = gsm2.getsResult(false);     // text with \r=^ \n=~
+ g_modemBusy=false;                    // modem not busy
+ return bRet;
 }
 
 //_______publish a message, print error (if allowed)____________
@@ -508,6 +598,237 @@ bool Sms::publish(struct mosquitto *mosq_,
 }
 
 // *************************************************************
+//       methods that use threads
+// *************************************************************
+
+//_______send SMS_______________________________________________
+// uses threadFunctionSendSms()
+// return: true=sms sending started, false: not started
+bool Sms::sendSms(std::string phone, std::string text, struct mosquitto *mosq)
+{
+ if(!isAuthSmsTo(phone)) {
+   std::string payload_ = SMS_TXT_NOT_SENT;
+   payload_ += "Error #6: Receiver forbidden ("+phone+": "+text+")";
+   bool retain_ = false;
+   int iRet=mosquitto_publish(mosq, NULL, topicSubRet.c_str(),
+    payload_.length(), payload_.c_str(), 0, retain_);
+   if(iRet!=0) {
+    if(g_prt) fprintf(stderr, "Error %d: NOT published -t %s -m %s.\n",
+     iRet, topicSubRet.c_str(), payload_.c_str());
+    return false; 
+   }
+   return false;
+ }
+ std::thread mythreadSendSms(threadFunctionSendSms, phone, text, device, mosq, topicSubRet, sendTimeout);
+ mythreadSendSms.detach();
+ return true;
+}
+
+// ______get credit from provider, send message_________________
+bool Sms::getCredit(struct mosquitto *mosq)
+{
+ creditAnswerToPhone="";
+ return sendSms(netTel, netTxt, mosq); // request credit sms
+}
+
+// *************************************************************
+//       thread methods
+// *************************************************************
+
+//_______thread send sms________________________________________
+// uses g_modemBusy: true if modem is used to send/receive
+void Sms::threadFunctionSendSms(std::string sPhone,
+  std::string sText, std::string sDevice, 
+  struct mosquitto *sMosq, std::string sTopic, int iTimeout)
+{
+ std::string s1;
+ bool bRetain=false;
+ bool bRet=true;
+ int  watchdog1=iTimeout;
+ // ----------wait for modem to be ready or 120secs-------------
+ while(g_modemBusy && watchdog1>0)
+ {
+  watchdog1--;
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+ }
+ // ----------start sms sending procedure-----------------------
+ if(watchdog1<1) {
+  s1 = SMS_TXT_NOT_SENT;
+  s1 += " #1 timeout ("+sPhone+": "+sText+")";
+ } else {
+  g_modemBusy=true;                    // start sending
+  Gsm gsm_=Gsm(sDevice);
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  if(!gsm_.isModule()) {
+    s1 = SMS_TXT_NOT_SENT;
+    s1 += " #3 "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
+  } else {
+   std::this_thread::sleep_for(std::chrono::milliseconds(100));
+   if(!gsm_.begin()) {
+    s1 = SMS_TXT_NOT_SENT;
+    s1 += " #4 "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
+   } else {
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    if(gsm_.sendSms(sPhone, sText)) {
+     s1 = SMS_TXT_SENT;
+     s1 += " ("+sPhone+": "+sText+")";
+    } else {
+     s1 = SMS_TXT_NOT_SENT;
+     s1 += " #5 "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
+    }
+   }
+  }
+ }
+ g_modemBusy=false;                    // enable next send
+ try {
+  int iRet=mosquitto_publish(sMosq, NULL, sTopic.c_str(),
+      s1.length(), s1.c_str(), 0, bRetain);
+  if(iRet!=0) {
+   if(g_prt) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",sTopic.c_str(),iRet);
+  }
+ } catch(std::string& error) {
+  fprintf(stderr,"Error \"%s\" while publishing SMS (%s)\n",error, s1);
+ }
+}
+
+//_______thread looking for a GSM module (AT command)___________
+// uses g_modemBusy: true if modem is used to send/receive
+void Sms::threadFunctionIsModule(std::string device_, std::string topicSub2Ret_, struct mosquitto *mosq_)
+{
+ std::string sRes="?", sRet, sTop, sPay;
+ bool bRetain = false;
+ bool bRet=true;
+ int  watchdog1=120;
+ // ----------modem ready or wait for modem ready (120sec)------
+ while(g_modemBusy && watchdog1>0)
+ {
+  watchdog1--;
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+ }
+ // ----------start sms sending procedure-----------------------
+ if(watchdog1<1) 
+ { // --------modem is still busy-------------------------------
+  sPay = "{\"error\":\"Timeout while waiting for modem access\"}";
+ } else
+ { // --------modem access--------------------------------------
+  g_modemBusy=true;                    // modem busy
+  Gsm gsm2=Gsm(device_);               // gsm object
+  bRet=gsm2.isModule();                // test module
+  if(bRet) {
+   gsm2.sendCmd("ATI");
+   sRes = gsm2.getsResult(true);        // text with \r \n
+  }
+  g_modemBusy=false;                   // modem not busy
+  // ---------END OF modem access-------------------------------
+  sRes = Sms::removeLFCR(sRes);
+  sRet=bRet?"true":"false";
+  sTop=topicSub2Ret_+"/module";
+  sPay="{\"device\":\"" + device_ +"\",\"module\":"+sRet+",\"product\":\""+sRes+"\"}";
+ }
+ // -----publish result-----------------------------------------
+ try {
+  int iRet=mosquitto_publish(mosq_, NULL, sTop.c_str(),
+   sPay.length(), sPay.c_str(), 0, bRetain);
+  if(iRet!=0) {
+   if(g_prt) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",sTop.c_str(),iRet);
+  }
+ } catch(std::string& error) {
+  fprintf(stderr,"Error \"%s\" while publishing MQTT message %s\n",error, sPay);
+ }
+}
+
+//_______thread looking for a SIM card in a GSM module__________
+// uses g_modemBusy: true if modem is used to send/receive
+void Sms::threadFunctionIsSim(std::string device_, std::string topicSub2Ret_, struct mosquitto *mosq_)
+{
+ std::string sRes, sRet, sTop, sPay, sProvider;
+ bool bRetain = false;
+ bool bRet=true;
+ int  watchdog1=120;
+ // ----------modem ready or wait for modem ready (120sec)------
+ while(g_modemBusy && watchdog1>0)
+ {
+  watchdog1--;
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+ }
+ // ----------start sms sending procedure-----------------------
+ if(watchdog1<1) 
+ { // --------modem is still busy-------------------------------
+  sPay = "{\"error\":\"Timeout while waiting for modem/sim access\"}";
+ } else
+ { // --------modem access--------------------------------------
+  g_modemBusy=true;                    // modem busy
+  Gsm gsm2=Gsm(device_);               // gsm object
+  bRet=gsm2.begin();                   // test module
+  if(!bRet) {
+   sRes = gsm2.getsResult(false);      // text with \r=^ \n=~
+  } else {
+  sProvider = gsm2.readNetwork();      // provider name
+  sRes = gsm2.getsResult(false);       // text with \r=^ \n=~
+  }
+  g_modemBusy=false;                   // modem not busy
+  // ---------END OF modem access-------------------------------
+  sRes = removeLFCR(sRes);
+  sRes = replaceChar(sRes, '\"', '\'');
+  sRet=bRet?"true":"false";
+  sTop=topicSub2Ret_+"/sim";
+  sPay="{\"provider\":\"" + sProvider +"\",\"sim\":"+sRet+",\"result\":\""+sRes+"\"}";
+ }
+ // -----publish result-----------------------------------------
+ try {
+  int iRet=mosquitto_publish(mosq_, NULL, sTop.c_str(),
+   sPay.length(), sPay.c_str(), 0, bRetain);
+  if(iRet!=0) {
+   if(g_prt) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",sTop.c_str(),iRet);
+  }
+ } catch(std::string& error) {
+  fprintf(stderr,"Error \"%s\" while publishing MQTT message %s\n",error, sPay);
+ }
+}
+
+//_______thread looking for a SIM card in a GSM module__________
+// uses g_modemBusy: true if modem is used to send/receive
+void Sms::threadFunctionSendCmd(std::string device_, std::string sCmd, std::string topicSub2Ret_, struct mosquitto *mosq_)
+{
+ std::string sRes, sRet, sTop, sPay;
+ bool bRetain = false;
+ bool bRet=true;
+ int  watchdog1=120;
+ // ----------modem ready or wait for modem ready (120sec)------
+ while(g_modemBusy && watchdog1>0)
+ {
+  watchdog1--;
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+ }
+ // ----------start sms sending procedure-----------------------
+ if(watchdog1<1) 
+ { // --------modem is still busy-------------------------------
+  sPay = "{\"error\":\"Timeout while waiting for modem access\"}";
+ } else
+ { // --------modem access--------------------------------------
+  g_modemBusy=true;                    // modem busy
+  Gsm gsm2=Gsm(device_);                // gsm object
+  bRet=gsm2.sendCmd(sCmd);
+  sRes=gsm2.getsResult(false);         // text with \r=^ \n=~
+  g_modemBusy=false;                   // modem not busy
+  // ---------END OF modem access-------------------------------
+  // sRet=bRet?"true":"false";
+  sTop=topicSub2Ret_+"/at";
+  sPay=sRes;
+ }
+ // -----publish result-----------------------------------------
+ try {
+  int iRet=mosquitto_publish(mosq_, NULL, sTop.c_str(),
+   sPay.length(), sPay.c_str(), 0, bRetain);
+  if(iRet!=0) {
+   if(g_prt) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",sTop.c_str(),iRet);
+  }
+ } catch(std::string& error) {
+  fprintf(stderr,"Error \"%s\" while publishing MQTT message %s\n",error, sPay);
+ }
+}
+
+// *************************************************************
 //       Sms: helper methods
 // *************************************************************
 
@@ -517,12 +838,15 @@ bool Sms::publish(struct mosquitto *mosq_,
 std::string Sms::getsHotEuro(std::string text)
 {
  int pos1=text.find("Guthaben betr");
- if(pos1==String::npos) return "";
+ if(pos1==String::npos) return "-1";
  std::string s1=text.substr(pos1+15);
  pos1=text.find("gt");
+ if(pos1==String::npos) return "-1";
  int pos2=text.find("Euro.");
+ if(pos2==String::npos) return "-1";
  pos1+=3;
  int len1=pos2-pos1-1;
+ if(len1<1) return "-1";
  s1=text.substr(pos1, len1);
  return s1;
 }
@@ -534,10 +858,25 @@ double Sms::getHotEuro(std::string text)
 {
  std::string s1=getsHotEuro(text);
  if(s1.length()<1) return -1.0;
+ if(s1=="-1") return -1.0;
  int pos2=s1.find(",");
  if(pos2!=String::npos) s1.replace(pos2,1,".");
  double euro=std::stod(s1);
  return euro;
+}
+
+// ___________split string to vector of strings_________________
+std::vector<std::string> Sms::string2vector(const std::string& data, const std::string& delimiters) {
+    auto is_delim = [&](auto & c) { return delimiters.find(c) != std::string::npos; };
+    std::vector< std::string > result;
+    for (std::string::size_type i(0), len(data.length()), pos(0); i <= len; i++) {
+        if (is_delim(data[i]) || i == len) {
+            auto tok = data.substr(pos, i - pos);
+            if ( !tok.empty() )
+                result.push_back( tok );
+            pos = i + 1;
+        }
+    } return result;
 }
 
 //_______split string to phone numbers__________________________
@@ -668,60 +1007,62 @@ std::string Sms::formatSmsDate(std::string smsDate, int format_)
   return s1;
 }
 
-//_______thread send sms________________________________________
-// uses g_modemBusy: true if modem is used to send/receive
-void Sms::threadFunctionSendSms(std::string sPhone,
-  std::string sText, std::string sDevice, 
-  struct mosquitto *sMosq, std::string sTopic, int iTimeout)
+//_______search for interface of sms module_____________________
+// return: device name or "", if GSM modem not found
+// does not change value of 'device'
+// uses no thread: -> method may take some time...
+std::string Sms::findSmsModule()
 {
- std::string s1;
- bool bRetain=false;
- bool bRet=true;
- int  watchdog1=iTimeout;
- //-----------wait for modem to be ready or 120secs-------------
+ bool bRet=true;                       // return value
+ std::string sDeviceTest="";           //
+ int  watchdog1=120;
+ // ----------wait for modem to be ready or 120secs-------------
  while(g_modemBusy && watchdog1>0)
  {
   watchdog1--;
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
  }
- //-----------start sms sending procedure-----------------------
- if(watchdog1<1) {
-  s1 = SMS_TXT_NOT_SENT;
-  s1 += " #1 timeout ("+sPhone+": "+sText+")";
- } else {
-  g_modemBusy=true;                    // start sending
-  Gsm gsm_=Gsm(sDevice);
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));
-  if(!gsm_.isModule()) {
-    s1 = SMS_TXT_NOT_SENT;
-    s1 += " #3 "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
-  } else {
-   std::this_thread::sleep_for(std::chrono::milliseconds(100));
-   if(!gsm_.begin()) {
-    s1 = SMS_TXT_NOT_SENT;
-    s1 += " #4 "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
-   } else {
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    if(gsm_.sendSms(sPhone, sText)) {
-     s1 = SMS_TXT_SENT;
-     s1 += " ("+sPhone+": "+sText+")";
-    } else {
-     s1 = SMS_TXT_NOT_SENT;
-     s1 += " #5 "+gsm_.getsStatus()+" ("+sPhone+": "+sText+")";
-    }
-   }
+ if(watchdog1 < 1) return sDeviceTest;
+ // ----------modem ready---------------------------------------
+ g_modemBusy=true;                     // start sending
+ for(int i=0; i<vDevices.size(); i++) {
+  sDeviceTest = vDevices.at(i);
+  if(g_prt) std::cout<<"Search for modem at \""<<device<<"\": ";
+  Gsm gsm2=Gsm(sDeviceTest);           // gsm object
+  bRet=gsm2.isModule();                // test module
+  if(bRet) {
+   if(g_prt) std::cout<<"OK - modem found!"<<std::endl;
+   break;
   }
+  if(g_prt) std::cout<<"ERROR - modem NOT found!"<<std::endl;
  }
- g_modemBusy=false;                    // enable next send
- try {
-  int iRet=mosquitto_publish(sMosq, NULL, sTopic.c_str(),
-      s1.length(), s1.c_str(), 0, bRetain);
-  if(iRet!=0) {
-   if(g_prt) fprintf(stderr, "Could not send MQTT message %s. Error=%i\n",sTopic.c_str(),iRet);
+ g_modemBusy=false;                    // enable next modem access
+ return sDeviceTest;
+}
+
+//_______remove \r\n from string________________________________
+std::string Sms::removeLFCR(std::string s1)
+{
+  int len_=s1.length();
+  if (len_<1) return "";
+  char ca[len_+1];
+  int j=0;
+  for(int i=0; i<len_; i++) {
+    if(s1[i]!='\r' && s1[i]!='\n') ca[j++] = s1[i];
   }
- } catch(std::string& error) {
-  fprintf(stderr,"Error \"%s\" while publishing SMS (%s)\n",error, s1);
- }
+  ca[j]=0;
+  std::string sRes = ca;
+  return sRes;
+}
+
+//_______remove \r\n from string________________________________
+std::string Sms::replaceChar(std::string s1, char cOld, char cNew)
+{
+  int len_=s1.length();
+  for(int i=0; i<len_; i++) {
+    if(s1[i]==cOld) s1[i]=cNew;
+  }
+  return s1;
 }
 
 //_______declare a global little helpers object ;)______________
