@@ -89,6 +89,7 @@ e.g. starter kit from [Reichelt (incl. 7" touch display)](https://www.reichelt.a
 * [__Vue+VSC: Examples of Ci symbols (2022-01-20)__](md/m4h550_Vue_ci_mqtt_all_e.md)   
 * [Vue+VSC: How to draw a house plan? (CiWall elements) (2022-01-04)](md/m4h560_Vue_ci_mqtt_wall1_e.md)   
 * [Vue+VSC: How to draw doors and windows in a house plan? (CiDoor, CiWindow, CiBlind) (2022-01-08)](md/m4h565_Vue_ci_mqtt_door_etc_e.md)   
+* [Vue+VSC: Web page with door symbol (2023-06-04)](md/m4h566_Vue_ci_mqtt_door1_e.md)   
 * [Vue-MQTT: SVG seven-segment display with MQTT control (2022-03-05)](md/m4h570_Vue_ci_mqtt_seg7_e.md)   
 * [Vue: Control of a SVG seven-segment display with MQTT (2022-03-05)](md/m4h572_Vue_mqtt_seg7_e.md)   
 
