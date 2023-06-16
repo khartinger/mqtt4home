@@ -159,7 +159,7 @@ bool InDelayOut::readConfig(std::string pfConf)
    if(it1->first==IDO_IN_KEY)
    {//---analyse values for incomming messages------------------
     std::string sT="", sP="";
-    if(!conf.split2String(it1->second, sT, sP, ' ')) 
+    if(!g_utils.str2str2(it1->second, sT, sP, ' ')) 
     {//..delay time is in the incoming message (as payload).....
       sT=it1->second;                 // topic only
     }
@@ -170,7 +170,7 @@ bool InDelayOut::readConfig(std::string pfConf)
    if(it1->first==IDO_OUT_KEY)
    {//---analyse values for outgoing messages-------------------
     std::string sT="", sP="";
-    if(!conf.split2String(it1->second, sT, sP, ' ')) sT=it1->second;
+    if(!g_utils.str2str2(it1->second, sT, sP, ' ')) sT=it1->second;
     m2.topicOut=sT;
     m2.payloadOut=sP;
     ok|=2;                             // out ok: set Bit 1
@@ -190,7 +190,7 @@ bool InDelayOut::readConfig(std::string pfConf)
    if(it1->first==IDO_ACTION_KEY)
    {//---action to do-------------------------------------------
     std::string s1=it1->second;
-    conf.delExtBlank(s1);
+    g_utils.delExtBlank(s1);
     m2.action=s1;
    }
    if(it1->first==IDO_ALLOWSAME_KEY)
@@ -283,7 +283,7 @@ void InDelayOut::threadFunctionDelay(struct mosquitto *mosq,
  {//----------action given: says how to interpret the payload---
   //----------(try to) split action parameter-------------------
   std::string actionKey="", actionVal="";
-  if(!conf.split2String(m2d.action, actionKey, actionVal, ' '))
+  if(!g_utils.str2str2(m2d.action, actionKey, actionVal, ' '))
    actionKey=m2d.action;
   //----------payloadIn is text---------------------------------
   if(actionKey==IDO_ACT_TEXT) m2d.sText=cpay;
@@ -299,7 +299,7 @@ void InDelayOut::threadFunctionDelay(struct mosquitto *mosq,
   if(actionKey==IDO_ACT_DELAYTEXT) 
   {//---------cpay=delay text-----------------------------------
    std::string sDelay="", sText="";
-   if(!conf.split2String(cpay, sDelay, sText,' ')) return;
+   if(!g_utils.str2str2(cpay, sDelay, sText,' ')) return;
    m2d.sText=sText;
    try{
     uint32_t temp=std::stoul(sDelay);  // help value
@@ -313,7 +313,7 @@ void InDelayOut::threadFunctionDelay(struct mosquitto *mosq,
   if(actionKey==IDO_ACT_INVERT) 
   {//---------invert payloadIn----------------------------------
    std::string sInv1="", sInv2="";
-   if(!conf.split2String(actionVal, sInv1, sInv2,' ')) return;
+   if(!g_utils.str2str2(actionVal, sInv1, sInv2,' ')) return;
    if(cpay==sInv1) m2d.sInvert=sInv2;
    if(cpay==sInv2) m2d.sInvert=sInv1;
    if(m2d.sInvert.length()<1) return;
@@ -331,25 +331,25 @@ void InDelayOut::threadFunctionDelay(struct mosquitto *mosq,
  } // end action given
 
  //===========replace placeholder in topic out==================
- conf.replaceAll(m2d.topicOut,IDO_PLAHO_TOPIC_IN,m2d.topicIn);
+ g_utils.replaceAll(m2d.topicOut,IDO_PLAHO_TOPIC_IN,m2d.topicIn);
  if(m2d.topicOut.length()<1) return;
 
  //===========wait until the response is to be sent=============
  std::this_thread::sleep_for(std::chrono::milliseconds(m2d.delayms));
 
  //===========replace placeholder in payload out================
- conf.replaceAll(m2d.payloadOut,IDO_PLAHO_TOPIC_IN,m2d.topicIn);
- conf.replaceAll(m2d.payloadOut,IDO_PLAHO_TEXT_IN,m2d.sText);
+ g_utils.replaceAll(m2d.payloadOut,IDO_PLAHO_TOPIC_IN,m2d.topicIn);
+ g_utils.replaceAll(m2d.payloadOut,IDO_PLAHO_TEXT_IN,m2d.sText);
  s1=std::to_string(m2d.delayms);
- conf.replaceAll(m2d.payloadOut,IDO_PLAHO_DELAY,s1);
- conf.replaceAll(m2d.payloadOut,IDO_PLAHO_VALUE,m2d.sValue);
- conf.replaceAll(m2d.payloadOut,IDO_PLAHO_INVERT,m2d.sInvert);
+ g_utils.replaceAll(m2d.payloadOut,IDO_PLAHO_DELAY,s1);
+ g_utils.replaceAll(m2d.payloadOut,IDO_PLAHO_VALUE,m2d.sValue);
+ g_utils.replaceAll(m2d.payloadOut,IDO_PLAHO_INVERT,m2d.sInvert);
  s1="%Y%m%d %H%M%S";
- s1=g_base.getDateTime(s1);
- conf.replaceAll(m2d.payloadOut,IDO_PLAHO_BROKERTIME,s1);
- s1=g_base.getDateTime();
- conf.replaceAll(m2d.payloadOut,IDO_PLAHO_TIME,s1);
- conf.replaceAll(m2d.payloadOut,IDO_PLAHO_INC,sInc);
+ s1=g_utils.getDateTime(s1);
+ g_utils.replaceAll(m2d.payloadOut,IDO_PLAHO_BROKERTIME,s1);
+ s1=+g_utils.getDateTime();
+ g_utils.replaceAll(m2d.payloadOut,IDO_PLAHO_TIME,s1);
+ g_utils.replaceAll(m2d.payloadOut,IDO_PLAHO_INC,sInc);
  if(m2d.payloadOut.length()<1) return;
 
  //===========publish answer message============================

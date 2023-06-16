@@ -89,10 +89,10 @@ out:    test/2/ret/text <text>
 ```   
 
 ### Beispiel 6: Verz&ouml;gerungszeit als Payload
-Nach dem Eintreffen der Nachricht `-t test/3/set/delay -m 3000` soll nach der angegebenen Zeit (3000ms = 3 Sekunden) die in der Konfigurationsdatei angegebene Nachricht ausgeschickt werden.   
+Nach dem Eintreffen der Nachricht `-t test/3/delay/set -m 3000` soll nach der angegebenen Zeit (3000ms = 3 Sekunden) die in der Konfigurationsdatei angegebene Nachricht ausgeschickt werden.   
 ```   
 [indelayout]
-in:     test/3/set/delay
+in:     test/3/delay/set
 action: delay
 out:    test/3/delay/ret Payload was delay time (Delay: <delay>ms)
 ```   
@@ -173,7 +173,7 @@ allowsame: true
 
 4. In der Methode `void InDelayOut::threadFunctionDelay()` noch __VOR__ der Zeile `if(m2d.payloadOut.length()<1) return;` das Ersetzen des Platzhalters durchf&uuml;hren:   
    ```   
-   conf.replaceAll(m2d.payloadOut,IDO_PLAHO_INC,sInc);
+   g_utils.replaceAll(m2d.payloadOut,IDO_PLAHO_INC,sInc);
    ```   
 
 ### &Uuml;bersetzen und testen des Programms
