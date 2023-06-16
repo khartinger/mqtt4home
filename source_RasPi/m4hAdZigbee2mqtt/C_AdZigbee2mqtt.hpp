@@ -7,6 +7,7 @@
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2022-01-31 First release
+// 2023-06-16 move helper methods to class M4hUtils, rename str...
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
@@ -123,10 +124,10 @@ bool Z2m::readConfig(std::string pfConf)
   //-----get key and value--------------------------------------
   std::string sKey="", sVal="";
   std::string s1=v1.at(i);
-  if(!conf.split2String(s1, sKey, sVal, ':')) continue;
-  conf.delExtBlank(sKey);
-  conf.delExtBlank(sVal);
-  conf.strToLower(sKey);
+  if(!g_utils.str2str2(s1, sKey, sVal, ':')) continue;
+  g_utils.delExtBlank(sKey);
+  g_utils.delExtBlank(sVal);
+  g_utils.str2lower(sKey);
   //-----search key---------------------------------------------
   //.....topic of request for check_health......................
   if(sKey==healthoutKey) healthout=sVal;
@@ -136,7 +137,7 @@ bool Z2m::readConfig(std::string pfConf)
   if(sKey==getHealthKey) {
    // sVal may be topic or topic payload
    std::string sT, sP;
-    if(!conf.split2String(sVal, sT, sP, ' ')) sT=sVal;
+    if(!g_utils.str2str2(sVal, sT, sP, ' ')) sT=sVal;
     getHealthTop=sT;
     getHealthPay=sP;
   }

@@ -70,7 +70,7 @@ void terminate_program2(int endBy___)
  }
  //------generate time string-----------------------------------
  std::string sTime="";
- if(g_base.timeShouldBeAdded) sTime=" ("+g_base.getDateTime()+")";
+ if(g_base.timeShouldBeAdded) sTime=" ("+g_utils.getDateTime()+")";
  //------print reason for terminating---------------------------
  std::this_thread::sleep_for(std::chrono::milliseconds(100));
  fprintf(stdout, ("\n"+s1+sTime+"\n").c_str());
@@ -98,7 +98,7 @@ void terminate_program(int endBy___)
   try {
    //....generate time string...................................
    std::string sTime="";
-   if(g_base.timeShouldBeAdded) sTime=" ("+g_base.getDateTime()+")";
+   if(g_base.timeShouldBeAdded) sTime=" ("+g_utils.getDateTime()+")";
    //....set qos (Quality of Service): 0 = At most once,
    //    1 = At least once, 2 = Exactly once
    int qos=2;
@@ -304,7 +304,7 @@ int main(int argc, char *argv[])
   try {
    int qos=2;
    s1="";
-   if(g_base.timeShouldBeAdded) s1=" ("+g_base.getDateTime()+")";
+   if(g_base.timeShouldBeAdded) s1=" ("+g_utils.getDateTime()+")";
    s1=g_base.msgMqttStart.payload+s1;
    int ret=mosquitto_publish(g_mosq, NULL,g_base.msgMqttStart.topic.c_str(),
     s1.length(), s1.c_str(), qos, g_base.msgMqttStart.retain);
