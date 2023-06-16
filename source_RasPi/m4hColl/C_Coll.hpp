@@ -146,7 +146,7 @@ bool Coll::readConfig(std::string pfConf)
    if(it1->first==COLL_IN_KEY)
    {
     std::string sT="", sP="";
-    if(!conf.split2String(it1->second, sT, sP, ' ')) sT=it1->second;
+    if(!g_utils.str2str2(it1->second, sT, sP, ' ')) sT=it1->second;
     c1.m2.topicIn=sT;
     c1.m2.payloadOut=sP;
    }
@@ -156,7 +156,7 @@ bool Coll::readConfig(std::string pfConf)
    if(it1->first==COLL_SKIP_KEY)
    {
     c1.vSkip.clear();
-    conf.splitString(it1->second,c1.vSkip,',');
+    g_utils.str2vector1(it1->second,c1.vSkip,',');
    }
    //....key in payload to search...............................
    if(it1->first==COLL_KEY_KEY) {
@@ -176,7 +176,7 @@ bool Coll::readConfig(std::string pfConf)
    if(it1->first==COLL_OUT_KEY)
    {
     std::string sT="", sP="";
-    if(!conf.split2String(it1->second, sT, sP, ' ')) sT=it1->second;
+    if(!g_utils.str2str2(it1->second, sT, sP, ' ')) sT=it1->second;
     c1.m2.topicOut=sT;
     c1.m2.payloadOut=sP;
     if(sT.length()>0) ok|=2;           // out message is ok
@@ -289,7 +289,7 @@ bool Coll::onMessage(struct mosquitto *mosq, std::string topic, std::string payl
   std::multimap<std::string, std::string>mm1;
   std::multimap<std::string, std::string>::iterator it1;
   Conf conf=Conf();                    // for help functions
-  conf.split2pairs(payload, mm1);      // payload -> json
+  g_utils.split2pairs(payload, mm1);      // payload -> json
   if(mm1.size()<1) continue;           // no pairs
   //----------split payload to pairs ok-------------------------
   it1=mm1.find(c1.key);
