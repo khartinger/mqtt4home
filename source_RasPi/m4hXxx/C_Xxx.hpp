@@ -94,10 +94,10 @@ bool Xxx::readConfig(std::string pfConf)
   //-----get key and value--------------------------------------
   std::string sKey="", sVal="";
   std::string s1=v1.at(i);
-  if(!conf.split2String(s1, sKey, sVal, ':')) continue;
-  conf.delExtBlank(sKey);
-  conf.delExtBlank(sVal);
-  conf.strToLower(sKey);
+  if(!g_utils.str2str2(s1, sKey, sVal, ':')) continue;
+  g_utils.delExtBlank(sKey);
+  g_utils.delExtBlank(sVal);
+  g_utils.str2lower(sKey);
   //-----search key---------------------------------------------
   if(sKey==XXX_DEMO_KEY) {
    _demo_=sVal;
