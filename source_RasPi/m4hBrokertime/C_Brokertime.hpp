@@ -7,6 +7,7 @@
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2021-08-19 First release
+// 2023-06-16 move helper methods to class M4hUtils, rename str...
 // Released into the public domain.
 
 #include "mosquitto.h"                 // mosquitto_* functions
@@ -110,7 +111,7 @@ bool Brokertime::readConfig(std::string pfConf)
    if(it1->first=="in")
    {
     std::string sT="", sP="";
-    if(!conf.split2String(it1->second, sT, sP, ' ')) sT=it1->second;
+    if(!g_utils.str2str2(it1->second, sT, sP, ' ')) sT=it1->second;
     m2.topicIn=sT;
     m2.payloadIn=sP;
     ok|=1;                             // in ok: set Bit 0
@@ -118,7 +119,7 @@ bool Brokertime::readConfig(std::string pfConf)
    if(it1->first=="out")
    {
     std::string sT="", sP="";
-    if(!conf.split2String(it1->second, sT, sP, ' ')) sT=it1->second;
+    if(!g_utils.str2str2(it1->second, sT, sP, ' ')) sT=it1->second;
     m2.topicOut=sT;
     m2.payloadOut=sP;
     ok|=2;                             // out ok: set Bit 1
@@ -168,7 +169,7 @@ bool Brokertime::onMessage(struct mosquitto *mosq, std::string topic, std::strin
   if(m2.topicIn==topic) {
    if(payload==m2.payloadIn || m2.payloadIn.length()==0)
    {//---incoming message matches a stored message--------------
-    std::string s1=g_base.getDateTime(m2.payloadOut);
+    std::string s1=g_utils.getDateTime(m2.payloadOut);
     int ret=mosquitto_publish(mosq, NULL,m2.topicOut.c_str(),
      s1.length(), s1.c_str(), 0, m2.retainOut);
     if(ret!=0) {
