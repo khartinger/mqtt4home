@@ -142,7 +142,7 @@ bool InBlockOut::readConfig(std::string pfConf)
    if(it1->first==IBO_IN_KEY)
    {//---analyse values for incomming messages------------------
     std::string sT="", sP="";
-    if(!conf.split2String(it1->second, sT, sP, ' ')) 
+    if(!g_utils.str2str2(it1->second, sT, sP, ' ')) 
     {//..delay time is in the incoming message (as payload).....
       sT=it1->second;                 // topic only
     }
@@ -153,7 +153,7 @@ bool InBlockOut::readConfig(std::string pfConf)
    if(it1->first==IBO_OUT_KEY)
    {//---analyse values for outgoing messages-------------------
     std::string sT="", sP="";
-    if(!conf.split2String(it1->second, sT, sP, ' ')) sT=it1->second;
+    if(!g_utils.str2str2(it1->second, sT, sP, ' ')) sT=it1->second;
     m2.topicOut=sT;
     m2.payloadOut=sP;
     ok|=2;                             // out ok: set Bit 1
@@ -167,7 +167,7 @@ bool InBlockOut::readConfig(std::string pfConf)
     std::string sHMS=it1->second;
     std::vector<std::string> vt;
     vt.clear();
-    conf.splitString(sHMS, vt, ':');
+    g_utils.str2vector1(sHMS, vt, ':');
     if(vt.size()==3)
     {
      try {
@@ -186,7 +186,7 @@ bool InBlockOut::readConfig(std::string pfConf)
    if(it1->first==IBO_ACTION_KEY)
    {//---action to do-------------------------------------------
     std::string s1=it1->second;
-    conf.delExtBlank(s1);
+    g_utils.delExtBlank(s1);
     m2.action=s1;
    }
   }
@@ -284,7 +284,7 @@ bool InBlockOut::sendMessage(struct mosquitto *mosq,
  {//----------action given: says how to interpret the payload---
   //----------(try to) split action parameter-------------------
   std::string actionKey="", actionVal="";
-  if(!conf.split2String(m2b.action, actionKey, actionVal, ' '))
+  if(!g_utils.str2str2(m2b.action, actionKey, actionVal, ' '))
    actionKey=m2b.action;
   //----------payloadIn is text---------------------------------
   //if(actionKey==IBO_ACT_TEXT) sText=cpay;
@@ -294,13 +294,13 @@ bool InBlockOut::sendMessage(struct mosquitto *mosq,
  } // end action given
 
  //===========replace placeholder in topic out==================
- conf.replaceAll(m2b.topicOut,IBO_PLAHO_TOPIC_IN,m2b.topicIn);
+ g_utils.replaceAll(m2b.topicOut,IBO_PLAHO_TOPIC_IN,m2b.topicIn);
  if(m2b.topicOut.length()<1) return false;
  //===========replace placeholder in payload out================
- conf.replaceAll(m2b.payloadOut,IBO_PLAHO_TOPIC_IN,m2b.topicIn);
- conf.replaceAll(m2b.payloadOut,IBO_PLAHO_TEXT_IN,sText);
+ g_utils.replaceAll(m2b.payloadOut,IBO_PLAHO_TOPIC_IN,m2b.topicIn);
+ g_utils.replaceAll(m2b.payloadOut,IBO_PLAHO_TEXT_IN,sText);
  s1=std::to_string(m2b.secBlock);
- conf.replaceAll(m2b.payloadOut,IBO_PLAHO_BLOCK,s1);
+ g_utils.replaceAll(m2b.payloadOut,IBO_PLAHO_BLOCK,s1);
  //===========publish answer message============================
  int ret=mosquitto_publish(mosq, NULL,m2b.topicOut.c_str(),
      m2b.payloadOut.length(), m2b.payloadOut.c_str(), 0, m2b.retainOut);
