@@ -1,4 +1,4 @@
-//_____m4hBase.cpp_______________________________khartinger_____
+//_____h6Base.cpp_______________________________khartinger_____
 // Definitions and many basic functions for mqtt4home, divided 
 //into four classes:
 // * Message : Class for one MQTT message with topic, payload
@@ -17,11 +17,13 @@
 // 2022-02-11 add reload conf file by mqtt command
 // 2022-02-15 Add class Conf: DHMS2sec(), sec2DHMS(), sec2HMS()
 // 2022-02-17 Add class Conf: fits()
+// 2023-06-16 move helper methods to class M4hUtils, rename str...
 // Released into the public domain.
 #include "m4hBase.h"
 
-//_______...init a global little helpers object ;)______________
+//_______...init global little helpers objects ;)_______________
 M4hBase g_base=M4hBase();
+M4hUtils g_utils=M4hUtils();
 
 // *************************************************************
 //       Conf: constructor & co
@@ -87,7 +89,7 @@ bool Conf::isSection(std::string text)
  while(fcnf.good())
  {
   std::getline(fcnf, line_);
-  delExtBlank(line_);
+  g_utils.delExtBlank(line_);
   if(line_==text) { fcnf.close(); return true; }
  }
  fcnf.close();
@@ -110,13 +112,13 @@ bool Conf::getSection(std::string section, std::vector<std::string>& v1)
  std::ifstream fcnf(fname.c_str());
  if(!fcnf.good()) return false;
  v1.clear();                           // clear answer
- delExtBlank(section);                 // delete surrounding blanks
+ g_utils.delExtBlank(section);         // delete surrounding blanks
  //------read lines until section found or until last line------
  while(fcnf.good())
  {
   std::getline(fcnf, line1);           // get line
-  delTrailLFCR(line1);                 // delete LF CR
-  delExtBlank(line1);                  // delete surrounding blanks
+  g_utils.delTrailLFCR(line1);         // delete LF CR
+  g_utils.delExtBlank(line1);          // delete surrounding blanks
   if(line1.length()>0)                 // length of line
   {//---------not an empty line---------------------------------
    if(line1.at(0)!='#')                // comment line?
@@ -129,8 +131,8 @@ bool Conf::getSection(std::string section, std::vector<std::string>& v1)
     }
     if(inSection)
     {//-------in the right section: add line--------------------
-     replaceAll(line1,"\r","");
-     replaceAll(line1,"\n","");
+     g_utils.replaceAll(line1,"\r","");
+     g_utils.replaceAll(line1,"\n","");
      if(line1.length()>0)
       v1.push_back(line1);
     }
@@ -162,7 +164,7 @@ int Conf::getSectionsJson(std::string section, std::vector<std::string>& v1)
  }
  if(section.length()<1) return false;
  std::string sectionLower=section;     // section name should...
- strToLower(sectionLower);             // ...be lower case
+ g_utils.str2lower(sectionLower);     // ...be lower case
  //-----------file ready?---------------------------------------
  if(fname.length()<1) return -1;
  std::ifstream fcnf(fname.c_str());
@@ -172,8 +174,8 @@ int Conf::getSectionsJson(std::string section, std::vector<std::string>& v1)
  while(fcnf.good())
  {//----------read lines until new section found or last line---
   std::getline(fcnf, line_);           // get line
-  delTrailLFCR(line_);                 // delete \r \n 
-  delExtBlank(line_);                  // delete blanks
+  g_utils.delTrailLFCR(line_);         // delete \r \n 
+  g_utils.delExtBlank(line_);          // delete blanks
   //std::cout << "Line >" << line_ << "<" << std::endl;
   if(line_.length()>0)                 // length of line
   {//---------not an empty line---------------------------------
@@ -194,7 +196,7 @@ int Conf::getSectionsJson(std::string section, std::vector<std::string>& v1)
      {//------found a section name------------------------------
       std::string sec1=line_.substr(1,i2-1);
       std::string sec2=sec1;
-      strToLower(sec2);
+      g_utils.str2lower(sec2);
       if(sec2!="end" && sec2!="ende" && sec2==sectionLower)
       {//-----section name matches :)---------------------------
        if(sec1.length()>0) 
@@ -214,12 +216,12 @@ int Conf::getSectionsJson(std::string section, std::vector<std::string>& v1)
      {//----- colon : found -> line is a pair <key:value>-------
       std::string key1=line_.substr(0,idp);
       std::string val1=line_.substr(idp+1);
-      delExtBlank(key1);                   // delete blanks
-      delExtBlank(val1);                   // delete blanks
+      g_utils.delExtBlank(key1);            // delete blanks
+      g_utils.delExtBlank(val1);            // delete blanks
       if(val1.length()>0) 
       {//.....add new pair to value string......................
        if(secValue.length()>1) secValue+=",";
-       replaceAll(val1,",","|");
+       g_utils.replaceAll(val1,",","|");
        if(key1.at(0)!='\"') secValue+="\""; // add ""
        secValue+=key1;                      // add key1
        if(key1.at(key1.length()-1) !='\"') secValue+="\"";
@@ -271,7 +273,7 @@ int Conf::getSections(std::string section, std::vector<std::map<std::string, std
  }
  if(section.length()<1) return false;
  std::string sectionLower=section;     // section name should...
- strToLower(sectionLower);             // ...be lower case
+ g_utils.str2lower(sectionLower);     // ...be lower case
  //-----------file ready?---------------------------------------
  if(fname.length()<1) return -1;
  std::ifstream fcnf(fname.c_str());
@@ -282,8 +284,8 @@ int Conf::getSections(std::string section, std::vector<std::map<std::string, std
  while(fcnf.good())
  {//----------read lines until new section found or last line---
   std::getline(fcnf, line_);           // get line
-  delTrailLFCR(line_);                 // delete \r \n 
-  delExtBlank(line_);                  // delete blanks
+  g_utils.delTrailLFCR(line_);         // delete \r \n 
+  g_utils.delExtBlank(line_);          // delete blanks
   //std::cout << "Line >" << line_ << "<" << std::endl;
   if(line_.length()>0)                 // length of line
   {//---------not an empty line---------------------------------
@@ -303,7 +305,7 @@ int Conf::getSections(std::string section, std::vector<std::map<std::string, std
      {//------found a section name------------------------------
       std::string sec1=line_.substr(1,i2-1);
       std::string sec2=sec1;
-      strToLower(sec2);
+      g_utils.str2lower(sec2);
       if(sec2!="end" && sec2!="ende" && sec2==sectionLower)
       {//-----section name matches :)---------------------------
        if(sec1.length()>0)             // section name ok
@@ -323,8 +325,8 @@ int Conf::getSections(std::string section, std::vector<std::map<std::string, std
      {//----- colon : found -> line is a pair <key:value>-------
       std::string key1=line_.substr(0,idp);
       std::string val1=line_.substr(idp+1);
-      delExtBlank(key1);                   // delete blanks
-      delExtBlank(val1);                   // delete blanks
+      g_utils.delExtBlank(key1);            // delete blanks
+      g_utils.delExtBlank(val1);            // delete blanks
       if(val1.length()>0) 
       {//.....add new pair to map...............................
        m1.insert(std::pair<std::string,std::string>(key1,val1));
@@ -354,12 +356,12 @@ bool Conf::isLine(std::string section, std::string line_)
  //------file ready?--------------------------------------------
  if(!fcnf.good()) return false;
  //------read lines until section found or until last line------
- delExtBlank(line_);
+ g_utils.delExtBlank(line_);
  while(fcnf.good())
  {
   std::getline(fcnf, line1);           // get line
-  delTrailLFCR(line1);
-  delExtBlank(line1);
+  g_utils.delTrailLFCR(line1);
+  g_utils.delExtBlank(line1);
   if(line1.length()>0)                 // length of line
   {//---------not an empty line---------------------------------
    if(line1.at(0)!='#')                // comment line?
@@ -392,13 +394,13 @@ bool Conf::isLineCI(std::string section, std::string line_)
  //------file ready?--------------------------------------------
  if(!fcnf.good()) return false;
  //------read lines until section found or until last line------
- delExtBlank(line_);
- strToLower(line_);
+ g_utils.delExtBlank(line_);
+ g_utils.str2lower(line_);
  while(fcnf.good())
  {
   std::getline(fcnf, line1);           // get line
-  delTrailLFCR(line1);
-  delExtBlank(line1);
+  g_utils.delTrailLFCR(line1);
+  g_utils.delExtBlank(line1);
   if(line1.length()>0)                 // length of line
   {//---------not an empty line---------------------------------
    if(line1.at(0)!='#')                // comment line?
@@ -410,7 +412,7 @@ bool Conf::isLineCI(std::string section, std::string line_)
     }
     if(inSection)
     {//-------in the right section: check line------------------
-     strToLower(line1);
+     g_utils.str2lower(line1);
      if(line1==line_) { fcnf.close(); return true; }
     }
     if(line1==section) inSection=true;
@@ -442,14 +444,14 @@ std::string Conf::findKey(std::string section, std::string value_)
  } else {
   if(section.at(0)!='[') return "";
  }
- delExtBlank(value_);
+ g_utils.delExtBlank(value_);
  if(value_.length()<1) return "";      // no value_
  //------read lines until section found or until last line------
  while(fcnf.good())
  {
   std::getline(fcnf, line1);           // get line
-  delTrailLFCR(line1);
-  delExtBlank(line1);
+  g_utils.delTrailLFCR(line1);
+  g_utils.delExtBlank(line1);
   if(line1.length()>0)                 // length of line
   {//---------not an empty line---------------------------------
    if(line1.at(0)!='#')                // comment line?
@@ -467,7 +469,7 @@ std::string Conf::findKey(std::string section, std::string value_)
       if(iPos1!=std::string::npos) { //..... = ......................
        if(iPos2>iPos1) { //............= on correct position....
         s1=line1.substr(0,iPos1);
-        delExtBlank(s1);
+        g_utils.delExtBlank(s1);
         fcnf.close();
         return s1;
        }
@@ -503,14 +505,14 @@ std::string Conf::findValue(std::string section, std::string key_)
  } else {
   if(section.at(0)!='[') return "";
  }
- delExtBlank(key_);
+ g_utils.delExtBlank(key_);
  if(key_.length()<1) return "";        // no key
  //------read lines until end of section or until last line----- 
  while(fcnf.good())
  {
   std::getline(fcnf, line1);           // get line
-  delTrailLFCR(line1);
-  delExtBlank(line1);
+  g_utils.delTrailLFCR(line1);
+  g_utils.delExtBlank(line1);
   if(line1.length()>0)                 // length of line
   {//---------not an empty line---------------------------------
    if(line1.at(0)!='#')                // comment line?
@@ -528,7 +530,7 @@ std::string Conf::findValue(std::string section, std::string key_)
       if(iPos2!=std::string::npos) { //.....: ..................
        if(iPos2>iPos1) { //............= on correct position....
         s1=line1.substr(iPos2+1,std::string::npos);
-        delExtBlank(s1);
+        g_utils.delExtBlank(s1);
         fcnf.close();
         return s1;
        }
@@ -559,8 +561,8 @@ int Conf::readAllSections(std::multimap<std::string,std::string>& m1)
  while(fcnf.good() && bGetLines)
  {//----------read lines until new section found or last line---
   std::getline(fcnf, line_);           // get line
-  delTrailLFCR(line_);                 // delete \r \n 
-  delExtBlank(line_);                  // delete blanks
+  g_utils.delTrailLFCR(line_);         // delete \r \n 
+  g_utils.delExtBlank(line_);          // delete blanks
   //std::cout << "Line >" << line_ << "<" << std::endl;
   if(line_.length()>0)                 // length of line
   {//---------not an empty line---------------------------------
@@ -571,7 +573,7 @@ int Conf::readAllSections(std::multimap<std::string,std::string>& m1)
      if(secNameOld.length()>0)
      {//------save previous section-----------------------------
       secValue+="}";
-      delExtBlank(secNameOld);
+      g_utils.delExtBlank(secNameOld);
       m1.insert(std::pair<std::string,std::string>(secNameOld,secValue));
       secNameOld="";
       secValue="{";
@@ -582,7 +584,7 @@ int Conf::readAllSections(std::multimap<std::string,std::string>& m1)
      {//-----section name OK------------------------------------
       std::string sec1=line_.substr(1,i2-1);
       std::string sec2=sec1;
-      strToLower(sec2);
+      g_utils.str2lower(sec2);
       if(sec2!="end" && sec2!="ende")
       {
        if(sec1.length()>0) 
@@ -601,12 +603,12 @@ int Conf::readAllSections(std::multimap<std::string,std::string>& m1)
      {//----- colon : found -> line is a pair <key:value>-------
       std::string key1=line_.substr(0,idp);
       std::string val1=line_.substr(idp+1);
-      delExtBlank(key1);                   // delete blanks
-      delExtBlank(val1);                   // delete blanks
+      g_utils.delExtBlank(key1);            // delete blanks
+      g_utils.delExtBlank(val1);            // delete blanks
       if(val1.length()>0) 
       {//.....add new pair to value string......................
        if(secValue.length()>1) secValue+=",";
-       replaceAll(val1,",","|");
+       g_utils.replaceAll(val1,",","|");
        if(key1.at(0)!='\"') secValue+="\""; // add ""
        secValue+=key1;                      // add key1
        if(key1.at(key1.length()-1) !='\"') secValue+="\"";
@@ -634,7 +636,7 @@ int Conf::readAllSections(std::multimap<std::string,std::string>& m1)
  if(secValue.length()>3)
  {
   secValue+="}";
-  delExtBlank(secNameOld);
+  g_utils.delExtBlank(secNameOld);
   m1.insert(std::pair<std::string,std::string>(secNameOld,secValue));
  }
  return m1.size();
@@ -644,8 +646,239 @@ int Conf::readAllSections(std::multimap<std::string,std::string>& m1)
 //       Conf: helper methods
 // *************************************************************
 
+//_______Does the topic match the pattern?______________________
+// MQTT placeholder: + Single-Level-Wildcard e.g. door/+/state
+//                   # Multi-Level-Wildcard  e.g. door/#
+// return true: yes, topic fits pattern; false: no
+bool Conf::fits(std::string topic, std::string pattern)
+{
+ int it=0, ip=0;
+ int lent=topic.length();
+ int lenp=pattern.length();
+ //------check plausbility, special cases-----------------------
+ if(lenp<1) return false;
+ //------pass through pattern-----------------------------------
+ for(ip=0; ip<lenp; ip++)
+ {
+  if(pattern[ip]=='#') return true;
+  if(pattern[ip]=='+')
+  {//....+ found: next char must be slash or end of pattern.....
+   if((++ip)==lenp) { // + is last char of pattern
+    //...last char = +, topic: not allowed to have a next slash.
+    while(topic[it]!='/')
+    {
+     it++;
+     if(it>=lent) return true;
+    }
+    return false;
+   } //end of last char = +
+   if(pattern[ip]!='/') return false;
+   //....topic: find next slash.................................
+   while(topic[it]!='/')
+   {
+    it++;
+    if(it>=lent) return false;
+   }
+  }
+  //.....no special case: check characters......................
+  if(it>=lent) return false;
+  if(pattern[ip]!=topic[it++]) return false;
+ }
+ if(it==lent) return true;
+ return false;
+}
+
+// =============================================================
+
+// *************************************************************
+//       M4hBase: constructor & co
+// *************************************************************
+
+//_______Default constructor____________________________________
+M4hBase::M4hBase() { setDefaults(); }
+
+//_______set all default properties_____________________________
+void M4hBase::setDefaults()
+{
+ pfConfig = _CONF_PFILE_;              // path&name config file
+ section  = M4H_SECTION;               // section name in config
+ msgVersion=Message2(M4H_VERSION_T_IN,  M4H_VERSION_P_IN,
+                     M4H_VERSION_T_OUT, M4H_VERSION_P_OUT);
+ msgMqttStart=Message();
+ msgMqttEnd=Message();
+ msgProgEnd=Message();
+ msgReadConf=Message2(M4H_CONF_IN_T,  M4H_CONF_IN_P,
+                      M4H_CONF_OUT_T, M4H_CONF_OUT_P);
+  timeShouldBeAdded=false;
+ keys=std::string(M4H_VERSION_KEY_IN);
+ keys+="|"+std::string(M4H_VERSION_KEY_OUT),
+ keys+="|"+std::string(M4H_MQTTSTART_KEY)+"|"+std::string(M4H_MQTTEND_KEY);
+ keys+="|"+std::string(M4H_PROGEND_KEY);
+ keys+="|"+std::string(M4H_CONF_IN_KEY)+"|"+std::string(M4H_CONF_OUT_KEY);
+ keys+="|"+std::string(M4H_ADDTIME_KEY);
+}
+
+// *************************************************************
+//       M4hBase: Setter and Getter methods
+// *************************************************************
+
+// *************************************************************
+//       M4hBase: working methods
+// *************************************************************
+
+//_______read config data from file_____________________________
+bool M4hBase::readConfig() {
+ return readConfig(pfConfig);
+}
+
+//_______read config data from file_____________________________
+bool M4hBase::readConfig(std::string pfile_)
+{
+ std::multimap<std::string, std::string> mm1;
+ //------(try to) read config file------------------------------
+ pfConfig=pfile_;
+ if(pfile_.length()<1) return false;
+ Conf conf=Conf(pfile_);
+ if(!conf.isReady()) return false;
+ int iSec=conf.readAllSections(mm1);
+ //------get my config data-------------------------------------
+ std::multimap<std::string, std::string>::iterator it1;
+ std::multimap<std::string, std::string>::iterator it2;
+ for (it1 = mm1.begin(); it1 != mm1.end(); it1++)
+ {
+  //std::cout << it1->first << " | " << it1->second << std::endl;
+  //-----common brokertime data---------------------------------
+  if(it1->first == M4H_SECTION) {
+   std::multimap<std::string, std::string> mmCom;
+   g_utils.split2pairs(it1->second, mmCom);
+   //....look for common properties.............................
+   for(it2 = mmCom.begin(); it2 != mmCom.end(); it2++)
+   {
+    std::string s1=it2->first;
+    g_utils.str2lower(s1);
+    if(s1=="version") 
+    { //......only version given, for the rest use defaults.....
+     msgVersion.payloadOut=it2->second;
+    }
+    if(s1==M4H_VERSION_KEY_IN) {
+     std::string sT, sP;
+     if(!g_utils.str2str2(it2->second, sT, sP, ' ')) sT=it2->second;
+     msgVersion.topicIn=sT; 
+     msgVersion.payloadIn=sP;
+    }
+    if(s1==M4H_VERSION_KEY_OUT) {
+     std::string sAll=it2->second, sT, sP;
+     int pos1=sAll.find(" -r");
+     if(pos1!=std::string::npos) {
+      sAll=sAll.substr(0,pos1);
+      msgVersion.retainOut=true;
+     }
+     if(!g_utils.str2str2(sAll, sT, sP, ' ')) sT=sAll;
+     msgVersion.topicOut=sT; 
+     msgVersion.payloadOut=sP;
+    }
+    if(s1==M4H_MQTTSTART_KEY) {
+     std::string sAll=it2->second, sT, sP;
+     int pos1=sAll.find(" -r");
+     if(pos1!=std::string::npos) {
+      sAll=sAll.substr(0,pos1);
+      msgMqttStart.retain=true;
+     }
+     if(!g_utils.str2str2(sAll, sT, sP, ' ')) sT=sAll;
+     msgMqttStart.topic=sT; 
+     msgMqttStart.payload=sP;
+    }
+    if(s1==M4H_MQTTEND_KEY) {
+     std::string sAll=it2->second, sT, sP;
+     int pos1=sAll.find(" -r");
+     if(pos1!=std::string::npos) {
+      sAll=sAll.substr(0,pos1);
+      msgMqttEnd.retain=true;
+     }
+     if(!g_utils.str2str2(sAll, sT, sP, ' ')) sT=sAll;
+     msgMqttEnd.topic=sT; 
+     msgMqttEnd.payload=sP;
+    }
+    if(s1==M4H_PROGEND_KEY) {
+     std::string sT, sP;
+     if(g_utils.str2str2(it2->second, sT, sP, ' '))
+     {
+      msgProgEnd.topic=sT; 
+      msgProgEnd.payload=sP;
+     }
+    }
+        //--------read config file (message in)---------------------
+    if(s1==M4H_CONF_IN_KEY) {
+     std::string sT, sP;
+     if(g_utils.str2str2(it2->second, sT, sP, ' '))
+     {
+      if(sP=="?") sP=M4H_CONF_IN_P;
+      if(sP.length()>2) {
+       msgReadConf.payloadIn=sP;
+       msgReadConf.topicIn=sT;
+      }
+     }
+    }
+    //--------after config file read: message out---------------
+    if(s1==M4H_CONF_OUT_KEY) {
+     std::string sT, sP;
+     if(g_utils.str2str2(it2->second, sT, sP, ' '))
+     {
+      if(sP=="?") sP=M4H_CONF_OUT_P;
+      if(sP.length()>0) {
+       msgReadConf.payloadOut=sP;
+       msgReadConf.topicOut=sT;
+      }
+     }
+    }
+    //--------messages out: add time stamp?---------------------
+    if(s1==M4H_ADDTIME_KEY) {
+     if(it2->second=="true") this->timeShouldBeAdded=true;
+     else this->timeShouldBeAdded=false;
+    }
+   }
+  }
+ }
+ return true;
+}
+
+// *************************************************************
+//       M4hBase: helper methods
+// *************************************************************
+
+//_______Show all basic properties______________________________
+void M4hBase::show()
+{
+ Conf conf=Conf(pfConfig);
+ std::cout<<"=====["<<section<<"]==========================="<<std::endl;
+ std::cout << "config file         | " << pfConfig;
+ if(!conf.isReady()) std::cout << " (file not found)";
+ std::cout<<std::endl;
+ std::cout << "all keys            | "<<getKeys()<<std::endl;
+ std::cout << "version (in)        | -t " << msgVersion.topicIn << " -m " << msgVersion.payloadIn<<std::endl;
+ std::cout << "version (out)       | -t " << msgVersion.topicOut << " -m " << msgVersion.payloadOut;
+ if(msgVersion.retainOut) std::cout << " -r";
+ std::cout<<std::endl;
+ std::cout << "mqtt @ start (out,*)| -t " << msgMqttStart.topic << " -m " << msgMqttStart.payload;
+ if(msgMqttStart.retain) std::cout << " -r";
+ std::cout<<std::endl;
+ std::cout << "mqtt @ end (out,*)  | -t " << msgMqttEnd.topic << " -m " << msgMqttEnd.payload;
+ if(msgMqttEnd.retain) std::cout << " -r";
+ std::cout<<std::endl;
+ std::cout << "progend by mqtt (in)| -t " << msgProgEnd.topic << " -m " << msgProgEnd.payload<<std::endl;
+ std::cout << "reload conf-file(in)| -t " << msgReadConf.topicIn << " -m " << msgReadConf.payloadIn<<std::endl;
+ std::cout << "reload conf-fil(out)| -t " << msgReadConf.topicOut << " -m " << msgReadConf.payloadOut<<std::endl;
+ std::cout << "         * add time | ";
+ if(timeShouldBeAdded) std::cout<<"true"<<std::endl;
+ else std::cout<<"false"<<std::endl;
+}
+
+// *************************************************************
+//       M4hUtils: little helpers
+// *************************************************************
+
 //_______remove line feed and carriage return from end of line__
-void Conf::delTrailLFCR(std::string& s1) {
+void M4hUtils::delTrailLFCR(std::string& s1) {
  bool goon=true;
  int i=s1.length()-1;
  if(i<0) return;
@@ -658,7 +891,7 @@ void Conf::delTrailLFCR(std::string& s1) {
 }
 
 //_______remove blank(s) from end of line_______________________
-void Conf::delTrailBlank(std::string& s1) {
+void M4hUtils::delTrailBlank(std::string& s1) {
  bool goon=true;
  int i=s1.length()-1;
  if(i<0) return;
@@ -671,7 +904,7 @@ void Conf::delTrailBlank(std::string& s1) {
 }
 
 //_______remove blank(s) from begin of line_____________________
-void Conf::delLeadBlank(std::string& s1) {
+void M4hUtils::delLeadBlank(std::string& s1) {
  int len=s1.length();
  if(len<1) return;
  int i=0;
@@ -682,13 +915,13 @@ void Conf::delLeadBlank(std::string& s1) {
 }
 
 //_______remove blank(s) from begin and end of line_____________
-void Conf::delExtBlank(std::string &s1) {
+void M4hUtils::delExtBlank(std::string &s1) {
  delTrailBlank(s1);
  delLeadBlank(s1);
 }
 
 //_______replace a part of the string to another________________
-void Conf::replaceAll(std::string &str, const std::string& old_, const std::string& new_)
+void M4hUtils::replaceAll(std::string &str, const std::string& old_, const std::string& new_)
 {
  size_t start_pos = 0;
  while((start_pos = str.find(old_, start_pos)) != std::string::npos) {
@@ -698,7 +931,7 @@ void Conf::replaceAll(std::string &str, const std::string& old_, const std::stri
 }
 
 //_______convert string to lower string_________________________
-void Conf::strToLower(std::string &s1)
+void M4hUtils::str2lower(std::string &s1)
 {
  std::string s2="";
  int    ilen=s1.length();
@@ -711,9 +944,23 @@ void Conf::strToLower(std::string &s1)
  s1=s2;
 }
 
+// ___________split string to vector of strings_________________
+std::vector<std::string> M4hUtils::str2vector(const std::string& data, const std::string& delimiters) {
+    auto is_delim = [&](auto & c) { return delimiters.find(c) != std::string::npos; };
+    std::vector< std::string > result;
+    for (std::string::size_type i(0), len(data.length()), pos(0); i <= len; i++) {
+        if (is_delim(data[i]) || i == len) {
+            auto tok = data.substr(pos, i - pos);
+            if ( !tok.empty() )
+                result.push_back( tok );
+            pos = i + 1;
+        }
+    } return result;
+}
+
 //_______convert json-string to pairs___________________________
 // return: true result ok
-bool Conf::split2pairs(std::string s1, std::multimap<std::string, std::string>& mm1)
+bool M4hUtils::split2pairs(std::string s1, std::multimap<std::string, std::string>& mm1)
 {
  bool debug=false;
  int  i1;                                   // running index
@@ -846,7 +1093,7 @@ bool Conf::split2pairs(std::string s1, std::multimap<std::string, std::string>& 
 }
 
 //_______split string to vector_________________________________
-void Conf::splitString(std::string sIn, std::vector<std::string>&vOut, char delimiter)
+void M4hUtils::str2vector1(std::string sIn, std::vector<std::string>&vOut, char delimiter)
 {
  std::string temp="";
  for(int i=0; i<sIn.size(); i++)
@@ -866,7 +1113,7 @@ void Conf::splitString(std::string sIn, std::vector<std::string>&vOut, char deli
 // return: true=split ok, sPart1 and sPart2 changed
 //         false=delimiter not found or one sPart is empty
 //               sPart1 and sPart2 NOT changed!
-bool Conf::split2String(std::string sIn,std::string &sPart1,
+bool M4hUtils::str2str2(std::string sIn,std::string &sPart1,
   std::string &sPart2,char delimiter)
 {
  delExtBlank(sIn);                      // delete blanks begin/end
@@ -888,51 +1135,9 @@ bool Conf::split2String(std::string sIn,std::string &sPart1,
  return false;
 }
 
-//_______Does the topic match the pattern?______________________
-// MQTT placeholder: + Single-Level-Wildcard e.g. door/+/state
-//                   # Multi-Level-Wildcard  e.g. door/#
-// return true: yes, topic fits pattern; false: no
-bool Conf::fits(std::string topic, std::string pattern)
-{
- int it=0, ip=0;
- int lent=topic.length();
- int lenp=pattern.length();
- //------check plausbility, special cases-----------------------
- if(lenp<1) return false;
- //------pass through pattern-----------------------------------
- for(ip=0; ip<lenp; ip++)
- {
-  if(pattern[ip]=='#') return true;
-  if(pattern[ip]=='+')
-  {//....+ found: next char must be slash or end of pattern.....
-   if((++ip)==lenp) { // + is last char of pattern
-    //...last char = +, topic: not allowed to have a next slash.
-    while(topic[it]!='/')
-    {
-     it++;
-     if(it>=lent) return true;
-    }
-    return false;
-   } //end of last char = +
-   if(pattern[ip]!='/') return false;
-   //....topic: find next slash.................................
-   while(topic[it]!='/')
-   {
-    it++;
-    if(it>=lent) return false;
-   }
-  }
-  //.....no special case: check characters......................
-  if(it>=lent) return false;
-  if(pattern[ip]!=topic[it++]) return false;
- }
- if(it==lent) return true;
- return false;
-}
-
 //_______convert d HMS string to sec____________________________
 // return: number of seconds or -1 on error
-time_t Conf::DHMS2sec(std::string sDHMS)
+time_t M4hUtils::DHMS2sec(std::string sDHMS)
 {
  time_t sec_=0;
  time_t tmp_=0;
@@ -993,7 +1198,7 @@ time_t Conf::DHMS2sec(std::string sDHMS)
 //_______convert time to d HMS string___________________________
 // if time 1 day ore more:  format D HH:MM:SS
 // if time less then 1 day: format HH:MM:SS
-std::string Conf::sec2DHMS(time_t tsec)
+std::string M4hUtils::sec2DHMS(time_t tsec)
 {
  time_t min_ = tsec / 60;
  time_t sec_ = tsec - 60*min_;
@@ -1009,7 +1214,7 @@ std::string Conf::sec2DHMS(time_t tsec)
 }
 
 //_______convert time to HMS string_____________________________
-std::string Conf::sec2HMS(time_t tsec)
+std::string M4hUtils::sec2HMS(time_t tsec)
 {
  if(tsec==-1) return "";
  if(tsec<0) return "";
@@ -1023,168 +1228,14 @@ std::string Conf::sec2HMS(time_t tsec)
  return s1;
 }
 
-// =============================================================
-
-// *************************************************************
-//       M4hBase: constructor & co
-// *************************************************************
-
-//_______Default constructor____________________________________
-M4hBase::M4hBase() { setDefaults(); }
-
-//_______set all default properties_____________________________
-void M4hBase::setDefaults()
-{
- pfConfig = _CONF_PFILE_;              // path&name config file
- section  = M4H_SECTION;               // section name in config
- msgVersion=Message2(M4H_VERSION_T_IN,  M4H_VERSION_P_IN,
-                     M4H_VERSION_T_OUT, M4H_VERSION_P_OUT);
- msgMqttStart=Message();
- msgMqttEnd=Message();
- msgProgEnd=Message();
- msgReadConf=Message2(M4H_CONF_IN_T,  M4H_CONF_IN_P,
-                      M4H_CONF_OUT_T, M4H_CONF_OUT_P);
-  timeShouldBeAdded=false;
- keys=std::string(M4H_VERSION_KEY_IN);
- keys+="|"+std::string(M4H_VERSION_KEY_OUT),
- keys+="|"+std::string(M4H_MQTTSTART_KEY)+"|"+std::string(M4H_MQTTEND_KEY);
- keys+="|"+std::string(M4H_PROGEND_KEY);
- keys+="|"+std::string(M4H_CONF_IN_KEY)+"|"+std::string(M4H_CONF_OUT_KEY);
- keys+="|"+std::string(M4H_ADDTIME_KEY);
-}
-
-// *************************************************************
-//       M4hBase: Setter and Getter methods
-// *************************************************************
-
-// *************************************************************
-//       M4hBase: working methods
-// *************************************************************
-
-//_______read config data from file_____________________________
-bool M4hBase::readConfig() {
- return readConfig(pfConfig);
-}
-
-//_______read config data from file_____________________________
-bool M4hBase::readConfig(std::string pfile_)
-{
- std::multimap<std::string, std::string> mm1;
- //------(try to) read config file------------------------------
- pfConfig=pfile_;
- if(pfile_.length()<1) return false;
- Conf conf=Conf(pfile_);
- if(!conf.isReady()) return false;
- int iSec=conf.readAllSections(mm1);
- //------get my config data-------------------------------------
- std::multimap<std::string, std::string>::iterator it1;
- std::multimap<std::string, std::string>::iterator it2;
- for (it1 = mm1.begin(); it1 != mm1.end(); it1++)
- {
-  //std::cout << it1->first << " | " << it1->second << std::endl;
-  //-----common brokertime data---------------------------------
-  if(it1->first == M4H_SECTION) {
-   std::multimap<std::string, std::string> mmCom;
-   conf.split2pairs(it1->second, mmCom);
-   //....look for common properties.............................
-   for(it2 = mmCom.begin(); it2 != mmCom.end(); it2++)
-   {
-    std::string s1=it2->first;
-    conf.strToLower(s1);
-    if(s1=="version") 
-    { //......only version given, for the rest use defaults.....
-     msgVersion.payloadOut=it2->second;
-    }
-    if(s1==M4H_VERSION_KEY_IN) {
-     std::string sT, sP;
-     if(!conf.split2String(it2->second, sT, sP, ' ')) sT=it2->second;
-     msgVersion.topicIn=sT; 
-     msgVersion.payloadIn=sP;
-    }
-    if(s1==M4H_VERSION_KEY_OUT) {
-     std::string sAll=it2->second, sT, sP;
-     int pos1=sAll.find(" -r");
-     if(pos1!=std::string::npos) {
-      sAll=sAll.substr(0,pos1);
-      msgVersion.retainOut=true;
-     }
-     if(!conf.split2String(sAll, sT, sP, ' ')) sT=sAll;
-     msgVersion.topicOut=sT; 
-     msgVersion.payloadOut=sP;
-    }
-    if(s1==M4H_MQTTSTART_KEY) {
-     std::string sAll=it2->second, sT, sP;
-     int pos1=sAll.find(" -r");
-     if(pos1!=std::string::npos) {
-      sAll=sAll.substr(0,pos1);
-      msgMqttStart.retain=true;
-     }
-     if(!conf.split2String(sAll, sT, sP, ' ')) sT=sAll;
-     msgMqttStart.topic=sT; 
-     msgMqttStart.payload=sP;
-    }
-    if(s1==M4H_MQTTEND_KEY) {
-     std::string sAll=it2->second, sT, sP;
-     int pos1=sAll.find(" -r");
-     if(pos1!=std::string::npos) {
-      sAll=sAll.substr(0,pos1);
-      msgMqttEnd.retain=true;
-     }
-     if(!conf.split2String(sAll, sT, sP, ' ')) sT=sAll;
-     msgMqttEnd.topic=sT; 
-     msgMqttEnd.payload=sP;
-    }
-    if(s1==M4H_PROGEND_KEY) {
-     std::string sT, sP;
-     if(conf.split2String(it2->second, sT, sP, ' '))
-     {
-      msgProgEnd.topic=sT; 
-      msgProgEnd.payload=sP;
-     }
-    }
-        //--------read config file (message in)---------------------
-    if(s1==M4H_CONF_IN_KEY) {
-     std::string sT, sP;
-     if(conf.split2String(it2->second, sT, sP, ' '))
-     {
-      if(sP=="?") sP=M4H_CONF_IN_P;
-      if(sP.length()>2) {
-       msgReadConf.payloadIn=sP;
-       msgReadConf.topicIn=sT;
-      }
-     }
-    }
-    //--------after config file read: message out---------------
-    if(s1==M4H_CONF_OUT_KEY) {
-     std::string sT, sP;
-     if(conf.split2String(it2->second, sT, sP, ' '))
-     {
-      if(sP=="?") sP=M4H_CONF_OUT_P;
-      if(sP.length()>0) {
-       msgReadConf.payloadOut=sP;
-       msgReadConf.topicOut=sT;
-      }
-     }
-    }
-    //--------messages out: add time stamp?---------------------
-    if(s1==M4H_ADDTIME_KEY) {
-     if(it2->second=="true") this->timeShouldBeAdded=true;
-     else this->timeShouldBeAdded=false;
-    }
-   }
-  }
- }
- return true;
-}
-
 //_______return actual system date and time_____________________
-std::string M4hBase::getDateTime() {
+std::string M4hUtils::getDateTime() {
  std::string s1="%d.%m.%Y %H:%M:%S";
  return getDateTime(s1);
 }
 
 //_______return actual system date and time_____________________
-std::string M4hBase::getDateTime(std::string sTimeformat)
+std::string M4hUtils::getDateTime(std::string sTimeformat)
 {
  int len=20+sTimeformat.length();
  char caNow[len];
@@ -1194,35 +1245,4 @@ std::string M4hBase::getDateTime(std::string sTimeformat)
  strftime(caNow,len,sTimeformat.c_str(),time_);
  std::string s(caNow);
  return s;
-}
-
-// *************************************************************
-//       M4hBase: helper methods
-// *************************************************************
-
-//_______Show all basic properties______________________________
-void M4hBase::show()
-{
- Conf conf=Conf(pfConfig);
- std::cout<<"=====["<<section<<"]==========================="<<std::endl;
- std::cout << "config file         | " << pfConfig;
- if(!conf.isReady()) std::cout << " (file not found)";
- std::cout<<std::endl;
- std::cout << "all keys            | "<<getKeys()<<std::endl;
- std::cout << "version (in)        | -t " << msgVersion.topicIn << " -m " << msgVersion.payloadIn<<std::endl;
- std::cout << "version (out)       | -t " << msgVersion.topicOut << " -m " << msgVersion.payloadOut;
- if(msgVersion.retainOut) std::cout << " -r";
- std::cout<<std::endl;
- std::cout << "mqtt @ start (out,*)| -t " << msgMqttStart.topic << " -m " << msgMqttStart.payload;
- if(msgMqttStart.retain) std::cout << " -r";
- std::cout<<std::endl;
- std::cout << "mqtt @ end (out,*)  | -t " << msgMqttEnd.topic << " -m " << msgMqttEnd.payload;
- if(msgMqttEnd.retain) std::cout << " -r";
- std::cout<<std::endl;
- std::cout << "progend by mqtt (in)| -t " << msgProgEnd.topic << " -m " << msgProgEnd.payload<<std::endl;
- std::cout << "reload conf-file(in)| -t " << msgReadConf.topicIn << " -m " << msgReadConf.payloadIn<<std::endl;
- std::cout << "reload conf-fil(out)| -t " << msgReadConf.topicOut << " -m " << msgReadConf.payloadOut<<std::endl;
- std::cout << "         * add time | ";
- if(timeShouldBeAdded) std::cout<<"true"<<std::endl;
- else std::cout<<"false"<<std::endl;
 }

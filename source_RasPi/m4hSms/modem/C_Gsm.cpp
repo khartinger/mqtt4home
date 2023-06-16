@@ -1,4 +1,5 @@
 //_____C_Gsm.cpp___________Karl Hartinger_____190426-190728_____
+// 230613 add empty GSM_DEVICE_FILE, update sendSms
 #include "C_Gsm.h"
 
 // *************************************************************
@@ -6,19 +7,20 @@
 // *************************************************************
 //_____constructor______________________________________________
 Gsm::Gsm() {
+ device=GSM_DEVICE;                    // ad serial interface
  initGsm();
  setup();
 }
 
 Gsm::Gsm(String device_) {
- initGsm();
  device=device_;
+ initGsm();
  setup();
 }
 
  Gsm::Gsm(String device_, long baudrate) {
- initGsm();
  device=device_;
+ initGsm();
  baud=baudrate;
  setup();
 }
@@ -34,19 +36,22 @@ void Gsm::initGsm()
  sCmd="";                              // GSM command
  sResult="";                           // answer of GSM modem
  sNetwork="";                          // registered network
- device=GSM_DEVICE;                    // ad serial interface
  //-----is there a device configuration file?-------------------
- std::string line1;
- std::ifstream fcnf(GSM_DEVICE_FILE);
- if(fcnf.good()) {
-  std::getline(fcnf, line1);           // get line
-  if(line1.length()>0) {               // length of line
-   device=line1;
+ if(GSM_DEVICE_FILE!="") {
+  std::string line1;
+  std::ifstream fcnf(GSM_DEVICE_FILE);
+  if(fcnf.good()) {
+   std::getline(fcnf, line1);           // get line
+   if(line1.length()>0) {               // length of line
+    device=line1;
+   }
+   fcnf.close();
   }
- }
- else
- {
-  if(debug_gsm) printf("Device file not found!\n");
+  else
+  {
+   if(debug_gsm) printf("GSM-Device file '%s' not found! Use device %s\n",
+     GSM_DEVICE_FILE, device.c_str());
+  }
  }
  baud=GSM_BAUDRATE;                    // ad serial interface
  initSms(sms1);                        //
@@ -123,7 +128,7 @@ String Gsm::getsCmd() {return sCmd; }
 String Gsm::getsResult() { return sResult; }
 
 //_____result of last modem request_____________________________
-// if raw_=false: replace \r by ^ and \n by ~
+// if replace_=true: replace \r by ^ and \n by ~
 String Gsm::getsResult(bool raw_) {
  if(raw_) return sResult;
  String s1=sResult;
@@ -225,6 +230,7 @@ bool Gsm::isModule() {
 // return: true=OK, status set
 bool Gsm::begin()
 {
+ if(debug_gsm) printf("\r\n");
  //-----turn echo on (better for debug)-------------------------
  sCmd="ATE0";                          // echo 0=off, 1=on
  if(!sendCmd(sCmd,2,GSM_CEND,100)) {   // send command
@@ -266,6 +272,7 @@ bool Gsm::sendSms(String phone, String text)
 {
 bool   bRet=false;                    // return value bool
  String sRet="";                       // return string
+ String sRet2="";                      // return string
  char   ccmd[165];                     // sms text
  long   t;                             // time counter s
  int    ilen;                          // number of chars
@@ -281,7 +288,7 @@ bool   bRet=false;                    // return value bool
  if(c!='+' && (c<'0' || c>'9')) { status=GSM_ERR_NOPH; return false; }
  if(text.length()>160) text=text.substr(0,160);
  //-----open serial---------------------------------------------
- if(debug_gsm) printf("Gsm::sendCmd ");
+ if(debug_gsm) printf("Gsm::sendSms ");
  if(seri.xopen()!=X232_OK) {           // 3x try to open, 100ms
   t=GSM_WAIT4SERI;
   while(t>0)
@@ -299,6 +306,7 @@ bool   bRet=false;                    // return value bool
   }
  }
  //-----send phone number to modem------------------------------
+ if(debug_gsm) printf("Serial OK, now send phone number to modem...\r\n");
  sCmd="AT+CMGS=\""+phone+"\""+cmdEnd;
  //-----empty receive buffer, send sms command------------------
  seri.xflush();
@@ -309,9 +317,9 @@ bool   bRet=false;                    // return value bool
  for(int i=0; i<ilen; i++)             // send command...
   seri.xputc(ccmd[i]);                 // ..byte-wise
  //seri.xprint(cmd2);                  // send command string
- if(debug_gsm) print1ln(sCmd,"sent to gsm: ","\n");
+ if(debug_gsm) print1ln(sCmd,"Gsm::sendSms Sent to gsm: ","\n");
  //-----wait for '>' char---------------------------------------
- ms=1000;                              // wait 1s for > sign
+ ms=2000;                              // wait 2s for > sign
  sRet="";                              // return string
  delay(20+sCmd.length());              // wait a little bit
  for(t=ms/5; t>0; t--)
@@ -334,22 +342,26 @@ bool   bRet=false;                    // return value bool
  {
   seri.xflush();
   seri.xclose();
-  if(debug_gsm) printf("no text prompt\n");
+  if(debug_gsm) printf("Gsm::sendSms No text prompt - return\n");
   sResult=sRet;
   status=GSM_ERR_NOGT;
   return false;
  }
  //-----send sms text-------------------------------------------
+ if(debug_gsm) printf("Gsm::sendSms Text prompt > received. Send sms text to modem...\r\n");
+ delay(200);
  ilen=text.length();
  strcpy(ccmd,text.c_str());
  ccmd[ilen]=GSM_CENDOFSMS;
  ilen++;
  for(int i=0; i<ilen; i++)             // send sms text...
  { seri.xputc(ccmd[i]); delay(1); }    // ...byte-wise
- if(debug_gsm) print1ln(text,"sent to gsm: ","\n");
- //-----waiting for answer (minimum 5 sec!)---------------------
+ if(debug_gsm) print1ln(text,"Gsm::sendSms Sent to gsm: ","\n");
+ //-----waiting 8s for answer (minimum 5 sec!)------------------
  ms=GSM_WAIT4SMS*1000;
- for(t=ms/10; t>0; t--)
+ t=ms/10;
+ bRet=false;
+ while(t>0 && !bRet)
  {
   delay(9);
   if(seri.xdataAvail()>0)
@@ -359,18 +371,20 @@ bool   bRet=false;                    // return value bool
    {
     c=(char)ic;
 //printf("|%c=%02x| ",c,ic);
-    sRet=sRet+c;
-    if(sRet.find("OK\r\n")!=String::npos) { t=0; bRet=true; }
-    if(sRet.find("ERROR\r\n")!=String::npos) t=-2;
+    sRet2=sRet2+c;
+    if(sRet2.find("OK\r\n")!=String::npos) bRet=true;
+    if(sRet2.find("ERROR\r\n")!=String::npos) t=-2;
    }
   }
- } // t=t-1 (!)
+  t--;
+ }
  //-----end of sms-text?----------------------------------------
- if(t==0)
- {
-  seri.xputc('\x1A');
+ if(debug_gsm) print1ln(sRet2,"Gsm::sendSms Modem answer: |","|\n");
+ if(t<=0)
+ { //...no modem Answer OK or ERROR: send <strg>z zu end text
+  seri.xputc(GSM_CENDOFSMS);
   delay(100);
-  if(debug_gsm) printf("<strg>Z\n");
+  if(debug_gsm) printf("Gsm::sendSms No modem answer OK or ERROR: sent <strg>Z\n");
  }
  seri.xflush();
  seri.xclose();
@@ -378,8 +392,8 @@ bool   bRet=false;                    // return value bool
  if(t==0)  status=GSM_ERR_TOUT;
  if(t==-2) status=GSM_OK_END;
  if(t<-2)  status=GSM_ERR_ANSW;
- if(debug_gsm) printf("Gsm::sendSmsText status %d, ",status);
- if(debug_gsm) print1ln(sRet, "received=|", "|\r\n");
+ if(debug_gsm) printf("Gsm::sendSms status %d, ",status);
+ if(debug_gsm) print1ln(sRet2, "received=|", "|\r\n");
  if(!debug_gsm) delay(100);
  sResult=sRet;
  return bRet;                          // return answer

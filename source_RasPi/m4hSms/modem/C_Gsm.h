@@ -1,22 +1,23 @@
 //_____C_Gsm.h______________Karl Hartinger_____190426-190728_____
+// 230613 add empty GSM_DEVICE_FILE, update sendSms
 #ifndef C_GSM_H
 #define C_GSM_H
 #include "C_X232.h"
 #include <fstream>                     // std::ifstream
 
 //.....important, if wb_common.h is not included................
-#define  DEBUG_GSM           false
+#define  DEBUG_GSM           false // true // false
 #define  String              std::string
+// #define  GSM_DEVICE          "/dev/ttyS0"
+#define  GSM_DEVICE          "/dev/ttyUSB0_Modem"
+#define  GSM_DEVICE_FILE     "" // No device file or "../device.conf"
 
-#define  GSM_DEVICE          "/dev/ttyS0"
-//#define  GSM_DEVICE          "/dev/ttyUSB0"
-#define  GSM_DEVICE_FILE     "../device.conf"
 #define  GSM_BAUDRATE        9600
 #define  GSM_CRLF            "\r"      // sim command: end chars
 #define  GSM_NUM_END         2         // number of cEnd in answer
 #define  GSM_WAIT_MS         6000      // timeout gsm command 6s
 #define  GSM_WAIT4SERI       10        // wait 10s serial free
-#define  GSM_WAIT4SMS        7         // wait 7s for sms answer
+#define  GSM_WAIT4SMS        8         // wait 8s for sms answer
 #define  GSM_CEND            '\n'      // sim answer: end char
 #define  GSM_CENDOFSMS       '\x1A'    // end of sms text
 #define  GSM_ENDOFSMS        "\x1A"    // end of sms text

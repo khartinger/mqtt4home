@@ -219,10 +219,10 @@ bool Sms::readConfig(std::string pfConf)
   //-----get key and value--------------------------------------
   std::string sKey="", sVal="";
   std::string s1=v1.at(i);
-  if(!conf.split2String(s1, sKey, sVal, ':')) continue;
-  conf.delExtBlank(sKey);
-  conf.delExtBlank(sVal);
-  conf.strToLower(sKey);
+  if(!g_utils.str2str2(s1, sKey, sVal, ':')) continue;
+  g_utils.delExtBlank(sKey);
+  g_utils.delExtBlank(sVal);
+  g_utils.str2lower(sKey);
   //-----search key---------------------------------------------
   //.....device.................................................
   if(sKey==SMS_DEVICE_KEY) {
@@ -353,7 +353,7 @@ bool Sms::sendStartSms(Gsm gsm3, struct mosquitto *mosq)
  for(int i=0; i<vSmsStart.size(); i++) {
   std::string phone, text;
   std::string s2=vSmsStart.at(i);
-  conf.split2String(s2, phone, text, ' ');
+  g_utils.str2str2(s2, phone, text, ' ');
   ok|=sendSms(phone,text+testDeviceText2,mosq);
  }
  if(ok && iRet==0) return true;
@@ -367,7 +367,7 @@ bool Sms::onMessage(struct mosquitto *mosq, std::string topic, std::string paylo
  { //====incoming message matches stored topic 1================
   std::string phone, text;
   Conf conf=Conf();
-  conf.split2String(payload, phone, text, ' ');
+  g_utils.str2str2(payload, phone, text, ' ');
   if(!sendSms(phone, text, mosq)) return false;
   return true;
  } // END OF incoming message matches stored topic 1============
@@ -446,7 +446,7 @@ void Sms::onExit(struct mosquitto *mosq, int reason)
  {
   std::string phone, text;
   std::string s1=vSmsEnd.at(i);
-  conf.split2String(s1, phone, text, ' ');
+  g_utils.str2str2(s1, phone, text, ' ');
   if(!isAuthSmsTo(phone)) continue;
   std::thread mythreadSendSms(threadFunctionSendSms, phone, text, device, mosq, topicPub, 30);
   mythreadSendSms.join();
@@ -939,7 +939,7 @@ int Sms::parseSmsIn(std::string smsText,
   ixr=smsText.find("-r");                   // search for -r
   if(ixm==std::string::npos && ixr==std::string::npos)
   {//---------neither -t nor -m nor -r--------------------------
-   conf.delExtBlank(smsText);               // 
+   g_utils.delExtBlank(smsText);               // 
    if(smsText.length()>0)
    {//--------plain text without -X is ok-----------------------
     topicIn=SMS_TOPICPUB;
@@ -967,7 +967,7 @@ int Sms::parseSmsIn(std::string smsText,
   if(lenx<lent) lent=lenx;
  }
  key1=smsText.substr(ixt+2, lent);
- conf.delExtBlank(key1);                    // 
+ g_utils.delExtBlank(key1);                    // 
  if(key1.length()<1) return -3;             // wrong topic
  //-----------find payload length-------------------------------
  lenm=lenText-ixm-2;
@@ -980,7 +980,7 @@ int Sms::parseSmsIn(std::string smsText,
   if(lenx<lenm) lenm=lenx;
  }
  val1=smsText.substr(ixm+2, lenm);
- conf.delExtBlank(val1);                    // 
+ g_utils.delExtBlank(val1);                    // 
  if(val1.length()<1) return -4;             // wrong payload
  //-----------topic and payload ok------------------------------
  topicIn=key1;
