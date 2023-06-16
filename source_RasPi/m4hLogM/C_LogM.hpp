@@ -178,7 +178,7 @@ bool LogM::add2log(std::string topic, std::string payload,
  int ret;
  //------ calc year + month-------------------------------------
  std::string s1="%y%m";
- std::string _yymm="."+g_base.getDateTime(s1);
+ std::string _yymm="."+g_utils.getDateTime(s1);
  //------build path + filename----------------------------------
  sFilename =pathLog;
  sFilename+=topic;
@@ -186,7 +186,7 @@ bool LogM::add2log(std::string topic, std::string payload,
  sFilename+=_extLog;
  //------build log-line-----------------------------------------
  s1="%d.%m.%y %H:%M:%S";
- std::string sLine=g_base.getDateTime(s1);
+ std::string sLine=g_utils.getDateTime(s1);
  sLine+=" | ";
  if(topic.length()<1) sLine+="(null)";
  else
