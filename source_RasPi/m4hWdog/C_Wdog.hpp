@@ -175,15 +175,15 @@ bool Wdog::readConfig(std::string pfConf)
   //-----get key and value--------------------------------------
   std::string sKey="", sVal="";
   std::string s1=v1.at(i);
-  if(!conf.split2String(s1, sKey, sVal, ':')) continue;
-  conf.delExtBlank(sKey);
-  conf.delExtBlank(sVal);
-  conf.strToLower(sKey);
+  if(!g_utils.str2str2(s1, sKey, sVal, ':')) continue;
+  g_utils.delExtBlank(sKey);
+  g_utils.delExtBlank(sVal);
+  g_utils.str2lower(sKey);
   //-----search key---------------------------------------------
   if(sKey==wdogOutKey)
   {//....message out (topic payload)............................
    std::string sT="", sP="";
-   if(conf.split2String(sVal, sT, sP, ' ')) {
+   if(g_utils.str2str2(sVal, sT, sP, ' ')) {
     mWdogOut.topic=sT;
     mWdogOut.payload=sP;
    } else {
@@ -195,11 +195,11 @@ bool Wdog::readConfig(std::string pfConf)
   if(sKey==wdogInKey)
   {//....decompose the value into topic and payload.............
    std::string sT="", sHMS="";
-   if(conf.split2String(sVal, sT, sHMS, ' '))
+   if(g_utils.str2str2(sVal, sT, sHMS, ' '))
    {
     std::vector<std::string> vt;
     vt.clear();
-    conf.splitString(sHMS, vt, ':');
+    g_utils.str2vector1(sHMS, vt, ':');
     if(vt.size()==3)
     {
      try {
@@ -220,7 +220,7 @@ bool Wdog::readConfig(std::string pfConf)
   if(sKey==wdogGetAllInKey)            // allin
   {//....decompose the value into topic and payload.............
    std::string sT="", sP="";
-   if(conf.split2String(sVal, sT, sP, ' ')) {
+   if(g_utils.str2str2(sVal, sT, sP, ' ')) {
     mGetAll.topicIn=sT;
     mGetAll.payloadIn=sP;
    } else {
@@ -232,7 +232,7 @@ bool Wdog::readConfig(std::string pfConf)
   if(sKey==wdogGetAllOutKey)           // allout
   {//....decompose the value into topic and payload.............
    std::string sT="", sP="";
-   if(conf.split2String(sVal, sT, sP, ' ')) {
+   if(g_utils.str2str2(sVal, sT, sP, ' ')) {
     mGetAll.topicOut=sT;
     mGetAll.payloadOut=sP;
    } else {
@@ -244,7 +244,7 @@ bool Wdog::readConfig(std::string pfConf)
   if(sKey==wdogGetOverInKey)           // overin
   {//....decompose the value into topic and payload.............
    std::string sT="", sP="";
-   if(conf.split2String(sVal, sT, sP, ' ')) {
+   if(g_utils.str2str2(sVal, sT, sP, ' ')) {
     mGetOver.topicIn=sT;
     mGetOver.payloadIn=sP;
    } else {
@@ -256,7 +256,7 @@ bool Wdog::readConfig(std::string pfConf)
   if(sKey==wdogGetOverOutKey)          // overout
   {//....decompose the value into topic and payload.............
    std::string sT="", sP="";
-   if(conf.split2String(sVal, sT, sP, ' ')) {
+   if(g_utils.str2str2(sVal, sT, sP, ' ')) {
     mGetOver.topicOut=sT;
     mGetOver.payloadOut=sP;
    } else {
@@ -312,7 +312,7 @@ bool Wdog::onMessage(struct mosquitto *mosq, std::string topic, std::string payl
   if(s1.length()<1) s1="(NO topics to be monitored)";
   sPay=mGetAll.payloadOut;
   if(sPay.find(WDOG_PLAHO_LIST)!=std::string::npos)
-   conf.replaceAll(sPay, WDOG_PLAHO_LIST, s1);
+   g_utils.replaceAll(sPay, WDOG_PLAHO_LIST, s1);
   else {
    if(sPay.length()<1) sPay=s1; else sPay+=" "+s1;
   }
@@ -337,14 +337,14 @@ bool Wdog::onMessage(struct mosquitto *mosq, std::string topic, std::string payl
     if(s1.length()>0) s1+=WDOG_DELIMITER1;
     s1+=vIn.at(i).topicIn;
     s1+=" ";
-    s1+=conf.sec2HMS(tdiff);
+    s1+=g_utils.sec2HMS(tdiff);
    }
   }
   //.....prepare output.........................................
   if(s1.length()<1) s1="(No overdue topics)";
   sPay=mGetOver.payloadOut;
   if(sPay.find(WDOG_PLAHO_LIST)!=std::string::npos)
-   conf.replaceAll(sPay, WDOG_PLAHO_LIST, s1);
+   g_utils.replaceAll(sPay, WDOG_PLAHO_LIST, s1);
   else {
    if(sPay.length()<1) sPay=s1; else sPay+=" "+s1;
   }
@@ -354,7 +354,7 @@ bool Wdog::onMessage(struct mosquitto *mosq, std::string topic, std::string payl
   {//....topics available: replace <list>.......................
    sPay=mGetOver.payloadOut;
    if(sPay.length()<1) sPay=s1;
-   else conf.replaceAll(sPay, WDOG_PLAHO_LIST, s1);
+   else g_utils.replaceAll(sPay, WDOG_PLAHO_LIST, s1);
   }
   else sPay="(No overdue topics)";
   */
@@ -402,7 +402,7 @@ void Wdog::periodic(struct mosquitto *mosq)
    std::string sPay=mWdogOut.payload;
    std::string sOld=WDOG_PLAHO_TOPIC_IN;
    std::string sNew=vIn1_.topicIn;
-   conf.replaceAll(sPay, sOld, sNew);  // replace <in>
+   g_utils.replaceAll(sPay, sOld, sNew);  // replace <in>
    //....publish attention message..............................
    int iRet=mosquitto_publish(mosq, NULL, mWdogOut.topic.c_str(),
     sPay.length(), sPay.c_str(), 0, true);
