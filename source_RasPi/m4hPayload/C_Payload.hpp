@@ -147,7 +147,7 @@ bool Payload::readConfig(std::string pfConf)
    if(it1->first==PAYLOAD_IN_KEY)
    {
     std::string sT="", sP="";
-    if(!conf.split2String(it1->second, sT, sP, ' ')) sT=it1->second;
+    if(!g_utils.str2str2(it1->second, sT, sP, ' ')) sT=it1->second;
     p1.m2.topicIn=sT;
     p1.m2.payloadOut=sP;
    }
@@ -155,7 +155,7 @@ bool Payload::readConfig(std::string pfConf)
    if(it1->first==PAYLOAD_SKIP_KEY)
    {
     p1.vSkip.clear();
-    conf.splitString(it1->second,p1.vSkip,',');
+    g_utils.str2vector1(it1->second,p1.vSkip,',');
    }
    //....key in payload to search...............................
    if(it1->first==PAYLOAD_KEY_KEY) {
@@ -168,7 +168,7 @@ bool Payload::readConfig(std::string pfConf)
    if(it1->first==PAYLOAD_IF_KEY) {
     if((it1->second).length()>2) {
      std::string sC="", sT="";
-     if(conf.split2String(it1->second, sC, sT, ' ')) {
+     if(g_utils.str2str2(it1->second, sC, sT, ' ')) {
       if(sC.length()>1)
       {
        if(sC.at(0)=='<') {
@@ -192,7 +192,7 @@ bool Payload::readConfig(std::string pfConf)
    if(it1->first==PAYLOAD_OUT_KEY)
    {
     std::string sT="", sP="";
-    if(!conf.split2String(it1->second, sT, sP, ' ')) sT=it1->second;
+    if(!g_utils.str2str2(it1->second, sT, sP, ' ')) sT=it1->second;
     p1.m2.topicOut=sT;
     p1.m2.payloadOut=sP;
     ok|=2;                             // out message is ok
@@ -271,7 +271,7 @@ bool Payload::onMessage(struct mosquitto *mosq, std::string topic, std::string p
   std::multimap<std::string, std::string>::iterator it1;
   std::string sValue="";
   Conf conf=Conf();
-  conf.split2pairs(payload, mm1);
+  g_utils.split2pairs(payload, mm1);
   if(mm1.size()>0) 
   {//---------split payload to pairs ok-------------------------
    it1=mm1.find(p1.key);
@@ -416,13 +416,13 @@ bool Payload::editPayload(Payload1 &p1, std::string sValue)
  //===========finish answer=====================================
  if(bRet) {
   //----------build topic out-----------------------------------
-  conf.replaceAll(p1.m2.topicOut,PAYLOAD_EXC_TOPIC_IN,p1.m2.topicIn);
+  g_utils.replaceAll(p1.m2.topicOut,PAYLOAD_EXC_TOPIC_IN,p1.m2.topicIn);
   //----------build payload out---------------------------------
-  //conf.replaceAll(p1.m2.payloadOut,PAYLOAD_EXC_TOPIC_IN,p1.m2.topicIn);
-  //conf.replaceAll(p1.m2.payloadOut,PAYLOAD_EXC_VALUE,sValue);
+  //g_utils.replaceAll(p1.m2.payloadOut,PAYLOAD_EXC_TOPIC_IN,p1.m2.topicIn);
+  //g_utils.replaceAll(p1.m2.payloadOut,PAYLOAD_EXC_VALUE,sValue);
   p1.m2.payloadOut+=sPay;
-  conf.replaceAll(p1.m2.payloadOut,PAYLOAD_EXC_TOPIC_IN,p1.m2.topicIn);
-  conf.replaceAll(p1.m2.payloadOut,PAYLOAD_EXC_VALUE,sValue);
+  g_utils.replaceAll(p1.m2.payloadOut,PAYLOAD_EXC_TOPIC_IN,p1.m2.topicIn);
+  g_utils.replaceAll(p1.m2.payloadOut,PAYLOAD_EXC_VALUE,sValue);
   if(p1.m2.topicOut.length()<1) bRet=false;      // no topic
   if(p1.m2.payloadOut.length()<1) bRet=false;    // no payload
  }
