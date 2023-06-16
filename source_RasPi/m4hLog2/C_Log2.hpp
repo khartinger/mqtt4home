@@ -164,10 +164,10 @@ bool Log2::readConfig(std::string pfConf)
   //-----get key and value--------------------------------------
   std::string sKey="", sVal="";
   std::string s1=v1.at(i);
-  if(!conf.split2String(s1, sKey, sVal, ':')) continue;
-  conf.delExtBlank(sKey);
-  conf.delExtBlank(sVal);
-  conf.strToLower(sKey);
+  if(!g_utils.str2str2(s1, sKey, sVal, ':')) continue;
+  g_utils.delExtBlank(sKey);
+  g_utils.delExtBlank(sVal);
+  g_utils.str2lower(sKey);
   //-----search key---------------------------------------------
   //.....path of log directory..................................
   if(sKey==pathLogKey) {
@@ -185,9 +185,9 @@ bool Log2::readConfig(std::string pfConf)
   }
   //.....topic of messages not to be logged.....................
   if(sKey==skipLogKey) {
-   conf.replaceAll(sVal, " ", "");
+   g_utils.replaceAll(sVal, " ", "");
    vSkipLog.clear();
-   conf.splitString(sVal, vSkipLog,',');
+   g_utils.str2vector1(sVal, vSkipLog,',');
   }
     //-----search key topic in for get file time------------------
   if(sKey==LOG2_TIME_IN_KEY) {
@@ -199,7 +199,7 @@ bool Log2::readConfig(std::string pfConf)
   if(sKey==LOG2_TIME_OUT_KEY) {
    if(sVal.length()>0) {
     std::string sT="", sP="";
-    if(conf.split2String(sVal, sT, sP, ' ')) {
+    if(g_utils.str2str2(sVal, sT, sP, ' ')) {
      timeOutTopic=sT;
      timeFormat=sP;
     } else timeOutTopic=sVal;
@@ -345,7 +345,7 @@ bool Log2::add2log(std::string topic, std::string payload)
  sFilename+=LOG2_EXT_LOG;
  //------build log-line-----------------------------------------
  std::string s1="%d.%m.%y %H:%M:%S";
- std::string sLine=g_base.getDateTime(s1);
+ std::string sLine=g_utils.getDateTime(s1);
  sLine+=" | ";
  if(topic.length()<1) sLine+="(null)";
  else
