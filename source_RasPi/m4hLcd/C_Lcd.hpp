@@ -98,23 +98,23 @@ void Lcd::setDefaults()
  //------parameter for get message------------------------------
  sGetinTopic = LCD_GET_IN_T;           // get topic (in)
  vGetinPayload.clear();                // all get payloads
- conf.splitString(LCD_GET_IN_P, vGetinPayload, ',');
+ g_utils.str2vector1(LCD_GET_IN_P, vGetinPayload, ',');
  //......remove remove blank(s) from begin and end of string....
  int iSize = vGetinPayload.size();
  for(int i=0; i<iSize; i++)
  {
-   conf.delExtBlank(vGetinPayload.at(i));
+   g_utils.delExtBlank(vGetinPayload.at(i));
  }
  sGetoutTopic = LCD_GET_OUT_T;         // get topic (answer)
  //------parameter for set message------------------------------
  sSetinTopicBase = LCD_SET_IN_T_BASE;  // set topic base
  vSetinTopicExt.clear();               // all set topics extensions
- conf.splitString(LCD_SET_IN_T_EXT, vSetinTopicExt, ',');
+ g_utils.str2vector1(LCD_SET_IN_T_EXT, vSetinTopicExt, ',');
  //......remove remove blank(s) from begin and end of string....
  iSize = vSetinTopicExt.size();
  for(int i=0; i<iSize; i++)
  {
-   conf.delExtBlank(vSetinTopicExt.at(i));
+   g_utils.delExtBlank(vSetinTopicExt.at(i));
  }
  sSetoutTopic = LCD_SET_OUT_T;         // set topic (answer)
  //------key words as one string--------------------------------
@@ -152,18 +152,18 @@ bool Lcd::readConfig(std::string pfConf)
   //-----get key and value--------------------------------------
   std::string sKey="", sVal="";
   std::string s1=v1.at(i);
-  if(!conf.split2String(s1, sKey, sVal, ':')) continue;
-  conf.delExtBlank(sKey);
-  conf.delExtBlank(sVal);
-  conf.strToLower(sKey);
+  if(!g_utils.str2str2(s1, sKey, sVal, ':')) continue;
+  g_utils.delExtBlank(sKey);
+  g_utils.delExtBlank(sVal);
+  g_utils.str2lower(sKey);
   //-----search key---------------------------------------------
   //.....topic for get messages.................................
   if(sKey==sGetinKey) {
    if(sVal.length()>0) {
     std::string sVal1=sVal, sVal2;
-    if(conf.split2String(sVal, sVal1, sVal2, ' ')) {
+    if(g_utils.str2str2(sVal, sVal1, sVal2, ' ')) {
      vGetinPayload.clear();
-     conf.splitString(sVal2, vGetinPayload, ',');
+     g_utils.str2vector1(sVal2, vGetinPayload, ',');
     }
     sGetinTopic=sVal1;
    }
@@ -181,9 +181,9 @@ bool Lcd::readConfig(std::string pfConf)
   if(sKey==sSetinKey) {
    if(sVal.length()>0) {
     std::string sVal1=sVal, sVal2;
-    if(conf.split2String(sVal, sVal1, sVal2, ' ')) {
+    if(g_utils.str2str2(sVal, sVal1, sVal2, ' ')) {
      vSetinTopicExt.clear();
-     conf.splitString(sVal2, vSetinTopicExt, ',');
+     g_utils.str2vector1(sVal2, vSetinTopicExt, ',');
     }
     sSetinTopicBase=sVal1;
    }

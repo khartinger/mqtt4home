@@ -1,20 +1,21 @@
-//_____m4hBase.h_________________________________khartinger_____
+//_____h6Base.h_________________________________khartinger_____
 // Definitions and many basic functions for mqtt4home, divided 
-//into four classes:
+//into five classes:
 // * Message : Class for one MQTT message with topic, payload
 //             and retain-flag.
 // * Message2: Class for two related MQTT messages (in, out)
 //             with 2x topic, 2x payload and retain-flag (out).
-// * Conf    : Class for reading the configuration file and with
-//             special auxiliary methods for string processing.
-// * M4hBase : Properties and methods for the basic functions
+// * Conf    : Class for reading the configuration file.
+// * H6Base  : Properties and methods for the basic functions
 //             of mqtt4home.
+// * M4hUtils : Class with special auxiliary methods
 // Hardware: (1) Raspberry Pi
 // Updates:
 // 2021-08-19 First release
 // 2022-02-10 add reload conf file by mqtt command
-// 2022-02-15 Add class Conf: DHMS2sec(), sec2DHMS(), sec2HMS()
-// 2022-02-17 Add class Conf: fits()
+// 2022-02-15 add class Conf: DHMS2sec(), sec2DHMS(), sec2HMS()
+// 2022-02-17 add class Conf: fits()
+// 2023-06-16 move helper methods to class M4hUtils, rename str...
 // Released into the public domain.
 
 #ifndef C_M4HBASE_H
@@ -147,19 +148,7 @@ class Conf {
   std::string findValue(std::string section, std::string key_);
   int    readAllSections(std::multimap<std::string,std::string>& m1);
   //-----helper methods-----------------------------------------
-  void   delTrailLFCR(std::string& s1);
-  void   delTrailBlank(std::string& s1);
-  void   delLeadBlank(std::string& s1);
-  void   delExtBlank(std::string &s1);
-  void   replaceAll(std::string &str, const std::string& old_, const std::string& new_);
-  void   strToLower(std::string &s1);
-  bool   split2pairs(std::string s1, std::multimap<std::string, std::string>& mm1);
-  void   splitString(std::string sIn, std::vector<std::string>&vOut, char delimiter);
-  bool   split2String(std::string sIn,std::string& sPart1,std::string& sPart2,char delimiter);
   bool   fits(std::string topic, std::string pattern);
-  time_t DHMS2sec(std::string sDHMS);
-  std::string sec2DHMS(time_t tsec);
-  std::string sec2HMS(time_t tsec);
 };
 
 // *************************************************************
@@ -189,14 +178,67 @@ class M4hBase {
   //void printHelptext();                // print help text
   bool readConfig();                   // read config file
   bool readConfig(std::string pfile_); // read config file
-  std::string getDateTime();           // actual date+time
-  std::string getDateTime(std::string sTimeformat);
-
   //-----helper methods-----------------------------------------
   void show();                         // show all properties
 };
 
+// *************************************************************
+//     class M4hUtils: little helpers for mqtt4home
+// *************************************************************
+
+class M4hUtils {
+ public:
+  //-----constructor & co---------------------------------------
+  M4hUtils() {};
+  //-----working methods----------------------------------------
+  //_____remove line feed and carriage return from end of line__
+  void   delTrailLFCR(std::string& s1);
+
+  //_____remove blank(s) from end of line_______________________
+  void   delTrailBlank(std::string& s1);
+
+  //_____remove blank(s) from begin of line_____________________
+  void   delLeadBlank(std::string& s1);
+
+  //_____remove blank(s) from begin and end of line_____________
+  void   delExtBlank(std::string &s1);
+
+  //_____replace a part of the string to another________________
+  void   replaceAll(std::string &str, const std::string& old_, const std::string& new_);
+
+  //_____convert string to lower string_________________________
+  void   str2lower(std::string &s1);
+
+  // ___________split string to vector of strings (more delim)__
+  std::vector<std::string> str2vector(const std::string& data, const std::string& delimiters);
+
+  //_____convert json-string to pairs___________________________
+  bool   split2pairs(std::string s1, std::multimap<std::string, std::string>& mm1);
+
+  //_____split string to vector of strings (1 char delimiter)___
+  void   str2vector1(std::string sIn, std::vector<std::string>&vOut, char delimiter);
+
+  //_____split string to 2 strings______________________________
+  bool   str2str2(std::string sIn,std::string& sPart1,std::string& sPart2,char delimiter);
+
+  //_____convert d HMS string to sec____________________________
+  time_t DHMS2sec(std::string sDHMS);
+
+  //_____convert time to d HMS string___________________________
+  std::string sec2DHMS(time_t tsec);
+
+  //_____convert time to HMS string_____________________________
+  std::string sec2HMS(time_t tsec);
+
+  //_____return actual system date and time_____________________
+  std::string getDateTime();           // actual date+time
+
+  //_____return actual system date and time_____________________
+  std::string getDateTime(std::string sTimeformat);
+};
+
 //_______declare a global little helpers object ;)______________
 extern M4hBase g_base;
+extern M4hUtils g_utils;
 
 #endif // C_M4HBASE_H
