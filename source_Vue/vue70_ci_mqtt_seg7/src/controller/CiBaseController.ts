@@ -1,6 +1,8 @@
-// ______CiBaseController.ts____________________________________
+// ______CiBaseController.ts_____________________khartinger_____
+// 2022-01-01: new
+// 2023-09-02: change import Qos
 import { Message, CiMqttClient } from '@/services/CiMqttClient'
-import type { QoS } from 'mqtt'
+import { QoS } from 'mqtt-packet'
 
 export interface IBase {
   id: string;
