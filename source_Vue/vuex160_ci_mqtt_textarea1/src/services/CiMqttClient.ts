@@ -1,11 +1,10 @@
 // ______CiMqttClient.ts_________________________khartinger_____
 // 2021-12-26: new
 // 2023-01-22: add classes, update CiBase.vue, CiBaseController.ts
-import mqtt, { MqttClient } from 'mqtt'
+import { connect, MqttClient } from 'mqtt'
 import { CiBaseController } from '@/controller/CiBaseController'
 import { reactive, readonly } from 'vue'
-
-export type QoS = 0 | 1 | 2
+import type { QoS } from 'mqtt-packet'
 
 // *************************************************************
 // interfaces
@@ -53,7 +52,7 @@ export interface MqttSubscription {
 
 export class CiMqttClient {
   // ---------basic properties----------------------------------
-  public client: mqtt.MqttClient | null = null;
+  public client: MqttClient | null = null;
   public controller: Array<CiBaseController> = [];
 
   private subTopic = '#';
@@ -72,7 +71,7 @@ export class CiMqttClient {
   public mqttState = readonly(this.privateMqttState)
 
   private privateMqttConnection: MqttConnection = reactive<MqttConnection>({
-    host: '10.1.1.1',
+    host: '192.168.1.7',
     port: 1884,
     endpoint: '',
     clean: true,
@@ -137,7 +136,7 @@ export class CiMqttClient {
         password: this.mqttConnection.password
       }
       console.log('MqttCient.ts-connect: url=' + this.connectUrl())
-      const client = mqtt.connect(this.connectUrl(), options_)
+      const client = connect(this.connectUrl(), options_)
       this.client = client
       this.client.on('connect', () => {
         this.privateMqttState.connected = true
@@ -150,22 +149,22 @@ export class CiMqttClient {
         //   console.error('MQTT Connecting')
         //   this.privateMqttState.iConnMqttState = 2
         // })
-        // client.on('offline', (value) => {
-        //   this.privateMqttState.connected = false
-        //   this.privateMqttSubscription.subscribed = false
-        //   console.error('MQTT Offline', value)
-        //   this.privateMqttState.iConnMqttState = 3
-        // })
+        client.on('offline', () => {
+          this.privateMqttState.connected = false
+          this.privateMqttSubscription.subscribed = false
+          console.error('MQTT Offline')
+          this.privateMqttState.iConnMqttState = 3
+        })
         client.on('disconnect', (value: any) => {
           console.error('MQTT Disconnect', value)
           this.privateMqttState.iConnMqttState = 0
         })
-        // client.on('end', (value: any) => {
-        //   this.privateMqttState.connected = false
-        //   this.privateMqttSubscription.subscribed = false
-        //   console.error('MqttClient.ts-end: value=', value)
-        //   this.privateMqttState.iConnMqttState = 9
-        // })
+        client.on('end', () => {
+          this.privateMqttState.connected = false
+          this.privateMqttSubscription.subscribed = false
+          console.error('MqttClient.ts-end')
+          this.privateMqttState.iConnMqttState = 9
+        })
         client.on('message', (topic: string, payload: any, props1: any) => {
           let retain1 = false
           try {
