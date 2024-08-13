@@ -2,7 +2,7 @@
 // 2021-12-26: new
 // 2023-01-22: add classes, update CiBase.vue, CiBaseController.ts
 // 2023-09-02: update to mqtt 5
-import { connect, MqttClient } from 'mqtt'
+import { connect, MqttClient } from 'mqtt/dist/mqtt.min'
 import { CiBaseController } from '@/controller/CiBaseController'
 import { reactive, readonly } from 'vue'
 import type { QoS } from 'mqtt-packet'
@@ -53,11 +53,11 @@ export interface MqttSubscription {
 
 export class CiMqttClient {
   // ---------basic properties----------------------------------
-  public client: MqttClient | null = null;
-  public controller: Array<CiBaseController> = [];
+  public client: MqttClient | null = null
+  public controller: Array<CiBaseController> = []
 
-  private subTopic = '#';
-  private subQos: QoS = 0;
+  private subTopic = '#'
+  private subQos: QoS = 0
 
   // ---------some more properties (interfaces)-----------------
   // To prevent values from being changed by mistake,
@@ -66,13 +66,13 @@ export class CiMqttClient {
     connectOnStart: false,
     connected: false,
     iConnMqttState: -1,
-    message: { topic: '', payload: '', retain: false, qos: 0 }
+    message: { topic: '', payload: '', retain: false, qos: 0 },
   })
 
   public mqttState = readonly(this.privateMqttState)
 
   private privateMqttConnection: MqttConnection = reactive<MqttConnection>({
-    host: '10.1.1.1',
+    host: '192.168.0.7',
     port: 1884,
     endpoint: '',
     clean: true,
@@ -80,7 +80,7 @@ export class CiMqttClient {
     reconnectPeriod: 4000,
     clientId: '',
     username: '',
-    password: ''
+    password: '',
   })
 
   public mqttConnection = readonly(this.privateMqttConnection)
@@ -88,7 +88,7 @@ export class CiMqttClient {
   private privateMqttSubscription: MqttSubscription = reactive<MqttSubscription>({
     topic: '#',
     qos: 0,
-    subscribed: false
+    subscribed: false,
   })
 
   public mqttSubscription = readonly(this.privateMqttSubscription)
@@ -134,7 +134,7 @@ export class CiMqttClient {
         reconnectPeriod: this.mqttConnection.reconnectPeriod,
         clientId: this.mqttConnection.clientId,
         username: this.mqttConnection.username,
-        password: this.mqttConnection.password
+        password: this.mqttConnection.password,
       }
       console.log('MqttCient.ts-connect: url=' + this.connectUrl())
       const client = connect(this.connectUrl(), options_)
@@ -167,19 +167,19 @@ export class CiMqttClient {
           this.privateMqttState.iConnMqttState = 9
         })
         client.on('message', (topic: string, payload: any, props1: any) => {
-          let retain1 = false
+          let retain = false
           try {
-            retain1 = props1.retain
+            retain = props1.retain
           } catch (error) { console.error(error) }
-          let qos1 = 0 as QoS
+          let qos = 0 as QoS
           try {
-            qos1 = props1.qos
+            qos = props1.qos
           } catch (error) { console.error(error) }
           this.controller.forEach(controller => controller.onMessage({
-            topic: topic,
+            topic,
             payload: payload.toString(),
-            retain: retain1,
-            qos: qos1
+            retain,
+            qos,
           }))
         })
         resolve()
@@ -248,7 +248,7 @@ export class CiMqttClient {
       }
       if (subscribedOld) {
         this.client.unsubscribe(this.privateMqttSubscription.topic, {
-          qos: 1
+          qos: 1,
         }, (err: any) => {
           if (err) {
             // console.log('CiMqttClient:unsubscribe: failed! ', this.privateMqttSubscription.topic)
@@ -265,7 +265,7 @@ export class CiMqttClient {
   public publish (topic: string, payload: string, retain: boolean, qos: QoS): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.client) return reject(new Error('Not Connected'))
-      this.client.publish(topic, payload, { qos: qos, retain: retain }, (err: any) => {
+      this.client.publish(topic, payload, { qos, retain }, (err: any) => {
         if (err) return reject(new Error('Could not publish topic ' + topic))
         resolve()
       })
@@ -289,12 +289,12 @@ export class CiMqttClient {
   }
 
   // _________connect to a broker and subscribe a topic_________
-  public hostSubscribe (host: string, topicSubscribe: string): boolean {
+  public async hostSubscribe (host: string, topicSubscribe: string): Promise<boolean> {
     this.privateMqttConnection.host = host
     this.privateMqttSubscription.topic = topicSubscribe
     try {
-      this.connect_()
-      this.subscribe_()
+      await this.connect_()
+      await this.subscribe_()
     } catch (err) {
       console.error('CiMqttClient.hostSubscribe: Error ' + err)
       return false
@@ -309,10 +309,10 @@ export class CiMqttClient {
   }
 
   // _________reconnect to broker with default values___________
-  public reconnectBroker (): boolean {
+  public async reconnectBroker (): Promise<boolean> {
     try {
-      this.connect_()
-      this.subscribe_()
+      await this.connect_()
+      await this.subscribe_()
     } catch (err) {
       console.error('CiMqttClient.reconnectBroker: Error ' + err)
       return false

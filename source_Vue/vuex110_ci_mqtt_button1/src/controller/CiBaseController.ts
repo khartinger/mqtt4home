@@ -13,7 +13,7 @@ export interface IBase {
 }
 
 export abstract class CiBaseController {
-  protected client: CiMqttClient | null = null;
+  protected client: CiMqttClient | null = null
 
   public registerClient (mqttClient: CiMqttClient): void {
     this.client = mqttClient
