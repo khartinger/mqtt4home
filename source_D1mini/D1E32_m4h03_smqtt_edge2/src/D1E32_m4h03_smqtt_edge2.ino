@@ -1,4 +1,5 @@
 //_______D1E32_m4h03_smqtt_edge2.ino_____________khartinger_____
+// Power measurement through pulse counting and MQTT info.
 // This program for a D1 mini or ESP32 mini is used to 
 // * count pulses (falling edge) at pin D5 (IO14) and 
 // * send periodic MQTT messages with a "power" value that is 
