@@ -44,11 +44,11 @@
 #define  DEBUG03        true  //false
 #define  VERSION_M4H03  "2024-08-13 D1E32_m4h03_smqtt_edge2"
 #define  FUNCTION_M4H03 "Count pulses, calc watts, send MQTT message"
-#define  TOPIC_BASE     "ip/h/hu2/watt"
+#define  TOPIC_BASE     "info/test/1"
 #define  TOPIC_GET      "?,help,version,ip,topicbase,eeprom,sec,watt,watt_"
 #define  TOPIC_SET      "topicbase,eeprom0,sec"
 #define  TOPIC_SUB      ""
-#define  TOPIC_PUB      "test/watt/ret/watt5"
+#define  TOPIC_PUB      "info/test/1/ret/watt5"
 
 //_____sensors, actors, global variables________________________
 #if defined(ESP32) || defined(ESP32D1)
