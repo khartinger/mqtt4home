@@ -11,7 +11,9 @@
   <CiButton   :x="3*dx" :y="0*dy" sid="button_4" :border="0"></CiButton>
   <CiButton2  :x="4*dx" :y="0*dy" sid="button2_1" lines="2" :border="0"></CiButton2>
   <CiSocket   :x="5*dx" :y="0*dy" sid="socket_1" :border="0"></CiSocket>
+  <!--
   <CiSocket2  :x="6*dx" :y="0*dy" sid="socket2_1" :border="0"></CiSocket2>
+  -->
   <CiSmsOut   :x="7*dx" :y="0*dy" sid="smsOut_1" :border="3"></CiSmsOut>
 
   <text       :x="-50" :y="0.9*dy" class="ciFont2">Indicator</text>
@@ -61,7 +63,7 @@ import CiPump from './CiPump.vue'
 import CiSmsIn from './CiSmsIn.vue'
 import CiSmsOut from './CiSmsOut.vue'
 import CiSocket from './CiSocket.vue'
-import CiSocket2 from './CiSocket2.vue'
+// import CiSocket2 from './CiSocket2.vue'
 import CiText5 from './CiText5.vue'
 import CiText5L from './CiText5L.vue'
 import CiTextarea from './CiTextarea.vue'
@@ -83,7 +85,7 @@ export default defineComponent({
     CiSmsIn,
     CiSmsOut,
     CiSocket,
-    CiSocket2,
+    // CiSocket2,
     CiText5,
     CiText5L,
     CiTextarea,
