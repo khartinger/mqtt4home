@@ -18,18 +18,41 @@ Die Ziele im Detail:
  
 ## Vorgangsweise
 ### Installation des MQTT Brokers und der Clients auf dem RasPi
-1. Mosquitto Server installieren   
+1. Paketquellen aktualisieren   
    ```
-   sudo apt-get install mosquitto
+   sudo apt update
    ```
-2. Mosquitto Clients installieren (Publisher und Subscriber)   
+2. Mosquitto Server installieren   
    ```
-   sudo apt-get install mosquitto-clients
+   sudo apt install -y mosquitto
    ```
-3. Mosquitto C-Bibliothek installieren   
+3. Mosquitto Clients installieren (Publisher und Subscriber)   
    ```
-   sudo apt-get install libmosquitto-dev
+   sudo apt install -y mosquitto-clients
    ```
+4. Mosquitto C-Bibliothek installieren   
+   ```
+   sudo apt install -y libmosquitto-dev
+   ```
+5. Mosquitto beim Start automatisch aktivieren   
+   ```
+   sudo systemctl enable mosquitto
+   ```
+
+### Konfigurationsdatei erstellen
+Zum Testen vom PC aus muss eine Konfigurationsdatei erstellt werden, da `mosquitto` standardmäßig lokal läuft.   
+```
+sudo nano /etc/mosquitto/conf.d/default.conf
+```
+Inhalt:   
+```
+listener 1883
+protocol mqtt
+listener 1884
+protocol websockets
+allow_anonymous true
+```
+Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
 
 ### Test der MQTT Installation auf dem RasPi
 Zum Testen der Installation ben&ouml;tigt man drei Dinge:   
@@ -39,8 +62,7 @@ Zum Testen der Installation ben&ouml;tigt man drei Dinge:
 
 Dazu geht man folgenderma&szlig;en vor:   
 * Zuerst muss der MQTT-Broker gestartet werden:   
-  `sudo /etc/init.d/mosquitto start`   
-  _`[ ok ] Starting mosquitto (via systemctl): mosquitto.service.`_   
+  `sudo systemctl start mosquitto`   
 
 * Als N&auml;chstes wird ein Datenempf&auml;nger (Subscriber) eingerichtet, der auf Nachrichten des Typs "test1" h&ouml;rt:   
  `mosquitto_sub -d -t test1`   
@@ -71,7 +93,6 @@ Eine detaillierte Dokumentation zu Mosquitto findet man unter [http://mosquitto.
 Das Installationsprogramm f&uuml;r Windows (und andere Betriebssysteme) kann von folgender Seite heruntergeladen werden:   
 [`https://mosquitto.org/download/`](https://mosquitto.org/download/)
 
-
 ### RasPi: Anzeige einer vom Laptop/PC gesendeten Nachricht
 1. In einer Konsole oder in einem putty-Fenster einen Subscriber am RasPi starten, der auf alle Nachrichten horcht:   
 `mosquitto_sub -t "#" -v`
@@ -95,18 +116,7 @@ Test1 Hallo vom PC!
 
 ## Mosquitto für Websockets einrichten
 Siehe auch: [http://blog.ithasu.org/2016/05/enabling-and-using-websockets-on-mosquitto/](http://blog.ithasu.org/2016/05/enabling-and-using-websockets-on-mosquitto/)
-Dazu muss ein weiterer Port (zB 1884) definiert werden, der auf Websocket-Anfragen wartet. Die Einstellungen können in einer neu zu erstellenden Datei durchgeführt werden:   
-`sudo nano /etc/mosquitto/conf.d/socket.conf`   
-Inhalt der Datei:   
-```   
-listener 1883
-protocol mqtt
-listener 1884
-protocol websockets
-```   
-Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
-Mosquitto neu starten   
-`sudo service mosquitto restart`   
+Dazu muss ein weiterer Port (zB 1884) definiert werden, der auf Websocket-Anfragen wartet. Die Einstellungen wurden bereits vorhin in der Konfigurationsdatei `/etc/mosquitto/conf.d/default.conf` durchgeführt.
    
 ## Hilfreiches zu Mosquitto
 

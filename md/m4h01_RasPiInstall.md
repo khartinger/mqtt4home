@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 8.12.2021   
+Letzte &Auml;nderungen: 8.12.2021 - 11.07.2025   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Grundinstallation des Raspberry Pi</h1>
 <a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -29,8 +29,8 @@ Im Projekt werden folgende Einstellungen gew&auml;hlt, die aus Sicherheitsgr&uum
 ### Betriebssystem auf die SD-Karte kopieren
 1. Micro-SD-Karte (Gr&ouml;&szlig;e 8GB oder mehr) in den Kartenleser einlegen, den Kartenleser am PC anschlie&szlig;en.   
 2. Herunterladen des Hilfsprogramms zum Beschreiben der SD-Card unter Windows.   
- Siehe [http://www.raspberrypi.org/software](http://www.raspberrypi.org/software). Download von "`imager_1.6.2.exe`".   
-3. Programmier-Programm starten und Betriebssystem-Image [zB Raspberry Pi OS (32bit) vom 2021-05-07] direkt auf die Micro-SD-Karte schreiben.   
+ Siehe [http://www.raspberrypi.org/software](http://www.raspberrypi.org/software). Download von "`imager_1.9.4.exe`".   
+3. Programmier-Programm starten und Betriebssystem-Image [zB Raspberry Pi OS (32bit) vom 2025-05-13] direkt auf die Micro-SD-Karte schreiben.   
 
 ### Erste Inbetriebnahme des RasPi
 Beim ersten Start des RasPi m&uuml;ssen einige Einstellungen vorgenommen werden. Diese k&ouml;nnen sp&auml;ter auch ge&auml;ndert werden.   
@@ -98,6 +98,9 @@ eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 ```
 Das hei&szlig;t, die IP-Adresse ist 192.168.0.68   
 Sollte trotz richtiger IP-Adresse die putty-Verbindung verweigert werden, dann ist eventuell SSH bei den Schnittstellen nicht aktiviert (siehe oben!).   
+
+Die IP-Adresse wird vom Router (z.B. einer FRITZ!Box) vergeben. Will man alse eine bestimmte IP-Adresse für das RasPi, muss man dies im Router einstellen.   
+
 
 ### Standard-User-Namen pi &auml;ndern
 Quelle: [https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/](https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/) [24.10.2017]   
@@ -215,6 +218,17 @@ __Anmerkung: Falls bereits User-Crontabs f&uuml;r den User pi erstellt wurden, s
 Der Apache HTTP Server dient dazu, dass das RasPi Browser-Anfragen entgegennehmen kann. Die Installation erfolgt   
 `sudo apt-get install apache2`   
 
+## Installation aktualisieren
+1. Paketliste aktualisieren, auf Updates pr&uuml;fen   
+```   
+sudo apt update
+sudo apt list --upgradable
+```   
+2. Alle Updates installieren   
+```    
+sudo apt full-upgrade -y
+```   
+
 ## Weitere Einstellm&ouml;glichkeiten
 ### Bildschirmschoner abschalten
 1. Neues Verzeichnis mit Steuerdatei anlegen:   
@@ -248,9 +262,12 @@ Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
 
 ### Anzeige um 180 Grad drehen
 Verwendet man ein Transparent-Geh&auml;use von Amazon bzw. BetterShopping (ART02314), so muss zus&auml;tzlich noch die Anzeige um 180&deg; gedreht werden.   
-Dies geschieht einfach durch einen Eintrag in der Datei `/boot/config.txt`:   
+Am Grafik-Bildschirm links oben [Menü] anklicken - Einstellungen – Screen Configuration - [Screens] - Drehung - Inverted   
+
+#### Alte Methode
+Eintrag in der Datei `/boot/firmware/config.txt`(ehemals `/boot/config.txt`):   
 ```
-sudo nano /boot/config.txt
+sudo nano /boot/firmware/config.txt
 ```   
 Folgende Zeile am Ende der Datei erg&auml;nzen   
 ```lcd_rotate=2```   
@@ -267,35 +284,150 @@ sudo nano /usr/local/bin/autostart.sh
 Inhalt der Datei zB   
 ```
 #!/bin/bash
+#!/bin/bash
+# autostart.sh - gestartet beim Systemstart
+# Karl Hartinger, 11.07.2025
+
+# Farbdefinitionen
+C_YELLOW='\033[01;33m'
+C_RESET='\033[0m'
+
+logfile="/var/log/autostart.log"
+
+# Funktion zum Loggen mit Zeitstempel
+log() {
+  echo -e "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$logfile"
+}
+
+# Skriptstart
 #...Farbe der Schrift auf gelb aendern...
-echo -e "\\033[01;33m"
-printf "_____autostart.sh______26.07.2021_______khartinger_____\n"
-printf "_______________________________________________________\n"
-#...Farbe der Schrift wieder auf wei&szlig; aendern...   
-echo -e "\\033[00m"
+echo -e "${C_YELLOW}"
+log "_____autostart.sh______11.07.2025___Karl Hartinger_____"
+
+log "1 Sekunde warten..."
+sleep 1
+
+cd ~ || log "Fehler: Home-Verzeichnis nicht gefunden"
+log "_______________________________________________________"
+#...Farbe der Schrift wieder auf weiss aendern...   
+echo -e "${C_RESET}"
 exit 0
 ```
 Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
 __*Anmerkungen:*__   
-  * Die Datei &auml;ndert lediglich die Schriftfarbe auf gelb und gibt die nach `printf` stehenden Meldungen aus.   
-  * Eigene Programmaufrufe m&uuml;ssen zwischen den beiden `printf`-Zeilen stehen.   
-  * Tipp: Soll beim Start einer Datei nicht auf das Ende des Programmes gewartet werden, so muss am Ende der Aufruf-Zeile ein "kaufm&auml;nnisches-und"-Zeichen (Ampersand) &amp; stehen!   
+  * Die Datei &auml;ndert die Schriftfarbe auf gelb und gibt die nach `log` stehenden Meldungen aus. Die Ausführung der Befehle wird in einer log-Datei `/var/log/autostart.log` dokumentiert.   
+  * Eigene Programmaufrufe m&uuml;ssen zwischen den beiden `log`-Zeilen stehen.   
+  * Tipp: Soll beim Start einer Datei nicht auf das Ende des Programmes gewartet werden, so muss am Ende der Aufruf-Zeile ein "kaufm&auml;nnisches-und"-Zeichen (Ampersand) &amp; stehen oder am Beginn der Zeile muss `nohup ` stehen!   
 
-      
-2. Eigene Autostart-Datei beim Systemstart aufrufen.   
-System-Initialisierungsdatei bearbeiten:   
-```
-sudo nano /etc/rc.local
+2. Skript ausführbar machen.   
 ```   
-Vor `exit 0` folgendes einf&uuml;gen:   
-```
-#-----Calling a script with my own commands-----
-/usr/local/bin/autostart.sh
-```
+sudo chmod +x /usr/local/bin/autostart.sh
+```   
+
+3. Eigene Autostart-Datei beim Systemstart aufrufen.   
+Dazu muss eine Service-Datei erstellt werden:   
+```   
+sudo nano /etc/systemd/system/autostart.service
+```   
+Inhalt:   
+```   
+[Unit]
+Description=Autostart Script
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/autostart.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+```   
 Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
-      
-3. Skript f&uuml;r alle User ausf&uuml;hrbar machen   
+
+4. Service aktivieren, damit es beim Booten läuft:   
+```   
+sudo systemctl enable autostart.service
+```   
+
+5. Service testen:
+```   
+sudo systemctl start autostart.service
+```   
+
+6. Service-Status überprüfen:
+```   
+sudo systemctl status autostart.service
+```   
+
+7. Log-Datei anzeigen:   
+```   
+cat /var/log/autostart.log
+```   
+
+&nbsp;
+----
+
+# Node.js und npm installieren
+1. System aktualisieren   
 ```
-sudo chmod 777 /usr/local/bin/autostart.sh
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y git curl
+sudo npm install -g pnpm
 ```
-   
+2. `Node.js` (und npm) direkt installieren   
+```
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install -y nodejs
+```
+3. Die Installation testen: Versionsnummer abfragen   
+```
+node -v
+npm -v
+```
+Ergebnis zB `v18.20.6` und `10.8.2`.   
+
+# Zigbee2MQTT installieren
+1. Die Installation erfolgt in den Standardordner:   
+```
+cd /opt
+sudo git clone https://github.com/Koenkk/zigbee2mqtt.git
+sudo chown -R $USER:$USER zigbee2mqtt
+cd /opt/zigbee2mqtt
+pnpm install
+```
+2. Konfigurationsdatei anlegen   
+Entweder   
+```
+cp /opt/zigbee2mqtt/data/configuration.example.yaml /opt/zigbee2mqtt/data/configuration.yaml
+```
+     oder eine bestehende Konfigurationsdatei verwenden...   
+
+3. Zigbee2mqtt als Service automatisch starten   
+```
+sudo nano /etc/systemd/system/zigbee2mqtt.service
+```
+Inhalt:   
+```
+[Unit]
+Description=Zigbee2MQTT
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/npm start
+WorkingDirectory=/opt/zigbee2mqtt
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Falls man das Service aktivieren möchte:   
+```
+sudo systemctl daemon-reexec
+sudo systemctl enable zigbee2mqtt
+sudo systemctl start zigbee2mqtt
+```
