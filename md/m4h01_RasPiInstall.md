@@ -434,6 +434,7 @@ Test wieder im Browser mit `http://10.1.1.1`
 Ändern der Rechte für das Verzeichnis /var/www/html:   
 `sudo chmod 777 /var/www/html`   
 
+[Zum Seitenanfang](#up)   
 <a name="x60"></a>   
 
 # 6. Node.js und npm installieren
@@ -461,6 +462,7 @@ Ergebnis zB `v18.20.6` und `10.8.2`.
 # 7. MQTT-Broker `mosquitto` installieren
 Die Installation ist im Kapitel [/md/m4h03_RasPiMQTTBroker.md](/md/m4h03_RasPiMQTTBroker.md) beschrieben.   
 
+[Zum Seitenanfang](#up)   
 <a name="x80"></a>   
 
 # 8. Zigbee2MQTT installieren
@@ -513,6 +515,20 @@ sudo systemctl daemon-reexec
 sudo systemctl enable zigbee2mqtt
 sudo systemctl start zigbee2mqtt
 ```
+
+Kontrolle, ob das Service läuft:   
+```
+sudo systemctl status zigbee2mqtt
+```
+
+Und falls man das Service deaktivieren möchte:   
+```
+sudo systemctl disable zigbee2mqtt
+```
+In diesem Fall wird `zigbe2mqtt` beim Systemstart nicht mehr automatisch gestartet.   
+Nur Stoppen des Services geht mit   
+`sudo systemctl stop zigbee2mqtt`   
+
 
 [Zum Seitenanfang](#up)   
 <a name="x90"></a>   
