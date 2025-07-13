@@ -44,6 +44,7 @@ In diesem Demo-Projekt werden folgende Einstellungen gew&auml;hlt, die aus Siche
 * Software: [Mosquitto](https://mosquitto.org/download/)   
 * Software: Eventuell [WinSCP zur Datei-Übertragung](https://winscp.net/eng/download.php)   
 
+[Zum Seitenanfang](#up)   
 <a name="x30"></a>   
 
 # 3. Grundinstallation
@@ -404,6 +405,7 @@ sudo apt list --upgradable
 sudo apt full-upgrade -y
 ```
 
+[Zum Seitenanfang](#up)   
 <a name="x50"></a>   
 
 # 5. Apache-Server
@@ -453,6 +455,7 @@ npm -v
 ```
 Ergebnis zB `v18.20.6` und `10.8.2`.   
 
+[Zum Seitenanfang](#up)   
 <a name="x70"></a>   
 
 # 7. MQTT-Broker `mosquitto` installieren
@@ -511,6 +514,7 @@ sudo systemctl enable zigbee2mqtt
 sudo systemctl start zigbee2mqtt
 ```
 
+[Zum Seitenanfang](#up)   
 <a name="x90"></a>   
 
 # 9. Eigene Autostart-Datei `autostart.sh`
@@ -604,6 +608,7 @@ sudo systemctl status autostart.service
 cat /var/log/autostart.log
 ```   
 
+[Zum Seitenanfang](#up)   
 <a name="x100"></a>   
 
 # 10. Kiosk-Modus
@@ -632,6 +637,7 @@ Welche Schritte sind beim RasPi mit OS "Bookworm" erforderlich, damit eine Web-S
 4. RasPi neu starten   
   `sudo reboot`   
 
+[Zum Seitenanfang](#up)   
 <a name="x110"></a>   
 
 # 11. Dies und Das
