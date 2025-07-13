@@ -12,7 +12,16 @@ Letzte &Auml;nderungen: 8.12.2021 - 12.07.2025
 # 1. Ziele
 * Installation des Betriebssystems "Raspberry Pi OS" auf dem RasPi.   
 * Vorbereitung des RasPis zur Verwendung von Node.js, Zigbee2Mqtt, Kiosk-Mode und selbst erstellter C++-Programme.   
-* Verwendung eines Modems zum Senden von SMS.   
+
+Diese Ziele werden in folgenden Unterkapiteln erreicht:   
+* [3. Grundinstallation](#x30)   
+* [4. Installation aktualisieren](#x40)   
+* [5. Apache-Server](#x50)   
+* [6. Node.js und npm installieren](#x60)   
+* [7. MQTT-Broker `mosquitto` installieren](#x70)   
+* [8. Zigbee2MQTT installieren](#x80)   
+* [9. Eigene Autostart-Datei `autostart.sh`](#x90)   
+* [# 10. Kiosk-Modus](#x100)   
 
 In diesem Demo-Projekt werden folgende Einstellungen gew&auml;hlt, die aus Sicherheitsgr&uuml;nden ge&auml;ndert werden sollten:   
 
@@ -256,7 +265,6 @@ Skript ausführbar machen:
 Skript ausführen:   
 `sudo ~/disable_screensaver.sh`   
 
-
 ## 3.6 Fernsteuerung vorbereiten
 F&uuml;r viele Aufgaben ist es einfacher, das RasPi vom PC aus zu bedienen, da man hier Befehle aus Anleitungen direkt kopieren und auf dem RasPi ausf&uuml;hren kann. Ein einfaches Programm dazu ist das Terminalprogramm [`putty`](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html). Nach der Installation ben&ouml;tigt man lediglich die IP des RasPi sowie den User-Namen und das Passwort.   
 Verbindet man das RasPi &uuml;ber ein LAN-Kabel mit dem PC, so kann man die IP &uuml;ber die Kommandozeile so anzeigen:   
@@ -447,7 +455,12 @@ Ergebnis zB `v18.20.6` und `10.8.2`.
 
 <a name="x70"></a>   
 
-# 7. Zigbee2MQTT installieren
+# 7. MQTT-Broker `mosquitto` installieren
+Die Installation ist im Kapitel [/md/m4h03_RasPiMQTTBroker.md](/md/m4h03_RasPiMQTTBroker.md) beschrieben.   
+
+<a name="x80"></a>   
+
+# 8. Zigbee2MQTT installieren
 1. Die Installation erfolgt in den Standardordner:   
 ```
 cd /opt
@@ -463,7 +476,13 @@ cp /opt/zigbee2mqtt/data/configuration.example.yaml /opt/zigbee2mqtt/data/config
 ```
      oder eine bestehende Konfigurationsdatei verwenden...   
 
-3. Zigbee2mqtt als Service automatisch starten   
+3. Testen, ob Zigbee2MQTT richtig startet:   
+  `cd /opt/zigbee2mqtt`   
+  `npm start`   
+   Falls der MQTT-Server nicht läuft erhält man die Fehlermeldung `error:    z2m: MQTT failed to connect, exiting...`.   
+  Beenden mit <strg>c.   
+
+4. Falls man Zigbee2mqtt als Service automatisch starten möchte:   
 ```
 sudo nano /etc/systemd/system/zigbee2mqtt.service
 ```
@@ -492,10 +511,9 @@ sudo systemctl enable zigbee2mqtt
 sudo systemctl start zigbee2mqtt
 ```
 
-<a name="x80"></a>   
+<a name="x90"></a>   
 
-# 8. Tipps und Tricks
-## 8.1 Eigene Autostart-Datei `autostart.sh`
+# 9. Eigene Autostart-Datei `autostart.sh`
 M&ouml;chte man beim System-Start eigene Programme automatisch starten, so ist es sinnvoll, diese Befehle in einem eigenen Script "`autostart.sh`" zu sammeln. Das folgende Beispiel für eine Autostart-Datei ändert die Anzeige-Farbe, wartet eine Sekunde, wechselt dann ins Arbeitsverzeichnis und erzeugt eine Log-Datei, damit man Fehler beim Starten nachvollziehen kann.   
 
 1. Autostart-Datei erzeugen.   
@@ -586,7 +604,9 @@ sudo systemctl status autostart.service
 cat /var/log/autostart.log
 ```   
 
-## 8.2 Kiosk-Modus
+<a name="x100"></a>   
+
+# 10. Kiosk-Modus
 Der "Kiosk-Modus" ist eine Betriebsart von Rechnern bzw. Terminals mit graphischer Anzeige, bei der die Rechte des Users eingeschränkt sind und nur bestimmte Aktionen ausgeführt werden können.   
 Welche Schritte sind beim RasPi mit OS "Bookworm" erforderlich, damit eine Web-Seite im Chromium-Browser nach dem Start automatisch im Kios-Modus angezeigt wird?   
 
@@ -612,7 +632,10 @@ Welche Schritte sind beim RasPi mit OS "Bookworm" erforderlich, damit eine Web-S
 4. RasPi neu starten   
   `sudo reboot`   
 
-## 8.3 Bildschirmschoner abschalten (alte Version)
+<a name="x110"></a>   
+
+# 11. Dies und Das
+## 11.1 Bildschirmschoner abschalten (alte Version)
 1. Neues Verzeichnis mit Steuerdatei anlegen:   
 `sudo mkdir /etc/X11/xorg.conf.d`   
 Steuerdatei erstellen:   
