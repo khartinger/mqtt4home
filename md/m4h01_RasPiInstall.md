@@ -656,6 +656,7 @@ Searching for modem...
 ```
 
 ## 8.3 Programm für alle User verfügbar machen
+Das ausführbare Programm oben befindet sich im Home-Bereich des Users pi_ und ist nur für diesen verfügbar.   
 Die folgenden Befehle kopieren das Programm `m4hFindSimModule` ins Verzeichnis `/usr/local/bin`, ändern den Besitzer auf root und machen das Programm für alle ausführbar.   
 ```
 sudo cp ~/m4hFindSimModule/m4hFindSimModule /usr/local/bin/m4hFindSimModule
@@ -795,6 +796,9 @@ Neustarten des RasPi mit
 
 Kontrolle der Schnittstellenzuordnung:   
 `dir -lh /dev/ttyUSB*`   
+
+Die Schnittstellenzuordnung kann auch mit dem zuvor erstellten Programm `m4hFindSimModule` überprüft werden. Es müsste das gleiche Ergebnis liefern wie die Zuordnung von `ttyUSB_Modem`:   
+`/usr/local/bin/m4hFindSimModule`   
 
 [Zum Seitenanfang](#up)   
 <a name="x100"></a>   
@@ -967,8 +971,120 @@ Wichtig: GENAU zwei Leerzeichen vor dem Wort `port:`
   Beenden mit &lt;strg&gt;c   
 
 ## 11.2 Zigbee-Schnittstellenprobleme
-Wenn es Probleme mit dem symbolischen Link gibt, kann man auch zwei Konfigurationsdateien mit unterschiedlichen `port:`-Anweisungen anlegen und die gerade gültige Datei nach `/opt/zigbee2mqtt/data/configuration.yaml` kopieren...   
+Wenn es Probleme mit dem symbolischen Link `/dev/ttyUSB_Zigbee` gibt, kann man auch zwei Konfigurationsdateien mit unterschiedlichen `port:`-Anweisungen anlegen und die gerade gültige Datei nach `/opt/zigbee2mqtt/data/configuration.yaml` kopieren...   
+```
+cp /opt/zigbee2mqtt/data/configuration.yaml /opt/zigbee2mqtt/data/configz.yaml
+cp /opt/zigbee2mqtt/data/configuration.yaml /opt/zigbee2mqtt/data/config0.yaml
+cp /opt/zigbee2mqtt/data/configuration.yaml /opt/zigbee2mqtt/data/config1.yaml
+```
+Dateien bearbeiten:   
+`nano /opt/zigbee2mqtt/data/config0.yaml`   
+Ändern:
+```
+serial:
+  port: /dev/ttyUSB0
+```
 
+`nano /opt/zigbee2mqtt/data/config1.yaml`   
+Ändern:
+```
+serial:
+  port: /dev/ttyUSB1
+```
+
+`nano /opt/zigbee2mqtt/data/configz.yaml`   
+Ändern:
+```
+serial:
+  port: /dev/ttyUSB_Zigbee
+```
+
+In diesem Fall muss die `autostart.sh`-Datei entsprechend geändert werden:   
+`sudo nano /usr/local/bin/autostart.sh`   
+Inhalt:   
+```
+#!/bin/bash
+# autostart.sh - gestartet beim Systemstart
+# Karl Hartinger, 11.07.2025
+
+# Zigbee-Variable
+ZB_TIMEOUT=8
+ZB_SECS_WAITED=0
+ZB_CONFIG_DIR="/opt/zigbee2mqtt/data"
+ZB_TARGET_CONFIG="$ZIGBEE_CONFIG_DIR/configuration.yaml"
+
+
+# Farbdefinitionen
+YELLOW='\033[01;33m'
+RESET='\033[0m'
+
+logfile="/var/log/autostart.log"
+
+# Funktion zum Loggen mit Zeitstempel
+log() {
+  echo -e "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$logfile"
+}
+
+# Skriptstart
+echo -e "${YELLOW}"
+log "_____autostart.sh______11.07.2025___Karl Hartinger_____"
+
+while [ ! -e /dev/ttyUSB_Zigbee ] && [ $ZB_SECS_WAITED -lt $ZB_TIMEOUT ]; do
+  echo "Warte auf /dev/ttyUSB_Zigbee..."
+  sleep 1
+  SECONDS_WAITED=$((SECONDS_WAITED + 1))
+done
+if [ ! -e /dev/ttyUSB_Zigbee ]; then
+  log "Fehler: /dev/ttyUSB_Zigbee nach $TIMEOUT Sekunden nicht gefunden."
+else
+  # Ziel des symbolischen Links ermitteln (zB /dev/ttyUSB0)
+  link_target=$(readlink -f /dev/ttyUSB_Zigbee)
+  log "OK: /dev/ttyUSB_Zigbee zeigt auf $link_target."
+  #/usr/local/bin/zigbee-config-switch.sh
+fi
+
+# Symbolischen Link prüfen
+LINK_TARGET=$(readlink -f /dev/ttyUSB_Zigbee)
+
+echo "Symbolischer Link zeigt auf: $LINK_TARGET"
+
+case "$LINK_TARGET" in
+    /dev/ttyUSB0) CONFIG_FILE="config0.yaml" ;;
+    /dev/ttyUSB1) CONFIG_FILE="config1.yaml" ;;
+    *)
+        log "Unbekanntes Gerät: $LINK_TARGET – keine Konfiguration kopiert."
+        exit 1
+        ;;
+esac
+
+if cp "$ZB_CONFIG_DIR/$CONFIG_FILE" "$ZB_TARGET_CONFIG"; then
+    log "$CONFIG_FILE wurde kopiert."
+else
+    log "Fehler beim Kopieren von $CONFIG_FILE"
+fi
+
+log "1 Sekunde warten.."
+sleep 1
+
+log "MQTT Steuerung starten (m4hControl)"
+nohup /usr/local/bin/m4hControl /usr/local/bin/m4h.conf -q >> "$logfile" 2>&1 &
+
+log "5 Sekunden warten..."
+sleep 5
+
+log "Zigbee2MQTT starten"
+if cd /opt/zigbee2mqtt; then
+  sudo -u pi7 nohup npm run start >> "$logfile" 2>&1 &
+else
+  log "Fehler: Verzeichnis /opt/zigbee2mqtt nicht gefunden!"
+fi
+
+cd ~ || log "Fehler: Home-Verzeichnis nicht gefunden"
+
+log "_______________________________________________________"
+echo -e "${RESET}"
+exit 0
+```
 ---   
 ## 11.3 Zigbee2mqtt als Service
 Falls man Zigbee2mqtt als Service automatisch starten möchte (und nicht in der eigenen `autostart.sh`-Datei):   
@@ -1053,7 +1169,11 @@ Wenn der Zugriff auf geschützte Verzeichnisse am RasPi verweigert wird, hilft f
 1. Hilfsverzeichnis im Arbeitsverzeichnis des RasPi erstellen, zB mit   
 `mkdir /~/temp`   
 2. Hineinkopieren der Dateien vom PC ins Hilfsverzeichnis und Weiterkopieren der Dateien mit sudo-Rechten, zB   
-`sudo cp ~/temp/autostart.sh /usr/local/bin`  
+```
+sudo cp ~/temp/autostart.sh /usr/local/bin
+sudo chown root /usr/local/bin/autostart.sh
+sudo chmod 777 /usr/local/bin/autostart.sh
+```
 
 ## 13.2 Periodisches Senden von MQTT-Nachrichten
 Das periodische Senden von MQTT-Nachrichten ist im Kapitel [/md/m4h104_RasPi_crontab.md](/md/m4h104_RasPi_crontab) beschrieben.   
