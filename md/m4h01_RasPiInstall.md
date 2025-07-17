@@ -472,8 +472,10 @@ Die Installation ist im Kapitel [/md/m4h03_RasPiMQTTBroker.md](/md/m4h03_RasPiMQ
 [Zum Seitenanfang](#up)   
 <a name="x80"></a>   
 
-## 8. C++ Programm kompilieren und ausführen (Beispiel m4hFindSimModule)
-Das folgende, einfache Programm versucht, ein Modem zu finden. Dazu 
+# 8. C++ Programm kompilieren und ausführen
+## 8.1 Das Beispielprogramm `m4hFindSimModule`
+Das folgende Beispiel zeigt, wie man ein C++-Programm auf dem RasPi zum Laufen bringt und es für alle User verfügbar macht. Der Einfachheit halber befindet sich der gesamte Programmcode in einer Datei.   
+Dieses einfache Programm versucht, ein Modem zu finden. Dazu 
 öffnet es der Reihe nach verschiedene serielle Schnittstellen, sendet an diese das Kommando `ATE0`,  wartet auf eine Antwort `OK` und schließt die Schnittstelle.   
 Das Ergebnis der Sendevorg&auml;nge wird auf der Konsole angezeigt.   
 Die Schnittstellen, die ausprobiert werden, stehen im Hauptprogramm in der Zeile   
@@ -490,7 +492,7 @@ Searching for modem...
 ```   
 In diesem Beispiel hängt das Modem also am Device `/dev/ttyUSB0`.   
 
-#### Vorgangsweise:   
+## 8.2 Erzeugung des Programms 
 1. Arbeitsverzeichnis erstellen   
    `mkdir ~/m4hFindSimModule`  
 2. Ins Verzeichnis wechseln   
@@ -643,7 +645,8 @@ Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
   `chmod 777 ~/m4hFindSimModule/m4hFindSimModule`   
 6. Programm ausführen   
   `~/m4hFindSimModule/m4hFindSimModule`   
-  Mögliches Ergebnis:   
+  Ergebnis siehe oben.   
+  Falls kein Modem gefunden wird:   
 ```
 Searching for modem...
 /dev/ttyS0: Could not open device (Error 2: No such file or directory)
@@ -651,10 +654,23 @@ Searching for modem...
 /dev/ttyUSB0: NO modem found (error on reading OK)
 /dev/ttyUSB1: Could not open device (Error 2: No such file or directory)
 ```
-Das heißt, es wurde kein Modem gefunden.   
+
+## 8.3 Programm für alle User verfügbar machen
+Die folgenden Befehle kopieren das Programm `m4hFindSimModule` ins Verzeichnis `/usr/local/bin`, ändern den Besitzer auf root und machen das Programm für alle ausführbar.   
+```
+sudo cp ~/m4hFindSimModule/m4hFindSimModule /usr/local/bin/m4hFindSimModule
+sudo chown root /usr/local/bin/m4hFindSimModule
+sudo chmod 777 /usr/local/bin/m4hFindSimModule
+```
+Testen des Programms mit   
+`/usr/local/bin/m4hFindSimModule`   
 
 [Zum Seitenanfang](#up)   
 <a name="x90"></a>   
+
+## 8.4 m4hControl
+Das Programm `m4hControl` ist die MQTT-Haussteuerung auf dem RasPi. Teile davon werden [im Bereich "Hilfsprogramme"](/md/m4h310_RasPiCppDemos.md) beschrieben.   
+
 
 # 9. Feste USB-Schnittstellen-Namen durch udev-Regeln   
 ## 9.1 Einleitung   
