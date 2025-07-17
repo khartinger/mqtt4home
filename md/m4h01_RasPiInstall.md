@@ -14,15 +14,18 @@ Letzte &Auml;nderungen: 8.12.2021 - 12.07.2025
 * Vorbereitung des RasPis zur Verwendung von Node.js, Zigbee2Mqtt, Kiosk-Mode und selbst erstellter C++-Programme.   
 
 Diese Ziele werden in folgenden Unterkapiteln erreicht:   
+* [2. Ben&ouml;tigte Hilfsmittel](#x20)   
 * [3. Grundinstallation](#x30)   
 * [4. Installation aktualisieren](#x40)   
 * [5. Apache-Server](#x50)   
 * [6. Node.js und npm installieren](#x60)   
 * [7. MQTT-Broker `mosquitto` installieren](#x70)   
-* [8. Feste USB-Schnittstellen-Namen durch udev-Regeln](#x80)   
-* [9. Eigene Autostart-Datei `autostart.sh`](#x90)   
-* [10. Zigbee2MQTT installieren](#x100)   
-* [11. Kiosk-Modus](#x110)   
+* [8. C++ Programm kompilieren und ausführen (Beispiel m4hFindSimModule)](#x80)   
+* [9. Feste USB-Schnittstellen-Namen durch udev-Regeln](#x90)   
+* [10. Eigene Autostart-Datei `autostart.sh`](#x100)   
+* [11. Zigbee2MQTT installieren](#x110)   
+* [12. Kiosk-Modus](#x120)   
+* [13. Dies und Das](#x130)   
 
 In diesem Demo-Projekt werden folgende Einstellungen gew&auml;hlt, die aus Sicherheitsgr&uuml;nden ge&auml;ndert werden sollten:   
 
@@ -95,7 +98,7 @@ Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Preferences – Raspber
 Would you like to reboot now? [Yes]   
 
 ### Schnittstellen   
-Am RasPi sollen ein ZigBee-Adapter und ein Modem betreiben werden. Beide werden am USB angeschlossen, daher werden die Schnittstellen an der 40-poligen Stiftleiste (hier) nicht benötigt. Lediglich SSH muss für den Zugriff mit Putty aktiviert werden.   
+Am RasPi sollen ein ZigBee-Adapter und ein Modem betrieben werden. Beide werden am USB angeschlossen, daher werden die Schnittstellen an der 40-poligen Stiftleiste (hier) nicht benötigt. Lediglich SSH muss für den Zugriff mit Putty aktiviert werden.   
 
 Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen – Raspberry-Pi-Konfiguration – [Schnittstellen]   
 * SSH: ( &nbsp; O)   
@@ -142,10 +145,12 @@ Would you like to reboot now? [Ja]
 Verwendet man ein Transparent-Geh&auml;use von Amazon bzw. BetterShopping (ART02314), so muss zus&auml;tzlich die Anzeige UND die Touchscreen-Eingabe um 180&deg; gedreht werden.   
 
 ### Bildschirm-Ausgabe und Touchscreen-Eingabe drehen
-1. Name des Displays herausfinden   
+1. Den Namen des Displays herausfinden   
 Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen – Screen Configuration: Im Bild wird der Name des Screens angezeigt:   `DSI-1`   
+[Close]   
 
-2. Namen des Touch-Gerätes herausfinden   
+2. Den Namen des Touch-Gerätes herausfinden   
+  In einer Konsole eingeben:   
   `DISPLAY=:0 xinput list`  
   Ergibt z.B.   
   `Virtual core pointer`   
@@ -154,6 +159,7 @@ Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen – Scree
 
 3. Rotations-Skript erstellen   
   `nano /home/pi_/rotate-touchscreen.sh`   
+  _Falls der Username nicht `pi_` ist: Den richtigen Namen beim Aufruf des Skripts und im Inhalt angeben!_    
   Inhalt:   
 ```
 #!/bin/bash
@@ -183,7 +189,7 @@ Lösung für Raspberry Pi OS Bookworm mit X11:
 
 2. Autostart-Desktop-Datei erstellen   
   `nano ~/.config/autostart/rotate-touchscreen.desktop`   
-  Inhalt:   
+  Inhalt (_Falls nötig: User-Namen anpassen!_):   
 ```
 [Desktop Entry]
 Type=Application
@@ -197,7 +203,7 @@ Comment=Drehe Bildschirm und Touchscreen beim Login
 `sudo reboot`   
 
 ### Anmerkung
-Der Weg über den Grafik-Bildschirm funktioniert bei X11 nicht:   
+Das Drehen des Grafik-Bildschirms über das Menü in der grafischen Oberfläche funktioniert __bei X11 nicht__:   
 Am Grafik-Bildschirm links oben [Menü] anklicken - Einstellungen – Screen Configuration - [Screens] - SDI-1 - Drehung - Inverted   
 
 ### Alte Methode
@@ -258,7 +264,7 @@ echo '  xset s off'
 echo '  xset -dpms'
 echo '  xset s noblank'
 echo ""
-echo "Fertig. Bitte ab- und wieder anmelden oder neu starten, damit die Änderungen wirksam werden."
+echo "Fertig. Neu starten, damit die Änderungen wirksam werden."
 ```
 
 Skript ausführbar machen:   
@@ -405,6 +411,7 @@ sudo apt list --upgradable
 ```    
 sudo apt full-upgrade -y
 ```
+Das Update kann schon einige Minuten dauern...   
 
 [Zum Seitenanfang](#up)   
 <a name="x50"></a>   
@@ -415,6 +422,7 @@ Der Apache HTTP Server dient dazu, dass das RasPi Browser-Anfragen entgegennehme
 
 Kontrolle, ob Apache läuft:   
 `sudo systemctl status apache2`   
+Ende mit &lt;strg&gt;c   
 
 Apache-Seite testen:   
 Am PC im Browser das RasPi aufrufen:   
@@ -423,12 +431,9 @@ Es sollte die Default-Seite "Apache 2 Debian Default Page" angezeigt werden.
 
 Bei der Installation des Apache-Servers wird das Verzeichnis `var/www/html` erstellt und der Browser-Aufruf zeigt die Datei `var/www/html/index.htm` an.   
 
-Möchte man zum Testen eine andere "Start-Datei", so kann man sie zB folgendermaßen erzeugen:   
-Alte Datei sichern:   
-`sudo cp /var/www/html/index.html /var/www/html/index_apache2.html`   
-Neue Datei erzeugen:   
+Möchte man zum Testen eine andere "Start-Datei", so kann man diese zB ganz einfach so erzeugen:   
 ```
-echo '<!DOCTYPE html><html><head><title>RasPi Webserver</title></head><body><h1>Hallo vom Raspberry Pi!</h1></body></html>' | sudo tee /var/www/html/index.htm > /dev/null
+echo '<!DOCTYPE html><html><head><title>RasPi Webserver</title></head><body><h1>Hallo vom Raspberry Pi!</h1></body></html>' | sudo tee /var/www/html/index.html > /dev/null
 ```
 Test wieder im Browser mit `http://10.1.1.1`   
 
@@ -455,7 +460,7 @@ sudo npm install -g pnpm
 node -v
 npm -v
 ```
-Ergebnis zB `v18.20.6` und `10.8.2`.   
+Ergebnis zB `v20.19.1` und `10.8.2`.   
 
 [Zum Seitenanfang](#up)   
 <a name="x70"></a>   
@@ -463,393 +468,11 @@ Ergebnis zB `v18.20.6` und `10.8.2`.
 # 7. MQTT-Broker `mosquitto` installieren
 Die Installation ist im Kapitel [/md/m4h03_RasPiMQTTBroker.md](/md/m4h03_RasPiMQTTBroker.md) beschrieben.   
 
+
 [Zum Seitenanfang](#up)   
 <a name="x80"></a>   
 
-# 8. Feste USB-Schnittstellen-Namen durch udev-Regeln   
-## 8.1 Einleitung   
-Beim Booten weist das RasPi die Schnittstellen-Namen `ttyUSB0` und `ttyUSB1` zufällig den USB-Anschlüssen zu. Das bedeutet, dass der ZigBee-Adapter manchmal an  
-`ttyUSB0` oder manchmal an `ttyUSB1` hängt, obwohl er hardwaremäßig nicht umgesteckt wurde.   
-Eine Möglichkeit, in einem Programm immer den gleichen Schnittstellennamen zu verwenden, ist, einen symbolischen Link zu definieren.
-Beispiel: `ttyUSB_Zigbee` soll auf `/dev/ttyUSB0` zeigen   
-```
-sudo ln -s /dev/ttyUSB0 /dev/ttyUSB_Zigbee
-```
-Kontrolle:   
-`ls -l /dev/ttyUSB_Zigbee`   
-
-Besser ist es, eine fixe - und richtige - Zuordnung zu einem Schnittstellen-Namen mit Hilfe von udev-Regeln zu erreichen. Die folgende Anleitung stammt von der Seite   
-[https://www.heise.de/ratgeber/RasPi-Feste-USB-Schnittstellen-Namen-durch-udev-Regeln-4836365.html?seite=all](https://www.heise.de/ratgeber/RasPi-Feste-USB-Schnittstellen-Namen-durch-udev-Regeln-4836365.html?seite=all)   
-
-## 8.2 Eigenschaften der verwendeten USB-Geräte ermitteln
-Anzeige der USB-Geräte durch   
-`lsusb`   
-ergibt zum Beispiel   
-```
-Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-Bus 001 Device 005: ID 1997:2433 Shenzhen Riitek Technology Co., Ltd wireless mini keyboard with touchpad
-Bus 001 Device 004: ID 0403:6001 Future Technology Devices International, Ltd FT232 Serial (UART) IC
-Bus 001 Device 003: ID 10c4:ea60 Silicon Labs CP210x UART Bridge
-Bus 001 Device 002: ID 2109:3431 VIA Labs, Inc. Hub
-Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-```
-Man erkennt:   
-* An Bus 001 Device 005 hängt eine Tastatur
-* An Bus 001 Device 003 hängt ein USB-UART-Umsetzer (Bridge zu einem Modem)
-* An Bus 001 Device 002 hängt ein ZigBee-Stick
-
-Die Eingabe von   
-`udevadm info -a -n /dev/ttyUSB0`   
-ergibt für den Zigbee-Stick "Sonoff_Zigbee_3.0_USB_Dongle_Plus" die Geräte-Information im udev-Format   
-```
-looking at device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:00.0/00
-    KERNEL=="ttyUSB0"
-    SUBSYSTEM=="tty"
-    DRIVER==""
-    ATTR{power/control}=="auto"
-    ATTR{power/runtime_active_time}=="0"
-    ATTR{power/runtime_status}=="unsupported"
-    ATTR{power/runtime_suspended_time}=="0"
-
-  looking at parent device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:
-    KERNELS=="ttyUSB0"
-    SUBSYSTEMS=="usb-serial"
-    DRIVERS=="cp210x"
-    ATTRS{port_number}=="0"
-    ATTRS{power/control}=="auto"
-    ATTRS{power/runtime_active_time}=="0"
-    ATTRS{power/runtime_status}=="unsupported"
-    ATTRS{power/runtime_suspended_time}=="0"
-
-  looking at parent device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:
-    KERNELS=="1-1.1:1.0"
-    SUBSYSTEMS=="usb"
-    DRIVERS=="cp210x"
-    ATTRS{authorized}=="1"
-    ATTRS{bAlternateSetting}==" 0"
-    ATTRS{bInterfaceClass}=="ff"
-    ATTRS{bInterfaceNumber}=="00"
-    ATTRS{bInterfaceProtocol}=="00"
-    ATTRS{bInterfaceSubClass}=="00"
-    ATTRS{bNumEndpoints}=="02"
-    ATTRS{supports_autosuspend}=="1"
-
-  looking at parent device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:
-    KERNELS=="1-1.1"
-    SUBSYSTEMS=="usb"
-    DRIVERS=="usb"
-    ATTRS{authorized}=="1"
-    ATTRS{avoid_reset_quirk}=="0"
-    ATTRS{bConfigurationValue}=="1"
-    ATTRS{bDeviceClass}=="00"
-    ATTRS{bDeviceProtocol}=="00"
-    ATTRS{bDeviceSubClass}=="00"
-    ATTRS{bMaxPacketSize0}=="64"
-    ATTRS{bMaxPower}=="100mA"
-    ATTRS{bNumConfigurations}=="1"
-    ATTRS{bNumInterfaces}==" 1"
-    ATTRS{bcdDevice}=="0100"
-    ATTRS{bmAttributes}=="80"
-    ATTRS{busnum}=="1"
-    ATTRS{configuration}==""
-    ATTRS{devnum}=="3"
-    ATTRS{devpath}=="1.1"
-    ATTRS{devspec}=="(null)"
-    ATTRS{idProduct}=="ea60"
-    ATTRS{idVendor}=="10c4"
-```
-Ende mit &lt;strg&gt;c   
-
-Folgende Eigenschaften werden zum Identifizieren des ZigBee-Sticks verwendet:   
-```
-SUBSYSTEM==`tty`
-ATTRS{idProduct}=="ea60"
-ATTRS{idVendor}=="10c4"
-```
-Auf die gleiche Weise erhält man mit   
-``udevadm info -a -n /dev/ttyUSB1`   
-für den USB-Serial-Wandler (an dem das Modem hängt)   
-```
-SUBSYSTEM==`tty`
-ATTRS{idProduct}=="6001"
-ATTRS{idVendor}=="0403"
-```
-
-Mit diesen Informationen werden die Zuordnungsregeln erstellt:   
-`sudo nano /etc/udev/rules.d/99-usb.rules`   
-Inhalt   
-```   
-SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="ttyUSB_Zigbee"
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="ttyUSB_Modem"
-```   
-Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
-
-Neustarten des RasPi mit   
-`sudo reboot`   
-
-Kontrolle der Schnittstellenzuordnung:   
-`dir /dev/tty*`   
-
-[Zum Seitenanfang](#up)   
-<a name="x90"></a>   
-
-# 9. Eigene Autostart-Datei `autostart.sh`
-M&ouml;chte man beim System-Start eigene Programme automatisch starten, so kann man diese zum Beispiel in einem eigenen Script "`autostart.sh`" sammeln. Das folgende Beispiel für eine Autostart-Datei macht folgendes:   
-* Definition einer log()-Funktion, die Ausgaben in die log-Datei `/var/log/autostart.log` schreibt,
-* ändern der Anzeige-Farbe auf "gelb",
-* maximal 8 Sekunden (`ZB_TIMEOUT`) warten, bis ein symbolischer Link `ttyUSB_Zigbee` erstellt wurde und Ausgabe des Ergebnisses in die log-Datei,
-* eine Sekunde warten,
-* Steuerprogramm `/usr/local/bin/m4hControl` starten, 
-* 5 Sekunden warten,
-* ins Verzeichnis /opt/zigbee2mqtt wechseln und dort zigbee2mqtt starten,
-* ins Arbeitsverzeichnis des Benutzers wechseln,
-* die Anzeige-Farbe zurücksetzen.
-
-1. Autostart-Datei erzeugen.   
-```
-sudo nano /usr/local/bin/autostart.sh
-```   
-Inhalt der Datei   
-```
-#!/bin/bash
-# autostart.sh - gestartet beim Systemstart
-# Karl Hartinger, 11.07.2025
-
-ZB_TIMEOUT=8
-ZB_SECS_WAITED=0
-
-# Farbdefinitionen
-YELLOW='\033[01;33m'
-RESET='\033[0m'
-
-logfile="/var/log/autostart.log"
-
-# Funktion zum Loggen mit Zeitstempel
-log() {
-  echo -e "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$logfile"
-}
-
-# Skriptstart
-echo -e "${YELLOW}"
-log "_____autostart.sh______11.07.2025___Karl Hartinger_____"
-
-while [ ! -e /dev/ttyUSB_Zigbee ] && [ $ZB_SECS_WAITED -lt $ZB_TIMEOUT ]; do
-  echo "Warte auf /dev/ttyUSB_Zigbee..."
-  sleep 1
-  SECONDS_WAITED=$((SECONDS_WAITED + 1))
-done
-if [ ! -e /dev/ttyUSB_Zigbee ]; then
-  log "Fehler: /dev/ttyUSB_Zigbee nach $TIMEOUT Sekunden nicht gefunden."
-else
-  # Ziel des symbolischen Links ermitteln (zB /dev/ttyUSB0)
-  link_target=$(readlink -f /dev/ttyUSB_Zigbee)
-  log "OK: /dev/ttyUSB_Zigbee zeigt auf $link_target."
-  #/usr/local/bin/zigbee-config-switch.sh
-fi
-
-log "1 Sekunde warten.."
-sleep 1
-
-log "MQTT Steuerung starten (m4hControl)"
-nohup /usr/local/bin/m4hControl /usr/local/bin/m4h.conf -q >> "$logfile" 2>&1 &
-
-log "5 Sekunden warten..."
-sleep 5
-
-log "Zigbee2MQTT starten"
-if cd /opt/zigbee2mqtt; then
-  sudo -u pi7 nohup npm run start >> "$logfile" 2>&1 &
-else
-  log "Fehler: Verzeichnis /opt/zigbee2mqtt nicht gefunden!"
-fi
-
-cd ~ || log "Fehler: Home-Verzeichnis nicht gefunden"
-
-log "_______________________________________________________"
-echo -e "${RESET}"
-exit 0
-```
-Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
-
-__*Anmerkung:*__   
-  * Soll beim Start einer Datei nicht auf das Ende des Programmes gewartet werden, so muss am Ende der Aufruf-Zeile ein "kaufm&auml;nnisches-und"-Zeichen (Ampersand) &amp; stehen oder am Beginn der Zeile muss `nohup ` stehen!   
-
-2. Skript für alle User ausführbar machen.   
-```   
-sudo chown root /usr/local/bin/autostart.sh
-sudo chmod 777 /usr/local/bin/autostart.sh
-sudo chmod +x /usr/local/bin/autostart.sh
-```   
-
-3. Eigene Autostart-Datei beim Systemstart aufrufen.   
-Dazu muss eine Service-Datei erstellt werden:   
-```   
-sudo nano /etc/systemd/system/autostart.service
-```   
-Inhalt:   
-```   
-[Unit]
-Description=Autostart Script
-After=dev-ttyUSB_Zigbee.device
-After=network.target
-
-[Service]
-Type=oneshot
-ExecStart=/usr/local/bin/autostart.sh
-RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target
-```   
-Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
-
-4. Service aktivieren, damit es beim Booten läuft:   
-```   
-sudo systemctl enable autostart.service
-```   
-
-5. Service testen:
-```   
-sudo systemctl start autostart.service
-```   
-
-6. Service-Status überprüfen:
-```   
-sudo systemctl status autostart.service
-```   
-
-7. Log-Datei anzeigen:   
-```   
-cat /var/log/autostart.log
-```   
-
-[Zum Seitenanfang](#up)   
-<a name="x100"></a>   
-
-# 10. Zigbee2MQTT
-## 10.1 Zigbee2mqtt installieren
-1. Die Installation erfolgt in den Standardordner:   
-```
-cd /opt
-sudo git clone https://github.com/Koenkk/zigbee2mqtt.git
-sudo chown -R $USER:$USER zigbee2mqtt
-cd /opt/zigbee2mqtt
-pnpm install
-```
-2. Konfigurationsdatei anlegen   
-Entweder   
-`cp /opt/zigbee2mqtt/data/configuration.example.yaml /opt/zigbee2mqtt/data/configuration.yaml
-`   
-  oder eine bestehende Konfigurationsdatei verwenden...   
-
-In der Konfigurationsdatei sollte die Schnittstelle auf `/dev/ttyUSB_Zigbee` geändert werden:   
-`sudo nano /opt/zigbee2mqtt/data/configuration.yaml`
-Anpassen oder ergänzen:   
-```   
-serial:
-  port: /dev/ttyUSB_Zigbee
-```   
-Wichtig: GENAU zwei Leerzeichen vor dem Wort `port:`   
-
-3. Testen, ob Zigbee2MQTT richtig startet:   
-  `cd /opt/zigbee2mqtt`   
-  `npm start`   
-  Wenn alles passt, erhält man die Meldung   
-  `z2m: Zigbee2MQTT started!`   
-  Beenden des Programms mit &lt;strg&gt;c   
-  Falls der MQTT-Server nicht läuft erhält man die Fehlermeldung `error:    z2m: MQTT failed to connect, exiting...`.   
-  Beenden mit &lt;strg&gt;c   
-
-## 10.2 Zigbee-Schnittstellenprobleme
-Wenn es Probleme mit dem symbolischen Link gibt, kann man auch zwei Konfigurationsdateien mit unterschiedlichen `port:`-Anweisungen anlegen und die gerade gültige Datei nach `/opt/zigbee2mqtt/data/configuration.yaml` kopieren...   
-
----   
-## 10.3 Zigbee2mqtt als Service
-Falls man Zigbee2mqtt als Service automatisch starten möchte (und nicht in der eigenen `autostart.sh`-Datei):   
-```
-sudo nano /etc/systemd/system/zigbee2mqtt.service
-```
-Inhalt:   
-```
-[Unit]
-Description=Zigbee2MQTT
-After=network.target
-
-[Service]
-ExecStart=/usr/bin/npm start
-WorkingDirectory=/opt/zigbee2mqtt
-StandardOutput=inherit
-StandardError=inherit
-Restart=always
-User=pi
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Falls man das Service aktivieren möchte:   
-```
-sudo systemctl daemon-reexec
-sudo systemctl enable zigbee2mqtt
-sudo systemctl start zigbee2mqtt
-```
-
-Kontrolle, ob das Service läuft:   
-```
-sudo systemctl status zigbee2mqtt
-```
-
-Und falls man das Service deaktivieren möchte:   
-```
-sudo systemctl disable zigbee2mqtt
-```
-In diesem Fall wird `zigbe2mqtt` beim Systemstart nicht mehr automatisch gestartet.   
-Nur Stoppen des Services geht mit   
-`sudo systemctl stop zigbee2mqtt`   
-
-[Zum Seitenanfang](#up)   
-<a name="x110"></a>   
-
-# 11. Kiosk-Modus
-Der "Kiosk-Modus" ist eine Betriebsart von Rechnern bzw. Terminals mit graphischer Anzeige, bei der die Rechte des Users eingeschränkt sind und nur bestimmte Aktionen ausgeführt werden können.   
-Welche Schritte sind beim RasPi mit OS "Bookworm" erforderlich, damit eine Web-Seite im Chromium-Browser nach dem Start automatisch im Kios-Modus angezeigt wird?   
-
-1. Chromium installieren (falls nicht vorhanden):   
-  `sudo apt update`  
-  `sudo apt install chromium-browser`   
-
-2. Auto-login aktivieren (falls es noch nicht eingestellt ist):   
-   Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen – Raspberry-Pi-Konfiguration – [System]   
-   * Hochfahren: * zum Desptop   
-   * Desktop auto login: ( &nbsp; o)  
-
-3. Autostart-Datei bearbeiten   
-  `mkdir -p ~/.config/lxsession/LXDE-pi`   
-  `nano ~/.config/lxsession/LXDE-pi/autostart`   
-  Hinzufügen (Bildschirm nie ausschalten, Chromium starten):   
-  `@xset s off`   
-  `@xset -dpms`   
-  `@xset s noblank`   
-  `@chromium-browser --noerrdialogs --disable-infobars --kiosk http://localhost`   
-   Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
-
-4. RasPi neu starten   
-  `sudo reboot`   
-
-[Zum Seitenanfang](#up)   
-<a name="x110"></a>   
-
-# 11. Dies und Das
-## 11.1 Vorhandene Sicherungsdateien verwenden
-Mit Hilfe des Programmes WinSCP kann man vorhandene, auf dem PC gesicherte Dateien zurück auf das RasPi speichern. Dazu startet man WinSCP, gibt die IP-Adresse des RasPi (zB `10.1.1.1`), den Benutzernamen (zB `pi_`) und das Passwort (zB `pass`) ein (Portnummer 22) und meldet sich an.   
-
-Wenn der Zugriff auf geschützte Verzeichnisse am RasPi verweigert wird, hilft folgendes Work-Around:   
-1. Hilfsverzeichnis im Arbeitsverzeichnis des RasPi erstellen, zB mit   
-`mkdir /~/temp`   
-2. Hineinkopieren der Dateien vom PC ins Hilfsverzeichnis und Weiterkopieren der Dateien mit sudo-Rechten, zB   
-`sudo cp ~/temp/autostart.sh /usr/local/bin`  
-
-## 11.2 C++ Programm kompilieren und ausführen
+## 8. C++ Programm kompilieren und ausführen (Beispiel m4hFindSimModule)
 Das folgende, einfache Programm versucht, ein Modem zu finden. Dazu 
 öffnet es der Reihe nach verschiedene serielle Schnittstellen, sendet an diese das Kommando `ATE0`,  wartet auf eine Antwort `OK` und schließt die Schnittstelle.   
 Das Ergebnis der Sendevorg&auml;nge wird auf der Konsole angezeigt.   
@@ -1030,12 +653,398 @@ Searching for modem...
 ```
 Das heißt, es wurde kein Modem gefunden.   
 
-## 11.3 Periodisches Senden von MQTT-Nachrichten
+[Zum Seitenanfang](#up)   
+<a name="x90"></a>   
+
+# 9. Feste USB-Schnittstellen-Namen durch udev-Regeln   
+## 9.1 Einleitung   
+Beim Booten weist das RasPi die Schnittstellen-Namen `ttyUSB0` und `ttyUSB1` zufällig den USB-Anschlüssen zu. Das bedeutet, dass der ZigBee-Adapter manchmal an  
+`ttyUSB0` oder manchmal an `ttyUSB1` hängt, obwohl er hardwaremäßig nicht umgesteckt wurde.   
+Eine Möglichkeit, in einem Programm immer den gleichen Schnittstellennamen zu verwenden, ist, einen symbolischen Link zu definieren.
+Beispiel: `ttyUSB_Zigbee` soll auf `/dev/ttyUSB0` zeigen   
+```
+sudo ln -s /dev/ttyUSB0 /dev/ttyUSB_Zigbee
+```
+Kontrolle:   
+`ls -l /dev/ttyUSB_Zigbee`   
+
+Besser ist es, eine fixe - und richtige - Zuordnung zu einem Schnittstellen-Namen mit Hilfe von udev-Regeln zu erreichen. Die folgende Anleitung stammt von der Seite   
+[https://www.heise.de/ratgeber/RasPi-Feste-USB-Schnittstellen-Namen-durch-udev-Regeln-4836365.html?seite=all](https://www.heise.de/ratgeber/RasPi-Feste-USB-Schnittstellen-Namen-durch-udev-Regeln-4836365.html?seite=all)   
+
+## 9.2 Eigenschaften der verwendeten USB-Geräte ermitteln
+Anzeige der USB-Geräte durch   
+`lsusb`   
+ergibt zum Beispiel   
+```
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 005: ID 1997:2433 Shenzhen Riitek Technology Co., Ltd wireless mini keyboard with touchpad
+Bus 001 Device 004: ID 0403:6001 Future Technology Devices International, Ltd FT232 Serial (UART) IC
+Bus 001 Device 003: ID 10c4:ea60 Silicon Labs CP210x UART Bridge
+Bus 001 Device 002: ID 2109:3431 VIA Labs, Inc. Hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+```
+Man erkennt:   
+* An Bus 001 Device 005 hängt eine Tastatur
+* An Bus 001 Device 003 hängt ein USB-UART-Umsetzer (Bridge zu einem Modem)
+* An Bus 001 Device 002 hängt ein ZigBee-Stick
+
+Die Eingabe von   
+`udevadm info -a -n /dev/ttyUSB0`   
+ergibt für den Zigbee-Stick "Sonoff_Zigbee_3.0_USB_Dongle_Plus" die Geräte-Information im udev-Format   
+```
+looking at device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:00.0/00
+    KERNEL=="ttyUSB0"
+    SUBSYSTEM=="tty"
+    DRIVER==""
+    ATTR{power/control}=="auto"
+    ATTR{power/runtime_active_time}=="0"
+    ATTR{power/runtime_status}=="unsupported"
+    ATTR{power/runtime_suspended_time}=="0"
+
+  looking at parent device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:
+    KERNELS=="ttyUSB0"
+    SUBSYSTEMS=="usb-serial"
+    DRIVERS=="cp210x"
+    ATTRS{port_number}=="0"
+    ATTRS{power/control}=="auto"
+    ATTRS{power/runtime_active_time}=="0"
+    ATTRS{power/runtime_status}=="unsupported"
+    ATTRS{power/runtime_suspended_time}=="0"
+
+  looking at parent device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:
+    KERNELS=="1-1.1:1.0"
+    SUBSYSTEMS=="usb"
+    DRIVERS=="cp210x"
+    ATTRS{authorized}=="1"
+    ATTRS{bAlternateSetting}==" 0"
+    ATTRS{bInterfaceClass}=="ff"
+    ATTRS{bInterfaceNumber}=="00"
+    ATTRS{bInterfaceProtocol}=="00"
+    ATTRS{bInterfaceSubClass}=="00"
+    ATTRS{bNumEndpoints}=="02"
+    ATTRS{supports_autosuspend}=="1"
+
+  looking at parent device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:
+    KERNELS=="1-1.1"
+    SUBSYSTEMS=="usb"
+    DRIVERS=="usb"
+    ATTRS{authorized}=="1"
+    ATTRS{avoid_reset_quirk}=="0"
+    ATTRS{bConfigurationValue}=="1"
+    ATTRS{bDeviceClass}=="00"
+    ATTRS{bDeviceProtocol}=="00"
+    ATTRS{bDeviceSubClass}=="00"
+    ATTRS{bMaxPacketSize0}=="64"
+    ATTRS{bMaxPower}=="100mA"
+    ATTRS{bNumConfigurations}=="1"
+    ATTRS{bNumInterfaces}==" 1"
+    ATTRS{bcdDevice}=="0100"
+    ATTRS{bmAttributes}=="80"
+    ATTRS{busnum}=="1"
+    ATTRS{configuration}==""
+    ATTRS{devnum}=="3"
+    ATTRS{devpath}=="1.1"
+    ATTRS{devspec}=="(null)"
+    ATTRS{idProduct}=="ea60"
+    ATTRS{idVendor}=="10c4"
+```
+Ende mit &lt;strg&gt;c   
+
+Folgende Eigenschaften werden zum Identifizieren des ZigBee-Sticks verwendet:   
+```
+SUBSYSTEM==`tty`
+ATTRS{idProduct}=="ea60"
+ATTRS{idVendor}=="10c4"
+```
+Auf die gleiche Weise erhält man mit   
+`udevadm info -a -n /dev/ttyUSB1`   
+für den USB-Serial-Wandler (an dem das Modem hängt)   
+```
+SUBSYSTEM==`tty`
+ATTRS{idProduct}=="6001"
+ATTRS{idVendor}=="0403"
+```
+
+Mit diesen Informationen werden die Zuordnungsregeln erstellt:   
+`sudo nano /etc/udev/rules.d/99-usb.rules`   
+Inhalt   
+```   
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="ttyUSB_Zigbee"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="ttyUSB_Modem"
+```   
+Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
+
+Neustarten des RasPi mit   
+`sudo reboot`   
+
+Kontrolle der Schnittstellenzuordnung:   
+`dir -lh /dev/ttyUSB*`   
+
+[Zum Seitenanfang](#up)   
+<a name="x100"></a>   
+
+# 10. Eigene Autostart-Datei `autostart.sh`
+M&ouml;chte man beim System-Start eigene Programme automatisch starten, so kann man diese zum Beispiel in einem eigenen Script "`autostart.sh`" sammeln. Das folgende Beispiel für eine Autostart-Datei macht folgendes:   
+* Definition einer log()-Funktion, die Ausgaben in die log-Datei `/var/log/autostart.log` schreibt,
+* ändern der Anzeige-Farbe auf "gelb",
+* maximal 8 Sekunden (`ZB_TIMEOUT`) warten, bis ein symbolischer Link `ttyUSB_Zigbee` erstellt wurde und Ausgabe des Ergebnisses in die log-Datei,
+* eine Sekunde warten,
+* Steuerprogramm `/usr/local/bin/m4hControl` starten, 
+* 5 Sekunden warten,
+* ins Verzeichnis /opt/zigbee2mqtt wechseln und dort zigbee2mqtt starten,
+* ins Arbeitsverzeichnis des Benutzers wechseln,
+* die Anzeige-Farbe zurücksetzen.
+
+1. Autostart-Datei erzeugen.   
+```
+sudo nano /usr/local/bin/autostart.sh
+```   
+Inhalt der Datei   
+```
+#!/bin/bash
+# autostart.sh - gestartet beim Systemstart
+# Karl Hartinger, 11.07.2025
+
+ZB_TIMEOUT=8
+ZB_SECS_WAITED=0
+
+# Farbdefinitionen
+YELLOW='\033[01;33m'
+RESET='\033[0m'
+
+logfile="/var/log/autostart.log"
+
+# Funktion zum Loggen mit Zeitstempel
+log() {
+  echo -e "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$logfile"
+}
+
+# Skriptstart
+echo -e "${YELLOW}"
+log "_____autostart.sh______11.07.2025___Karl Hartinger_____"
+
+while [ ! -e /dev/ttyUSB_Zigbee ] && [ $ZB_SECS_WAITED -lt $ZB_TIMEOUT ]; do
+  echo "Warte auf /dev/ttyUSB_Zigbee..."
+  sleep 1
+  SECONDS_WAITED=$((SECONDS_WAITED + 1))
+done
+if [ ! -e /dev/ttyUSB_Zigbee ]; then
+  log "Fehler: /dev/ttyUSB_Zigbee nach $TIMEOUT Sekunden nicht gefunden."
+else
+  # Ziel des symbolischen Links ermitteln (zB /dev/ttyUSB0)
+  link_target=$(readlink -f /dev/ttyUSB_Zigbee)
+  log "OK: /dev/ttyUSB_Zigbee zeigt auf $link_target."
+  #/usr/local/bin/zigbee-config-switch.sh
+fi
+
+log "1 Sekunde warten.."
+sleep 1
+
+log "MQTT Steuerung starten (m4hControl)"
+nohup /usr/local/bin/m4hControl /usr/local/bin/m4h.conf -q >> "$logfile" 2>&1 &
+
+log "5 Sekunden warten..."
+sleep 5
+
+log "Zigbee2MQTT starten"
+if cd /opt/zigbee2mqtt; then
+  sudo -u pi7 nohup npm run start >> "$logfile" 2>&1 &
+else
+  log "Fehler: Verzeichnis /opt/zigbee2mqtt nicht gefunden!"
+fi
+
+cd ~ || log "Fehler: Home-Verzeichnis nicht gefunden"
+
+log "_______________________________________________________"
+echo -e "${RESET}"
+exit 0
+```
+Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
+
+__*Anmerkung:*__   
+  * Soll beim Start einer Datei nicht auf das Ende des Programmes gewartet werden, so muss am Ende der Aufruf-Zeile ein "kaufm&auml;nnisches-und"-Zeichen (Ampersand) &amp; stehen oder am Beginn der Zeile muss `nohup ` stehen!   
+
+2. Skript für alle User ausführbar machen.   
+```   
+sudo chown root /usr/local/bin/autostart.sh
+sudo chmod 777 /usr/local/bin/autostart.sh
+sudo chmod +x /usr/local/bin/autostart.sh
+```   
+
+3. Eigene Autostart-Datei beim Systemstart aufrufen.   
+Dazu muss eine Service-Datei erstellt werden:   
+```   
+sudo nano /etc/systemd/system/autostart.service
+```   
+Inhalt:   
+```   
+[Unit]
+Description=Autostart Script
+After=dev-ttyUSB_Zigbee.device
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/autostart.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+```   
+Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
+
+4. Service aktivieren, damit es beim Booten läuft:   
+```   
+sudo systemctl enable autostart.service
+```   
+
+5. Service testen:
+```   
+sudo systemctl start autostart.service
+```   
+
+6. Service-Status überprüfen:
+```   
+sudo systemctl status autostart.service
+```   
+
+7. Log-Datei anzeigen:   
+```   
+cat /var/log/autostart.log
+```   
+
+[Zum Seitenanfang](#up)   
+<a name="x110"></a>   
+
+# 11. Zigbee2MQTT
+## 11.1 Zigbee2mqtt installieren
+1. Die Installation erfolgt in den Standardordner:   
+```
+cd /opt
+sudo git clone https://github.com/Koenkk/zigbee2mqtt.git
+sudo chown -R $USER:$USER zigbee2mqtt
+cd /opt/zigbee2mqtt
+pnpm install
+```
+2. Konfigurationsdatei anlegen   
+Entweder   
+`cp /opt/zigbee2mqtt/data/configuration.example.yaml /opt/zigbee2mqtt/data/configuration.yaml
+`   
+  oder eine bestehende Konfigurationsdatei verwenden...   
+
+In der Konfigurationsdatei sollte die Schnittstelle auf `/dev/ttyUSB_Zigbee` geändert werden:   
+`sudo nano /opt/zigbee2mqtt/data/configuration.yaml`
+Anpassen oder ergänzen:   
+```   
+serial:
+  port: /dev/ttyUSB_Zigbee
+```   
+Wichtig: GENAU zwei Leerzeichen vor dem Wort `port:`   
+
+3. Testen, ob Zigbee2MQTT richtig startet:   
+  `cd /opt/zigbee2mqtt`   
+  `npm start`   
+  Wenn alles passt, erhält man die Meldung   
+  `z2m: Zigbee2MQTT started!`   
+  Beenden des Programms mit &lt;strg&gt;c   
+  Falls der MQTT-Server nicht läuft erhält man die Fehlermeldung `error:    z2m: MQTT failed to connect, exiting...`.   
+  Beenden mit &lt;strg&gt;c   
+
+## 11.2 Zigbee-Schnittstellenprobleme
+Wenn es Probleme mit dem symbolischen Link gibt, kann man auch zwei Konfigurationsdateien mit unterschiedlichen `port:`-Anweisungen anlegen und die gerade gültige Datei nach `/opt/zigbee2mqtt/data/configuration.yaml` kopieren...   
+
+---   
+## 11.3 Zigbee2mqtt als Service
+Falls man Zigbee2mqtt als Service automatisch starten möchte (und nicht in der eigenen `autostart.sh`-Datei):   
+```
+sudo nano /etc/systemd/system/zigbee2mqtt.service
+```
+Inhalt:   
+```
+[Unit]
+Description=Zigbee2MQTT
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/npm start
+WorkingDirectory=/opt/zigbee2mqtt
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Falls man das Service aktivieren möchte:   
+```
+sudo systemctl daemon-reexec
+sudo systemctl enable zigbee2mqtt
+sudo systemctl start zigbee2mqtt
+```
+
+Kontrolle, ob das Service läuft:   
+```
+sudo systemctl status zigbee2mqtt
+```
+
+Und falls man das Service deaktivieren möchte:   
+```
+sudo systemctl disable zigbee2mqtt
+```
+In diesem Fall wird `zigbe2mqtt` beim Systemstart nicht mehr automatisch gestartet.   
+Nur Stoppen des Services geht mit   
+`sudo systemctl stop zigbee2mqtt`   
+
+[Zum Seitenanfang](#up)   
+<a name="x110"></a>   
+
+# 12. Kiosk-Modus
+Der "Kiosk-Modus" ist eine Betriebsart von Rechnern bzw. Terminals mit graphischer Anzeige, bei der die Rechte des Users eingeschränkt sind und nur bestimmte Aktionen ausgeführt werden können.   
+Welche Schritte sind beim RasPi mit OS "Bookworm" erforderlich, damit eine Web-Seite im Chromium-Browser nach dem Start automatisch im Kios-Modus angezeigt wird?   
+
+1. Chromium installieren (falls nicht vorhanden):   
+  `sudo apt update`  
+  `sudo apt install chromium-browser`   
+
+2. Auto-login aktivieren (falls es noch nicht eingestellt ist):   
+   Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen – Raspberry-Pi-Konfiguration – [System]   
+   * Hochfahren: * zum Desptop   
+   * Desktop auto login: ( &nbsp; o)  
+
+3. Autostart-Datei bearbeiten   
+  `mkdir -p ~/.config/lxsession/LXDE-pi`   
+  `nano ~/.config/lxsession/LXDE-pi/autostart`   
+  Hinzufügen (Bildschirm nie ausschalten, Chromium starten):   
+  `@xset s off`   
+  `@xset -dpms`   
+  `@xset s noblank`   
+  `@chromium-browser --noerrdialogs --disable-infobars --kiosk http://localhost`   
+   Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
+
+4. RasPi neu starten   
+  `sudo reboot`   
+
+[Zum Seitenanfang](#up)   
+<a name="x130"></a>   
+
+# 13. Dies und Das
+## 13.1 Vorhandene Sicherungsdateien verwenden
+Mit Hilfe des Programmes WinSCP kann man vorhandene, auf dem PC gesicherte Dateien zurück auf das RasPi speichern. Dazu startet man WinSCP, gibt die IP-Adresse des RasPi (zB `10.1.1.1`), den Benutzernamen (zB `pi_`) und das Passwort (zB `pass`) ein (Portnummer 22) und meldet sich an.   
+
+Wenn der Zugriff auf geschützte Verzeichnisse am RasPi verweigert wird, hilft folgendes Work-Around:   
+1. Hilfsverzeichnis im Arbeitsverzeichnis des RasPi erstellen, zB mit   
+`mkdir /~/temp`   
+2. Hineinkopieren der Dateien vom PC ins Hilfsverzeichnis und Weiterkopieren der Dateien mit sudo-Rechten, zB   
+`sudo cp ~/temp/autostart.sh /usr/local/bin`  
+
+## 13.2 Periodisches Senden von MQTT-Nachrichten
 Das periodische Senden von MQTT-Nachrichten ist im Kapitel [/md/m4h104_RasPi_crontab.md](/md/m4h104_RasPi_crontab) beschrieben.   
 
 ---
 
-## 11.4 Bildschirmschoner abschalten (alte Version)
+## 13.3 Bildschirmschoner abschalten (alte Version)
 1. Neues Verzeichnis mit Steuerdatei anlegen:   
 `sudo mkdir /etc/X11/xorg.conf.d`   
 Steuerdatei erstellen:   

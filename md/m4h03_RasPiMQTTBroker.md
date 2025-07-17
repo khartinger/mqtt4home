@@ -84,6 +84,9 @@ Befindet man sich nicht auf dem Rechner, auf dem der Broker läuft, muss man zus
    _`Client mosqpub/3194-raspberryp sending DISCONNECT`_   
 
 Sobald man die Nachricht abschickt, erscheint sie im Subscriber-Fenster :)   
+Sollte der RasPi die Verbindung verweigern: RasPi neu starten mit   
+`sudo reboot`   
+
 Die Option `-d` bedeutet "Enable debug messages", dh. alle Meldungen werden ausgegeben. Dies bewirkt auch, dass jede Minute die PINGREQ-Nachricht angezeigt wird. M&ouml;chte man nur die Nachrichten sehen, so muss man -d weglassen ;)   
 Der Schalter `-r` bewirkt, dass die letzte Nachricht im Broker zwischengespeichert wird und so einem Client "nachgeschickt" werden kann, wenn dieser gerade offline war.   
    
