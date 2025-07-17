@@ -19,9 +19,10 @@ Diese Ziele werden in folgenden Unterkapiteln erreicht:
 * [5. Apache-Server](#x50)   
 * [6. Node.js und npm installieren](#x60)   
 * [7. MQTT-Broker `mosquitto` installieren](#x70)   
-* [8. Zigbee2MQTT installieren](#x80)   
+* [8. Feste USB-Schnittstellen-Namen durch udev-Regeln](#x80)   
 * [9. Eigene Autostart-Datei `autostart.sh`](#x90)   
-* [# 10. Kiosk-Modus](#x100)   
+* [10. Zigbee2MQTT installieren](#x100)   
+* [11. Kiosk-Modus](#x110)   
 
 In diesem Demo-Projekt werden folgende Einstellungen gew&auml;hlt, die aus Sicherheitsgr&uuml;nden ge&auml;ndert werden sollten:   
 
@@ -445,7 +446,7 @@ sudo apt install -y git curl
 ```
 2. `Node.js` (und npm) direkt installieren   
 ```
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 sudo npm install -g pnpm
 ```
@@ -465,7 +466,268 @@ Die Installation ist im Kapitel [/md/m4h03_RasPiMQTTBroker.md](/md/m4h03_RasPiMQ
 [Zum Seitenanfang](#up)   
 <a name="x80"></a>   
 
-# 8. Zigbee2MQTT installieren
+# 8. Feste USB-Schnittstellen-Namen durch udev-Regeln   
+## 8.1 Einleitung   
+Beim Booten weist das RasPi die Schnittstellen-Namen `ttyUSB0` und `ttyUSB1` zufällig den USB-Anschlüssen zu. Das bedeutet, dass der ZigBee-Adapter manchmal an  
+`ttyUSB0` oder manchmal an `ttyUSB1` hängt, obwohl er hardwaremäßig nicht umgesteckt wurde.   
+Eine Möglichkeit, in einem Programm immer den gleichen Schnittstellennamen zu verwenden, ist, einen symbolischen Link zu definieren.
+Beispiel: `ttyUSB_Zigbee` soll auf `/dev/ttyUSB0` zeigen   
+```
+sudo ln -s /dev/ttyUSB0 /dev/ttyUSB_Zigbee
+```
+Kontrolle:   
+`ls -l /dev/ttyUSB_Zigbee`   
+
+Besser ist es, eine fixe - und richtige - Zuordnung zu einem Schnittstellen-Namen mit Hilfe von udev-Regeln zu erreichen. Die folgende Anleitung stammt von der Seite   
+[https://www.heise.de/ratgeber/RasPi-Feste-USB-Schnittstellen-Namen-durch-udev-Regeln-4836365.html?seite=all](https://www.heise.de/ratgeber/RasPi-Feste-USB-Schnittstellen-Namen-durch-udev-Regeln-4836365.html?seite=all)   
+
+## 8.2 Eigenschaften der verwendeten USB-Geräte ermitteln
+Anzeige der USB-Geräte durch   
+`lsusb`   
+ergibt zum Beispiel   
+```
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 005: ID 1997:2433 Shenzhen Riitek Technology Co., Ltd wireless mini keyboard with touchpad
+Bus 001 Device 004: ID 0403:6001 Future Technology Devices International, Ltd FT232 Serial (UART) IC
+Bus 001 Device 003: ID 10c4:ea60 Silicon Labs CP210x UART Bridge
+Bus 001 Device 002: ID 2109:3431 VIA Labs, Inc. Hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+```
+Man erkennt:   
+* An Bus 001 Device 005 hängt eine Tastatur
+* An Bus 001 Device 003 hängt ein USB-UART-Umsetzer (Bridge zu einem Modem)
+* An Bus 001 Device 002 hängt ein ZigBee-Stick
+
+Die Eingabe von   
+`udevadm info -a -n /dev/ttyUSB0`   
+ergibt für den Zigbee-Stick "Sonoff_Zigbee_3.0_USB_Dongle_Plus" die Geräte-Information im udev-Format   
+```
+looking at device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:00.0/00
+    KERNEL=="ttyUSB0"
+    SUBSYSTEM=="tty"
+    DRIVER==""
+    ATTR{power/control}=="auto"
+    ATTR{power/runtime_active_time}=="0"
+    ATTR{power/runtime_status}=="unsupported"
+    ATTR{power/runtime_suspended_time}=="0"
+
+  looking at parent device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:
+    KERNELS=="ttyUSB0"
+    SUBSYSTEMS=="usb-serial"
+    DRIVERS=="cp210x"
+    ATTRS{port_number}=="0"
+    ATTRS{power/control}=="auto"
+    ATTRS{power/runtime_active_time}=="0"
+    ATTRS{power/runtime_status}=="unsupported"
+    ATTRS{power/runtime_suspended_time}=="0"
+
+  looking at parent device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:
+    KERNELS=="1-1.1:1.0"
+    SUBSYSTEMS=="usb"
+    DRIVERS=="cp210x"
+    ATTRS{authorized}=="1"
+    ATTRS{bAlternateSetting}==" 0"
+    ATTRS{bInterfaceClass}=="ff"
+    ATTRS{bInterfaceNumber}=="00"
+    ATTRS{bInterfaceProtocol}=="00"
+    ATTRS{bInterfaceSubClass}=="00"
+    ATTRS{bNumEndpoints}=="02"
+    ATTRS{supports_autosuspend}=="1"
+
+  looking at parent device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:
+    KERNELS=="1-1.1"
+    SUBSYSTEMS=="usb"
+    DRIVERS=="usb"
+    ATTRS{authorized}=="1"
+    ATTRS{avoid_reset_quirk}=="0"
+    ATTRS{bConfigurationValue}=="1"
+    ATTRS{bDeviceClass}=="00"
+    ATTRS{bDeviceProtocol}=="00"
+    ATTRS{bDeviceSubClass}=="00"
+    ATTRS{bMaxPacketSize0}=="64"
+    ATTRS{bMaxPower}=="100mA"
+    ATTRS{bNumConfigurations}=="1"
+    ATTRS{bNumInterfaces}==" 1"
+    ATTRS{bcdDevice}=="0100"
+    ATTRS{bmAttributes}=="80"
+    ATTRS{busnum}=="1"
+    ATTRS{configuration}==""
+    ATTRS{devnum}=="3"
+    ATTRS{devpath}=="1.1"
+    ATTRS{devspec}=="(null)"
+    ATTRS{idProduct}=="ea60"
+    ATTRS{idVendor}=="10c4"
+```
+Ende mit &lt;strg&gt;c   
+
+Folgende Eigenschaften werden zum Identifizieren des ZigBee-Sticks verwendet:   
+```
+SUBSYSTEM==`tty`
+ATTRS{idProduct}=="ea60"
+ATTRS{idVendor}=="10c4"
+```
+Auf die gleiche Weise erhält man mit   
+``udevadm info -a -n /dev/ttyUSB1`   
+für den USB-Serial-Wandler (an dem das Modem hängt)   
+```
+SUBSYSTEM==`tty`
+ATTRS{idProduct}=="6001"
+ATTRS{idVendor}=="0403"
+```
+
+Mit diesen Informationen werden die Zuordnungsregeln erstellt:   
+`sudo nano /etc/udev/rules.d/99-usb.rules`   
+Inhalt   
+```   
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="ttyUSB_Zigbee"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="ttyUSB_Modem"
+```   
+Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
+
+Neustarten des RasPi mit   
+`sudo reboot`   
+
+Kontrolle der Schnittstellenzuordnung:   
+`dir /dev/tty*`   
+
+[Zum Seitenanfang](#up)   
+<a name="x90"></a>   
+
+# 9. Eigene Autostart-Datei `autostart.sh`
+M&ouml;chte man beim System-Start eigene Programme automatisch starten, so kann man diese zum Beispiel in einem eigenen Script "`autostart.sh`" sammeln. Das folgende Beispiel für eine Autostart-Datei macht folgendes:   
+* Definition einer log()-Funktion, die Ausgaben in die log-Datei `/var/log/autostart.log` schreibt,
+* ändern der Anzeige-Farbe auf "gelb",
+* maximal 8 Sekunden (`ZB_TIMEOUT`) warten, bis ein symbolischer Link `ttyUSB_Zigbee` erstellt wurde und Ausgabe des Ergebnisses in die log-Datei,
+* eine Sekunde warten,
+* Steuerprogramm `/usr/local/bin/m4hControl` starten, 
+* 5 Sekunden warten,
+* ins Verzeichnis /opt/zigbee2mqtt wechseln und dort zigbee2mqtt starten,
+* ins Arbeitsverzeichnis des Benutzers wechseln,
+* die Anzeige-Farbe zurücksetzen.
+
+1. Autostart-Datei erzeugen.   
+```
+sudo nano /usr/local/bin/autostart.sh
+```   
+Inhalt der Datei   
+```
+#!/bin/bash
+# autostart.sh - gestartet beim Systemstart
+# Karl Hartinger, 11.07.2025
+
+ZB_TIMEOUT=8
+ZB_SECS_WAITED=0
+
+# Farbdefinitionen
+YELLOW='\033[01;33m'
+RESET='\033[0m'
+
+logfile="/var/log/autostart.log"
+
+# Funktion zum Loggen mit Zeitstempel
+log() {
+  echo -e "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$logfile"
+}
+
+# Skriptstart
+echo -e "${YELLOW}"
+log "_____autostart.sh______11.07.2025___Karl Hartinger_____"
+
+while [ ! -e /dev/ttyUSB_Zigbee ] && [ $ZB_SECS_WAITED -lt $ZB_TIMEOUT ]; do
+  echo "Warte auf /dev/ttyUSB_Zigbee..."
+  sleep 1
+  SECONDS_WAITED=$((SECONDS_WAITED + 1))
+done
+if [ ! -e /dev/ttyUSB_Zigbee ]; then
+  log "Fehler: /dev/ttyUSB_Zigbee nach $TIMEOUT Sekunden nicht gefunden."
+else
+  # Ziel des symbolischen Links ermitteln (zB /dev/ttyUSB0)
+  link_target=$(readlink -f /dev/ttyUSB_Zigbee)
+  log "OK: /dev/ttyUSB_Zigbee zeigt auf $link_target."
+  #/usr/local/bin/zigbee-config-switch.sh
+fi
+
+log "1 Sekunde warten.."
+sleep 1
+
+log "MQTT Steuerung starten (m4hControl)"
+nohup /usr/local/bin/m4hControl /usr/local/bin/m4h.conf -q >> "$logfile" 2>&1 &
+
+log "5 Sekunden warten..."
+sleep 5
+
+log "Zigbee2MQTT starten"
+if cd /opt/zigbee2mqtt; then
+  sudo -u pi7 nohup npm run start >> "$logfile" 2>&1 &
+else
+  log "Fehler: Verzeichnis /opt/zigbee2mqtt nicht gefunden!"
+fi
+
+cd ~ || log "Fehler: Home-Verzeichnis nicht gefunden"
+
+log "_______________________________________________________"
+echo -e "${RESET}"
+exit 0
+```
+Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
+
+__*Anmerkung:*__   
+  * Soll beim Start einer Datei nicht auf das Ende des Programmes gewartet werden, so muss am Ende der Aufruf-Zeile ein "kaufm&auml;nnisches-und"-Zeichen (Ampersand) &amp; stehen oder am Beginn der Zeile muss `nohup ` stehen!   
+
+2. Skript für alle User ausführbar machen.   
+```   
+sudo chown root /usr/local/bin/autostart.sh
+sudo chmod 777 /usr/local/bin/autostart.sh
+sudo chmod +x /usr/local/bin/autostart.sh
+```   
+
+3. Eigene Autostart-Datei beim Systemstart aufrufen.   
+Dazu muss eine Service-Datei erstellt werden:   
+```   
+sudo nano /etc/systemd/system/autostart.service
+```   
+Inhalt:   
+```   
+[Unit]
+Description=Autostart Script
+After=dev-ttyUSB_Zigbee.device
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/autostart.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+```   
+Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
+
+4. Service aktivieren, damit es beim Booten läuft:   
+```   
+sudo systemctl enable autostart.service
+```   
+
+5. Service testen:
+```   
+sudo systemctl start autostart.service
+```   
+
+6. Service-Status überprüfen:
+```   
+sudo systemctl status autostart.service
+```   
+
+7. Log-Datei anzeigen:   
+```   
+cat /var/log/autostart.log
+```   
+
+[Zum Seitenanfang](#up)   
+<a name="x100"></a>   
+
+# 10. Zigbee2MQTT
+## 10.1 Zigbee2mqtt installieren
 1. Die Installation erfolgt in den Standardordner:   
 ```
 cd /opt
@@ -476,10 +738,18 @@ pnpm install
 ```
 2. Konfigurationsdatei anlegen   
 Entweder   
-```
-cp /opt/zigbee2mqtt/data/configuration.example.yaml /opt/zigbee2mqtt/data/configuration.yaml
-```
-     oder eine bestehende Konfigurationsdatei verwenden...   
+`cp /opt/zigbee2mqtt/data/configuration.example.yaml /opt/zigbee2mqtt/data/configuration.yaml
+`   
+  oder eine bestehende Konfigurationsdatei verwenden...   
+
+In der Konfigurationsdatei sollte die Schnittstelle auf `/dev/ttyUSB_Zigbee` geändert werden:   
+`sudo nano /opt/zigbee2mqtt/data/configuration.yaml`
+Anpassen oder ergänzen:   
+```   
+serial:
+  port: /dev/ttyUSB_Zigbee
+```   
+Wichtig: GENAU zwei Leerzeichen vor dem Wort `port:`   
 
 3. Testen, ob Zigbee2MQTT richtig startet:   
   `cd /opt/zigbee2mqtt`   
@@ -490,9 +760,12 @@ cp /opt/zigbee2mqtt/data/configuration.example.yaml /opt/zigbee2mqtt/data/config
   Falls der MQTT-Server nicht läuft erhält man die Fehlermeldung `error:    z2m: MQTT failed to connect, exiting...`.   
   Beenden mit &lt;strg&gt;c   
 
----
+## 10.2 Zigbee-Schnittstellenprobleme
+Wenn es Probleme mit dem symbolischen Link gibt, kann man auch zwei Konfigurationsdateien mit unterschiedlichen `port:`-Anweisungen anlegen und die gerade gültige Datei nach `/opt/zigbee2mqtt/data/configuration.yaml` kopieren...   
 
-4. Falls man Zigbee2mqtt als Service automatisch starten möchte:   
+---   
+## 10.3 Zigbee2mqtt als Service
+Falls man Zigbee2mqtt als Service automatisch starten möchte (und nicht in der eigenen `autostart.sh`-Datei):   
 ```
 sudo nano /etc/systemd/system/zigbee2mqtt.service
 ```
@@ -534,105 +807,10 @@ In diesem Fall wird `zigbe2mqtt` beim Systemstart nicht mehr automatisch gestart
 Nur Stoppen des Services geht mit   
 `sudo systemctl stop zigbee2mqtt`   
 
-
 [Zum Seitenanfang](#up)   
-<a name="x90"></a>   
+<a name="x110"></a>   
 
-# 9. Eigene Autostart-Datei `autostart.sh`
-M&ouml;chte man beim System-Start eigene Programme automatisch starten, so ist es sinnvoll, diese Befehle in einem eigenen Script "`autostart.sh`" zu sammeln. Das folgende Beispiel für eine Autostart-Datei ändert die Anzeige-Farbe, wartet eine Sekunde, wechselt dann ins Arbeitsverzeichnis und erzeugt eine Log-Datei, damit man Fehler beim Starten nachvollziehen kann.   
-
-1. Autostart-Datei erzeugen.   
-```
-sudo nano /usr/local/bin/autostart.sh
-```   
-Inhalt der Datei zB   
-```
-#!/bin/bash
-# autostart.sh - gestartet beim Systemstart
-# Karl Hartinger, 11.07.2025
-
-# Farbdefinitionen
-C_YELLOW='\033[01;33m'
-C_RESET='\033[0m'
-
-logfile="/var/log/autostart.log"
-
-# Funktion zum Loggen mit Zeitstempel
-log() {
-  echo -e "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$logfile"
-}
-
-# Skriptstart
-#...Farbe der Schrift auf gelb aendern...
-echo -e "${C_YELLOW}"
-log "_____autostart.sh______11.07.2025___Karl Hartinger_____"
-
-log "1 Sekunde warten..."
-sleep 1
-
-cd ~ || log "Fehler: Home-Verzeichnis nicht gefunden"
-log "_______________________________________________________"
-#...Farbe der Schrift wieder auf weiss aendern...   
-echo -e "${C_RESET}"
-exit 0
-```
-Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
-
-__*Anmerkungen:*__   
-  * Die Datei &auml;ndert die Schriftfarbe auf gelb und gibt die nach `log` stehenden Meldungen aus. Die Ausführung der Befehle wird in einer log-Datei `/var/log/autostart.log` dokumentiert.   
-  * Eigene Programmaufrufe m&uuml;ssen zwischen den beiden `log`-Zeilen stehen.   
-  * Tipp: Soll beim Start einer Datei nicht auf das Ende des Programmes gewartet werden, so muss am Ende der Aufruf-Zeile ein "kaufm&auml;nnisches-und"-Zeichen (Ampersand) &amp; stehen oder am Beginn der Zeile muss `nohup ` stehen!   
-
-2. Skript ausführbar machen.   
-```   
-sudo chmod +x /usr/local/bin/autostart.sh
-```   
-
-3. Eigene Autostart-Datei beim Systemstart aufrufen.   
-Dazu muss eine Service-Datei erstellt werden:   
-```   
-sudo nano /etc/systemd/system/autostart.service
-```   
-Inhalt:   
-```   
-[Unit]
-Description=Autostart Script
-After=network.target
-
-[Service]
-Type=oneshot
-ExecStart=/usr/local/bin/autostart.sh
-RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target
-```   
-Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
-
-4. Service aktivieren, damit es beim Booten läuft:   
-```   
-sudo systemctl enable autostart.service
-```   
-
-5. Service testen:
-```   
-sudo systemctl start autostart.service
-```   
-
-6. Service-Status überprüfen:
-```   
-sudo systemctl status autostart.service
-```   
-
-7. Log-Datei anzeigen:   
-```   
-cat /var/log/autostart.log
-```   
-
-[Zum Seitenanfang](#up)   
-<a name="x100"></a>   
-
-# 10. Kiosk-Modus
+# 11. Kiosk-Modus
 Der "Kiosk-Modus" ist eine Betriebsart von Rechnern bzw. Terminals mit graphischer Anzeige, bei der die Rechte des Users eingeschränkt sind und nur bestimmte Aktionen ausgeführt werden können.   
 Welche Schritte sind beim RasPi mit OS "Bookworm" erforderlich, damit eine Web-Seite im Chromium-Browser nach dem Start automatisch im Kios-Modus angezeigt wird?   
 
