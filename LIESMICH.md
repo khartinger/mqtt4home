@@ -88,7 +88,7 @@ zB Starter-Kit von [Reichelt (incl. 7" Touch-Display)](https://www.reichelt.at/a
 * [Vue+VSC: Wie erstellt man ein Vue Projekt mit mehreren Web-Seiten? (2021-12-26)](md/m4h535_Vue_ci_mqtt_multipage1.md)   
 * [__Vue+VSC: Beispiele f&uuml;r Ci-Symbole (2022-01-20)__](md/m4h550_Vue_ci_mqtt_all.md)   
 * [Vue+VSC: Wie zeichnet man einen Hausplan? (CiWall-Elemente) (2022-01-04)](md/m4h560_Vue_ci_mqtt_wall1.md)   
-* [Vue+VSC: Wie zeichnet man Türen und Fenster in einem Hausplan? (CiDoor, CiWindow, CiBlind) (2022-01-08)](md/m4h565_Vue_ci_mqtt_door_etc.md)   
+* [Vue+VSC: Wie zeichnet man T&uuml;ren und Fenster in einem Hausplan? (CiDoor, CiWindow, CiBlind) (2022-01-08)](md/m4h565_Vue_ci_mqtt_door_etc.md)   
 * [Vue+VSC: Webseite mit T&uuml;r-Symbol (2023-06-04)](md/m4h566_Vue_ci_mqtt_door1.md)   
 * [Vue-MQTT: SVG Siebensegment-Anzeige mit MQTT-Ansteuerung (2022-03-05)](md/m4h570_Vue_ci_mqtt_seg7.md)   
 * [Vue: Ansteuerung einer SVG Siebensegment-Anzeige mit MQTT (2022-03-05)](md/m4h572_Vue_mqtt_seg7.md)   

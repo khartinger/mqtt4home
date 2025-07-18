@@ -38,7 +38,7 @@ Anmerkung: Eine detaillierte Beschreibung zu einzelnen Schritten befindet sich i
 # Grafische Darstellung eines Symbols
 ## Allgemeines
 Die Codierung der grafischen Darstellung eines CI-Symbols `CiXxx` erfolgt in einer Datei mit dem Namen wie `CiXxx.vue`. Diese Dateien werden dann von der eigentlichen Projektdatei (zB. `CiMain.vue`) verwendet, um die Web-Seite darzustellen.   
-Das folgende Bild zeigt die Ausgabe dieser Vue-Anwendung mit verschiedenen `CiSmsStatus1`-Gr&ouml;&szlig;en. Man sieht, dass Streckfaktoren kleiner 1 für das `CiSmsStatus1`-Symbol nicht sinnvoll sind. Welche Attribute welche Darstellung bewirken, wird anschlie&szlig;end beschrieben.     
+Das folgende Bild zeigt die Ausgabe dieser Vue-Anwendung mit verschiedenen `CiSmsStatus1`-Gr&ouml;&szlig;en. Man sieht, dass Streckfaktoren kleiner 1 f&uuml;r das `CiSmsStatus1`-Symbol nicht sinnvoll sind. Welche Attribute welche Darstellung bewirken, wird anschlie&szlig;end beschrieben.     
 ![CiSmsStatus1-Varianten](./images/vuex530_all_smsstatus1.png "CiSmsStatus1-Varianten")   
 _Bild 1: Beispiele f&uuml;r verschiedene CiSmsStatus1-Darstellungen_   
 
@@ -81,7 +81,7 @@ Vorgabe ist `:border="1"`
 Jedes `CiSmsStatus1`-Symbol kennt drei Bereiche zur Textausgabe:   
 * Kopfzeile   
 * Fu&szlig;zeile   
-* Zeichenfläche mit den Beschriftungen des   
+* Zeichenfl&auml;che mit den Beschriftungen des   
   * oberen Buttons   
   * mittleres Buttons   
   * unteren Buttons.   

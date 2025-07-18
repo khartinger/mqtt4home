@@ -25,9 +25,9 @@ _Bild 1: Verschiedene Varianten des Lampensymbols_
 
 Man erkennt:   
 * Das gesamte GUI ist eine svg-Grafik.   
-* Steuer- oder Anzeigesymbole sind quadratisch und gleich groß.   
-* Symbole können mit oder ohne Rand dargestellt werden.   
-* Symbole können mit oder ohne Text dargestellt werden.   
+* Steuer- oder Anzeigesymbole sind quadratisch und gleich gro&szlig;.   
+* Symbole k&ouml;nnen mit oder ohne Rand dargestellt werden.   
+* Symbole k&ouml;nnen mit oder ohne Text dargestellt werden.   
 
 # Erforderliche Hilfsmittel
 * Hardware: PC oder Laptop mit Internetzugang, Browser
@@ -122,7 +122,7 @@ Mit Hilfe des Diagrammes erkennt man einige wichtige Zusammenh&auml;nge:
 
 * Der rechte Zweig mit (Browser -->) index.html --> main.ts --> App.vue wird automatisch erstellt und muss etwas angepasst werden.   
 * Die Datei `main.ts` erzeugt das App-Element, das in `index.html` angezeigt wird.   
-* `App.vue` stellt `<CiMain>` dar und enth&auml;lt css-Elemente, die im gesamten Projekt verwendet werden können.   
+* `App.vue` stellt `<CiMain>` dar und enth&auml;lt css-Elemente, die im gesamten Projekt verwendet werden k&ouml;nnen.   
 * Das Grafik-Element `CiLamp` besteht aus einem "Controller"- und "Grafik"-Teil (Erweiterung `.ts` bzw. `.vue`), welche von Basis-Komponenten abgeleitet werden.   
 * Die Verbindung zum MQTT-Broker wird &uuml;ber die Dateien `CiMqttClient.ts` und `CiMqttClientInstance.ts` hergestellt, wobei alle Controller in der Datei `CiMqttClientInstance.ts` registriert werden m&uuml;ssen. Vergisst man dies, erh&auml;lt der Controller keine MQTT-Nachrichten ("Schalter offen").   
 

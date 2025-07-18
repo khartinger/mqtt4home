@@ -30,7 +30,7 @@ How to create and use your own elements is explained e.g. in the project ["Vue-M
 Of many elements there are several display variants (different sizes etc.). If the variants are particularly diverse, they will be explained in more detail in further projects, for example:   
 
 * Wall elements (CiWall): [vue60_ci_mqtt_wall1](vue60_ci_mqtt_wall1)   
-* Fenster, Türen und Rollos (CiWindow, CiDoor, CiBlind): [vue65_ci_mqtt_door_etc](vue65_ci_mqtt_door_window)   
+* Fenster, T&uuml;ren und Rollos (CiWindow, CiDoor, CiBlind): [vue65_ci_mqtt_door_etc](vue65_ci_mqtt_door_window)   
 
 <a name="a10"></a>
 
@@ -219,7 +219,7 @@ Two symbols with the following properties are to be drawn from the element `CiXx
 |------------------------------------------|:--------------:|:--------------:|   
 | Center of the symbol (x/y) | 100/200 | 200/300 |   
 | ID of the symbol | xxx1 | xxx2 |   
-| Draw the symbol with border | nein | ja, Außenrand |   
+| Draw the symbol with border | nein | ja, Au&szlig;enrand |   
 | Number of info lines | 1 | 2 |   
 | Topic for sending MQTT messages | ci/xxx/1/pub | ci/xxx/2/pub |   
 | Topic for receiving MQTT messages | ci/xxx/1/sub<br>ci/xxx/x/sub | ci/xxx/2/sub<br>ci/xxx/x/sub |   

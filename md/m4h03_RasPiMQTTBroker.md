@@ -40,7 +40,7 @@ Die Ziele im Detail:
    ```
 
 ### Konfigurationsdatei erstellen
-Zum Testen vom PC aus muss eine Konfigurationsdatei erstellt werden, da `mosquitto` standardmäßig lokal läuft.   
+Zum Testen vom PC aus muss eine Konfigurationsdatei erstellt werden, da `mosquitto` standardm&auml;&szlig;ig lokal l&auml;uft.   
 ```
 sudo nano /etc/mosquitto/conf.d/default.conf
 ```
@@ -72,7 +72,7 @@ Dazu geht man folgenderma&szlig;en vor:
  _`Client mosqsub/3152-raspberryp received SUBACK`_   
  _`Subscribed (mid: 1): 0`_   
 
-Befindet man sich nicht auf dem Rechner, auf dem der Broker läuft, muss man zusätzlich die IP-Adresse des Servers angeben, zB.   
+Befindet man sich nicht auf dem Rechner, auf dem der Broker l&auml;uft, muss man zus&auml;tzlich die IP-Adresse des Servers angeben, zB.   
    `mosquitto_sub -h 10.1.1.1 -d -t test1`   
 
 * Senden einer Nachricht.   
@@ -117,9 +117,9 @@ pi_@raspi:~ $ mosquitto_sub -t "#" -v
 Test1 Hallo vom PC!
 ```
 
-## Mosquitto für Websockets einrichten
+## Mosquitto f&uuml;r Websockets einrichten
 Siehe auch: [http://blog.ithasu.org/2016/05/enabling-and-using-websockets-on-mosquitto/](http://blog.ithasu.org/2016/05/enabling-and-using-websockets-on-mosquitto/)
-Dazu muss ein weiterer Port (zB 1884) definiert werden, der auf Websocket-Anfragen wartet. Die Einstellungen wurden bereits vorhin in der Konfigurationsdatei `/etc/mosquitto/conf.d/default.conf` durchgeführt.
+Dazu muss ein weiterer Port (zB 1884) definiert werden, der auf Websocket-Anfragen wartet. Die Einstellungen wurden bereits vorhin in der Konfigurationsdatei `/etc/mosquitto/conf.d/default.conf` durchgef&uuml;hrt.
    
 ## Hilfreiches zu Mosquitto
 

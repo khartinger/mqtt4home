@@ -17,7 +17,7 @@ export class CiTextareaController extends CiBaseController {
         id: 'textarea_1',
         name: 'textarea',
         iTextareaState: 4,
-        payload: '***Textarea***\nThis is Line2\nLine3: ÄqÖpÜg---6789|\n123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|',
+        payload: '***Textarea***\nThis is Line2\nLine3: &Auml;q&Ouml;p&Uuml;g---6789|\n123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|123456789|',
         subTopic: 'ci/textarea/ret',
         pubTopic: 'ci/textarea/get',
         pubPayload: '?'

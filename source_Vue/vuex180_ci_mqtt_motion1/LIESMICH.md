@@ -91,7 +91,7 @@ Ist im Controller der Parameter `name` definiert, so wird dieser Text angezeigt,
 ### Zeichenbereich
 Der Zeichenbereich enth&auml;lt drei Zeilen (Zeile 2 bis 4), die folgendes anzeigen:   
 #### Zeile 2   
-Links wird das Symbol für einen Bewegungsmelder `))` und rechts der Bewegungszustand angezeigt (`on`, `off` oder `?`)   
+Links wird das Symbol f&uuml;r einen Bewegungsmelder `))` und rechts der Bewegungszustand angezeigt (`on`, `off` oder `?`)   
 #### Zeile 3   
 1. Passt die Id des Symbols (`sid`) zu keinem Eintrag in der Liste `public motion1s: Array<Motion1>` (Datei `CiMotion12Controller.ts`), so wird "`unknown`" angezeigt.   
 2. Gibt es einen Datumswert, so wird dieser angezeigt (Format `dd.mm.yy`).   
@@ -125,7 +125,7 @@ __Codierungsbeispiel__:
 
 ## Farbe des CiMotion1-Symbols (colorH, colorF)
 ### Farbe des Zeichenbereichs   
-Der Zeichenbereich wird abhängig vom Bewegungszustand eingefärbt:   
+Der Zeichenbereich wird abh&auml;ngig vom Bewegungszustand eingef&auml;rbt:   
 | Zustand | Farbbezeichnung     | Farbe        |   
 | ------- | ------------------- | ------------ |   
 | `on`    | `colorMotion`       | gelb         |   
@@ -136,7 +136,7 @@ Tritt ein Fehler auf, wird die Hintergrundfarbe auf hellrot gesetzt. (Farbe "`co
 
 ### Farbe der Kopfzeile   
 Mit Hilfe des Attributs `colorH=` kann die Hintergrundfarbe der Kopfzeile eines CiMotion1-Symbols gesetzt werden. Der Wert kann entweder ein RGB-Wert (rot-gr&uuml;n-blau-Wert), wie zB `#eedd00` oder eine Textangabe wie `red`, `white` etc. sein.   
-Wird keine Farbe gewählt, ist die Kopfzeile transparent.   
+Wird keine Farbe gew&auml;hlt, ist die Kopfzeile transparent.   
 
 ### Farbe der Fu&szlig;zeile   
 * Bei einem Fehler wird die Hintergrundfarbe auf hellrot gesetzt. (Farbe "`colorNotOK`" aus der Datei `Geo.ts`)   
@@ -166,7 +166,7 @@ Folgende Attribute sind optional:
 Folgende Attribute sind zwingend anzugeben:   
 | Eigenschaft         | Bedeutung                            |   
 | ------------------- | ------------------------------------ |   
-| `iMotion1State`    | Status des CiMotion1-Symbols. Dafür sind in der Datei `CiMotion1Controller.ts` die Konstanten `stateOn`, `stateOff`, `stateNotOk` und `stateNoState` definiert.   |   
+| `iMotion1State`    | Status des CiMotion1-Symbols. Daf&uuml;r sind in der Datei `CiMotion1Controller.ts` die Konstanten `stateOn`, `stateOff`, `stateNotOk` und `stateNoState` definiert.   |   
 | `type`              | Typ des CiMotion1 Symbols. Sagt etwas dar&uuml;ber aus, welche Daten vom Bewegungsmelder erwartet werden.   |   
 | `lastMotion1Date` | Datum, wann die letzte Wetter-Nachricht eingetroffen ist.<br>Kann beim Ausf&uuml;llen f&uuml;r ein bestimmtes Symbol zB auf `Date?` oder `--.--.--` gesetzt werden.   |   
 | `lastMotion1Time` | Uhrzeit, wann die letzte Wetter-Nachricht eingetroffen ist.<br>Kann beim Ausf&uuml;llen f&uuml;r ein bestimmtes Symbol zB auf `Time?` oder `--:--` gesetzt werden.   |   

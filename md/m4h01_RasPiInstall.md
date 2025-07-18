@@ -1,4 +1,4 @@
-Letzte &Auml;nderungen: 8.12.2021 - 12.07.2025   
+Letzte &Auml;nderungen: 8.12.2021 - 18.07.2025   
 <a name="up"></a>   
 <table><tr><td><img src="logo/mqtt4home_96.png"></td><td>&nbsp;</td><td>
 <h1>Grundinstallation des Raspberry Pi</h1>
@@ -20,7 +20,7 @@ Diese Ziele werden in folgenden Unterkapiteln erreicht:
 * [5. Apache-Server](#x50)   
 * [6. Node.js und npm installieren](#x60)   
 * [7. MQTT-Broker `mosquitto` installieren](#x70)   
-* [8. C++ Programm kompilieren und ausführen (Beispiel m4hFindSimModule)](#x80)   
+* [8. C++ Programm kompilieren und ausf&uuml;hren (Beispiel m4hFindSimModule)](#x80)   
 * [9. Feste USB-Schnittstellen-Namen durch udev-Regeln](#x90)   
 * [10. Eigene Autostart-Datei `autostart.sh`](#x100)   
 * [11. Zigbee2MQTT installieren](#x110)   
@@ -46,7 +46,7 @@ In diesem Demo-Projekt werden folgende Einstellungen gew&auml;hlt, die aus Siche
 * Software: [Programmiersoftware f&uuml;r das Betriebssystem ("imager")](https://www.raspberrypi.org/software)
 * Software: Terminal-Programm [`putty`](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) auf dem PC/Laptop   
 * Software: [Mosquitto](https://mosquitto.org/download/)   
-* Software: Eventuell [WinSCP zur Datei-Übertragung](https://winscp.net/eng/download.php)   
+* Software: Eventuell [WinSCP zur Datei-&Uuml;bertragung](https://winscp.net/eng/download.php)   
 
 [Zum Seitenanfang](#up)   
 <a name="x30"></a>   
@@ -56,7 +56,7 @@ In diesem Demo-Projekt werden folgende Einstellungen gew&auml;hlt, die aus Siche
 1. Micro-SD-Karte (Gr&ouml;&szlig;e 8GB oder mehr) in den Kartenleser einlegen, den Kartenleser am PC anschlie&szlig;en.   
 2. Herunterladen des Hilfsprogramms [`Raspberry Pi Imager`](http://www.raspberrypi.org/software) oder [`Win32 Disk Imager`](https://win32diskimager.org/) zum Beschreiben der SD-Card unter Windows.   
  Siehe [http://www.raspberrypi.org/software](http://www.raspberrypi.org/software).   
-3. MicroSD-Karten-Programmier-Programm `imager_1.9.4` installieren, starten und folgendes auswählen:   
+3. MicroSD-Karten-Programmier-Programm `imager_1.9.4` installieren, starten und folgendes ausw&auml;hlen:   
 * Raspberry Pi Modell: RASPBERRY PI 4   
 * Betriebssystem (OS): Raspberry Pi OS (64bit) vom 2025-05-13
 * SD-Karte: GENERIC-SD/MMC USB DEVICE  
@@ -77,7 +77,7 @@ Nach dem ersten Start des RasPi m&uuml;ssen noch einige Einstellungen vorgenomme
 3. Betriebsspannung anlegen: RasPi startet im Grafik-Modus.   
 
 ## 3.3 Erste Einstellungen auf dem RasPi
-### Sprache und Zeitzone wählen
+### Sprache und Zeitzone w&auml;hlen
 Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Preferences – Raspberry-Pi-Configuration – [Localisation]   
 * Locale:   
   * Language: de (German)   
@@ -98,19 +98,19 @@ Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Preferences – Raspber
 Would you like to reboot now? [Yes]   
 
 ### Schnittstellen   
-Am RasPi sollen ein ZigBee-Adapter und ein Modem betrieben werden. Beide werden am USB angeschlossen, daher werden die Schnittstellen an der 40-poligen Stiftleiste (hier) nicht benötigt. Lediglich SSH muss für den Zugriff mit Putty aktiviert werden.   
+Am RasPi sollen ein ZigBee-Adapter und ein Modem betrieben werden. Beide werden am USB angeschlossen, daher werden die Schnittstellen an der 40-poligen Stiftleiste (hier) nicht ben&ouml;tigt. Lediglich SSH muss f&uuml;r den Zugriff mit Putty aktiviert werden.   
 
 Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen – Raspberry-Pi-Konfiguration – [Schnittstellen]   
 * SSH: ( &nbsp; O)   
 [OK]   
 
 ### Systemeinstellungen   
-Die Systemeinstellungen können in einem Kommando-Fenster getestet werden. Dazu muss man das schwarze Rechteck-Symbol links oben anklicken. Es öffnet sich ein Terminal-Fenster mit einem Prompt:   
+Die Systemeinstellungen k&ouml;nnen in einem Kommando-Fenster getestet werden. Dazu muss man das schwarze Rechteck-Symbol links oben anklicken. Es &ouml;ffnet sich ein Terminal-Fenster mit einem Prompt:   
 `pi_@raspi:~ $`   
-Sollten der Username und Hostname noch die Vorgabewerte sein (`pi@raspberry`) so kann man dies und im Grafikbildschirm ändern:   
+Sollten der Username und Hostname noch die Vorgabewerte sein (`pi@raspberry`) so kann man dies und im Grafikbildschirm &auml;ndern:   
 
 Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen – Raspberry-Pi-Konfiguration – [System]   
-* Kennwort: [Kennwort ändern]   
+* Kennwort: [Kennwort &auml;ndern]   
 * Hostname: [Change Hostname]   
 * Hochfahren: (O) Zum Desktop   
 * Console auto login: ( &nbsp; O)   
@@ -118,7 +118,7 @@ Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen – Raspb
 * Startbildschirm: ( &nbsp; O)   
 [OK]   
 
-Die Änderung des User-Namens wird später beschrieben.   
+Die &Auml;nderung des User-Namens wird sp&auml;ter beschrieben.   
 
 Anzeige der Betriebssystem-Version   
 ```
@@ -128,16 +128,16 @@ ergibt zB
 `PRETTY_NAME="Raspbian GNU/Linux 12 (bookworm)"`   
 
 ### WLAN einschalten
-Im Grafik-Bildschirm rechts oben auf die Doppelpfeile klicken und "Turn on Wireless LAN" wählen. danach nochmals auf den Doppelpfeil tippen, ein Netzwerk wählen und das WLAN-Passwort eingeben. Es erscheint kurz die Meldung "Sie sind mit dem Netzwerk ... verbunden. IP-Adresse ..."
-Die IP-Adressen können auch im Terminal-Fenster angezeigt werden:   
+Im Grafik-Bildschirm rechts oben auf die Doppelpfeile klicken und "Turn on Wireless LAN" w&auml;hlen. danach nochmals auf den Doppelpfeil tippen, ein Netzwerk w&auml;hlen und das WLAN-Passwort eingeben. Es erscheint kurz die Meldung "Sie sind mit dem Netzwerk ... verbunden. IP-Adresse ..."
+Die IP-Adressen k&ouml;nnen auch im Terminal-Fenster angezeigt werden:   
 `ifconfig`   
 
 ### Grafik-System auf X11 umstellen
 Das Raspberry Pi OS "Debian Bookworm" verwendet zur Anzeige den Wayland-Display-Server. Damit arbeiten viele Befehle nicht mehr, die unter X11 funktionierten.   
 
-Die Umstellung zurück auf X11 erfolgt im Terminal durch   
+Die Umstellung zur&uuml;ck auf X11 erfolgt im Terminal durch   
 `sudo raspi-config`   
-Im Menü `6 Advanced Options` &lt;return&gt; - `A6 Wayland` &lt;return&gt; - `W1 X11` &lt;return&gt; - Openbox on X11 is active [OK]   
+Im Men&uuml; `6 Advanced Options` &lt;return&gt; - `A6 Wayland` &lt;return&gt; - `W1 X11` &lt;return&gt; - Openbox on X11 is active [OK]   
 &lt;finish&gt;
 Would you like to reboot now? [Ja]   
 
@@ -149,7 +149,7 @@ Verwendet man ein Transparent-Geh&auml;use von Amazon bzw. BetterShopping (ART02
 Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen – Screen Configuration: Im Bild wird der Name des Screens angezeigt:   `DSI-1`   
 [Close]   
 
-2. Den Namen des Touch-Gerätes herausfinden   
+2. Den Namen des Touch-Ger&auml;tes herausfinden   
   In einer Konsole eingeben:   
   `DISPLAY=:0 xinput list`  
   Ergibt z.B.   
@@ -164,14 +164,14 @@ Am Grafik-Bildschirm links oben [Men&uuml;] anklicken -  Einstellungen – Scree
 ```
 #!/bin/bash
 
-# Kurze Wartezeit, bis X vollständig geladen ist
+# Kurze Wartezeit, bis X vollst&auml;ndig geladen ist
 sleep 2
 
-# Setze X-Kontext für Autostart
+# Setze X-Kontext f&uuml;r Autostart
 export DISPLAY=:0
 export XAUTHORITY=/home/pi_/.Xauthority
 
-# Bildschirm-Ausgabe drehen (für DSI Touchscreen)
+# Bildschirm-Ausgabe drehen (f&uuml;r DSI Touchscreen)
 xrandr --output DSI-1 --rotate inverted
 
 # Touchscreen-Eingabe drehen (180°)
@@ -179,17 +179,17 @@ xinput set-prop "10-0038 generic ft5x06 (00)" \
 "Coordinate Transformation Matrix" -1 0 1 0 -1 1 0 0 1
 ```
 
-4. Script ausführbar machen   
+4. Script ausf&uuml;hrbar machen   
   `chmod +x ~/rotate-touchscreen.sh`   
 
-### Skript beim Systemstart ausführen   
-Lösung für Raspberry Pi OS Bookworm mit X11:   
+### Skript beim Systemstart ausf&uuml;hren   
+L&ouml;sung f&uuml;r Raspberry Pi OS Bookworm mit X11:   
 1. Autostart-Verzeichnis erstellen   
    `mkdir -p ~/.config/autostart`   
 
 2. Autostart-Desktop-Datei erstellen   
   `nano ~/.config/autostart/rotate-touchscreen.desktop`   
-  Inhalt (_Falls nötig: User-Namen anpassen!_):   
+  Inhalt (_Falls n&ouml;tig: User-Namen anpassen!_):   
 ```
 [Desktop Entry]
 Type=Application
@@ -203,8 +203,8 @@ Comment=Drehe Bildschirm und Touchscreen beim Login
 `sudo reboot`   
 
 ### Anmerkung
-Das Drehen des Grafik-Bildschirms über das Menü in der grafischen Oberfläche funktioniert __bei X11 nicht__:   
-Am Grafik-Bildschirm links oben [Menü] anklicken - Einstellungen – Screen Configuration - [Screens] - SDI-1 - Drehung - Inverted   
+Das Drehen des Grafik-Bildschirms &uuml;ber das Men&uuml; in der grafischen Oberfl&auml;che funktioniert __bei X11 nicht__:   
+Am Grafik-Bildschirm links oben [Men&uuml;] anklicken - Einstellungen – Screen Configuration - [Screens] - SDI-1 - Drehung - Inverted   
 
 ### Alte Methode
 Eintrag in der Datei `/boot/firmware/config.txt`(ehemals `/boot/config.txt`):   
@@ -225,7 +225,7 @@ Inhalt
 
 echo "Deaktiviere Bildschirmschoner und Display-Power-Management..."
 
-# 1. xset-Befehle zu Autostart hinzufügen (für LXDE)
+# 1. xset-Befehle zu Autostart hinzuf&uuml;gen (f&uuml;r LXDE)
 AUTOSTART_FILE="$HOME/.config/lxsession/LXDE-pi/autostart"
 mkdir -p "$(dirname "$AUTOSTART_FILE")"
 
@@ -233,7 +233,7 @@ grep -q "xset s off" "$AUTOSTART_FILE" 2>/dev/null || echo "@xset s off" >> "$AU
 grep -q "xset -dpms" "$AUTOSTART_FILE" 2>/dev/null || echo "@xset -dpms" >> "$AUTOSTART_FILE"
 grep -q "xset s noblank" "$AUTOSTART_FILE" 2>/dev/null || echo "@xset s noblank" >> "$AUTOSTART_FILE"
 
-echo "xset-Befehle zum Autostart hinzugefügt: $AUTOSTART_FILE"
+echo "xset-Befehle zum Autostart hinzugef&uuml;gt: $AUTOSTART_FILE"
 
 # 2. LightDM konfigurieren
 LIGHTDM_CONF="/etc/lightdm/lightdm.conf"
@@ -245,7 +245,7 @@ if [ -f "$LIGHTDM_CONF" ]; then
     }' "$LIGHTDM_CONF"
     echo "LightDM-Konfiguration angepasst: $LIGHTDM_CONF"
 else
-    echo "LightDM-Konfigurationsdatei nicht gefunden. Übersprungen."
+    echo "LightDM-Konfigurationsdatei nicht gefunden. &Uuml;bersprungen."
 fi
 
 # 3. xscreensaver deinstallieren (falls vorhanden)
@@ -259,18 +259,18 @@ fi
 
 # 4. Hinweis zu .xinitrc geben (optional)
 echo ""
-echo "Wenn du X manuell mit 'startx' startest, füge Folgendes in ~/.xinitrc ein:"
+echo "Wenn du X manuell mit 'startx' startest, f&uuml;ge Folgendes in ~/.xinitrc ein:"
 echo '  xset s off'
 echo '  xset -dpms'
 echo '  xset s noblank'
 echo ""
-echo "Fertig. Neu starten, damit die Änderungen wirksam werden."
+echo "Fertig. Neu starten, damit die &Auml;nderungen wirksam werden."
 ```
 
-Skript ausführbar machen:   
+Skript ausf&uuml;hrbar machen:   
 `chmod +x disable_screensaver.sh`   
 
-Skript ausführen:   
+Skript ausf&uuml;hren:   
 `sudo ~/disable_screensaver.sh`   
 
 ## 3.6 Fernsteuerung vorbereiten
@@ -284,10 +284,10 @@ eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 Das hei&szlig;t, die IP-Adresse ist 192.168.0.68   
 Sollte trotz richtiger IP-Adresse die putty-Verbindung verweigert werden, dann ist eventuell SSH bei den Schnittstellen nicht aktiviert (siehe oben!).   
 
-Die IP-Adresse wird vom Router (z.B. einer FRITZ!Box) vergeben. Will man alse eine bestimmte IP-Adresse für das RasPi, muss man dies im Router einstellen.   
+Die IP-Adresse wird vom Router (z.B. einer FRITZ!Box) vergeben. Will man alse eine bestimmte IP-Adresse f&uuml;r das RasPi, muss man dies im Router einstellen.   
 
 ## 3.7 Standard-User-Namen pi &auml;ndern
-Die Angabe des Standard-User-Namens (pi) kann entweder gleich beim Erstellen der SD-Karte geändert werden oder so wie hier beschrieben.   
+Die Angabe des Standard-User-Namens (pi) kann entweder gleich beim Erstellen der SD-Karte ge&auml;ndert werden oder so wie hier beschrieben.   
 Quelle: [https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/](https://jankarres.de/2013/09/raspberry-pi-standard-benutzername-pi-aendern/) [24.10.2017]   
 __Anmerkung: Falls bereits User-Crontabs f&uuml;r den User pi erstellt wurden, so werden diese gel&ouml;scht. (Sichern!)__   
 1. Putty starten (empfohlen)    oder das RasPi in den Kommandozeilen-Modus schalten (siehe oben), neu starten und User-Namen (`pi`) und  Passwort (`pass`) eingeben.      
@@ -420,7 +420,7 @@ Das Update kann schon einige Minuten dauern...
 Der Apache HTTP Server dient dazu, dass das RasPi Browser-Anfragen entgegennehmen kann. Die Installation erfolgt durch   
 `sudo apt install apache2 -y`   
 
-Kontrolle, ob Apache läuft:   
+Kontrolle, ob Apache l&auml;uft:   
 `sudo systemctl status apache2`   
 Ende mit &lt;strg&gt;c   
 
@@ -431,13 +431,13 @@ Es sollte die Default-Seite "Apache 2 Debian Default Page" angezeigt werden.
 
 Bei der Installation des Apache-Servers wird das Verzeichnis `var/www/html` erstellt und der Browser-Aufruf zeigt die Datei `var/www/html/index.htm` an.   
 
-Möchte man zum Testen eine andere "Start-Datei", so kann man diese zB ganz einfach so erzeugen:   
+M&ouml;chte man zum Testen eine andere "Start-Datei", so kann man diese zB ganz einfach so erzeugen:   
 ```
 echo '<!DOCTYPE html><html><head><title>RasPi Webserver</title></head><body><h1>Hallo vom Raspberry Pi!</h1></body></html>' | sudo tee /var/www/html/index.html > /dev/null
 ```
 Test wieder im Browser mit `http://10.1.1.1`   
 
-Ändern der Rechte für das Verzeichnis /var/www/html:   
+&Auml;ndern der Rechte f&uuml;r das Verzeichnis /var/www/html:   
 `sudo chmod 777 /var/www/html`   
 
 [Zum Seitenanfang](#up)   
@@ -472,11 +472,11 @@ Die Installation ist im Kapitel [/md/m4h03_RasPiMQTTBroker.md](/md/m4h03_RasPiMQ
 [Zum Seitenanfang](#up)   
 <a name="x80"></a>   
 
-# 8. C++ Programm kompilieren und ausführen
+# 8. C++ Programm kompilieren und ausf&uuml;hren
 ## 8.1 Das Beispielprogramm `m4hFindSimModule`
-Das folgende Beispiel zeigt, wie man ein C++-Programm auf dem RasPi zum Laufen bringt und es für alle User verfügbar macht. Der Einfachheit halber befindet sich der gesamte Programmcode in einer Datei.   
+Das folgende Beispiel zeigt, wie man ein C++-Programm auf dem RasPi zum Laufen bringt und es f&uuml;r alle User verf&uuml;gbar macht. Der Einfachheit halber befindet sich der gesamte Programmcode in einer Datei.   
 Dieses einfache Programm versucht, ein Modem zu finden. Dazu 
-öffnet es der Reihe nach verschiedene serielle Schnittstellen, sendet an diese das Kommando `ATE0`,  wartet auf eine Antwort `OK` und schließt die Schnittstelle.   
+&ouml;ffnet es der Reihe nach verschiedene serielle Schnittstellen, sendet an diese das Kommando `ATE0`,  wartet auf eine Antwort `OK` und schlie&szlig;t die Schnittstelle.   
 Das Ergebnis der Sendevorg&auml;nge wird auf der Konsole angezeigt.   
 Die Schnittstellen, die ausprobiert werden, stehen im Hauptprogramm in der Zeile   
 `std::string devices[]={"/dev/ttyS0", "/dev/ttyACM0", "/dev/ttyUSB0", "/dev/ttyUSB1"};`   
@@ -490,7 +490,7 @@ Searching for modem...
 /dev/ttyUSB0: GSM-Modem found!
 /dev/ttyUSB1: Could not open device (Error 2: No such file or directory)
 ```   
-In diesem Beispiel hängt das Modem also am Device `/dev/ttyUSB0`.   
+In diesem Beispiel h&auml;ngt das Modem also am Device `/dev/ttyUSB0`.   
 
 ## 8.2 Erzeugung des Programms 
 1. Arbeitsverzeichnis erstellen   
@@ -641,9 +641,9 @@ Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
 
 4. Erzeugen des Programmes   
   `g++ m4hFindSimModule.cpp -o m4hFindSimModule`   
-5. Programm ausführbar machen   
+5. Programm ausf&uuml;hrbar machen   
   `chmod 777 ~/m4hFindSimModule/m4hFindSimModule`   
-6. Programm ausführen   
+6. Programm ausf&uuml;hren   
   `~/m4hFindSimModule/m4hFindSimModule`   
   Ergebnis siehe oben.   
   Falls kein Modem gefunden wird:   
@@ -655,9 +655,9 @@ Searching for modem...
 /dev/ttyUSB1: Could not open device (Error 2: No such file or directory)
 ```
 
-## 8.3 Programm für alle User verfügbar machen
-Das ausführbare Programm oben befindet sich im Home-Bereich des Users pi_ und ist nur für diesen verfügbar.   
-Die folgenden Befehle kopieren das Programm `m4hFindSimModule` ins Verzeichnis `/usr/local/bin`, ändern den Besitzer auf root und machen das Programm für alle ausführbar.   
+## 8.3 Programm f&uuml;r alle User verf&uuml;gbar machen
+Das ausf&uuml;hrbare Programm oben befindet sich im Home-Bereich des Users pi_ und ist nur f&uuml;r diesen verf&uuml;gbar.   
+Die folgenden Befehle kopieren das Programm `m4hFindSimModule` ins Verzeichnis `/usr/local/bin`, &auml;ndern den Besitzer auf root und machen das Programm f&uuml;r alle ausf&uuml;hrbar.   
 ```
 sudo cp ~/m4hFindSimModule/m4hFindSimModule /usr/local/bin/m4hFindSimModule
 sudo chown root /usr/local/bin/m4hFindSimModule
@@ -675,9 +675,9 @@ Das Programm `m4hControl` ist die MQTT-Haussteuerung auf dem RasPi. Teile davon 
 
 # 9. Feste USB-Schnittstellen-Namen durch udev-Regeln   
 ## 9.1 Einleitung   
-Beim Booten weist das RasPi die Schnittstellen-Namen `ttyUSB0` und `ttyUSB1` zufällig den USB-Anschlüssen zu. Das bedeutet, dass der ZigBee-Adapter manchmal an  
-`ttyUSB0` oder manchmal an `ttyUSB1` hängt, obwohl er hardwaremäßig nicht umgesteckt wurde.   
-Eine Möglichkeit, in einem Programm immer den gleichen Schnittstellennamen zu verwenden, ist, einen symbolischen Link zu definieren.
+Beim Booten weist das RasPi die Schnittstellen-Namen `ttyUSB0` und `ttyUSB1` zuf&auml;llig den USB-Anschl&uuml;ssen zu. Das bedeutet, dass der ZigBee-Adapter manchmal an  
+`ttyUSB0` oder manchmal an `ttyUSB1` h&auml;ngt, obwohl er hardwarem&auml;&szlig;ig nicht umgesteckt wurde.   
+Eine M&ouml;glichkeit, in einem Programm immer den gleichen Schnittstellennamen zu verwenden, ist, einen symbolischen Link zu definieren.
 Beispiel: `ttyUSB_Zigbee` soll auf `/dev/ttyUSB0` zeigen   
 ```
 sudo ln -s /dev/ttyUSB0 /dev/ttyUSB_Zigbee
@@ -688,8 +688,8 @@ Kontrolle:
 Besser ist es, eine fixe - und richtige - Zuordnung zu einem Schnittstellen-Namen mit Hilfe von udev-Regeln zu erreichen. Die folgende Anleitung stammt von der Seite   
 [https://www.heise.de/ratgeber/RasPi-Feste-USB-Schnittstellen-Namen-durch-udev-Regeln-4836365.html?seite=all](https://www.heise.de/ratgeber/RasPi-Feste-USB-Schnittstellen-Namen-durch-udev-Regeln-4836365.html?seite=all)   
 
-## 9.2 Eigenschaften der verwendeten USB-Geräte ermitteln
-Anzeige der USB-Geräte durch   
+## 9.2 Eigenschaften der verwendeten USB-Ger&auml;te ermitteln
+Anzeige der USB-Ger&auml;te durch   
 `lsusb`   
 ergibt zum Beispiel   
 ```
@@ -701,13 +701,13 @@ Bus 001 Device 002: ID 2109:3431 VIA Labs, Inc. Hub
 Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 ```
 Man erkennt:   
-* An Bus 001 Device 005 hängt eine Tastatur
-* An Bus 001 Device 003 hängt ein USB-UART-Umsetzer (Bridge zu einem Modem)
-* An Bus 001 Device 002 hängt ein ZigBee-Stick
+* An Bus 001 Device 005 h&auml;ngt eine Tastatur
+* An Bus 001 Device 003 h&auml;ngt ein USB-UART-Umsetzer (Bridge zu einem Modem)
+* An Bus 001 Device 002 h&auml;ngt ein ZigBee-Stick
 
 Die Eingabe von   
 `udevadm info -a -n /dev/ttyUSB0`   
-ergibt für den Zigbee-Stick "Sonoff_Zigbee_3.0_USB_Dongle_Plus" die Geräte-Information im udev-Format   
+ergibt f&uuml;r den Zigbee-Stick "Sonoff_Zigbee_3.0_USB_Dongle_Plus" die Ger&auml;te-Information im udev-Format   
 ```
 looking at device '/devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:00.0/00
     KERNEL=="ttyUSB0"
@@ -773,9 +773,9 @@ SUBSYSTEM==`tty`
 ATTRS{idProduct}=="ea60"
 ATTRS{idVendor}=="10c4"
 ```
-Auf die gleiche Weise erhält man mit   
+Auf die gleiche Weise erh&auml;lt man mit   
 `udevadm info -a -n /dev/ttyUSB1`   
-für den USB-Serial-Wandler (an dem das Modem hängt)   
+f&uuml;r den USB-Serial-Wandler (an dem das Modem h&auml;ngt)   
 ```
 SUBSYSTEM==`tty`
 ATTRS{idProduct}=="6001"
@@ -797,23 +797,23 @@ Neustarten des RasPi mit
 Kontrolle der Schnittstellenzuordnung:   
 `dir -lh /dev/ttyUSB*`   
 
-Die Schnittstellenzuordnung kann auch mit dem zuvor erstellten Programm `m4hFindSimModule` überprüft werden. Es müsste das gleiche Ergebnis liefern wie die Zuordnung von `ttyUSB_Modem`:   
+Die Schnittstellenzuordnung kann auch mit dem zuvor erstellten Programm `m4hFindSimModule` &uuml;berpr&uuml;ft werden. Es m&uuml;sste das gleiche Ergebnis liefern wie die Zuordnung von `ttyUSB_Modem`:   
 `/usr/local/bin/m4hFindSimModule`   
 
 [Zum Seitenanfang](#up)   
 <a name="x100"></a>   
 
 # 10. Eigene Autostart-Datei `autostart.sh`
-M&ouml;chte man beim System-Start eigene Programme automatisch starten, so kann man diese zum Beispiel in einem eigenen Script "`autostart.sh`" sammeln. Das folgende Beispiel für eine Autostart-Datei macht folgendes:   
+M&ouml;chte man beim System-Start eigene Programme automatisch starten, so kann man diese zum Beispiel in einem eigenen Script "`autostart.sh`" sammeln. Das folgende Beispiel f&uuml;r eine Autostart-Datei macht folgendes:   
 * Definition einer log()-Funktion, die Ausgaben in die log-Datei `/var/log/autostart.log` schreibt,
-* ändern der Anzeige-Farbe auf "gelb",
+* &auml;ndern der Anzeige-Farbe auf "gelb",
 * maximal 8 Sekunden (`ZB_TIMEOUT`) warten, bis ein symbolischer Link `ttyUSB_Zigbee` erstellt wurde und Ausgabe des Ergebnisses in die log-Datei,
 * eine Sekunde warten,
 * Steuerprogramm `/usr/local/bin/m4hControl` starten, 
 * 5 Sekunden warten,
 * ins Verzeichnis /opt/zigbee2mqtt wechseln und dort zigbee2mqtt starten,
 * ins Arbeitsverzeichnis des Benutzers wechseln,
-* die Anzeige-Farbe zurücksetzen.
+* die Anzeige-Farbe zur&uuml;cksetzen.
 
 1. Autostart-Datei erzeugen.   
 ```
@@ -884,7 +884,7 @@ Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x
 __*Anmerkung:*__   
   * Soll beim Start einer Datei nicht auf das Ende des Programmes gewartet werden, so muss am Ende der Aufruf-Zeile ein "kaufm&auml;nnisches-und"-Zeichen (Ampersand) &amp; stehen oder am Beginn der Zeile muss `nohup ` stehen!   
 
-2. Skript für alle User ausführbar machen.   
+2. Skript f&uuml;r alle User ausf&uuml;hrbar machen.   
 ```   
 sudo chown root /usr/local/bin/autostart.sh
 sudo chmod 777 /usr/local/bin/autostart.sh
@@ -913,7 +913,7 @@ WantedBy=multi-user.target
 ```   
 Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
 
-4. Service aktivieren, damit es beim Booten läuft:   
+4. Service aktivieren, damit es beim Booten l&auml;uft:   
 ```   
 sudo systemctl enable autostart.service
 ```   
@@ -923,7 +923,7 @@ sudo systemctl enable autostart.service
 sudo systemctl start autostart.service
 ```   
 
-6. Service-Status überprüfen:
+6. Service-Status &uuml;berpr&uuml;fen:
 ```   
 sudo systemctl status autostart.service
 ```   
@@ -952,9 +952,9 @@ Entweder
 `   
   oder eine bestehende Konfigurationsdatei verwenden...   
 
-In der Konfigurationsdatei sollte die Schnittstelle auf `/dev/ttyUSB_Zigbee` geändert werden:   
+In der Konfigurationsdatei sollte die Schnittstelle auf `/dev/ttyUSB_Zigbee` ge&auml;ndert werden:   
 `sudo nano /opt/zigbee2mqtt/data/configuration.yaml`
-Anpassen oder ergänzen:   
+Anpassen oder erg&auml;nzen:   
 ```   
 serial:
   port: /dev/ttyUSB_Zigbee
@@ -964,14 +964,14 @@ Wichtig: GENAU zwei Leerzeichen vor dem Wort `port:`
 3. Testen, ob Zigbee2MQTT richtig startet:   
   `cd /opt/zigbee2mqtt`   
   `npm start`   
-  Wenn alles passt, erhält man die Meldung   
+  Wenn alles passt, erh&auml;lt man die Meldung   
   `z2m: Zigbee2MQTT started!`   
   Beenden des Programms mit &lt;strg&gt;c   
-  Falls der MQTT-Server nicht läuft erhält man die Fehlermeldung `error:    z2m: MQTT failed to connect, exiting...`.   
+  Falls der MQTT-Server nicht l&auml;uft erh&auml;lt man die Fehlermeldung `error:    z2m: MQTT failed to connect, exiting...`.   
   Beenden mit &lt;strg&gt;c   
 
 ## 11.2 Zigbee-Schnittstellenprobleme
-Wenn es Probleme mit dem symbolischen Link `/dev/ttyUSB_Zigbee` gibt, kann man auch zwei Konfigurationsdateien mit unterschiedlichen `port:`-Anweisungen anlegen und die gerade gültige Datei nach `/opt/zigbee2mqtt/data/configuration.yaml` kopieren...   
+Wenn es Probleme mit dem symbolischen Link `/dev/ttyUSB_Zigbee` gibt, kann man auch zwei Konfigurationsdateien mit unterschiedlichen `port:`-Anweisungen anlegen und die gerade g&uuml;ltige Datei nach `/opt/zigbee2mqtt/data/configuration.yaml` kopieren...   
 ```
 cp /opt/zigbee2mqtt/data/configuration.yaml /opt/zigbee2mqtt/data/configz.yaml
 cp /opt/zigbee2mqtt/data/configuration.yaml /opt/zigbee2mqtt/data/config0.yaml
@@ -979,27 +979,27 @@ cp /opt/zigbee2mqtt/data/configuration.yaml /opt/zigbee2mqtt/data/config1.yaml
 ```
 Dateien bearbeiten:   
 `nano /opt/zigbee2mqtt/data/config0.yaml`   
-Ändern:
+&Auml;ndern:
 ```
 serial:
   port: /dev/ttyUSB0
 ```
 
 `nano /opt/zigbee2mqtt/data/config1.yaml`   
-Ändern:
+&Auml;ndern:
 ```
 serial:
   port: /dev/ttyUSB1
 ```
 
 `nano /opt/zigbee2mqtt/data/configz.yaml`   
-Ändern:
+&Auml;ndern:
 ```
 serial:
   port: /dev/ttyUSB_Zigbee
 ```
 
-In diesem Fall muss die `autostart.sh`-Datei entsprechend geändert werden:   
+In diesem Fall muss die `autostart.sh`-Datei entsprechend ge&auml;ndert werden:   
 `sudo nano /usr/local/bin/autostart.sh`   
 Inhalt:   
 ```
@@ -1043,7 +1043,7 @@ else
   #/usr/local/bin/zigbee-config-switch.sh
 fi
 
-# Symbolischen Link prüfen
+# Symbolischen Link pr&uuml;fen
 LINK_TARGET=$(readlink -f /dev/ttyUSB_Zigbee)
 
 echo "Symbolischer Link zeigt auf: $LINK_TARGET"
@@ -1052,7 +1052,7 @@ case "$LINK_TARGET" in
     /dev/ttyUSB0) CONFIG_FILE="config0.yaml" ;;
     /dev/ttyUSB1) CONFIG_FILE="config1.yaml" ;;
     *)
-        log "Unbekanntes Gerät: $LINK_TARGET – keine Konfiguration kopiert."
+        log "Unbekanntes Ger&auml;t: $LINK_TARGET – keine Konfiguration kopiert."
         exit 1
         ;;
 esac
@@ -1087,7 +1087,7 @@ exit 0
 ```
 ---   
 ## 11.3 Zigbee2mqtt als Service
-Falls man Zigbee2mqtt als Service automatisch starten möchte (und nicht in der eigenen `autostart.sh`-Datei):   
+Falls man Zigbee2mqtt als Service automatisch starten m&ouml;chte (und nicht in der eigenen `autostart.sh`-Datei):   
 ```
 sudo nano /etc/systemd/system/zigbee2mqtt.service
 ```
@@ -1109,19 +1109,19 @@ User=pi
 WantedBy=multi-user.target
 ```
 
-Falls man das Service aktivieren möchte:   
+Falls man das Service aktivieren m&ouml;chte:   
 ```
 sudo systemctl daemon-reexec
 sudo systemctl enable zigbee2mqtt
 sudo systemctl start zigbee2mqtt
 ```
 
-Kontrolle, ob das Service läuft:   
+Kontrolle, ob das Service l&auml;uft:   
 ```
 sudo systemctl status zigbee2mqtt
 ```
 
-Und falls man das Service deaktivieren möchte:   
+Und falls man das Service deaktivieren m&ouml;chte:   
 ```
 sudo systemctl disable zigbee2mqtt
 ```
@@ -1133,7 +1133,7 @@ Nur Stoppen des Services geht mit
 <a name="x110"></a>   
 
 # 12. Kiosk-Modus
-Der "Kiosk-Modus" ist eine Betriebsart von Rechnern bzw. Terminals mit graphischer Anzeige, bei der die Rechte des Users eingeschränkt sind und nur bestimmte Aktionen ausgeführt werden können.   
+Der "Kiosk-Modus" ist eine Betriebsart von Rechnern bzw. Terminals mit graphischer Anzeige, bei der die Rechte des Users eingeschr&auml;nkt sind und nur bestimmte Aktionen ausgef&uuml;hrt werden k&ouml;nnen.   
 Welche Schritte sind beim RasPi mit OS "Bookworm" erforderlich, damit eine Web-Seite im Chromium-Browser nach dem Start automatisch im Kios-Modus angezeigt wird?   
 
 1. Chromium installieren (falls nicht vorhanden):   
@@ -1148,7 +1148,7 @@ Welche Schritte sind beim RasPi mit OS "Bookworm" erforderlich, damit eine Web-S
 3. Autostart-Datei bearbeiten   
   `mkdir -p ~/.config/lxsession/LXDE-pi`   
   `nano ~/.config/lxsession/LXDE-pi/autostart`   
-  Hinzufügen (Bildschirm nie ausschalten, Chromium starten):   
+  Hinzuf&uuml;gen (Bildschirm nie ausschalten, Chromium starten):   
   `@xset s off`   
   `@xset -dpms`   
   `@xset s noblank`   
@@ -1163,9 +1163,9 @@ Welche Schritte sind beim RasPi mit OS "Bookworm" erforderlich, damit eine Web-S
 
 # 13. Dies und Das
 ## 13.1 Vorhandene Sicherungsdateien verwenden
-Mit Hilfe des Programmes WinSCP kann man vorhandene, auf dem PC gesicherte Dateien zurück auf das RasPi speichern. Dazu startet man WinSCP, gibt die IP-Adresse des RasPi (zB `10.1.1.1`), den Benutzernamen (zB `pi_`) und das Passwort (zB `pass`) ein (Portnummer 22) und meldet sich an.   
+Mit Hilfe des Programmes WinSCP kann man vorhandene, auf dem PC gesicherte Dateien zur&uuml;ck auf das RasPi speichern. Dazu startet man WinSCP, gibt die IP-Adresse des RasPi (zB `10.1.1.1`), den Benutzernamen (zB `pi_`) und das Passwort (zB `pass`) ein (Portnummer 22) und meldet sich an.   
 
-Wenn der Zugriff auf geschützte Verzeichnisse am RasPi verweigert wird, hilft folgendes Work-Around:   
+Wenn der Zugriff auf gesch&uuml;tzte Verzeichnisse am RasPi verweigert wird, hilft folgendes Work-Around:   
 1. Hilfsverzeichnis im Arbeitsverzeichnis des RasPi erstellen, zB mit   
 `mkdir /~/temp`   
 2. Hineinkopieren der Dateien vom PC ins Hilfsverzeichnis und Weiterkopieren der Dateien mit sudo-Rechten, zB   
@@ -1178,9 +1178,16 @@ sudo chmod 777 /usr/local/bin/autostart.sh
 ## 13.2 Periodisches Senden von MQTT-Nachrichten
 Das periodische Senden von MQTT-Nachrichten ist im Kapitel [/md/m4h104_RasPi_crontab.md](/md/m4h104_RasPi_crontab) beschrieben.   
 
+## 13.3 Display-Helligkeit einstellen
+Beim OS "Debian Bookworm" mit X11 (X.Org) als Display-Server wird die Helligkeit &uuml;ber das Verzeichnis `/sys/class/backlight/...` gesteuert. In diesem befindet sich ein symbolischer Link auf das Display, aus dem man den Namen des Backlight-Devices (zB 10-0045) entnehmen kann:   
+`ls -l /sys/class/backlight/`  
+
+Die Einstellung der Helligkeit erfolgt durch Eintrag eines Wertes von 0 bis 255 in die Datei `/sys/class/backlight/10-0045/brightness`, zB durch   
+`echo 128 | sudo tee /sys/class/backlight/10-0045/brightness`   
+
 ---
 
-## 13.3 Bildschirmschoner abschalten (alte Version)
+## 13.4 Bildschirmschoner abschalten (alte Version)
 1. Neues Verzeichnis mit Steuerdatei anlegen:   
 `sudo mkdir /etc/X11/xorg.conf.d`   
 Steuerdatei erstellen:   

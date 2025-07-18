@@ -61,7 +61,7 @@ Restlicher Platz rechts: 500 - 100 = 400 Einheiten
 
 ## ID eines Symbols (sid)
 Die Symbol-ID (sid) stellt die Verbindung zwischen der grafischen Darstellung und dem Controller dar (siehe Eigenschaft [id](#id) im Kapitel "[Im Basis-Controller definierte Attribute](#id)")   
-Wird `sid=""` gesetzt, werden keine Texte und Hintergründe angezeigt.   
+Wird `sid=""` gesetzt, werden keine Texte und Hintergr&uuml;nde angezeigt.   
 
 ## Rand eines Symbols (:border)
 Normalerweise sind CI-Symbole au&szlig;en 100x100 Einheiten gro&szlig; und haben nach innen einen fixen Rand von 5 Einheiten. Beim CiWall1-Symbol ist dies anders:   

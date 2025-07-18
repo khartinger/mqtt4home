@@ -1,4 +1,4 @@
-# RasPi: Hilfsprogramme für Raspbery Pi und MQTT
+# RasPi: Hilfsprogramme f&uuml;r Raspbery Pi und MQTT
 Programm: -, Version 2021-08-27   
 [--> English Version](./README.md "English Version")   
 

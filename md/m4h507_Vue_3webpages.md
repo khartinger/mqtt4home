@@ -96,7 +96,7 @@ Mit der linken Maustaste auf `src/views/About.vue` klicken, Datei mit &lt;strg&g
 
 ### 3.4 Anpassen der "Routen" in der automatisch erstellten Datei `router/index.ts`:   
 
-_Ändern des Inhalts auf:_
+_&Auml;ndern des Inhalts auf:_
 
 ```   
 // ___________router/index.ts___________________________________

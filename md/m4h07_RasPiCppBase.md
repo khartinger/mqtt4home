@@ -1,6 +1,6 @@
 Letzte &Auml;nderung: 19.8.2021   
 <table><tr><td><img src="logo/mqtt4home_96.png"></img></td><td>&nbsp;</td><td>
-<h1>Raspberry Pi: Vorlage für MQTT-Programme in C++</h1>
+<h1>Raspberry Pi: Vorlage f&uuml;r MQTT-Programme in C++</h1>
 <a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
 <a href="m4h07_RasPiCppBase_e.md">==> English version</a> &nbsp; &nbsp; &nbsp; 
 </td></tr></table><hr>
@@ -16,7 +16,7 @@ Letzte &Auml;nderung: 19.8.2021
 
 ## &Uuml;bersicht
 Um Systeme &uuml;bersichtlich zu gestalten, sollten sie modular aufgebaut sein. Modular bedeutet dabei, dass eine bestimmte Funktion von genau einem Modul realisiert wird und Module bei Bedarf dazugegeben oder weggelassen werden k&ouml;nnen.   
-In dieser Anleitung werden mit Hilfe der Vorlage `m4hBase` C++ Programme erstellt, die genau eine Aufgabe erfüllen und wie Betriebssystemaufrufe verwendet werden k&ouml;nnen.   
+In dieser Anleitung werden mit Hilfe der Vorlage `m4hBase` C++ Programme erstellt, die genau eine Aufgabe erf&uuml;llen und wie Betriebssystemaufrufe verwendet werden k&ouml;nnen.   
    
 ## Was kann die Vorlage `m4hBase` leisten?
 1. Lesen von Einstellungen aus der Konfigurationsdatei m4h.conf.   

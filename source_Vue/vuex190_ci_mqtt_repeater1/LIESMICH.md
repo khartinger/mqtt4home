@@ -85,13 +85,13 @@ Ist im Controller der Parameter `name` definiert, so wird dieser Text angezeigt,
 
 ### Fu&szlig;zeile
 1. Ist im Controller der Parameter `textFooter` definiert, so wird dieser Text angezeigt.   
-2. Enth&auml;lt die empfangene MQTT-Nachricht eine Angabe zur Verbindungsqualität ("linkquality") und wird der Wert in der Methode `onMessage()` (Datei `CiRepeater12Controller.ts`) dem Attribut zugewiesen, so wird dieser Wert angezeigt.   
+2. Enth&auml;lt die empfangene MQTT-Nachricht eine Angabe zur Verbindungsqualit&auml;t ("linkquality") und wird der Wert in der Methode `onMessage()` (Datei `CiRepeater12Controller.ts`) dem Attribut zugewiesen, so wird dieser Wert angezeigt.   
 3. Ist keiner der Punkte 1 und 2 erf&uuml;llt, wird nichts angezeigt (Leerzeile).   
 
 ### Zeichenbereich
 Der Zeichenbereich enth&auml;lt drei Zeilen (Zeile 2 bis 4), die folgendes anzeigen:   
 #### Zeile 2   
-Links wird der Text "`Rep`" (für Repeater) und rechts der Zustand angezeigt (`ok`, `OK` oder `?`)   
+Links wird der Text "`Rep`" (f&uuml;r Repeater) und rechts der Zustand angezeigt (`ok`, `OK` oder `?`)   
 #### Zeile 3   
 1. Passt die Id des Symbols (`sid`) zu keinem Eintrag in der Liste `public repeater1s: Array<Repeater1>` (Datei `CiRepeater12Controller.ts`), so wird "`unknown`" angezeigt.   
 2. Gibt es einen Datumswert, so wird dieser angezeigt (Format `dd.mm.yy`).   
@@ -127,18 +127,18 @@ __Codierungsbeispiel__:
 ### Farbe des Zeichenbereichs   
 Die Hintergrundfarbe des Zeichenbereichs wird automatisch gesetzt:   
 * Tritt ein Fehler auf, wird die Hintergrundfarbe auf hellrot gesetzt. (Farbe "`colorNotOK`" aus der Datei `Geo.ts`)   
-* Ist der Repeater-Zustand ok, wird der Hintergrund hellgrün (`colorRepeater`) gesetzt.   
-* In allen anderen Fällen wird der Hintergrund hellgrau (`colorNoRepeater`) gesetzt.   
+* Ist der Repeater-Zustand ok, wird der Hintergrund hellgr&uuml;n (`colorRepeater`) gesetzt.   
+* In allen anderen F&auml;llen wird der Hintergrund hellgrau (`colorNoRepeater`) gesetzt.   
 
 ### Farbe der Kopfzeile   
 Mit Hilfe des Attributs `colorH=` kann die Hintergrundfarbe der Kopfzeile eines CiRepeater1-Symbols gesetzt werden. Der Wert kann entweder ein RGB-Wert (rot-gr&uuml;n-blau-Wert), wie zB `#eedd00` oder eine Textangabe wie `red`, `white` etc. sein.   
-Wird keine Farbe gewählt, ist die Kopfzeile transparent.   
+Wird keine Farbe gew&auml;hlt, ist die Kopfzeile transparent.   
 
 ### Farbe der Fu&szlig;zeile   
 * Bei einem Fehler wird die Hintergrundfarbe auf hellrot gesetzt. (Farbe "`colorNotOK`" aus der Datei `Geo.ts`)   
-* Ist der Repeater-Zustand ok, wird der Hintergrund hellgrün (`colorRepeater`) gesetzt.   
+* Ist der Repeater-Zustand ok, wird der Hintergrund hellgr&uuml;n (`colorRepeater`) gesetzt.   
 * Falls mit `colorF=` ein Farbwert angegeben wurde, wird diese Farbe verwendet.   
-* In allen anderen Fällen wird der Hintergrund transparent gesetzt (`none`).   
+* In allen anderen F&auml;llen wird der Hintergrund transparent gesetzt (`none`).   
 
 <a name="id"></a>   
 # Nicht-grafische Eigenschaften
@@ -162,7 +162,7 @@ Folgende Attribute sind optional:
 Folgende Attribute sind zwingend anzugeben:   
 | Eigenschaft         | Bedeutung                            |   
 | ------------------- | ------------------------------------ |   
-| `iRepeater1State`    | Status des CiRepeater1-Symbols. Dafür sind in der Datei `CiRepeater1Controller.ts` die Konstanten `stateOk`, `stateLastSeen`, `stateNotOk` und `stateNoState` definiert.   |   
+| `iRepeater1State`    | Status des CiRepeater1-Symbols. Daf&uuml;r sind in der Datei `CiRepeater1Controller.ts` die Konstanten `stateOk`, `stateLastSeen`, `stateNotOk` und `stateNoState` definiert.   |   
 | `type`              | Typ des CiRepeater1 Symbols. Sagt etwas dar&uuml;ber aus, welche Daten vom Repeater erwartet werden.   |   
 | `lastRepeater1Date` | Datum, wann die letzte Repeater-Nachricht eingetroffen ist.<br>Kann beim Ausf&uuml;llen f&uuml;r ein bestimmtes Symbol zB auf `Date?` oder `--.--.--` gesetzt werden.   |   
 | `lastRepeater1Time` | Uhrzeit, wann die letzte Repeater-Nachricht eingetroffen ist.<br>Kann beim Ausf&uuml;llen f&uuml;r ein bestimmtes Symbol zB auf `Time?` oder `--:--` gesetzt werden.   |   
@@ -170,7 +170,7 @@ Folgende Attribute sind zwingend anzugeben:
 Folgende Attribute sind optional und k&ouml;nnen bei Bedarf verwendet werden:   
 | Eigenschaft    | Bedeutung                            |   
 | -------------- | ------------------------------------ |   
-| `linkquality`  | Angabe zur Verbindungsqualität (bei IKEA zB ein Wert von 0 bis 255). Wird in Zeile 5 angezeigt.   |   
+| `linkquality`  | Angabe zur Verbindungsqualit&auml;t (bei IKEA zB ein Wert von 0 bis 255). Wird in Zeile 5 angezeigt.   |   
 | `textFooter`   | Angabe eines fixen Textes in der Fu&szlig;zeile. |   
 
 ## Beispiel: Codierung des `CiRepeater1Controller.ts`   

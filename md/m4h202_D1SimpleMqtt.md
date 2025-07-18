@@ -27,16 +27,16 @@ Zus&auml;tzlich zu diesen Vereinbarungen k&ouml;nnen aber auch beliebige weitere
 ## Vorteile bei der Verwendung der Klasse "SimpleMqtt"
 Zwei Features haben sich in der Praxis als besonders praktisch herausgestellt:   
 1. Senden einer Startmeldung beim Hochfahren des D1 minis.   
-2. Möglichkeit zum Ändern des Basis-Topics über eine MQTT-Nachricht.   
+2. M&ouml;glichkeit zum &Auml;ndern des Basis-Topics &uuml;ber eine MQTT-Nachricht.   
 
-Das bedeutet: Weiß man von einem System (zB Taster etc.) nicht das Basis-Topic, so muss es lediglich rücksetzen und bei den MQTT-Nachrichten schauen, welches Start-Topic gesendet wurde ;)
+Das bedeutet: Wei&szlig; man von einem System (zB Taster etc.) nicht das Basis-Topic, so muss es lediglich r&uuml;cksetzen und bei den MQTT-Nachrichten schauen, welches Start-Topic gesendet wurde ;)
 ### Weitere Vorteile der Klasse `SimpleMqtt` sind:   
 * Vergabe beliebiger Namen (Basis-Topic) f&uuml;r jeden D1 mini ohne das Programm anpassen zu m&uuml;ssen. (Der Name wird im EEPROM gespeichert.)
 * Definition der get-/set-/sub- und pub-Topics in jeweils einer Konstanten (`TOPIC_GET`, `TOPIC_SET`, `TOPIC_SUB`, `TOPIC_PUB`)
 * Automatische Antwort auf get-Anfragen:   
   | Payload | Antwort-Nachricht |   
   | ------- | ----------------- |   
-  | help oder ? | Liste der möglichen get-/set-/sub- und pub-Topics |   
+  | help oder ? | Liste der m&ouml;glichen get-/set-/sub- und pub-Topics |   
   | version     | SimpleMqtt-Version oder Programm-Version           |   
   | ip          | die vom RasPi zugewiesene IP des Systemteilnehmers |   
 * Einfache Speicherung von Werten im EEPROM (zB Parameter f&uuml;r Sensoren)
@@ -48,9 +48,9 @@ D1 mini Programme setzen folgende Projektstruktur voraus:
   | xxx | xxx.ino   <br>eventuell README.md |   
   | xxx/src/simplemqtt | `D1_class_SimpleMqtt.cpp`, `D1_class_SimpleMqtt.h`,<br>   `PubSubClient.cpp`, `PubSubClient.h`   |   
   
-_Beispiel für Arduino-IDE_:   
+_Beispiel f&uuml;r Arduino-IDE_:   
 [https://github.com/khartinger/mqtt4home/tree/main/source_D1mini/D1_m4h01_smqtt_template1](https://github.com/khartinger/mqtt4home/tree/main/source_D1mini/D1_m4h01_smqtt_template1)   
-_Beispiel für Visual Studion Code_:   
+_Beispiel f&uuml;r Visual Studion Code_:   
 [https://github.com/khartinger/mqtt4home/tree/main/source_D1mini/D1_m4h01_smqtt_template1_vsc](https://github.com/khartinger/mqtt4home/tree/main/source_D1mini/D1_m4h01_smqtt_template1_vsc)   
 
 Dabei kann das folgende Listing `D1_m4h01_smqtt_template1.ino` als Basis f&uuml;r eigene Programme dienen:   

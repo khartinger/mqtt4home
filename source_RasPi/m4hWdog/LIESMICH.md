@@ -49,16 +49,16 @@ Mit dem Key `out` kann festgelegt werden, unter welchem Topic eine Warnung versc
 
 Zur Verwendung des Programm muss lediglich eine ausf&uuml;hrbare Datei erzeugt und diese gestartet werden (siehe folgendes Kapitel).   
 
-## MQTT-Abfrage aller überwachten Topics
+## MQTT-Abfrage aller &uuml;berwachten Topics
 Sendet man die Nachricht   
 `mosquitto_pub -h 10.1.1.1 -t m4hWdog/get -m all`   
-so erhält man zB folgende Antwort-Nachricht:   
+so erh&auml;lt man zB folgende Antwort-Nachricht:   
 `m4hWdog/ret/all All monitored topics: test/t20,test/t30,test/t3723,test/t259200`   
 
-## MQTT-Abfrage aller überfälligen Topics
+## MQTT-Abfrage aller &uuml;berf&auml;lligen Topics
 Sendet man die Nachricht   
 `mosquitto_pub -h 10.1.1.1 -t m4hWdog/get -m overdue`   
-und wartet man nach einem Programmstart zumindest eine halbe Minute, so erhält man zB folgende Antwort-Nachricht:   
+und wartet man nach einem Programmstart zumindest eine halbe Minute, so erh&auml;lt man zB folgende Antwort-Nachricht:   
 `info/start m4hWdog (16.02.2022 18:55:21)`   
 `m4hWdog/attention Sensor test/t20 missing!`   
 `m4hWdog/attention Sensor test/t30 missing!`   
@@ -121,7 +121,7 @@ Beenden des Programms zB mit der Tastenkombination &lt;Strg&gt;c
 Weiters wird im ersten Terminalfenster alle 20 Sekunden folgende MQTT-Nachricht angezeigt:   
 `m4hWdog/attention Sensor test/t20 missing!`   
 
-4. Um eine Nachricht zu senen, öffnet man am PC ein zweites Terminalfenster (`cmd.exe`) oder putty-Fenster oder am RasPi eine zweite Konsole und gibt folgendes ein:   
+4. Um eine Nachricht zu senen, &ouml;ffnet man am PC ein zweites Terminalfenster (`cmd.exe`) oder putty-Fenster oder am RasPi eine zweite Konsole und gibt folgendes ein:   
 `mosquitto_pub -h 10.1.1.1 -t test/t20 -m anything`   
 Mit jeder Nachricht wird der Watchdog-Timer neu gestartet.   
 
@@ -198,7 +198,7 @@ In der Klasse `Wdog` werden die dazugeh&ouml;rigen Eigenschaften definiert:
  std::vector<WdogIn1>vIn;              // topic in values
 ```   
 
-Zus&auml;tzlich werden noch Konstante f&uuml;r den Topic-In-Platzhalter ("`<in>`"), die Liste aller Topics oder aller überfälligen Topics ("`<list>`") sowie den Minimal- und Maximalwert f&uuml;r die Watchdog-Zeit definiert.   
+Zus&auml;tzlich werden noch Konstante f&uuml;r den Topic-In-Platzhalter ("`<in>`"), die Liste aller Topics oder aller &uuml;berf&auml;lligen Topics ("`<list>`") sowie den Minimal- und Maximalwert f&uuml;r die Watchdog-Zeit definiert.   
 
 Im Allgemeinen werden die "Demo"-Eintr&auml;ge in der Datei `C_Wdog.hpp` nicht ben&ouml;tigt und k&ouml;nnen auskommentiert oder gel&ouml;scht werden.   
 

@@ -1,4 +1,4 @@
-Letzte &Auml;nderung: 15.1.2022 <a name="up"></a>   
+Letzte &Auml;nderung: 15.1.2022 - 18.7.2025<a name="up"></a>   
 <table><tr><td><img src="./images/mqtt4home_96.png"></img></td><td>
 <h1>Wie verbindet man Zigbee-Ger&auml;te mit MQTT?</h1>
 <a href="../LIESMICH.md">==> Startseite</a> &nbsp; &nbsp; &nbsp; 
@@ -11,7 +11,15 @@ Es gibt sehr viele Zigbee-Ger&auml;te, die sich gegen&uuml;ber WLAN-Ger&auml;ten
 In dieser Anleitung wird als Br&uuml;cke ["Zigbee2MQTT"](https://www.zigbee2mqtt.io/) verwendet. Die sehr gute (englische) Beschreibung findet man unter [https://www.zigbee2mqtt.io/](https://www.zigbee2mqtt.io/).   
 Informationen &uuml;ber Zigbee selbst gibt es auf Wikipedia unter [https://de.wikipedia.org/wiki/ZigBee](https://de.wikipedia.org/wiki/ZigBee).   
 
-# Was wird ben&ouml;tigt?
+### Inhalt
+* [1. Was wird ben&ouml;tigt?](#x10)   
+* [2. Zigbee2MQTT auf dem RasPi installieren](#x20)   
+* [3. Zigbee-Komponenten ins Netzwerk einbinden](#x30)   
+* [4. Nicht unterst&uuml;tzte Zigbee-Ger&auml;te](#x40)   
+
+<a name="x10"></a>   
+
+# 1. Was wird ben&ouml;tigt?
 Siehe auch [https://www.zigbee2mqtt.io/guide/getting-started/#prerequisites](https://www.zigbee2mqtt.io/guide/getting-started/#prerequisites).   
 
 1. Zigbee Adapter   
@@ -32,7 +40,10 @@ Siehe auch [https://www.zigbee2mqtt.io/guide/getting-started/#prerequisites](htt
 ![zigbee devices](./images/zigbee_devices_1.png "zigbee devices")   
 _Bild 1: Zigbee-Ger&auml;te: Funksteckdose E1603, T&uuml;rkontakt Aqara MCCGQ11LM, 2fach-Taster und im Hintergrund der Adapter SONOFF Zigbee 3.0 USB Dongle Plus mit TI CC2652P + CP2102N_   
 
-# Zigbee2MQTT auf dem RasPi installieren
+[Zum Seitenanfang](#up)   
+<a name="x20"></a>   
+
+# 2. Zigbee2MQTT auf dem RasPi installieren
 ## Zigbee2MQTT herunterladen
 Es gibt mehrere M&ouml;glichkeiten, Zigbee2MQTT auf dem Raspberry Pi zu installieren. Hier wird eine Version ohne Docker verwendet, die unter   
 [https://www.zigbee2mqtt.io/guide/installation/01_linux.html#linux](https://www.zigbee2mqtt.io/guide/installation/01_linux.html#linux)   
@@ -214,13 +225,26 @@ WantedBy=multi-user.target
   `mosquitto_sub -h 10.1.1.1 -t "#" -v`   
   Es m&uuml;sste die Nachricht `z2m/bridge/state online` und weitere Nachrichten angezeigt werden.   
 
-# Zigbee-Komponenten ins Netzwerk einbinden
-## Vorbereitung
+[Zum Seitenanfang](#up)   
+<a name="x30"></a>   
+
+# 3. Zigbee-Komponenten ins Netzwerk einbinden
+## 3.1 Vorbereitung
 Um den Verbindungsvorgang beobachten zu k&ouml;nnen, sollte in einem Terminalfenster des PC ein Mosquitto-Client laufen, der alle Topics empf&auml;ngt:   
   `mosquitto_sub -h 10.1.1.1 -t "#" -v`   
 
-## T&uuml;rkontakt Aqara MCCGQ11LM
+## 3.2 T&uuml;rkontakt Aqara MCCGQ11LM
 ### Paaren
+#### Pairing vorbereiten
+Standardm&auml;&szlig;ig ist `Pairing` bei zigbee2mqtt ausgeschaltet. Um es Einzuschalten, gibt es zwei Wege:   
+1. Einschalten des Pairing &uuml;ber die Webseite:   
+   `http://10.1.1.1:8088`   
+   [Anlernen aktivieren]   
+   Danach hat man etwas &uuml;ber 4 Minuten Zeit, das Ger&auml;t zu paaren.   
+2. &Uuml;ber eine MQTT-Nachricht:   
+   `mosquitto_pub -h 10.1.1.1 -t zb/bridge/request/permit_join -m "{\"value\": true, \"time\": 254}"`
+
+#### Weitere Vorgangsweise
 Kontakt ganz in die N&auml;he der Antenne des Zigbee-Adapters bringen und den Knopf an der Schmalseite so lange dr&uuml;cken, bis die LED blau blinkt. Im Terminalfenster sollten entsprechende Nachrichten erscheinen wie zB   
 `z2m/bridge/event {"data":{"friendly_name":"0x00158d00045c0000","ieee_address":"0x00158d00045c0000","status":"started"},"type":"device_interview"}`   
 und   
@@ -249,11 +273,64 @@ so bewirkt das Ann&auml;hern des Magneten an den T&uuml;rkontakt ein Nachricht w
 `z2m/kontakt_2 {"battery":100,"contact":true,"linkquality":192,"temperature":26,"voltage":3015}`   
 
 
-## IKEA-Funksteckdose E1603
+## 3.3 IKEA-Funksteckdose E1603
 Siehe [https://www.zigbee2mqtt.io/devices/E1603_E1702_E1708.html#ikea-e1603-e1702-e1708](https://www.zigbee2mqtt.io/devices/E1603_E1702_E1708.html#ikea-e1603-e1702-e1708)   
 
-## 2fach-Taster ("Kabelloser Dimmer") von IKEA
+## 3.4 2fach-Taster ("Kabelloser Dimmer") von IKEA
 Siehe [https://www.zigbee2mqtt.io/devices/E1743.html#ikea-e1743](https://www.zigbee2mqtt.io/devices/E1743.html#ikea-e1743)
+
+
+[Zum Seitenanfang](#up)   
+<a name="x40"></a>   
+
+# 4. Nicht unterst&uuml;tzte Zigbee-Ger&auml;te   
+Liefert ein Ger&auml;t statt der Messerte zB nur die Meldung "availability online", so kann es sein, dass das Ger&auml;t von zigbee2mqtt (noch) nicht unterst&uuml;tzt wird. Siehe dazu die Kompatibilit&auml;tsliste unter   
+[https://www.zigbee2mqtt.io/supported-devices](https://www.zigbee2mqtt.io/supported-devices)
+Hilft ein erneutes Pairing nicht, so muss man einen "External Converter" erstellen.   
+
+Im folgenden Beispiel wird f&uuml;r einen Temperatur- und Feuchtigkeitssensor ZY-HS03 ein "External Converter" erstellt.   
+
+## Neuen "external converter" erstellen
+1. Neuen Ordner im Zigbee2MQTT-Ordner erstellen:   
+   `mkdir /opt/zigbee2mqtt/data/external-converters/`
+2. In diesem Ordner eine Datei, z.B. `zy-hs03.js`, mit folgendem Inhalt anlegen:   
+  `nano /opt/zigbee2mqtt/data/external-converters/zy-hs03.js`   
+Inhalt:   
+```
+const fz = require('zigbee-herdsman-converters/converters/fromZigbee');
+const tz = require('zigbee-herdsman-converters/converters/toZigbee');
+const exposes = require('zigbee-herdsman-converters/lib/exposes');
+const e = exposes.presets;
+const ea = exposes.access;
+
+module.exports = [
+    {
+        fingerprint: [
+            { modelID: 'TY0201', manufacturerName: '_TZ3000_bjawzodf' },
+        ],
+        model: 'ZY-HS03',
+        vendor: 'Tuya',
+        description: 'Temperature and humidity sensor',
+        fromZigbee: [fz.temperature, fz.humidity, fz.battery],
+        toZigbee: [],
+        exposes: [e.temperature(), e.humidity(), e.battery()],
+    },
+];
+```
+    Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
+
+3. `configuration.yaml` anpassen   
+Wenn man mehrere Konfigurationsdateien im Einsatz hat, zB `config0.yaml`, `config1.yaml`, `configz.yaml`und `configuration.yaml`, dann in allen Dateien einf&uuml;gen:   
+`nano /opt/zigbee2mqtt/data/config0.yaml`   
+Inhalt:   
+```   
+external_converters:
+  - data/external-converters/zy-hs03.js
+```   
+
+4. Zigbee2MQTT bzw. das RasPi neu starten   
+`sudo reboot`   
+
 
 ---   
 

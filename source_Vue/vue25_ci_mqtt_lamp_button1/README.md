@@ -213,7 +213,7 @@ Im Bereich "defineComponent - components: {":
 ` CiLamp,`   
 
 ## Schritt 3: Registierung des Controllers zum Empfang von MQTT-Nachrichten
-In der Datei `services/CiMqttClientInstance.ts` folgende zwei Zeilen ergänzen:   
+In der Datei `services/CiMqttClientInstance.ts` folgende zwei Zeilen erg&auml;nzen:   
 `import { ciLampController } from '@/controller/CiLampController'`   
 `ciMqttClientInstance.registerController(ciLampController)`   
 

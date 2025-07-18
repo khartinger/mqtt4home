@@ -26,7 +26,7 @@ Als Antwort erh&auml;lt man entweder
 oder, falls der Wert (zB 1234) nicht gesetzt werden konnte:   
 `lcd/ret/brightness 1234_not_set!_(12...255)`   
    
-Weiters kann der aktuelle Helligkeitswert folgendermaßen abgefragt werden:   
+Weiters kann der aktuelle Helligkeitswert folgenderma&szlig;en abgefragt werden:   
 `mosquitto_pub -t lcd/get -m brightness`   
 Ergebnis:   
 `lcd/ret/brightness 64`   
@@ -129,7 +129,7 @@ _Beispiel:_
 `setin:  info/lcd/set`   
 
 ## setout
-Angabe des Topics f&uuml;r die Antwort des set-Befehls. Dieses Topic ist meist gleich wie das für die get-Antwort.   
+Angabe des Topics f&uuml;r die Antwort des set-Befehls. Dieses Topic ist meist gleich wie das f&uuml;r die get-Antwort.   
 
 _Beispiel:_   
 `setout:  info/lcd/ret`   

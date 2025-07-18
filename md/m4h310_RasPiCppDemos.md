@@ -82,12 +82,12 @@ Das Programm hat keine MQTT-Anbindung.
 
 ## Filtern bzw. Blockieren von MQTT-Nachrichten
 Name: [`m4hInBlockOut`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hInBlockOut)   
-Dieses Programm dazu, dass bestimmte Nachrichten nicht zu oft versendet werden. Wird eine registrierte Nachricht empfangen, wird geprüft, ob innerhalb der letzten Zeit diese Nachricht bereits empfangen wurde. Nur wenn dies nicht der Fall ist, wird eine vorgegebene Nachricht weitergesendet.   
+Dieses Programm dazu, dass bestimmte Nachrichten nicht zu oft versendet werden. Wird eine registrierte Nachricht empfangen, wird gepr&uuml;ft, ob innerhalb der letzten Zeit diese Nachricht bereits empfangen wurde. Nur wenn dies nicht der Fall ist, wird eine vorgegebene Nachricht weitergesendet.   
 Damit kann zwar nicht das Versenden der Originalnachricht verhindert werden, wohl aber das Senden der weitergeleiteten Nachricht.   
 
-_Beispiel für einen Konfigurationsdatei-Eintrag:_   
-Nachrichten mit dem Topic `m4hInBlockOut/test3` sollen in Nachrichten mit dem Topic `m4hInBlockOut/test3/forwarded` umgewandelt werden. Der Original-Payload soll der Zusatz `(Block: <block> sec)` angehängt werden, wobei `<block>` für die Blockierzeit steht. Diese soll eine Minute betragen.   
-Lösung - Eintrag in der Konfigurationsdatei:   
+_Beispiel f&uuml;r einen Konfigurationsdatei-Eintrag:_   
+Nachrichten mit dem Topic `m4hInBlockOut/test3` sollen in Nachrichten mit dem Topic `m4hInBlockOut/test3/forwarded` umgewandelt werden. Der Original-Payload soll der Zusatz `(Block: <block> sec)` angeh&auml;ngt werden, wobei `<block>` f&uuml;r die Blockierzeit steht. Diese soll eine Minute betragen.   
+L&ouml;sung - Eintrag in der Konfigurationsdatei:   
 
 ```   
 [inblockout]
@@ -97,7 +97,7 @@ out   : <in>/forwarded <text> (Block: <block> sec)
 retain: false
 ```   
 
-_Anmerkung_: Die Platzhalter `<in>` für das eingehende Topic, `<text>` für die eingehende Payload und `<block>` für die Blockierzeit (in Sekunden) sind fix vom Programm vorgegeben.   
+_Anmerkung_: Die Platzhalter `<in>` f&uuml;r das eingehende Topic, `<text>` f&uuml;r die eingehende Payload und `<block>` f&uuml;r die Blockierzeit (in Sekunden) sind fix vom Programm vorgegeben.   
 
 ## Empfangen und Senden von Nachrichten
 Name: [`m4hInDelayOut`](https://github.com/khartinger/mqtt4home/tree/main/source_RasPi/m4hInDelayOut)   
