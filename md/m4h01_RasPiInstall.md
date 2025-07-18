@@ -24,7 +24,7 @@ Diese Ziele werden in folgenden Unterkapiteln erreicht:
 * [9. Feste USB-Schnittstellen-Namen durch udev-Regeln](#x90)   
 * [10. Eigene Autostart-Datei `autostart.sh`](#x100)   
 * [11. Zigbee2MQTT installieren](#x110)   
-* [12. Kiosk-Modus](#x120)   
+* [12. Vollbildanzeige (Kiosk-Modus)](#x120)   
 * [13. Dies und Das](#x130)   
 
 In diesem Demo-Projekt werden folgende Einstellungen gew&auml;hlt, die aus Sicherheitsgr&uuml;nden ge&auml;ndert werden sollten:   
@@ -1130,11 +1130,12 @@ Nur Stoppen des Services geht mit
 `sudo systemctl stop zigbee2mqtt`   
 
 [Zum Seitenanfang](#up)   
-<a name="x110"></a>   
+<a name="x120"></a>   
 
-# 12. Kiosk-Modus
+# 12. Vollbildanzeige
+## 12.1 Kiosk-Modus
 Der "Kiosk-Modus" ist eine Betriebsart von Rechnern bzw. Terminals mit graphischer Anzeige, bei der die Rechte des Users eingeschr&auml;nkt sind und nur bestimmte Aktionen ausgef&uuml;hrt werden k&ouml;nnen.   
-Welche Schritte sind beim RasPi mit OS "Bookworm" erforderlich, damit eine Web-Seite im Chromium-Browser nach dem Start automatisch im Kios-Modus angezeigt wird?   
+Frage: Welche Schritte sind beim RasPi mit OS "Bookworm" und X11 erforderlich, damit eine Web-Seite im Chromium-Browser nach dem Start automatisch im Kios-Modus angezeigt wird?   
 
 1. Chromium installieren (falls nicht vorhanden):   
   `sudo apt update`  
@@ -1149,14 +1150,106 @@ Welche Schritte sind beim RasPi mit OS "Bookworm" erforderlich, damit eine Web-S
   `mkdir -p ~/.config/lxsession/LXDE-pi`   
   `nano ~/.config/lxsession/LXDE-pi/autostart`   
   Hinzuf&uuml;gen (Bildschirm nie ausschalten, Chromium starten):   
-  `@xset s off`   
-  `@xset -dpms`   
-  `@xset s noblank`   
-  `@chromium-browser --noerrdialogs --disable-infobars --kiosk http://localhost`   
+  ```
+  @xset s off
+  @xset -dpms
+  @xset s noblank
+  @chromium-browser --noerrdialogs --disable-infobars --kiosk http://localhost
+   ``` 
    Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
 
 4. RasPi neu starten   
   `sudo reboot`   
+
+---
+
+Möchte man den Kios-Modus wieder ausschalten, so muss man über Putty in der Datei `~/.config/lxsession/LXDE-pi/autostart` die Änderungen von vorhin auskommentieren und das RasPi neu starten:   
+  `nano ~/.config/lxsession/LXDE-pi/autostart`   
+  Ändern (Bildschirm nie ausschalten, Chromium starten):   
+```
+  #@xset s off
+  #@xset -dpms
+  #@xset s noblank
+  #@chromium-browser --noerrdialogs --disable-infobars --kiosk http://localhost
+```
+   Speichern und beenden durch &lt;Strg&gt;o &lt;Enter&gt; &lt;Strg&gt; x   
+RasPi neu starten   
+  `sudo reboot`   
+
+## 12.2 Vollbild-Anzeige ohne Kiosk-Modus
+Um den Chromium-Browser als Vollbild OHNE Kiosk-Modus anzuzeigen, benötigt man noch einige Tools:   
+`sudo apt update`   
+`sudo apt install chromium-browser xdotool unclutter`   
+
+1. Anzeige-Script erstellen
+`nano ~/chromium-vollbild.sh`   
+Inhalt:   
+```
+#!/bin/bash
+
+# Mauszeiger nach kurzer Inaktivität ausblenden
+unclutter -idle 0.1 -root &
+
+# Energiesparfunktionen deaktivieren
+xset s off
+xset -dpms
+xset s noblank
+
+# Chromium im neuen Fenster starten
+chromium-browser --new-window --start-maximized http://localhost &
+
+# Auf Chromium-Fenster warten (sichtbares Fenster mit Namen)
+echo "Warte auf Chromium-Fenster..."
+
+# Timeout-Schutz (30s)
+TIMEOUT=30
+WAITED=0
+
+while true; do
+    WIN_ID=$(xdotool search --onlyvisible --name "Chromium" | head -1)
+    if [ -n "$WIN_ID" ]; then
+        echo "Fenster gefunden: $WIN_ID"
+        break
+    fi
+    sleep 1
+    WAITED=$((WAITED + 1))
+    if [ "$WAITED" -ge "$TIMEOUT" ]; then
+        echo "Timeout: Chromium-Fenster wurde nicht gefunden."
+        exit 1
+    fi
+done
+
+# Fenster aktivieren
+xdotool windowactivate "$WIN_ID"
+sleep 0.5
+
+# F11 senden für echten Vollbildmodus
+xdotool key --window "$WIN_ID" F11
+
+echo "F11 gesendet – Vollbild sollte jetzt aktiv sein."
+```
+2. Das Script lauffähig machen:   
+`chmod +x ~/chromium-vollbild.sh`   
+
+3. Autostart über .desktop-Eintrag   
+Verzeichnis erstellen und Start-Datei erzeugen
+```
+mkdir -p ~/.config/autostart
+nano ~/.config/autostart/chromium-vollbild.desktop
+```
+Inhalt (_falls erforderlich: User pi_ anpassen_):   
+```
+[Desktop Entry]
+Type=Application
+Name=ChromiumVollbild
+Exec=/home/pi_/chromium-vollbild.sh
+StartupNotify=false
+Terminal=false
+```
+
+4. RasPi neu starten   
+`sudo reboot`   
+
 
 [Zum Seitenanfang](#up)   
 <a name="x130"></a>   
@@ -1185,9 +1278,43 @@ Beim OS "Debian Bookworm" mit X11 (X.Org) als Display-Server wird die Helligkeit
 Die Einstellung der Helligkeit erfolgt durch Eintrag eines Wertes von 0 bis 255 in die Datei `/sys/class/backlight/10-0045/brightness`, zB durch   
 `echo 128 | sudo tee /sys/class/backlight/10-0045/brightness`   
 
+## 13.4 SD-Karte - Image auf PC sichern
+1. In der Powershell WSL (Windows Subsystem for Linux) installieren:   
+`PS> wsl --install`
+`PS> wsl --set-default-version 2`
+
+2. SD-Karte aus RasPi entnehmen und in SD-Karten-Leser am PC stecken   
+3. Auf dem PC das Programm `Win32DiskManager` starten   
+4. Inhalt der SD-Karte in Datei `/temp/image.img` am PC lesen   
+
+5. Datei am PC verkleinern   
+   Vorteil: Die Datei ist kleiner und passt sicher auf die nächste micro-SD-Karte   
+   Am PC Powershell starten   
+   Am PC in der Powershell WSL (Windows Subsystem for Linux) durch Eingabe von `wsl` starten   
+```   
+sudo apt update
+sudo apt install git dosfstools e2fsprogs parted -y
+git clone https://github.com/Drewsif/PiShrink.git
+cd PiShrink
+chmod +x pishrink.sh
+sudo ./pishrink.sh /mnt/d/temp/image.img
+```  
+
+5. Image auf neue SD-Karte kopieren
+   Falls die SD-Karte bereits verwendet wurde und mehrere Partitionen enthält:   
+    Unter Windows...   
+    * SD-Karte einstecken   
+    * Datenträgerverwaltung öffnen: Tasten [Win] + [R] → diskmgmt.msc → Enter   
+    * Alle Partitionen löschen: Rechtsklick auf jede Partition der SD-Karte → "Volume löschen"   
+    * Neues Volume erstellen: Rechtsklick auf den „Nicht zugeordneten“ Bereich → „Neues einfaches Volume“ → FAT32 oder exFAT auswählen   
+  
+    Auf dem PC das Programm `Win32DiskManager` starten   
+    Image auf SD-Karte kopieren   
+   
+
 ---
 
-## 13.4 Bildschirmschoner abschalten (alte Version)
+## 13.5 Bildschirmschoner abschalten (alte Version)
 1. Neues Verzeichnis mit Steuerdatei anlegen:   
 `sudo mkdir /etc/X11/xorg.conf.d`   
 Steuerdatei erstellen:   
