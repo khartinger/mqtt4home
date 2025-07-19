@@ -1163,9 +1163,9 @@ Frage: Welche Schritte sind beim RasPi mit OS "Bookworm" und X11 erforderlich, d
 
 ---
 
-Möchte man den Kios-Modus wieder ausschalten, so muss man über Putty in der Datei `~/.config/lxsession/LXDE-pi/autostart` die Änderungen von vorhin auskommentieren und das RasPi neu starten:   
+M&ouml;chte man den Kios-Modus wieder ausschalten, so muss man &uuml;ber Putty in der Datei `~/.config/lxsession/LXDE-pi/autostart` die &Auml;nderungen von vorhin auskommentieren und das RasPi neu starten:   
   `nano ~/.config/lxsession/LXDE-pi/autostart`   
-  Ändern (Bildschirm nie ausschalten, Chromium starten):   
+  &Auml;ndern (Bildschirm nie ausschalten, Chromium starten):   
 ```
   #@xset s off
   #@xset -dpms
@@ -1177,7 +1177,7 @@ RasPi neu starten
   `sudo reboot`   
 
 ## 12.2 Vollbild-Anzeige ohne Kiosk-Modus
-Um den Chromium-Browser als Vollbild OHNE Kiosk-Modus anzuzeigen, benötigt man noch einige Tools:   
+Um den Chromium-Browser als Vollbild OHNE Kiosk-Modus anzuzeigen, ben&ouml;tigt man noch einige Tools:   
 `sudo apt update`   
 `sudo apt install chromium-browser xdotool unclutter`   
 
@@ -1187,7 +1187,7 @@ Inhalt:
 ```
 #!/bin/bash
 
-# Mauszeiger nach kurzer Inaktivität ausblenden
+# Mauszeiger nach kurzer Inaktivit&auml;t ausblenden
 unclutter -idle 0.1 -root &
 
 # Energiesparfunktionen deaktivieren
@@ -1223,15 +1223,15 @@ done
 xdotool windowactivate "$WIN_ID"
 sleep 0.5
 
-# F11 senden für echten Vollbildmodus
+# F11 senden f&uuml;r echten Vollbildmodus
 xdotool key --window "$WIN_ID" F11
 
 echo "F11 gesendet – Vollbild sollte jetzt aktiv sein."
 ```
-2. Das Script lauffähig machen:   
+2. Das Script lauff&auml;hig machen:   
 `chmod +x ~/chromium-vollbild.sh`   
 
-3. Autostart über .desktop-Eintrag   
+3. Autostart &uuml;ber .desktop-Eintrag   
 Verzeichnis erstellen und Start-Datei erzeugen
 ```
 mkdir -p ~/.config/autostart
@@ -1288,7 +1288,7 @@ Die Einstellung der Helligkeit erfolgt durch Eintrag eines Wertes von 0 bis 255 
 4. Inhalt der SD-Karte in Datei `/temp/image.img` am PC lesen   
 
 5. Datei am PC verkleinern   
-   Vorteil: Die Datei ist kleiner und passt sicher auf die nächste micro-SD-Karte   
+   Vorteil: Die Datei ist kleiner und passt sicher auf die n&auml;chste micro-SD-Karte   
    Am PC Powershell starten   
    Am PC in der Powershell WSL (Windows Subsystem for Linux) durch Eingabe von `wsl` starten   
 ```   
@@ -1300,13 +1300,13 @@ chmod +x pishrink.sh
 sudo ./pishrink.sh /mnt/d/temp/image.img
 ```  
 
-5. Image auf neue SD-Karte kopieren
-   Falls die SD-Karte bereits verwendet wurde und mehrere Partitionen enthält:   
+5. Image auf neue SD-Karte kopieren   
+   Falls die SD-Karte bereits verwendet wurde und mehrere Partitionen enth&auml;lt:   
     Unter Windows...   
     * SD-Karte einstecken   
-    * Datenträgerverwaltung öffnen: Tasten [Win] + [R] → diskmgmt.msc → Enter   
-    * Alle Partitionen löschen: Rechtsklick auf jede Partition der SD-Karte → "Volume löschen"   
-    * Neues Volume erstellen: Rechtsklick auf den „Nicht zugeordneten“ Bereich → „Neues einfaches Volume“ → FAT32 oder exFAT auswählen   
+    * Datentr&auml;gerverwaltung &ouml;ffnen: Tasten [Win] + [R] → diskmgmt.msc → Enter   
+    * Alle Partitionen l&ouml;schen: Rechtsklick auf jede Partition der SD-Karte → "Volume l&ouml;schen"   
+    * Neues Volume erstellen: Rechtsklick auf den „Nicht zugeordneten“ Bereich → „Neues einfaches Volume“ → FAT32 oder exFAT ausw&auml;hlen   
   
     Auf dem PC das Programm `Win32DiskManager` starten   
     Image auf SD-Karte kopieren   
