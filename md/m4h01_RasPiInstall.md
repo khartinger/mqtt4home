@@ -1278,29 +1278,46 @@ Beim OS "Debian Bookworm" mit X11 (X.Org) als Display-Server wird die Helligkeit
 Die Einstellung der Helligkeit erfolgt durch Eintrag eines Wertes von 0 bis 255 in die Datei `/sys/class/backlight/10-0045/brightness`, zB durch   
 `echo 128 | sudo tee /sys/class/backlight/10-0045/brightness`   
 
-## 13.4 SD-Karte - Image auf PC sichern
-1. In der Powershell WSL (Windows Subsystem for Linux) installieren:   
+
+## 13.4 PHP installieren
+1. Vorbereitungen
+```
+sudo apt update
+sudo apt upgrade
+```
+2. Offizielle Repository-Version installieren
+```
+sudo apt install php php-cli php-fpm
+```
+Überprüfen:
+```
+php -v
+```
+
+## 13.5 SD-Karte - Image auf PC sichern
+1. Am PC in der Powershell WSL (Windows Subsystem for Linux) installieren:   
 `PS> wsl --install`
 `PS> wsl --set-default-version 2`
 
 2. SD-Karte aus RasPi entnehmen und in SD-Karten-Leser am PC stecken   
 3. Auf dem PC das Programm `Win32DiskManager` starten   
-4. Inhalt der SD-Karte in Datei `/temp/image.img` am PC lesen   
+4. Inhalt der SD-Karte zB in die Datei `C:/temp/image.img` am PC lesen   
 
 5. Datei am PC verkleinern   
    Vorteil: Die Datei ist kleiner und passt sicher auf die n&auml;chste micro-SD-Karte   
-   Am PC Powershell starten   
-   Am PC in der Powershell WSL (Windows Subsystem for Linux) durch Eingabe von `wsl` starten   
+   (1) Am PC Powershell starten   
+   (2) Am PC in der Powershell WSL (Windows Subsystem for Linux) durch Eingabe von `wsl` starten   
+   (3) pishrink installieren   
 ```   
 sudo apt update
 sudo apt install git dosfstools e2fsprogs parted -y
 git clone https://github.com/Drewsif/PiShrink.git
 cd PiShrink
 chmod +x pishrink.sh
-sudo ./pishrink.sh /mnt/d/temp/image.img
+sudo ./pishrink.sh /mnt/c/temp/image.img
 ```  
 
-5. Image auf neue SD-Karte kopieren   
+6. Image auf neue SD-Karte kopieren   
    Falls die SD-Karte bereits verwendet wurde und mehrere Partitionen enth&auml;lt:   
     Unter Windows...   
     * SD-Karte einstecken   
@@ -1314,7 +1331,7 @@ sudo ./pishrink.sh /mnt/d/temp/image.img
 
 ---
 
-## 13.5 Bildschirmschoner abschalten (alte Version)
+## 13.6 Bildschirmschoner abschalten (alte Version)
 1. Neues Verzeichnis mit Steuerdatei anlegen:   
 `sudo mkdir /etc/X11/xorg.conf.d`   
 Steuerdatei erstellen:   
