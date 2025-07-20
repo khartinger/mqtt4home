@@ -1277,9 +1277,10 @@ Beim OS "Debian Bookworm" mit X11 (X.Org) als Display-Server wird die Helligkeit
 
 Die Einstellung der Helligkeit erfolgt durch Eintrag eines Wertes von 0 bis 255 in die Datei `/sys/class/backlight/10-0045/brightness`, zB durch   
 `echo 128 | sudo tee /sys/class/backlight/10-0045/brightness`   
-
+Brauchbare Werte sind zB 15 f&uuml;r "dunkel" und 63 (oder mehr) f&uuml;r "hell".   
 
 ## 13.4 PHP installieren
+Falls man dynamische Webseiten gemeinsam mit dem Apache-Server und/oder Datenbanken nutzten m&ouml;chte, kann man `php` als Skriptsprache verwenden.   
 1. Vorbereitungen
 ```
 sudo apt update
@@ -1289,7 +1290,7 @@ sudo apt upgrade
 ```
 sudo apt install php php-cli php-fpm
 ```
-Überprüfen:
+&Uuml;berpr&uuml;fen:
 ```
 php -v
 ```
